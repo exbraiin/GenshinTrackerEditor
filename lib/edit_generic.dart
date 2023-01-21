@@ -1,0 +1,119 @@
+import 'package:dartx/dartx.dart';
+import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db_ext/datafield.dart';
+import 'package:data_editor/style/style.dart';
+import 'package:flutter/material.dart';
+
+class EditGeneric<T extends GsModel> extends StatefulWidget {
+  final String title;
+  final T? item;
+  final GsCollection<T> collection;
+  final Iterable<DataField<T>> fields;
+
+  const EditGeneric({
+    super.key,
+    required this.item,
+    required this.title,
+    required this.fields,
+    required this.collection,
+  });
+
+  @override
+  State<EditGeneric<T>> createState() => _EditGenericState<T>();
+}
+
+class _EditGenericState<T extends GsModel> extends State<EditGeneric<T>> {
+  late final ValueNotifier<T> _notifier;
+
+  @override
+  void initState() {
+    super.initState();
+    _notifier = ValueNotifier(widget.item ?? widget.collection.create({}));
+  }
+
+  @override
+  void dispose() {
+    _notifier.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    void edit(T value) => _notifier.value = value;
+    return Scaffold(
+      appBar: AppBar(title: Text('Edit ${widget.title}')),
+      backgroundColor: Colors.black,
+      body: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.6),
+              BlendMode.multiply,
+            ),
+            image: const AssetImage(GsGraphics.bgImg),
+          ),
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: ValueListenableBuilder(
+                  valueListenable: _notifier,
+                  builder: (context, value, child) {
+                    return getTableForFields(value, widget.fields, edit);
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            ValueListenableBuilder(
+              valueListenable: _notifier,
+              builder: (context, value, child) {
+                final valid = widget.fields
+                        .map((e) => e.isValid?.call(value))
+                        .whereNotNull()
+                        .maxBy((element) => element.index) !=
+                    GsValidLevel.error;
+
+                void onSave() {
+                  widget.collection.updateItem(widget.item?.id, value);
+                  Navigator.of(context).maybePop();
+                }
+
+                void onDelete() {
+                  widget.collection.delete(_notifier.value.id);
+                  Navigator.of(context).maybePop();
+                }
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Opacity(
+                      opacity: widget.item != null ? 1 : 0.2,
+                      child: FloatingActionButton(
+                        heroTag: 'delete',
+                        onPressed: widget.item != null ? onDelete : null,
+                        child: const Icon(Icons.delete),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Opacity(
+                      opacity: valid ? 1 : 0.2,
+                      child: FloatingActionButton(
+                        heroTag: 'save',
+                        onPressed: valid ? onSave : null,
+                        child: const Icon(Icons.save),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

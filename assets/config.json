@@ -1,0 +1,194 @@
+{
+    "namecard_type": [
+        "achievement",
+        "battlepass",
+        "character",
+        "default",
+        "event",
+        "offering",
+        "reputation"
+    ],
+    "recipe_effect": [
+        "recoveryHPAll",
+        "recoveryHP",
+        "revive",
+        "atkBoost",
+        "staminaIncrease",
+        "staminaReduction",
+        "atkCritBoost",
+        "defBoost",
+        "adventure"
+    ],
+    "banner_type": [
+        "standard",
+        "beginner",
+        "character",
+        "weapon"
+    ],
+    "weapon_type": [
+        "bow",
+        "sword",
+        "polearm",
+        "catalyst",
+        "claymore"
+    ],
+    "elements": [
+        "anemo",
+        "geo",
+        "electro",
+        "dendro",
+        "hydro",
+        "pyro",
+        "cryo"
+    ],
+    "regions": [
+        "none",
+        "mondstadt",
+        "liyue",
+        "inazuma",
+        "sumeru",
+        "fontaine",
+        "natlan",
+        "snezhnaya"
+    ],
+    "weapon_stats": [
+        "none",
+        "hpPercent",
+        "elementalMastery",
+        "atkPercent",
+        "critDmg",
+        "energyRecharge",
+        "physicalDmg",
+        "critRate",
+        "defPercent"
+    ],
+    "character_ascension_stats": [
+        "anemoDmgBonus",
+        "geoDmgBonus",
+        "electroDmgBonus",
+        "dendroDmgBonus",
+        "hydroDmgBonus",
+        "pyroDmgBonus",
+        "cryoDmgBonus",
+        "hpPercent",
+        "atkPercent",
+        "defPercent",
+        "critDmg",
+        "critRate",
+        "healing",
+        "physicalDmg",
+        "energyRecharge",
+        "elementalMastery"
+    ],
+    "weapon_ascension_stats": [
+        "hpPercent",
+        "atkPercent",
+        "defPercent",
+        "critDmg",
+        "critRate",
+        "physicalDmg",
+        "energyRecharge",
+        "elementalMastery"
+    ],
+    "weekdays": [
+        "Sunday",
+        "Monday",
+        "Thursday",
+        "Wednesday",
+        "Tuesday",
+        "Friday",
+        "Saturday"
+    ],
+    "artifact_pieces": [
+        "flower_of_life",
+        "plume_of_death",
+        "sands_of_eon",
+        "goblet_of_eonothem",
+        "circlet_of_logos"
+    ],
+    "material_category": [
+        "ascension_gems",
+        "elite_drops",
+        "forging",
+        "furnishing",
+        "normal_boss_drops",
+        "normal_drops",
+        "region_materials_inazuma",
+        "region_materials_liyue",
+        "region_materials_mondstadt",
+        "region_materials_sumeru",
+        "talent_materials",
+        "talent_materials_inazuma",
+        "talent_materials_liyue",
+        "talent_materials_mondstadt",
+        "talent_materials_sumeru",
+        "weapon_materials_inazuma",
+        "weapon_materials_liyue",
+        "weapon_materials_mondstadt",
+        "weapon_materials_sumeru",
+        "weekly_boss_drops"
+    ],
+    "material_category_region_common": [
+        "region_materials_mondstadt",
+        "region_materials_liyue",
+        "region_materials_inazuma",
+        "region_materials_sumeru"
+    ],
+    "material_category_region_talent": [
+        "talent_materials_mondstadt",
+        "talent_materials_liyue",
+        "talent_materials_inazuma",
+        "talent_materials_sumeru"
+    ],
+    "material_category_region_weapon": [
+        "weapon_materials_mondstadt",
+        "weapon_materials_liyue",
+        "weapon_materials_inazuma",
+        "weapon_materials_sumeru"
+    ],
+    "serenitea_sets": [
+        "indoor",
+        "outdoor"
+    ],
+    "rchest_source": [
+        "Inazuma: Tsurumi Island",
+        "Sumeru: Dharma Forest",
+        "Sumeru: Great Red Sand",
+        "Sumeru: Desert of Hadramaveth"
+    ],
+    "rchest_category": [
+        "Animal",
+        "Building",
+        "Companion",
+        "Courtyard",
+        "Decoration",
+        "Landform",
+        "Landscape",
+        "Large Furnishing",
+        "Main Building",
+        "Ornaments",
+        "Outdoor Furnishing",
+        "Small Furnishing",
+        "Wall Decor"
+    ],
+    "item_source": [
+        "shop",
+        "event",
+        "fishing",
+        "forging",
+        "battlepass",
+        "exploration",
+        "wishes_standard",
+        "wishes_weapon_banner",
+        "wishes_character_banner"
+    ],
+    "talent_types": [
+        "Normal Attack",
+        "Elemental Skill",
+        "Elemental Burst",
+        "Alternate Sprint",
+        "1st Ascension Passive",
+        "4th Ascension Passive",
+        "Utility Passive"
+    ]
+}

@@ -1,0 +1,122 @@
+import 'package:data_editor/db/database.dart';
+import 'package:data_editor/style/utils.dart';
+
+class GsCharacter extends GsModel {
+  @override
+  final String id;
+  final String name;
+  final String title;
+  final int rarity;
+  final String region;
+  final String weapon;
+  final String element;
+  final String version;
+  final String source;
+  final String description;
+  final String constellation;
+  final String affiliation;
+  final String specialDish;
+  final String birthday;
+  final String releaseDate;
+  final String image;
+  final String fullImage;
+
+  GsCharacter._({
+    this.id = '',
+    this.name = '',
+    this.rarity = 1,
+    this.title = '',
+    this.region = '',
+    this.weapon = '',
+    this.element = '',
+    this.version = '',
+    this.source = '',
+    this.description = '',
+    this.constellation = '',
+    this.affiliation = '',
+    this.specialDish = '',
+    this.birthday = '',
+    this.releaseDate = '',
+    this.image = '',
+    this.fullImage = '',
+  });
+
+  GsCharacter.fromMap(JsonMap m)
+      : id = m.getString('id'),
+        name = m.getString('name'),
+        rarity = m.getInt('rarity', 1),
+        title = m.getString('title'),
+        region = m.getString('region'),
+        weapon = m.getString('weapon'),
+        element = m.getString('element'),
+        version = m.getString('version'),
+        source = m.getString('source'),
+        description = m.getString('description'),
+        constellation = m.getString('constellation'),
+        affiliation = m.getString('affiliation'),
+        specialDish = m.getString('special_dish'),
+        birthday = m.getString('birthday'),
+        releaseDate = m.getString('release_date'),
+        image = m.getString('image'),
+        fullImage = m.getString('full_image');
+
+  GsCharacter copyWith({
+    String? id,
+    String? name,
+    String? title,
+    int? rarity,
+    String? region,
+    String? weapon,
+    String? element,
+    String? version,
+    String? source,
+    String? description,
+    String? constellation,
+    String? affiliation,
+    String? specialDish,
+    String? birthday,
+    String? releaseDate,
+    String? image,
+    String? fullImage,
+  }) {
+    return GsCharacter._(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      rarity: rarity ?? this.rarity,
+      title: title ?? this.title,
+      region: region ?? this.region,
+      weapon: weapon ?? this.weapon,
+      element: element ?? this.element,
+      version: version ?? this.version,
+      source: source ?? this.source,
+      description: description ?? this.description,
+      constellation: constellation ?? this.constellation,
+      affiliation: affiliation ?? this.affiliation,
+      specialDish: specialDish ?? this.specialDish,
+      birthday: birthday ?? this.birthday,
+      releaseDate: releaseDate ?? this.releaseDate,
+      image: image ?? this.image,
+      fullImage: fullImage ?? this.fullImage,
+    );
+  }
+
+  @override
+  JsonMap toJsonMap() => {
+        'name': name,
+        'rarity': rarity,
+        'title': title,
+        'region': region,
+        'weapon': weapon,
+        'element': element,
+        'version': version,
+        'source': source,
+        'description': description,
+        'constellation': constellation,
+        'affiliation': affiliation,
+        'special_dish': specialDish,
+        'birthday': birthday,
+        'release_date': releaseDate,
+        'image': image,
+        'full_image': fullImage,
+      };
+}
