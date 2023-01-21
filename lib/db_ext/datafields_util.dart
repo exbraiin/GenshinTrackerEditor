@@ -58,15 +58,18 @@ class GsSelectItems {
   static It get ingredients => Database.i.ingredients.data
       .map((e) => _fromRarity(e.id, e.name, e.rarity));
 
-  static It get bannerTypes =>
-      GsConfigurations.bannerTypes.map((e) => _fromBannerType(e, e.toTitle(), e));
+  static It get bannerTypes => GsConfigurations.bannerTypes
+      .map((e) => _fromBannerType(e, e.toTitle(), e));
 
   static It get baseRecipes => Database.i
       .getAllBaseRecipes()
       .map((e) => _fromRarity(e.id, e.name, e.rarity));
 
-  static It get sereniteas =>
-      GsConfigurations.sereniteaType.map((e) => _fromSetCategory(e, e.toTitle(), e));
+  static It get recipeEffects => GsConfigurations.recipeEffect.map((e) =>
+      GsSelectItem(e, e.toTitle(), icon: GsGraphics.getRecipeEffectIcon(e)));
+
+  static It get sereniteas => GsConfigurations.sereniteaType
+      .map((e) => _fromSetCategory(e, e.toTitle(), e));
 
   static It get nonBaseRecipes => Database.i
       .getAllNonBaseRecipes()
@@ -142,6 +145,9 @@ String _toNameId(GsModel item) {
   final name = ((item as dynamic)?.name as String?) ?? '';
   return name.toDbId();
 }
+
+String processListOfStrings(String value) =>
+    value.split(',').map((e) => e.trim()).where((e) => e.isNotBlank).join(', ');
 
 String processImage(String value) {
   final idx = value.indexOf('/revision');

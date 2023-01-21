@@ -34,13 +34,14 @@ List<DataField<GsCity>> getCityDfs(GsCity? model) {
     ),
     DataField.textField(
       'Reputation',
-      (item) => item.reputation.join(','),
+      (item) => item.reputation.join(', '),
       (item, value) {
         final r = value.split(',').map((e) => int.tryParse(e)).toList();
         if (r.any((element) => element == null)) r.clear();
         final tValue = r.whereNotNull().toList();
         return item.copyWith(reputation: tValue);
       },
+      process: processListOfStrings,
       isValid: (item) =>
           item.reputation.isEmpty ? GsValidLevel.warn2 : GsValidLevel.good,
     ),

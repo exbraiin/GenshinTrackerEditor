@@ -1,10 +1,10 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
-import 'package:data_editor/edit_generic.dart';
+import 'package:data_editor/screens/item_edit_screen.dart';
+import 'package:data_editor/screens/items_list_screen.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
-import 'package:data_editor/table_generic.dart';
-import 'package:data_editor/widgets.dart';
+import 'package:data_editor/widgets/gs_grid_item.dart';
 import 'package:flutter/material.dart';
 
 class GsConfigs<T extends GsModel> {
@@ -179,13 +179,13 @@ class GsConfigs<T extends GsModel> {
       version: version,
       validLevel: level,
       onTap: () => context.pushWidget(() {
-        return TableGeneric<T>(
+        return ItemsListScreen<T>(
           title: title,
           list: () => collection.data,
           getDecor: getDecor,
           validator: collection.validator,
           onTap: (context, item) => context.pushWidget(() {
-            return EditGeneric<T>(
+            return ItemEditScreen<T>(
               item: item,
               title: title,
               collection: collection,

@@ -14,16 +14,6 @@ class GsConfigurations {
     final data = jsonDecode(raw) as JsonMap;
     _map = data.map((k, v) => MapEntry(k, (v as List).cast<String>()));
   }
-  /*
-  static Map<String, List<String>> get configs {
-    if (_map == null) {
-      final file = File('assets/config.json');
-      final data = jsonDecode(file.readAsStringSync()) as JsonMap;
-      _map = data.map((k, v) => MapEntry(k, (v as List).cast<String>()));
-    }
-    return _map!;
-  }
-  */
 
   static List<String> _list(String name) => _map?[name] ?? const [];
   static final namecardTypes = _list('namecard_type');
@@ -51,6 +41,19 @@ class GsGraphics {
   GsGraphics._();
 
   static const bgImg = 'assets/bg.png';
+
+  static const _icons = {
+    'adventure': 'assets/icons_food/adventure.png',
+    'atkBoost': 'assets/icons_food/atkBoost.png',
+    'atkCritBoost': 'assets/icons_food/atkCritBoost.png',
+    'defBoost': 'assets/icons_food/defBoost.png',
+    'recoveryHP': 'assets/icons_food/recoveryHP.png',
+    'recoveryHPAll': 'assets/icons_food/recoveryHPAll.png',
+    'revive': 'assets/icons_food/revive.png',
+    'staminaIncrease': 'assets/icons_food/staminaIncrease.png',
+    'staminaReduction': 'assets/icons_food/staminaReduction.png',
+  };
+  static String getRecipeEffectIcon(String effect) => _icons[effect] ?? '';
 }
 
 class GsStyle {

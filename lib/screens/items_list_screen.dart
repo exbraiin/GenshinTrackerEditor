@@ -1,17 +1,11 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
-import 'package:data_editor/widgets.dart';
+import 'package:data_editor/widgets/gs_grid_item.dart';
+import 'package:data_editor/widgets/gs_grid_view.dart';
 import 'package:flutter/material.dart';
 
-class GsItemDecor {
-  final Color color;
-  final String label;
-  final String version;
-  GsItemDecor(this.label, this.version, this.color);
-}
-
-class TableGeneric<T extends GsModel> extends StatelessWidget {
+class ItemsListScreen<T extends GsModel> extends StatelessWidget {
   final String title;
   final List<T> Function() list;
   final DataValidator? validator;
@@ -19,7 +13,7 @@ class TableGeneric<T extends GsModel> extends StatelessWidget {
   final GsItemDecor Function(T i) getDecor;
   final void Function(BuildContext context, T? i)? onTap;
 
-  const TableGeneric({
+  const ItemsListScreen({
     super.key,
     required this.title,
     required this.list,
@@ -60,4 +54,11 @@ class TableGeneric<T extends GsModel> extends StatelessWidget {
       ),
     );
   }
+}
+
+class GsItemDecor {
+  final Color color;
+  final String label;
+  final String version;
+  GsItemDecor(this.label, this.version, this.color);
 }

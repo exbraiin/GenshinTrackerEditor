@@ -48,7 +48,8 @@ List<DataField<GsWeaponInfo>> getWeaponInfoDfs(GsWeaponInfo? model) {
     DataField.singleSelect(
       'Ascension Stat',
       (item) => item.ascStatType,
-      (item) => GsSelectItems.getFromList(GsConfigurations.weaponStatTypes, true),
+      (item) =>
+          GsSelectItems.getFromList(GsConfigurations.weaponStatTypes, true),
       (item, value) => item.copyWith(ascStatType: value),
     ),
     DataField.textField(
@@ -62,6 +63,7 @@ List<DataField<GsWeaponInfo>> getWeaponInfoDfs(GsWeaponInfo? model) {
             ? GsValidLevel.good
             : GsValidLevel.error;
       },
+      process: processListOfStrings,
     ),
     DataField.textField(
       'Ascension Stat Values',
@@ -74,6 +76,7 @@ List<DataField<GsWeaponInfo>> getWeaponInfoDfs(GsWeaponInfo? model) {
             ? GsValidLevel.good
             : GsValidLevel.error;
       },
+      process: processListOfStrings,
     ),
   ];
 }

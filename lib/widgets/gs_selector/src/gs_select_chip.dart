@@ -2,9 +2,9 @@ import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:flutter/material.dart';
 
 class GsSelectChip<T> extends StatelessWidget {
-  final GsSelectItem<T> item;
   final bool hide;
   final bool selected;
+  final GsSelectItem<T> item;
   final void Function(T item)? onTap;
 
   const GsSelectChip(
@@ -29,19 +29,39 @@ class GsSelectChip<T> extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(100),
         ),
-        child: Text(
-          item.label,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
+        child: _content(),
       ),
     );
     if (onTap == null) return child;
     return InkWell(
       onTap: () => onTap!(item.value),
       child: child,
+    );
+  }
+
+  Widget _content() {
+    final text = Text(
+      item.label,
+      style: const TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+    );
+
+    if (item.icon.isEmpty) return text;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 4),
+          child: Image.asset(
+            item.icon,
+            width: 20,
+            height: 20,
+          ),
+        ),
+        text,
+      ],
     );
   }
 }

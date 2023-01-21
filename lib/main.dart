@@ -1,8 +1,8 @@
 import 'package:data_editor/configs.dart';
 import 'package:data_editor/db/database.dart';
-import 'package:data_editor/info_screen.dart';
+import 'package:data_editor/screens/info_screen.dart';
 import 'package:data_editor/style/utils.dart';
-import 'package:data_editor/widgets.dart';
+import 'package:data_editor/widgets/gs_grid_view.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -12,8 +12,6 @@ void main() {
 
 // TODO: LIST
 // * Filter dialog or/and search?
-// * Add remarkable chest
-// * Auto process "," into ", " and maybe "->" into " -> "
 // * Add icons to food types.
 
 class MyApp extends StatelessWidget {

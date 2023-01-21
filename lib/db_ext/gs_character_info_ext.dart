@@ -88,24 +88,28 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
       (item) => item.ascHpValues,
       (item, value) => item.copyWith(ascHpValues: value),
       isValid: (item) => validateAscension(item.ascHpValues),
+      process: processListOfStrings,
     ),
     DataField.textField(
       'Ascension Atk Values',
       (item) => item.ascAtkValues,
       (item, value) => item.copyWith(ascAtkValues: value),
       isValid: (item) => validateAscension(item.ascAtkValues),
+      process: processListOfStrings,
     ),
     DataField.textField(
       'Ascension Def Values',
       (item) => item.ascDefValues,
       (item, value) => item.copyWith(ascDefValues: value),
       isValid: (item) => validateAscension(item.ascDefValues),
+      process: processListOfStrings,
     ),
     DataField.textField(
       'Ascension Stat Values',
       (item) => item.ascStatValues,
       (item, value) => item.copyWith(ascStatValues: value),
       isValid: (item) => validateAscension(item.ascStatValues),
+      process: processListOfStrings,
     ),
     DataField.list(
       'Talents',

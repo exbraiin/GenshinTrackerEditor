@@ -41,7 +41,7 @@ List<DataField<GsRecipe>> getRecipeDfs(GsRecipe? model) {
     DataField.singleSelect(
       'Effect',
       (item) => item.effect,
-      (item) => GsSelectItems.getFromList(GsConfigurations.recipeEffect),
+      (item) => GsSelectItems.recipeEffects,
       (item, value) => item.copyWith(effect: value),
     ),
     DataField.textField(

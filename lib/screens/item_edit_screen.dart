@@ -4,13 +4,13 @@ import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:flutter/material.dart';
 
-class EditGeneric<T extends GsModel> extends StatefulWidget {
+class ItemEditScreen<T extends GsModel> extends StatefulWidget {
   final String title;
   final T? item;
   final GsCollection<T> collection;
   final Iterable<DataField<T>> fields;
 
-  const EditGeneric({
+  const ItemEditScreen({
     super.key,
     required this.item,
     required this.title,
@@ -19,10 +19,10 @@ class EditGeneric<T extends GsModel> extends StatefulWidget {
   });
 
   @override
-  State<EditGeneric<T>> createState() => _EditGenericState<T>();
+  State<ItemEditScreen<T>> createState() => _ItemEditScreenState<T>();
 }
 
-class _EditGenericState<T extends GsModel> extends State<EditGeneric<T>> {
+class _ItemEditScreenState<T extends GsModel> extends State<ItemEditScreen<T>> {
   late final ValueNotifier<T> _notifier;
 
   @override
