@@ -5,13 +5,15 @@ import 'package:flutter/material.dart';
 class GsGridItem extends StatelessWidget {
   final Color color;
   final String label;
-  final GsValidLevel validLevel;
   final String version;
+  final Widget? child;
+  final GsValidLevel validLevel;
   final VoidCallback? onTap;
 
   const GsGridItem({
     super.key,
     this.onTap,
+    this.child,
     this.version = '',
     this.validLevel = GsValidLevel.none,
     required this.color,
@@ -32,12 +34,17 @@ class GsGridItem extends StatelessWidget {
             onTap: onTap,
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: Center(
-                child: Text(
-                  label,
-                  style: const TextStyle(color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
+              child: Stack(
+                children: [
+                  Center(
+                    child: Text(
+                      label,
+                      style: const TextStyle(color: Colors.black),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  if (child != null) child!,
+                ],
               ),
             ),
           ),

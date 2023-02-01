@@ -6,6 +6,7 @@ import 'package:data_editor/db/gs_artifact.dart';
 import 'package:data_editor/db/gs_banner.dart';
 import 'package:data_editor/db/gs_character.dart';
 import 'package:data_editor/db/gs_character_info.dart';
+import 'package:data_editor/db/gs_character_outfit.dart';
 import 'package:data_editor/db/gs_city.dart';
 import 'package:data_editor/db/gs_ingredient.dart';
 import 'package:data_editor/db/gs_material.dart';
@@ -27,6 +28,7 @@ export 'package:data_editor/db/gs_artifact.dart';
 export 'package:data_editor/db/gs_banner.dart';
 export 'package:data_editor/db/gs_character.dart';
 export 'package:data_editor/db/gs_character_info.dart';
+export 'package:data_editor/db/gs_character_outfit.dart';
 export 'package:data_editor/db/gs_city.dart';
 export 'package:data_editor/db/gs_ingredient.dart';
 export 'package:data_editor/db/gs_material.dart';
@@ -80,6 +82,14 @@ class Database {
       final characters = Database.i.characters.data;
       return list.sortedBy((e) => characters.indexWhere((c) => c.id == e.id));
     },
+  );
+  final characterOutfit = GsCollection(
+    'src/characters_outfits',
+    (m) => GsCharacterOutfit.fromMap(m),
+    validator: DataValidator.charactersOutfit,
+    sorted: (list) => list
+        .sortedBy((element) => element.rarity)
+        .thenBy((element) => element.name),
   );
   final cities = GsCollection(
     'src/cities.json',
@@ -176,6 +186,7 @@ class Database {
         banners,
         characters,
         characterInfo,
+        characterOutfit,
         cities,
         ingredients,
         materials,
@@ -338,6 +349,7 @@ class GsCollection<T extends GsModel> {
     } else {
       _data[idx] = item;
     }
+    if (id != null) validator.checkLevel(id, null);
     validator.checkLevel(item.id, item);
     Database.i.modified.add(null);
   }

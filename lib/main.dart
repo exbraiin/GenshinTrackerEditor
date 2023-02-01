@@ -65,8 +65,22 @@ class Home extends StatelessWidget {
       body: FutureBuilder(
         future: Database.i.load(),
         builder: (context, snapshot) {
-          if (snapshot.hasError) return Text(snapshot.error.toString());
-          if (!snapshot.hasData) return const Text('Loading...');
+          if (snapshot.hasError) {
+            return Container(
+              padding: const EdgeInsets.all(8),
+              alignment: Alignment.center,
+              child: Text(snapshot.error.toString()),
+            );
+          }
+
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 2,
+              ),
+            );
+          }
 
           return StreamBuilder(
             stream: Database.i.modified,

@@ -10,6 +10,7 @@ class DataValidator<T extends GsModel> {
   static final banners = DataValidator._(getBannerDfs);
   static final characters = DataValidator._(getCharacterDfs);
   static final charactersInfo = DataValidator._(getCharacterInfoDfs);
+  static final charactersOutfit = DataValidator._(getCharacterOutfitDfs);
   static final cities = DataValidator._(getCityDfs);
   static final ingredients = DataValidator._(getIngredientDfs);
   static final materials = DataValidator._(getMaterialDfs);

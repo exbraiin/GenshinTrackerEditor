@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/screens/item_edit_screen.dart';
 import 'package:data_editor/screens/items_list_screen.dart';
 import 'package:data_editor/style/style.dart';
@@ -59,6 +60,15 @@ class GsConfigs<T extends GsModel> {
           );
         },
       ),
+      GsConfigs<GsCharacterOutfit>._(
+        title: 'Character Outfits',
+        getDecor: (item) => GsItemDecor(
+          item.name,
+          item.version,
+          GsStyle.getRarityColor(item.rarity),
+        ),
+        collection: Database.i.characterOutfit,
+      ),
       GsConfigs<GsCity>._(
         title: 'Cities',
         collection: Database.i.cities,
@@ -84,6 +94,12 @@ class GsConfigs<T extends GsModel> {
           item.name,
           item.version,
           GsStyle.getRarityColor(item.rarity),
+          Text(
+            '${item.subgroup}: ${item.group.toTitle()}',
+            maxLines: 1,
+            softWrap: false,
+            style: const TextStyle(color: Colors.black38),
+          ),
         ),
       ),
       GsConfigs<GsNamecard>._(

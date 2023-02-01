@@ -47,6 +47,7 @@ class ItemsListScreen<T extends GsModel> extends StatelessWidget {
                 version: decor.version,
                 validLevel: level,
                 onTap: () => onTap?.call(context, item),
+                child: decor.child,
               );
             }).toList(),
           );
@@ -60,5 +61,6 @@ class GsItemDecor {
   final Color color;
   final String label;
   final String version;
-  GsItemDecor(this.label, this.version, this.color);
+  final Widget? child;
+  GsItemDecor(this.label, this.version, this.color, [this.child]);
 }

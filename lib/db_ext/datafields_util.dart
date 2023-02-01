@@ -9,6 +9,7 @@ export 'gs_artifact_ext.dart';
 export 'gs_banner_ext.dart';
 export 'gs_character_ext.dart';
 export 'gs_character_info_ext.dart';
+export 'gs_character_outfit_ext.dart';
 export 'gs_city_ext.dart';
 export 'gs_ingredient_ext.dart';
 export 'gs_material_ext.dart';
@@ -77,6 +78,9 @@ class GsSelectItems {
 
   static It get namecardTypes => GsConfigurations.namecardTypes
       .map((e) => _fromNamecardType(e, e.toTitle(), e));
+
+  static It get chars => Database.i.characters.data
+      .map((e) => _fromRarity(e.id, e.name, e.rarity));
 
   static It get charsWithoutInfo => Database.i.characters.data
       .where((e) => Database.i.characterInfo.getItem(e.id) == null)
