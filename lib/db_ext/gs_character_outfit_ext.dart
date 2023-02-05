@@ -11,7 +11,7 @@ List<DataField<GsCharacterOutfit>> getCharacterOutfitDfs(
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      isValid: (item) => validateId(item, model, Database.i.characters),
+      isValid: (item) => validateId(item, model, Database.i.characterOutfit),
       refresh: (item) => item.copyWith(id: item.name.toDbId()),
     ),
     DataField.textField(

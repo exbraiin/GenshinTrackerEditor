@@ -1,7 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsSerenitea extends GsModel {
+class GsSerenitea extends GsModel<GsSerenitea> {
   @override
   final String id;
   final String name;
@@ -30,6 +30,7 @@ class GsSerenitea extends GsModel {
         chars = m.getStringList('chars'),
         version = m.getString('version');
 
+  @override
   GsSerenitea copyWith({
     String? id,
     String? name,

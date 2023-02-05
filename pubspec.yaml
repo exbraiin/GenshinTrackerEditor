@@ -38,6 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   dartx: ^1.1.0
   rxdart: ^0.27.7
+  excel: ^2.0.1
 
 dev_dependencies:
   flutter_test:

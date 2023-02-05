@@ -159,7 +159,7 @@ String processImage(String value) {
   return value;
 }
 
-GsValidLevel validateId<T extends GsModel>(T item, T? m, GsCollection<T> c) {
+GsValidLevel validateId<T extends GsModel<T>>(T item, T? m, GsCollection<T> c) {
   final id = item.id;
   if (id.isEmpty) return GsValidLevel.error;
   final String nameId = _toNameId(item);

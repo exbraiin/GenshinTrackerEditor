@@ -1,7 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsArtifact extends GsModel {
+class GsArtifact extends GsModel<GsArtifact> {
   @override
   final String id;
   final String name;
@@ -36,6 +36,7 @@ class GsArtifact extends GsModel {
         domain = m.getString('domain'),
         pieces = m.getMapToList('pieces', (m) => GsArtifactPiece.fromMap(m));
 
+  @override
   GsArtifact copyWith({
     String? id,
     String? name,
@@ -73,7 +74,7 @@ class GsArtifact extends GsModel {
       };
 }
 
-class GsArtifactPiece extends GsModel {
+class GsArtifactPiece extends GsModel<GsArtifactPiece> {
   @override
   final String id;
   final String name;
@@ -93,6 +94,7 @@ class GsArtifactPiece extends GsModel {
         icon = m.getString('icon'),
         desc = m.getString('desc');
 
+  @override
   GsArtifactPiece copyWith({
     String? name,
     String? icon,

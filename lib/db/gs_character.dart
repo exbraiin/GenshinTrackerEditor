@@ -1,7 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsCharacter extends GsModel {
+class GsCharacter extends GsModel<GsCharacter> {
   @override
   final String id;
   final String name;
@@ -60,6 +60,7 @@ class GsCharacter extends GsModel {
         image = m.getString('image'),
         fullImage = m.getString('full_image');
 
+  @override
   GsCharacter copyWith({
     String? id,
     String? name,

@@ -2,7 +2,7 @@ import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsRecipe extends GsModel {
+class GsRecipe extends GsModel<GsRecipe> {
   @override
   final String id;
   final String name;
@@ -43,6 +43,7 @@ class GsRecipe extends GsModel {
             .toList(),
         baseRecipe = m.getString('base_recipe');
 
+  @override
   GsRecipe copyWith({
     String? id,
     String? name,
@@ -85,7 +86,7 @@ class GsRecipe extends GsModel {
       };
 }
 
-class GsAmount extends GsModel {
+class GsAmount extends GsModel<GsAmount> {
   @override
   final String id;
   final int amount;
@@ -99,6 +100,7 @@ class GsAmount extends GsModel {
       : id = m.key,
         amount = m.value;
 
+  @override
   GsAmount copyWith({int? amount}) {
     return GsAmount(
       id: id,
@@ -110,7 +112,7 @@ class GsAmount extends GsModel {
   JsonMap toJsonMap() => {id: amount};
 }
 
-class GsValue extends GsModel {
+class GsValue extends GsModel<GsValue> {
   @override
   final String id;
   final double value;
@@ -124,6 +126,7 @@ class GsValue extends GsModel {
       : id = m.key,
         value = (m.value as num? ?? 0).toDouble();
 
+  @override
   GsValue copyWith({double? value}) {
     return GsValue(
       id: id,

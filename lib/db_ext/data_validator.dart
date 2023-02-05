@@ -5,7 +5,7 @@ import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/gs_remarkable_chest.dart';
 import 'package:data_editor/db_ext/gs_weapon_info_ext.dart';
 
-class DataValidator<T extends GsModel> {
+class DataValidator<T extends GsModel<T>> {
   static final artifacts = DataValidator._(getArtifactDfs);
   static final banners = DataValidator._(getBannerDfs);
   static final characters = DataValidator._(getCharacterDfs);

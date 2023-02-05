@@ -1,7 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsVersion extends GsModel {
+class GsVersion extends GsModel<GsVersion> {
   @override
   final String id;
   final String name;
@@ -23,6 +23,7 @@ class GsVersion extends GsModel {
         image = m.getString('image'),
         releaseDate = m.getString('release_date');
 
+  @override
   GsVersion copyWith({
     String? id,
     String? name,

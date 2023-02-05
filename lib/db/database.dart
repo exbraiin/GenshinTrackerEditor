@@ -84,7 +84,7 @@ class Database {
     },
   );
   final characterOutfit = GsCollection(
-    'src/characters_outfits',
+    'src/characters_outfits.json',
     (m) => GsCharacterOutfit.fromMap(m),
     validator: DataValidator.charactersOutfit,
     sorted: (list) => list
@@ -313,7 +313,7 @@ extension DatabaseExt on Database {
   }
 }
 
-class GsCollection<T extends GsModel> {
+class GsCollection<T extends GsModel<T>> {
   final String src;
   final T Function(JsonMap m) create;
   final DataValidator<T> validator;
@@ -362,9 +362,10 @@ class GsCollection<T extends GsModel> {
   }
 }
 
-abstract class GsModel {
+abstract class GsModel<T extends GsModel<T>> {
   String get id;
   JsonMap toJsonMap();
+  T copyWith();
 }
 
 extension JsonMapExt on JsonMap {

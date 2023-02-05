@@ -1,7 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsIngredient extends GsModel {
+class GsIngredient extends GsModel<GsIngredient> {
   @override
   final String id;
   final String name;
@@ -27,6 +27,7 @@ class GsIngredient extends GsModel {
         image = m.getString('image'),
         version = m.getString('version');
 
+  @override
   GsIngredient copyWith({
     String? id,
     String? name,

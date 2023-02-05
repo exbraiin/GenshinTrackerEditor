@@ -5,7 +5,7 @@ import 'package:data_editor/widgets/gs_grid_item.dart';
 import 'package:data_editor/widgets/gs_grid_view.dart';
 import 'package:flutter/material.dart';
 
-class ItemsListScreen<T extends GsModel> extends StatelessWidget {
+class ItemsListScreen<T extends GsModel<T>> extends StatelessWidget {
   final String title;
   final List<T> Function() list;
   final DataValidator? validator;

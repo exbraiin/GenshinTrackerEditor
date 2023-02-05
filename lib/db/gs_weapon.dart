@@ -1,7 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsWeapon extends GsModel {
+class GsWeapon extends GsModel<GsWeapon> {
   @override
   final String id;
   final String name;
@@ -42,6 +42,7 @@ class GsWeapon extends GsModel {
         version = m.getString('version'),
         source = m.getString('obtain', m.getString('source'));
 
+  @override
   GsWeapon copyWith({
     String? id,
     String? name,

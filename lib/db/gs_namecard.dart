@@ -1,7 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsNamecard extends GsModel {
+class GsNamecard extends GsModel<GsNamecard> {
   @override
   final String id;
   final String name;
@@ -30,6 +30,7 @@ class GsNamecard extends GsModel {
         desc = m.getString('desc'),
         obtain = m.getString('obtain');
 
+  @override
   GsNamecard copyWith({
     String? id,
     String? name,

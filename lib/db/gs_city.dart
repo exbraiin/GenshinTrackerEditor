@@ -1,7 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsCity extends GsModel {
+class GsCity extends GsModel<GsCity> {
   @override
   final String id;
   final String name;
@@ -24,6 +24,7 @@ class GsCity extends GsModel {
         element = m.getString('element'),
         reputation = m.getIntList('reputation');
 
+  @override
   GsCity copyWith({
     String? id,
     String? name,

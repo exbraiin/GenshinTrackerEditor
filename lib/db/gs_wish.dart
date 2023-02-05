@@ -1,7 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsWish extends GsModel {
+class GsWish extends GsModel<GsWish> {
   final GsWeapon? weapon;
   final GsCharacter? character;
 
@@ -15,4 +15,7 @@ class GsWish extends GsModel {
 
   @override
   JsonMap toJsonMap() => weapon?.toJsonMap() ?? character?.toJsonMap() ?? {};
+
+  @override
+  GsWish copyWith() => this;
 }

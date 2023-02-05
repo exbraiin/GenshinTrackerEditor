@@ -1,7 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsBanner extends GsModel {
+class GsBanner extends GsModel<GsBanner> {
   @override
   final String id;
   final String name;
@@ -36,6 +36,7 @@ class GsBanner extends GsModel {
         feature4 = m.getStringList('feature_4'),
         feature5 = m.getStringList('feature_5');
 
+  @override
   GsBanner copyWith({
     String? id,
     String? name,

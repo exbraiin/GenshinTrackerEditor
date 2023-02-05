@@ -4,7 +4,7 @@ import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:flutter/material.dart';
 
-class ItemEditScreen<T extends GsModel> extends StatefulWidget {
+class ItemEditScreen<T extends GsModel<T>> extends StatefulWidget {
   final String title;
   final T? item;
   final GsCollection<T> collection;
@@ -22,7 +22,7 @@ class ItemEditScreen<T extends GsModel> extends StatefulWidget {
   State<ItemEditScreen<T>> createState() => _ItemEditScreenState<T>();
 }
 
-class _ItemEditScreenState<T extends GsModel> extends State<ItemEditScreen<T>> {
+class _ItemEditScreenState<T extends GsModel<T>> extends State<ItemEditScreen<T>> {
   late final ValueNotifier<T> _notifier;
 
   @override

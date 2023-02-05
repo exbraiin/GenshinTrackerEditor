@@ -1,7 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsRemarkableChest extends GsModel {
+class GsRemarkableChest extends GsModel<GsRemarkableChest> {
   @override
   final String id;
   final String name;
@@ -36,6 +36,7 @@ class GsRemarkableChest extends GsModel {
         version = m.getString('version'),
         category = m.getString('category');
 
+  @override
   GsRemarkableChest copyWith({
     String? id,
     String? name,

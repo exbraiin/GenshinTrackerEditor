@@ -8,7 +8,7 @@ import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_grid_item.dart';
 import 'package:flutter/material.dart';
 
-class GsConfigs<T extends GsModel> {
+class GsConfigs<T extends GsModel<T>> {
   final String title;
   final GsItemDecor Function(T item) getDecor;
   final GsCollection<T> collection;

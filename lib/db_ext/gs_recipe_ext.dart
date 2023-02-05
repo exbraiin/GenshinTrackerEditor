@@ -2,7 +2,6 @@ import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
-import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 
 List<DataField<GsRecipe>> getRecipeDfs(GsRecipe? model) {

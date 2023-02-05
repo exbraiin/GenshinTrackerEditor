@@ -1,7 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsCharacterOutfit extends GsModel {
+class GsCharacterOutfit extends GsModel<GsCharacterOutfit> {
   @override
   final String id;
   final int rarity;
@@ -22,14 +22,15 @@ class GsCharacterOutfit extends GsModel {
   });
 
   GsCharacterOutfit.fromMap(JsonMap m)
-      : id = m['id'] ?? '',
-        name = m['name'] ?? '',
-        image = m['image'] ?? '',
-        rarity = m['rarity'] ?? 1,
-        version = m['version'] ?? '',
-        character = m['character'] ?? '',
-        fullImage = m['full_image'] ?? '';
+      : id = m.getString('id'),
+        name = m.getString('name'),
+        image = m.getString('image'),
+        rarity = m.getInt('rarity'),
+        version = m.getString('version'),
+        character = m.getString('character'),
+        fullImage = m.getString('full_image');
 
+  @override
   GsCharacterOutfit copyWith({
     String? id,
     int? rarity,

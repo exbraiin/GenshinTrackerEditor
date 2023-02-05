@@ -1,7 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsSpincrystal extends GsModel {
+class GsSpincrystal extends GsModel<GsSpincrystal> {
   @override
   final String id;
   final String name;
@@ -27,6 +27,7 @@ class GsSpincrystal extends GsModel {
         region = m.getString('region'),
         version = m.getString('version');
 
+  @override
   GsSpincrystal copyWith({
     String? id,
     String? name,

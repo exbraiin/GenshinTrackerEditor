@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/exporter.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +28,15 @@ class _InfoScreenState extends State<InfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Info Screen')),
+      appBar: AppBar(
+        title: const Text('Info Screen'),
+        actions: [
+          IconButton(
+            onPressed: () => Exporter.export(),
+            icon: const Icon(Icons.download_for_offline_rounded),
+          ),
+        ],
+      ),
       body: ValueListenableBuilder(
         valueListenable: _notifier,
         builder: (context, value, child) {
@@ -172,7 +181,7 @@ class _InfoScreenState extends State<InfoScreen> {
     );
   }
 
-  Widget _getByVersion<T extends GsModel>(
+  Widget _getByVersion<T extends GsModel<T>>(
     String title,
     String version,
     bool expanded,

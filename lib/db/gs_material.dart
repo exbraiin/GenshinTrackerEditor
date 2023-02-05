@@ -1,7 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsMaterial extends GsModel {
+class GsMaterial extends GsModel<GsMaterial> {
   @override
   final String id;
   final String name;
@@ -33,6 +33,7 @@ class GsMaterial extends GsModel {
         version = m.getString('version'),
         weekdays = m.getStringList('weekdays');
 
+  @override
   GsMaterial copyWith({
     String? id,
     String? name,

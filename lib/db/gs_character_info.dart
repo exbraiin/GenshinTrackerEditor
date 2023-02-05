@@ -2,7 +2,7 @@ import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsCharacterInfo extends GsModel {
+class GsCharacterInfo extends GsModel<GsCharacterInfo> {
   @override
   final String id;
   final String gemMaterial;
@@ -76,6 +76,7 @@ class GsCharacterInfo extends GsModel {
         .toList();
   }
 
+  @override
   GsCharacterInfo copyWith({
     String? id,
     String? gemMaterial,
@@ -131,7 +132,7 @@ class GsCharacterInfo extends GsModel {
       };
 }
 
-class GsCharTalent extends GsModel {
+class GsCharTalent extends GsModel<GsCharTalent> {
   @override
   String get id => type;
   final String name;
@@ -160,6 +161,7 @@ class GsCharTalent extends GsModel {
         'desc': desc,
       };
 
+  @override
   GsCharTalent copyWith({
     String? name,
     String? type,
@@ -175,7 +177,7 @@ class GsCharTalent extends GsModel {
   }
 }
 
-class GsCharConstellation extends GsModel {
+class GsCharConstellation extends GsModel<GsCharConstellation> {
   @override
   final String id;
   final String name;
@@ -189,6 +191,7 @@ class GsCharConstellation extends GsModel {
     this.desc = '',
   });
 
+  @override
   GsCharConstellation copyWith({
     String? id,
     String? name,
@@ -204,10 +207,10 @@ class GsCharConstellation extends GsModel {
   }
 
   GsCharConstellation.fromMap(JsonMap m)
-      : id = m['id'] ?? '',
-        name = m['name'] ?? '',
-        icon = m['icon'] ?? '',
-        desc = m['desc'] ?? '';
+      : id = m.getString('id'),
+        name = m.getString('name'),
+        icon = m.getString('icon'),
+        desc = m.getString('desc');
 
   @override
   JsonMap toJsonMap() => {

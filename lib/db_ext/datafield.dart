@@ -8,13 +8,13 @@ import 'package:flutter/material.dart';
 // The validator level.
 enum GsValidLevel { none, good, warn1, warn2, error }
 
-typedef DEdit<T extends GsModel> = void Function(T v);
-typedef DValid<T extends GsModel> = GsValidLevel Function(T item);
-typedef DUpdate<T extends GsModel> = T Function(T item);
-typedef DRefresh<T extends GsModel> = void Function(T item, DEdit<T> edit);
-typedef DBuilder<T extends GsModel> = Widget Function(T item, DEdit<T> edit);
+typedef DEdit<T extends GsModel<T>> = void Function(T v);
+typedef DValid<T extends GsModel<T>> = GsValidLevel Function(T item);
+typedef DUpdate<T extends GsModel<T>> = T Function(T item);
+typedef DRefresh<T extends GsModel<T>> = void Function(T item, DEdit<T> edit);
+typedef DBuilder<T extends GsModel<T>> = Widget Function(T item, DEdit<T> edit);
 
-class DataField<T extends GsModel> {
+class DataField<T extends GsModel<T>> {
   final String label;
   final DValid<T>? isValid;
   final DUpdate<T>? refresh;
@@ -96,7 +96,7 @@ class DataField<T extends GsModel> {
               ),
             ));
 
-  static DataField<T> multiSelect<T extends GsModel, V>(
+  static DataField<T> multiSelect<T extends GsModel<T>, V>(
     String label,
     List<V> Function(T item) values,
     Iterable<GsSelectItem<V>> Function(T item) options,
@@ -175,7 +175,7 @@ class DataField<T extends GsModel> {
                 .maxBy((e) => e.index) ??
             GsValidLevel.none);
 
-  static DataField<T> build<T extends GsModel, C extends GsModel>(
+  static DataField<T> build<T extends GsModel<T>, C extends GsModel<C>>(
     String label,
     List<C> Function(T item) values,
     Iterable<GsSelectItem<String>> Function(T item) options,
@@ -223,7 +223,7 @@ class DataField<T extends GsModel> {
   }
 }
 
-Widget getTableForFields<T extends GsModel>(
+Widget getTableForFields<T extends GsModel<T>>(
   T value,
   Iterable<DataField<T>> fields,
   void Function(T item) updateItem,
@@ -243,7 +243,7 @@ Widget getTableForFields<T extends GsModel>(
   );
 }
 
-TableRow _getFieldTableRow<T extends GsModel>(
+TableRow _getFieldTableRow<T extends GsModel<T>>(
   T value,
   DataField<T> field,
   void Function(T item) edit,

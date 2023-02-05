@@ -1,7 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 
-class GsWeaponInfo extends GsModel {
+class GsWeaponInfo extends GsModel<GsWeaponInfo> {
   @override
   final String id;
   final String effectName;
@@ -36,6 +36,7 @@ class GsWeaponInfo extends GsModel {
         ascAtkValues = m.getString('asc_atk_values'),
         ascStatValues = m.getString('asc_stat_values');
 
+  @override
   GsWeaponInfo copyWith({
     String? id,
     String? effectName,

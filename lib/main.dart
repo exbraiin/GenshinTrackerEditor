@@ -10,10 +10,6 @@ void main() {
   runApp(const MyApp());
 }
 
-// TODO: LIST
-// * Filter dialog or/and search?
-// * Add icons to food types.
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
