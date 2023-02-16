@@ -52,7 +52,7 @@ class Home extends StatelessWidget {
               if (snapshot.data!) return const CircularProgressIndicator();
               return IconButton(
                 icon: const Icon(Icons.save),
-                onPressed: () => Database.i.save(),
+                onPressed: Database.i.save,
               );
             },
           ),
