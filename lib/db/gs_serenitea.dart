@@ -7,6 +7,7 @@ class GsSerenitea extends GsModel<GsSerenitea> {
   final String name;
   final String category;
   final String image;
+  final int rarity;
   final int energy;
   final List<String> chars;
   final String version;
@@ -16,6 +17,7 @@ class GsSerenitea extends GsModel<GsSerenitea> {
     this.name = '',
     this.category = '',
     this.image = '',
+    this.rarity = 0,
     this.energy = 0,
     this.chars = const [],
     this.version = '',
@@ -26,6 +28,7 @@ class GsSerenitea extends GsModel<GsSerenitea> {
         name = m.getString('name'),
         category = m.getString('category'),
         image = m.getString('image'),
+        rarity = m.getInt('rarity'),
         energy = m.getInt('energy'),
         chars = m.getStringList('chars'),
         version = m.getString('version');
@@ -36,6 +39,7 @@ class GsSerenitea extends GsModel<GsSerenitea> {
     String? name,
     String? category,
     String? image,
+    int? rarity,
     int? energy,
     List<String>? chars,
     String? version,
@@ -45,6 +49,7 @@ class GsSerenitea extends GsModel<GsSerenitea> {
       name: name ?? this.name,
       category: category ?? this.category,
       image: image ?? this.image,
+      rarity: rarity ?? this.rarity,
       energy: energy ?? this.energy,
       chars: chars ?? this.chars,
       version: version ?? this.version,
@@ -55,6 +60,7 @@ class GsSerenitea extends GsModel<GsSerenitea> {
   JsonMap toJsonMap() => {
         'name': name,
         'image': image,
+        'rarity': rarity,
         'energy': energy,
         'category': category,
         'chars': chars,

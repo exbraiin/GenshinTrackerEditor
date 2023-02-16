@@ -48,8 +48,10 @@ List<DataField<GsWeaponInfo>> getWeaponInfoDfs(GsWeaponInfo? model) {
     DataField.singleSelect(
       'Ascension Stat',
       (item) => item.ascStatType,
-      (item) =>
-          GsSelectItems.getFromList(GsConfigurations.weaponStatTypes, true),
+      (item) => GsSelectItems.getFromList(
+        GsConfigurations.weaponStatTypes,
+        withNone: true,
+      ),
       (item, value) => item.copyWith(ascStatType: value),
     ),
     DataField.textField(

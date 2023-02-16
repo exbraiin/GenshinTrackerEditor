@@ -55,7 +55,7 @@ class GsCharacterInfo extends GsModel<GsCharacterInfo> {
   static List<GsCharTalent> _decodeTalents(JsonMap map) {
     final list = (map['talents'] as List? ?? [])
         .cast<JsonMap>()
-        .map((e) => GsCharTalent.fromMap(e))
+        .map(GsCharTalent.fromMap)
         .toList();
     return GsConfigurations.talentTypes.map((e) {
       return list.firstWhere(
@@ -66,14 +66,11 @@ class GsCharacterInfo extends GsModel<GsCharacterInfo> {
   }
 
   static List<GsCharConstellation> _decodeConstellations(JsonMap map) {
-    final list = (map['constellations'] as List?);
+    final list = map['constellations'] as List?;
     if (list == null) {
       return List.generate(6, (idx) => GsCharConstellation());
     }
-    return list
-        .cast<JsonMap>()
-        .map((e) => GsCharConstellation.fromMap(e))
-        .toList();
+    return list.cast<JsonMap>().map(GsCharConstellation.fromMap).toList();
   }
 
   @override

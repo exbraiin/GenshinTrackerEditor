@@ -30,7 +30,8 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
       'Material Common',
       (item) => item.commonMaterial,
       (item) => GsSelectItems.getMaterialGroupsWithRarity(
-          ['normal_drops', 'elite_drops']),
+        ['normal_drops', 'elite_drops'],
+      ),
       (item, value) => item.copyWith(commonMaterial: value),
     ),
     DataField.singleSelect(

@@ -140,17 +140,19 @@ class _GsTextEditorDialogState<T> extends State<GsTextEditorDialog> {
           onTap: (item) => _insertText((s) => '<color=skill>$s</color>'),
         ),
       ),
-      ...GsConfigurations.elements.map((value) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2),
-            child: GsSelectChip(
-              GsSelectItem(
-                value,
-                value.toTitle(),
-                color: GsStyle.getElementColor(value),
-              ),
-              onTap: (item) => _insertText((s) => '<color=$item>$s</color>'),
+      ...GsConfigurations.elements.map((value) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2),
+          child: GsSelectChip(
+            GsSelectItem(
+              value,
+              value.toTitle(),
+              color: GsStyle.getElementColor(value),
             ),
-          )),
+            onTap: (item) => _insertText((s) => '<color=$item>$s</color>'),
+          ),
+        );
+      }),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),
         child: GsSelectChip(

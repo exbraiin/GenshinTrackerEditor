@@ -68,7 +68,7 @@ Future<void> convertWeaponDetailsToInfo() async {
   final data = jsonDecode(await file.readAsString()) as JsonMap;
 
   final output = data.entries.map((e) {
-    var name = e.value['effect_name'] as String? ?? '';
+    final name = e.value['effect_name'] as String? ?? '';
     var desc = e.value['effect_desc'] as String? ?? '';
     final values = e.value['effect_values'] as List? ?? [];
     final effects = values.firstOrNull as List? ?? [];
@@ -119,8 +119,8 @@ List<String> _extract(
   String sufix = '',
 ]) {
   String format(num value) {
-    var numInt = value.toInt();
-    var numDouble = value.toDouble();
+    final numInt = value.toInt();
+    final numDouble = value.toDouble();
     if (numInt == numDouble) return '$numInt';
     return '$numDouble';
   }

@@ -202,13 +202,13 @@ class DataField<T extends GsModel<T>> {
                 bottom: BorderSide(color: Colors.grey),
               ),
               columnWidths: const {0: IntrinsicColumnWidth()},
-              children: list
-                  .map((child) => _getFieldTableRow(
-                        child,
-                        build(item, child),
-                        (child) => edit(onFieldUpdated(item, child)),
-                      ))
-                  .toList(),
+              children: list.map((child) {
+                return _getFieldTableRow(
+                  child,
+                  build(item, child),
+                  (child) => edit(onFieldUpdated(item, child)),
+                );
+              }).toList(),
             ),
           ],
         );
@@ -259,44 +259,46 @@ TableRow _getFieldTableRow<T extends GsModel<T>>(
       color = Colors.red;
     }
   }
-  return TableRow(children: [
-    Padding(
-      padding: const EdgeInsets.fromLTRB(8, 4, 16, 4),
-      child: Row(
-        children: [
-          Text(
-            field.label,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-              color: color,
-            ),
-          ),
-          if (color != null)
-            Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: Icon(Icons.info_outline_rounded, color: color),
-            ),
-        ],
-      ),
-    ),
-    Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Row(
-        children: [
-          Expanded(child: field.builder(value, edit)),
-          if (field.refresh != null)
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: IconButton(
-                onPressed: () => edit(field.refresh!(value)),
-                icon: const Icon(Icons.refresh_rounded),
+  return TableRow(
+    children: [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(8, 4, 16, 4),
+        child: Row(
+          children: [
+            Text(
+              field.label,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: color,
               ),
             ),
-        ],
+            if (color != null)
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Icon(Icons.info_outline_rounded, color: color),
+              ),
+          ],
+        ),
       ),
-    ),
-  ]);
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: Row(
+          children: [
+            Expanded(child: field.builder(value, edit)),
+            if (field.refresh != null)
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: IconButton(
+                  onPressed: () => edit(field.refresh!(value)),
+                  icon: const Icon(Icons.refresh_rounded),
+                ),
+              ),
+          ],
+        ),
+      ),
+    ],
+  );
 }
 
 class ExtendedTextField extends StatefulWidget {

@@ -32,7 +32,7 @@ List<DataField<GsRemarkableChest>> getRemarkableChestDfs(
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
       isValid: (item) => validateImage(item.image),
-      process: (value) => processImage(value),
+      process: processImage,
     ),
     DataField.selectRarity(
       'Rarity',

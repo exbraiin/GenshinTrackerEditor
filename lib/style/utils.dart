@@ -35,5 +35,5 @@ extension IterableMapExt<K, V> on Iterable<MapEntry<K, V>> {
 }
 
 extension MapEntryExt on MapEntry<String, dynamic> {
-  JsonMap toMapWithId() => {'id': key, ...(value as JsonMap? ?? {})};
+  JsonMap toMapWithId() => {'id': key, ...value as JsonMap? ?? {}};
 }

@@ -36,7 +36,7 @@ List<DataField<GsCity>> getCityDfs(GsCity? model) {
       'Reputation',
       (item) => item.reputation.join(', '),
       (item, value) {
-        final r = value.split(',').map((e) => int.tryParse(e)).toList();
+        final r = value.split(',').map(int.tryParse).toList();
         if (r.any((element) => element == null)) r.clear();
         final tValue = r.whereNotNull().toList();
         return item.copyWith(reputation: tValue);

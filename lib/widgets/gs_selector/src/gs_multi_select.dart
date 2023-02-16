@@ -37,7 +37,7 @@ class GsMultiSelect<T> extends StatelessWidget {
                 runSpacing: 6,
                 children: selected
                     .map((item) => items.firstWhere((e) => e.value == item))
-                    .map((item) => GsSelectChip(item))
+                    .map(GsSelectChip.new)
                     .toList(),
               ),
       ),
@@ -130,7 +130,8 @@ class _SelectDialogState<T> extends State<_SelectDialog<T>> {
                               children: widget.items.map((item) {
                                 final hide = controller.text.isNotEmpty &&
                                     !item.label.toLowerCase().contains(
-                                        controller.text.toLowerCase());
+                                          controller.text.toLowerCase(),
+                                        );
                                 return GsSelectChip(
                                   item,
                                   hide: hide,

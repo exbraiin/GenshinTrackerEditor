@@ -22,8 +22,8 @@ export 'gs_weapon_ext.dart';
 
 extension StringExt on String {
   String toTitle() {
-    var words = <String>[''];
-    var chars = characters;
+    final words = <String>[''];
+    final chars = characters;
     for (var char in chars) {
       late final lastChar = words.last.characters.lastOrNull;
       late final isUpper = lastChar?.isCapitalized ?? false;
@@ -66,8 +66,10 @@ class GsSelectItems {
       .getAllBaseRecipes()
       .map((e) => _fromRarity(e.id, e.name, e.rarity));
 
-  static It get recipeEffects => GsConfigurations.recipeEffect.map((e) =>
-      GsSelectItem(e, e.toTitle(), icon: GsGraphics.getRecipeEffectIcon(e)));
+  static It get recipeEffects => GsConfigurations.recipeEffect.map((e) {
+        final icon = GsGraphics.getRecipeEffectIcon(e);
+        return GsSelectItem(e, e.toTitle(), icon: icon);
+      });
 
   static It get sereniteas => GsConfigurations.sereniteaType
       .map((e) => _fromSetCategory(e, e.toTitle(), e));
@@ -90,7 +92,7 @@ class GsSelectItems {
       .where((e) => Database.i.weaponInfo.getItem(e.id) == null)
       .map((e) => _fromRarity(e.id, e.name, e.rarity));
 
-  static It getFromList(List<String> items, [bool withNone = false]) => [
+  static It getFromList(List<String> items, {bool withNone = false}) => [
         if (withNone) GsSelectItem('', 'None'),
         ...items.map((e) => GsSelectItem(e, e.toTitle())),
       ];
@@ -100,14 +102,14 @@ class GsSelectItems {
       .map((e) => _fromRarity(e.id, e.name, e.rarity));
 
   static It getMaterialGroupWithRegion(String type) =>
-      Database.i.getMaterialGroup(type).map((e) => _fromMatRegion(e));
+      Database.i.getMaterialGroup(type).map(_fromMatRegion);
 
   static It getMaterialGroupsWithRarity(List<String> types) => Database.i
       .getMaterialGroups(types)
       .map((e) => _fromRarity(e.id, e.name, e.rarity));
 
   static It getMaterialGroupsWithRegion(List<String> types) =>
-      Database.i.getMaterialGroups(types).map((e) => _fromMatRegion(e));
+      Database.i.getMaterialGroups(types).map(_fromMatRegion);
 
   static It getWishes(int? rarity, String? type) => Database.i
       .getAllWishes(rarity, type)
@@ -162,7 +164,7 @@ String processImage(String value) {
 GsValidLevel validateId<T extends GsModel<T>>(T item, T? m, GsCollection<T> c) {
   final id = item.id;
   if (id.isEmpty) return GsValidLevel.error;
-  final String nameId = _toNameId(item);
+  final nameId = _toNameId(item);
   final ids = c.data.map((e) => e.id).where((e) => e != m?.id);
   final check = id != nameId ? GsValidLevel.warn1 : GsValidLevel.good;
   return !ids.contains(id) ? check : GsValidLevel.error;

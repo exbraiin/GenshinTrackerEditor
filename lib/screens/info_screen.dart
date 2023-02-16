@@ -30,10 +30,10 @@ class _InfoScreenState extends State<InfoScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Info Screen'),
-        actions: [
+        actions: const [
           IconButton(
-            onPressed: () => Exporter.export(),
-            icon: const Icon(Icons.download_for_offline_rounded),
+            onPressed: Exporter.export,
+            icon: Icon(Icons.download_for_offline_rounded),
           ),
         ],
       ),
@@ -206,17 +206,17 @@ class _InfoScreenState extends State<InfoScreen> {
           child: Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: versionItems
-                .map((e) => Container(
-                      padding: const EdgeInsets.fromLTRB(6, 4, 6, 4),
-                      decoration: BoxDecoration(
-                        color: color(e).withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(100),
-                        border: Border.all(color: color(e).withOpacity(0.8)),
-                      ),
-                      child: Text(label(e)),
-                    ))
-                .toList(),
+            children: versionItems.map((e) {
+              return Container(
+                padding: const EdgeInsets.fromLTRB(6, 4, 6, 4),
+                decoration: BoxDecoration(
+                  color: color(e).withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(100),
+                  border: Border.all(color: color(e).withOpacity(0.8)),
+                ),
+                child: Text(label(e)),
+              );
+            }).toList(),
           ),
         ),
       ],

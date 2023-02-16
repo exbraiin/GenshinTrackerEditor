@@ -39,7 +39,7 @@ class GsRecipe extends GsModel<GsRecipe> {
         effectDesc = m.getString('effect_desc'),
         ingredients = (m['ingredients'] as Map? ?? {})
             .cast<String, int>()
-            .mapEntries((e) => GsAmount.fromMapEntry(e))
+            .mapEntries(GsAmount.fromMapEntry)
             .toList(),
         baseRecipe = m.getString('base_recipe');
 

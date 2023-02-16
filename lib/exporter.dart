@@ -1,10 +1,25 @@
 import 'dart:io';
 
+import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:excel/excel.dart';
+import 'package:flutter/foundation.dart';
 
 class Exporter {
+  static void keys() {
+    final keys = Database.i.collections
+        .expand((e) => e.create.call({}).toJsonMap().entries)
+        .groupBy((element) => element.key)
+        .entries
+        .sortedByDescending((e) => e.value.length);
+    if (kDebugMode) {
+      for (var e in keys) {
+        print('${e.key}: ${e.value.length}');
+      }
+    }
+  }
+
   static Future<void> export() async {
     final excel = Excel.createExcel();
     final sheet = excel['weapons'];

@@ -51,7 +51,7 @@ class Database {
 
   final artifacts = GsCollection(
     'src/artifacts.json',
-    (m) => GsArtifact.fromMap(m),
+    GsArtifact.fromMap,
     validator: DataValidator.artifacts,
     sorted: (list) => list
         .sortedBy((element) => element.rarity)
@@ -59,7 +59,7 @@ class Database {
   );
   final banners = GsCollection(
     'src/banners.json',
-    (m) => GsBanner.fromMap(m),
+    GsBanner.fromMap,
     validator: DataValidator.banners,
     sorted: (list) => list
         .sortedBy((e) => GsConfigurations.bannerTypes.indexOf(e.type))
@@ -68,7 +68,7 @@ class Database {
   );
   final characters = GsCollection(
     'src/characters.json',
-    (m) => GsCharacter.fromMap(m),
+    GsCharacter.fromMap,
     validator: DataValidator.characters,
     sorted: (list) => list
         .sortedBy((element) => element.rarity)
@@ -76,7 +76,7 @@ class Database {
   );
   final characterInfo = GsCollection(
     'src/characters_info.json',
-    (m) => GsCharacterInfo.fromMap(m),
+    GsCharacterInfo.fromMap,
     validator: DataValidator.charactersInfo,
     sorted: (list) {
       final characters = Database.i.characters.data;
@@ -85,7 +85,7 @@ class Database {
   );
   final characterOutfit = GsCollection(
     'src/characters_outfits.json',
-    (m) => GsCharacterOutfit.fromMap(m),
+    GsCharacterOutfit.fromMap,
     validator: DataValidator.charactersOutfit,
     sorted: (list) => list
         .sortedBy((element) => element.rarity)
@@ -93,7 +93,7 @@ class Database {
   );
   final cities = GsCollection(
     'src/cities.json',
-    (m) => GsCity.fromMap(m),
+    GsCity.fromMap,
     validator: DataValidator.cities,
     sorted: (list) => list
         .sortedBy((e) => GsConfigurations.elements.indexOf(e.element))
@@ -101,7 +101,7 @@ class Database {
   );
   final ingredients = GsCollection(
     'src/ingredients.json',
-    (m) => GsIngredient.fromMap(m),
+    GsIngredient.fromMap,
     validator: DataValidator.ingredients,
     sorted: (list) => list
         .sortedBy((element) => element.rarity)
@@ -109,7 +109,7 @@ class Database {
   );
   final materials = GsCollection(
     'src/materials.json',
-    (m) => GsMaterial.fromMap(m),
+    GsMaterial.fromMap,
     validator: DataValidator.materials,
     sorted: (list) => list
         .sortedBy((element) => element.group)
@@ -119,7 +119,7 @@ class Database {
   );
   final namecards = GsCollection(
     'src/namecards.json',
-    (m) => GsNamecard.fromMap(m),
+    GsNamecard.fromMap,
     validator: DataValidator.namecards,
     sorted: (list) => list
         .sortedBy((e) => GsConfigurations.namecardTypes.indexOf(e.type))
@@ -127,7 +127,7 @@ class Database {
   );
   final recipes = GsCollection(
     'src/recipes.json',
-    (m) => GsRecipe.fromMap(m),
+    GsRecipe.fromMap,
     validator: DataValidator.recipes,
     sorted: (list) => list
         .sortedBy((element) => element.rarity)
@@ -135,7 +135,7 @@ class Database {
   );
   final remarkableChests = GsCollection(
     'src/remarkable_chests.json',
-    (m) => GsRemarkableChest.fromMap(m),
+    GsRemarkableChest.fromMap,
     sorted: (list) => list
         .sortedBy((element) => element.rarity)
         .thenBy((element) => element.type)
@@ -145,7 +145,7 @@ class Database {
   );
   final sereniteas = GsCollection(
     'src/serenitea_sets.json',
-    (m) => GsSerenitea.fromMap(m),
+    GsSerenitea.fromMap,
     validator: DataValidator.sereniteas,
     sorted: (list) => list
         .sortedBy((e) => GsConfigurations.sereniteaType.indexOf(e.category))
@@ -153,19 +153,19 @@ class Database {
   );
   final spincrystal = GsCollection(
     'src/spincrystals.json',
-    (m) => GsSpincrystal.fromMap(m),
+    GsSpincrystal.fromMap,
     validator: DataValidator.spincrystals,
     sorted: (list) => list.sortedBy((element) => element.number),
   );
   final versions = GsCollection(
     'src/versions.json',
-    (m) => GsVersion.fromMap(m),
+    GsVersion.fromMap,
     validator: DataValidator.versions,
     sorted: (list) => list.sortedBy((element) => element.id),
   );
   final weapons = GsCollection(
     'src/weapons.json',
-    (m) => GsWeapon.fromMap(m),
+    GsWeapon.fromMap,
     validator: DataValidator.weapons,
     sorted: (list) => list
         .sortedBy((element) => element.rarity)
@@ -173,7 +173,7 @@ class Database {
   );
   final weaponInfo = GsCollection(
     'src/weapons_info.json',
-    (m) => GsWeaponInfo.fromMap(m),
+    GsWeaponInfo.fromMap,
     validator: DataValidator.weaponsInfo,
     sorted: (list) {
       final weapons = Database.i.weapons.data;
@@ -256,7 +256,7 @@ extension DatabaseExt on Database {
   }
 
   Iterable<GsMaterial> getMaterialGroups(List<String> groups) {
-    return groups.map((e) => getMaterialGroup(e)).expand((list) => list);
+    return groups.map(getMaterialGroup).expand((list) => list);
   }
 
   GsCity getMaterialRegion(GsMaterial material) {
@@ -304,11 +304,11 @@ extension DatabaseExt on Database {
       if (type == null || type == 'weapon')
         ...weapons.data
             .where((e) => e.rarity == rarity || rarity == null)
-            .map((e) => GsWish.fromWeapon(e)),
+            .map(GsWish.fromWeapon),
       if (type == null || type == 'character')
         ...characters.data
             .where((e) => e.rarity == rarity || rarity == null)
-            .map((e) => GsWish.fromCharacter(e)),
+            .map(GsWish.fromCharacter),
     ];
   }
 }

@@ -34,7 +34,7 @@ class GsArtifact extends GsModel<GsArtifact> {
         pc2 = m.getString('2pc'),
         pc4 = m.getString('4pc'),
         domain = m.getString('domain'),
-        pieces = m.getMapToList('pieces', (m) => GsArtifactPiece.fromMap(m));
+        pieces = m.getMapToList('pieces', GsArtifactPiece.fromMap);
 
   @override
   GsArtifact copyWith({
