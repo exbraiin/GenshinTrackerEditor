@@ -97,7 +97,7 @@ class DataField<T extends GsModel<T>> {
     String Function(String value)? process,
     this.isValid,
     this.refresh,
-  })  : onPaste = ((item, value) => update(item, value)),
+  })  : onPaste = ((item, v) => update(item, process?.call(v) ?? v)),
         builder = ((item, edit) => SizedBox(
               height: 44,
               child: Center(
