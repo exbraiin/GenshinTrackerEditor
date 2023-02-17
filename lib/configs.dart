@@ -180,7 +180,7 @@ class GsConfigs<T extends GsModel<T>> {
     ];
   }
 
-  GsGridItem toGridItem(BuildContext context) {
+  Widget toGridItem(BuildContext context) {
     final level = collection.validator.getMaxLevel();
     final version = collection.data
             .map((e) => getDecor(e).version)

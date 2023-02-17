@@ -49,10 +49,17 @@ class Home extends StatelessWidget {
             initialData: Database.i.saving.value,
             stream: Database.i.saving,
             builder: (context, snapshot) {
-              if (snapshot.data!) return const CircularProgressIndicator();
               return IconButton(
-                icon: const Icon(Icons.save),
-                onPressed: Database.i.save,
+                icon: snapshot.data!
+                    ? const AspectRatio(
+                        aspectRatio: 1,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Icon(Icons.save),
+                onPressed: snapshot.data! ? null : Database.i.save,
               );
             },
           ),

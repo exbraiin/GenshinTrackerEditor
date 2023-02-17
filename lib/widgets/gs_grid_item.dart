@@ -1,5 +1,6 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
+import 'package:data_editor/widgets/mouse_button.dart';
 import 'package:flutter/material.dart';
 
 class GsGridItem extends StatelessWidget {
@@ -22,45 +23,70 @@ class GsGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
+    return MouseButton(
+      onTap: onTap,
+      builder: (context, hover, child) {
+        final scale = hover ? 1.05 : 1.0;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 100),
+          transform: Matrix4.diagonal3Values(scale, scale, 1),
+          transformAlignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Color.lerp(Colors.white, color, 0.6),
-            border: Border.all(color: color, width: 2),
+            color: color.withOpacity(hover ? 1 : 0.6),
+            border: Border.all(color: Colors.black54, width: 2),
             borderRadius: BorderRadius.circular(8),
+            boxShadow: hover
+                ? const [
+                    BoxShadow(
+                      blurRadius: 8,
+                      color: Colors.black54,
+                      offset: Offset(2, 2),
+                    )
+                  ]
+                : null,
           ),
-          child: InkWell(
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Stack(
-                children: [
-                  Center(
-                    child: Text(
-                      label,
-                      style: const TextStyle(color: Colors.black),
-                      textAlign: TextAlign.center,
-                    ),
+          child: child,
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      BoxShadow(
+                        offset: Offset(1, 1),
+                        color: Colors.black26,
+                      )
+                    ],
                   ),
-                  if (child != null) child!,
-                ],
+                ),
               ),
             ),
-          ),
+            _getBanner(),
+            _getInvalidBanner(),
+          ],
         ),
-        _getBanner(),
-        _getInvalidBanner(),
-      ],
+      ),
     );
   }
 
   Widget _getInvalidBanner() {
+    const offset = Offset(2, -2);
     if (validLevel == GsValidLevel.error) {
       return Positioned.fill(
         child: ClipRect(
           child: Transform.translate(
-            offset: const Offset(5, -5),
+            offset: offset,
             child: const Banner(
               message: 'Invalid',
               location: BannerLocation.topEnd,
@@ -74,7 +100,7 @@ class GsGridItem extends StatelessWidget {
       return Positioned.fill(
         child: ClipRect(
           child: Transform.translate(
-            offset: const Offset(5, -5),
+            offset: offset,
             child: const Banner(
               message: 'Missing',
               location: BannerLocation.topEnd,
@@ -106,7 +132,7 @@ class GsGridItem extends StatelessWidget {
           child: Banner(
             location: BannerLocation.topEnd,
             message: 'Upcoming',
-            color: Colors.orange,
+            color: Colors.lightBlue,
           ),
         ),
       );

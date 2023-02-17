@@ -7,6 +7,7 @@ class GsWeapon extends GsModel<GsWeapon> {
   final String name;
   final int rarity;
   final String image;
+  final String imageAsc;
   final String type;
   final int atk;
   final String statType;
@@ -20,6 +21,7 @@ class GsWeapon extends GsModel<GsWeapon> {
     this.name = '',
     this.rarity = 1,
     this.image = '',
+    this.imageAsc = '',
     this.type = '',
     this.atk = 0,
     this.statType = '',
@@ -34,6 +36,7 @@ class GsWeapon extends GsModel<GsWeapon> {
         name = m.getString('name'),
         rarity = m.getInt('rarity', 1),
         image = m.getString('image'),
+        imageAsc = m.getString('image_asc'),
         type = m.getString('type'),
         atk = m.getInt('atk'),
         statType = m.getString('stat_type'),
@@ -48,6 +51,7 @@ class GsWeapon extends GsModel<GsWeapon> {
     String? name,
     int? rarity,
     String? image,
+    String? imageAsc,
     String? type,
     int? atk,
     String? statType,
@@ -61,6 +65,7 @@ class GsWeapon extends GsModel<GsWeapon> {
       name: name ?? this.name,
       rarity: rarity ?? this.rarity,
       image: image ?? this.image,
+      imageAsc: imageAsc ?? this.imageAsc,
       type: type ?? this.type,
       atk: atk ?? this.atk,
       statType: statType ?? this.statType,
@@ -75,6 +80,7 @@ class GsWeapon extends GsModel<GsWeapon> {
   JsonMap toJsonMap() => {
         'name': name,
         'image': image,
+        'image_asc': imageAsc,
         'version': version,
         'rarity': rarity,
         'type': type,

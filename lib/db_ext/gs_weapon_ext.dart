@@ -28,6 +28,14 @@ List<DataField<GsWeapon>> getWeaponDfs(GsWeapon? model) {
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
+      isValid: (item) => validateImage(item.image),
+      process: processImage,
+    ),
+    DataField.textField(
+      'Asc Image',
+      (item) => item.imageAsc,
+      (item, value) => item.copyWith(imageAsc: value),
+      isValid: (item) => validateImage(item.imageAsc),
       process: processImage,
     ),
     DataField.singleSelect(
