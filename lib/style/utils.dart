@@ -8,6 +8,11 @@ extension BuildContextExt on BuildContext {
     return Navigator.of(this)
         .push<T>(MaterialPageRoute(builder: (context) => widget()));
   }
+
+  Future pushWidgetReplacement(Widget Function() widget) {
+    return Navigator.of(this)
+        .pushReplacement(MaterialPageRoute(builder: (context) => widget()));
+  }
 }
 
 extension StringExt on String {

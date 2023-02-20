@@ -2,16 +2,19 @@ import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/style/style.dart';
+import 'package:data_editor/style/utils.dart';
 import 'package:flutter/material.dart';
 
 class ItemEditScreen<T extends GsModel<T>> extends StatefulWidget {
   final String title;
   final T? item;
+  final T? duplicated;
   final GsCollection<T> collection;
   final Iterable<DataField<T>> fields;
 
   const ItemEditScreen({
     super.key,
+    this.duplicated,
     required this.item,
     required this.title,
     required this.fields,
@@ -22,13 +25,15 @@ class ItemEditScreen<T extends GsModel<T>> extends StatefulWidget {
   State<ItemEditScreen<T>> createState() => _ItemEditScreenState<T>();
 }
 
-class _ItemEditScreenState<T extends GsModel<T>> extends State<ItemEditScreen<T>> {
+class _ItemEditScreenState<T extends GsModel<T>>
+    extends State<ItemEditScreen<T>> {
   late final ValueNotifier<T> _notifier;
 
   @override
   void initState() {
     super.initState();
-    _notifier = ValueNotifier(widget.item ?? widget.collection.create({}));
+    _notifier = ValueNotifier(
+        widget.item ?? widget.duplicated ?? widget.collection.create({}));
   }
 
   @override
@@ -41,7 +46,23 @@ class _ItemEditScreenState<T extends GsModel<T>> extends State<ItemEditScreen<T>
   Widget build(BuildContext context) {
     void edit(T value) => _notifier.value = value;
     return Scaffold(
-      appBar: AppBar(title: Text('Edit ${widget.title}')),
+      appBar: AppBar(
+        title: Text('Edit ${widget.title}'),
+        actions: [
+          IconButton(
+            onPressed: () => context.pushWidgetReplacement(
+              () => ItemEditScreen<T>(
+                item: null,
+                duplicated: _notifier.value.copyWith(),
+                title: widget.title,
+                collection: widget.collection,
+                fields: widget.collection.validator.getDataFields(null),
+              ),
+            ),
+            icon: const Icon(Icons.control_point_duplicate_rounded),
+          ),
+        ],
+      ),
       backgroundColor: Colors.black,
       body: Container(
         padding: const EdgeInsets.all(8),

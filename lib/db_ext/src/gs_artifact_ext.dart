@@ -11,14 +11,15 @@ List<DataField<GsArtifact>> getArtifactDfs(GsArtifact? model) {
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      isValid: (item) => validateId(item, model, Database.i.artifacts),
+      isValid: (item) =>
+          GsValidators.validateId(item, model, Database.i.artifacts),
       refresh: (item) => item.copyWith(id: item.name.toDbId()),
     ),
     DataField.textField(
       'Name',
       (item) => item.name,
       (item, value) => item.copyWith(name: value),
-      isValid: (item) => validateText(item.name),
+      isValid: (item) => GsValidators.validateText(item.name),
     ),
     DataField.singleSelect(
       'Version',
@@ -67,7 +68,7 @@ List<DataField<GsArtifact>> getArtifactDfs(GsArtifact? model) {
             'Icon',
             (item) => item.icon,
             (item, value) => item.copyWith(icon: value),
-            process: processImage,
+            process: GsValidators.processImage,
           ),
           DataField.textField(
             'Desc',
