@@ -19,6 +19,10 @@
         "defBoost",
         "adventure"
     ],
+    "recipe_types": [
+        "event",
+        "permanent"
+    ],
     "banner_type": [
         "standard",
         "beginner",

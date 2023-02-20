@@ -17,7 +17,7 @@ List<DataField<GsWeaponInfo>> getWeaponInfoDfs(GsWeaponInfo? model) {
       'Effect Name',
       (item) => item.effectName,
       (item, value) => item.copyWith(effectName: value),
-      isValid: (item) => validateText(item.effectName),
+      isValid: (item) => GsValidators.validateText(item.effectName),
     ),
     DataField.textEditor(
       'Effect Desc',
@@ -65,7 +65,7 @@ List<DataField<GsWeaponInfo>> getWeaponInfoDfs(GsWeaponInfo? model) {
             ? GsValidLevel.good
             : GsValidLevel.error;
       },
-      process: processListOfStrings,
+      process: GsValidators.processListOfStrings,
     ),
     DataField.textField(
       'Ascension Stat Values',
@@ -78,7 +78,7 @@ List<DataField<GsWeaponInfo>> getWeaponInfoDfs(GsWeaponInfo? model) {
             ? GsValidLevel.good
             : GsValidLevel.error;
       },
-      process: processListOfStrings,
+      process: GsValidators.processListOfStrings,
     ),
   ];
 }

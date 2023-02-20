@@ -9,7 +9,8 @@ List<DataField<GsBanner>> getBannerDfs(GsBanner? model) {
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      isValid: (item) => validateId(item, model, Database.i.banners),
+      isValid: (item) =>
+          GsValidators.validateId(item, model, Database.i.banners),
       refresh: (item) {
         final nameId = item.name.toDbId();
         final dateId = item.dateStart.replaceAll('-', '_');
@@ -21,25 +22,27 @@ List<DataField<GsBanner>> getBannerDfs(GsBanner? model) {
       'Name',
       (item) => item.name,
       (item, value) => item.copyWith(name: value),
-      isValid: (item) => validateText(item.name),
+      isValid: (item) => GsValidators.validateText(item.name),
     ),
     DataField.textField(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
-      process: processImage,
+      process: GsValidators.processImage,
     ),
     DataField.textField(
       'Date Start',
       (item) => item.dateStart,
       (item, value) => item.copyWith(dateStart: value),
-      isValid: (item) => validateDates(item.dateStart, item.dateEnd),
+      isValid: (item) =>
+          GsValidators.validateDates(item.dateStart, item.dateEnd),
     ),
     DataField.textField(
       'Date End',
       (item) => item.dateEnd,
       (item, value) => item.copyWith(dateEnd: value),
-      isValid: (item) => validateDates(item.dateStart, item.dateEnd),
+      isValid: (item) =>
+          GsValidators.validateDates(item.dateStart, item.dateEnd),
     ),
     DataField.multiSelect<GsBanner, String>(
       'Feature 4',

@@ -88,29 +88,29 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
       'Ascension HP Values',
       (item) => item.ascHpValues,
       (item, value) => item.copyWith(ascHpValues: value),
-      isValid: (item) => validateAscension(item.ascHpValues),
-      process: processListOfStrings,
+      isValid: (item) => GsValidators.validateAscension(item.ascHpValues),
+      process: GsValidators.processListOfStrings,
     ),
     DataField.textField(
       'Ascension Atk Values',
       (item) => item.ascAtkValues,
       (item, value) => item.copyWith(ascAtkValues: value),
-      isValid: (item) => validateAscension(item.ascAtkValues),
-      process: processListOfStrings,
+      isValid: (item) => GsValidators.validateAscension(item.ascAtkValues),
+      process: GsValidators.processListOfStrings,
     ),
     DataField.textField(
       'Ascension Def Values',
       (item) => item.ascDefValues,
       (item, value) => item.copyWith(ascDefValues: value),
-      isValid: (item) => validateAscension(item.ascDefValues),
-      process: processListOfStrings,
+      isValid: (item) => GsValidators.validateAscension(item.ascDefValues),
+      process: GsValidators.processListOfStrings,
     ),
     DataField.textField(
       'Ascension Stat Values',
       (item) => item.ascStatValues,
       (item, value) => item.copyWith(ascStatValues: value),
-      isValid: (item) => validateAscension(item.ascStatValues),
-      process: processListOfStrings,
+      isValid: (item) => GsValidators.validateAscension(item.ascStatValues),
+      process: GsValidators.processListOfStrings,
     ),
     DataField.list(
       'Talents',
@@ -126,7 +126,8 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 list[idx] = item.talents[idx].copyWith(name: value);
                 return item.copyWith(talents: list);
               },
-              isValid: (item) => validateText(item.talents[idx].name),
+              isValid: (item) =>
+                  GsValidators.validateText(item.talents[idx].name),
             ),
             DataField.textField(
               'Icon',
@@ -136,8 +137,9 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 list[idx] = item.talents[idx].copyWith(icon: value);
                 return item.copyWith(talents: list);
               },
-              isValid: (item) => validateText(item.talents[idx].icon),
-              process: processImage,
+              isValid: (item) =>
+                  GsValidators.validateText(item.talents[idx].icon),
+              process: GsValidators.processImage,
             ),
             DataField.textEditor(
               'Desc',
@@ -166,7 +168,8 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 list[idx] = list[idx].copyWith(name: value);
                 return item.copyWith(constellations: list);
               },
-              isValid: (item) => validateText(item.constellations[idx].name),
+              isValid: (item) =>
+                  GsValidators.validateText(item.constellations[idx].name),
             ),
             DataField.textField(
               'Icon',
@@ -176,8 +179,9 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 list[idx] = list[idx].copyWith(icon: value);
                 return item.copyWith(constellations: list);
               },
-              isValid: (item) => validateImage(item.constellations[idx].icon),
-              process: processImage,
+              isValid: (item) =>
+                  GsValidators.validateImage(item.constellations[idx].icon),
+              process: GsValidators.processImage,
             ),
             DataField.textEditor(
               'Desc',

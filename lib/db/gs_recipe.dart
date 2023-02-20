@@ -6,6 +6,7 @@ class GsRecipe extends GsModel<GsRecipe> {
   @override
   final String id;
   final String name;
+  final String type;
   final int rarity;
   final String version;
   final String image;
@@ -18,6 +19,7 @@ class GsRecipe extends GsModel<GsRecipe> {
   GsRecipe({
     this.id = '',
     this.name = '',
+    this.type = '',
     this.rarity = 1,
     this.version = '',
     this.image = '',
@@ -31,6 +33,7 @@ class GsRecipe extends GsModel<GsRecipe> {
   GsRecipe.fromMap(JsonMap m)
       : id = m.getString('id'),
         name = m.getString('name'),
+        type = m.getString('type'),
         rarity = m.getInt('rarity', 1),
         version = m.getString('version'),
         image = m.getString('image'),
@@ -47,6 +50,7 @@ class GsRecipe extends GsModel<GsRecipe> {
   GsRecipe copyWith({
     String? id,
     String? name,
+    String? type,
     int? rarity,
     String? version,
     String? image,
@@ -59,6 +63,7 @@ class GsRecipe extends GsModel<GsRecipe> {
     return GsRecipe(
       id: id ?? this.id,
       name: name ?? this.name,
+      type: type ?? this.type,
       rarity: rarity ?? this.rarity,
       version: version ?? this.version,
       image: image ?? this.image,
@@ -73,6 +78,7 @@ class GsRecipe extends GsModel<GsRecipe> {
   @override
   JsonMap toJsonMap() => {
         'name': name,
+        'type': type,
         'version': version,
         'image': image,
         'effect': effect,

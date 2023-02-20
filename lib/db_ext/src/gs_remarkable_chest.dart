@@ -12,14 +12,15 @@ List<DataField<GsRemarkableChest>> getRemarkableChestDfs(
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      isValid: (item) => validateId(item, model, Database.i.remarkableChests),
+      isValid: (item) =>
+          GsValidators.validateId(item, model, Database.i.remarkableChests),
       refresh: (item) => item.copyWith(id: item.name.toDbId()),
     ),
     DataField.textField(
       'Name',
       (item) => item.name,
       (item, value) => item.copyWith(name: value),
-      isValid: (item) => validateText(item.name),
+      isValid: (item) => GsValidators.validateText(item.name),
     ),
     DataField.singleSelect(
       'Type',
@@ -31,8 +32,8 @@ List<DataField<GsRemarkableChest>> getRemarkableChestDfs(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
-      isValid: (item) => validateImage(item.image),
-      process: processImage,
+      isValid: (item) => GsValidators.validateImage(item.image),
+      process: GsValidators.processImage,
     ),
     DataField.selectRarity(
       'Rarity',

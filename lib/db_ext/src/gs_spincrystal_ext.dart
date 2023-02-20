@@ -8,14 +8,15 @@ List<DataField<GsSpincrystal>> getSpincrystalDfs(GsSpincrystal? model) {
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      isValid: (item) => validateId(item, model, Database.i.spincrystal),
+      isValid: (item) =>
+          GsValidators.validateId(item, model, Database.i.spincrystal),
       refresh: (item) => item.copyWith(id: item.number.toString()),
     ),
     DataField.textField(
       'Name',
       (item) => item.name,
       (item, value) => item.copyWith(name: value),
-      isValid: (item) => validateText(item.name),
+      isValid: (item) => GsValidators.validateText(item.name),
     ),
     DataField.textField(
       'Number',

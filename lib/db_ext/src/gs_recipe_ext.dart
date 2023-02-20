@@ -2,6 +2,7 @@ import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
+import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 
 List<DataField<GsRecipe>> getRecipeDfs(GsRecipe? model) {
@@ -10,14 +11,23 @@ List<DataField<GsRecipe>> getRecipeDfs(GsRecipe? model) {
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      isValid: (item) => validateId(item, model, Database.i.recipes),
+      isValid: (item) =>
+          GsValidators.validateId(item, model, Database.i.recipes),
       refresh: (item) => item.copyWith(id: item.name.toDbId()),
     ),
     DataField.textField(
       'Name',
       (item) => item.name,
       (item, value) => item.copyWith(name: value),
-      isValid: (item) => validateText(item.name),
+      isValid: (item) => GsValidators.validateText(item.name),
+    ),
+    DataField.singleSelect(
+      'Type',
+      (item) => item.type,
+      (item) => GsSelectItems.getFromList(GsConfigurations.recipeTypes),
+      (item, value) => item.copyWith(type: value),
+      isValid: (item) =>
+          GsValidators.validateText(item.type, GsValidLevel.warn2),
     ),
     DataField.selectRarity(
       'Rarity',
@@ -34,8 +44,8 @@ List<DataField<GsRecipe>> getRecipeDfs(GsRecipe? model) {
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
-      isValid: (item) => validateImage(item.image),
-      process: processImage,
+      isValid: (item) => GsValidators.validateImage(item.image),
+      process: GsValidators.processImage,
     ),
     DataField.singleSelect(
       'Effect',

@@ -51,10 +51,10 @@ class TextParserWidget extends StatelessWidget {
           .where((t) => t.value != -1);
 
       late final tempStyle = style.copyWith(
-        color: colorQueue.peek ?? style.color,
-        fontWeight: bold.peek ?? style.fontWeight,
-        fontStyle: italic.peek ?? style.fontStyle,
-        decoration: underline.peek ?? style.decoration,
+        color: colorQueue.lastOrNull ?? style.color,
+        fontWeight: bold.lastOrNull ?? style.fontWeight,
+        fontStyle: italic.lastOrNull ?? style.fontStyle,
+        decoration: underline.lastOrNull ?? style.decoration,
       );
 
       final tag = idxs.minBy((e) => e.value);
@@ -72,6 +72,5 @@ class TextParserWidget extends StatelessWidget {
 }
 
 extension<E> on List<E> {
-  E? get peek => lastOrNull;
   E? pop() => isEmpty ? null : removeLast();
 }

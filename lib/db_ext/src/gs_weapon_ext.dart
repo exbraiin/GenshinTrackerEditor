@@ -10,14 +10,15 @@ List<DataField<GsWeapon>> getWeaponDfs(GsWeapon? model) {
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      isValid: (item) => validateId(item, model, Database.i.weapons),
+      isValid: (item) =>
+          GsValidators.validateId(item, model, Database.i.weapons),
       refresh: (item) => item.copyWith(id: item.name.toDbId()),
     ),
     DataField.textField(
       'Name',
       (item) => item.name,
       (item, value) => item.copyWith(name: value),
-      isValid: (item) => validateText(item.name),
+      isValid: (item) => GsValidators.validateText(item.name),
     ),
     DataField.selectRarity(
       'Rarity',
@@ -28,15 +29,15 @@ List<DataField<GsWeapon>> getWeaponDfs(GsWeapon? model) {
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
-      isValid: (item) => validateImage(item.image),
-      process: processImage,
+      isValid: (item) => GsValidators.validateImage(item.image),
+      process: GsValidators.processImage,
     ),
     DataField.textField(
       'Asc Image',
       (item) => item.imageAsc,
       (item, value) => item.copyWith(imageAsc: value),
-      isValid: (item) => validateImage(item.imageAsc),
-      process: processImage,
+      isValid: (item) => GsValidators.validateImage(item.imageAsc),
+      process: GsValidators.processImage,
     ),
     DataField.singleSelect(
       'Type',

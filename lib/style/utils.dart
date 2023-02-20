@@ -28,6 +28,25 @@ extension StringExt on String {
           .map((element) => element.first),
     );
   }
+
+  String toTitle() {
+    final words = <String>[''];
+    final chars = characters;
+    for (var char in chars) {
+      late final lastChar = words.last.characters.lastOrNull;
+      late final isUpper = lastChar?.isCapitalized ?? false;
+      if (char == '_' && !isUpper) {
+        words.add('');
+        continue;
+      }
+      if (char.isCapitalized && !isUpper) words.add('');
+      words.last += char;
+    }
+    return words
+        .where((e) => e.isNotEmpty)
+        .map((e) => e.capitalize())
+        .join(' ');
+  }
 }
 
 extension IterableMapExt<K, V> on Iterable<MapEntry<K, V>> {

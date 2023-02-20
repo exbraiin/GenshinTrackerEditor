@@ -3,27 +3,27 @@ import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/style/utils.dart';
 
-List<DataField<GsCharacterOutfit>> getCharacterOutfitDfs(
-  GsCharacterOutfit? model,
-) {
+List<DataField<GsNamecard>> getNamecardDfs(GsNamecard? model) {
   return [
     DataField.textField(
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      isValid: (item) => validateId(item, model, Database.i.characterOutfit),
+      isValid: (item) =>
+          GsValidators.validateId(item, model, Database.i.namecards),
       refresh: (item) => item.copyWith(id: item.name.toDbId()),
     ),
     DataField.textField(
       'Name',
       (item) => item.name,
       (item, value) => item.copyWith(name: value),
-      isValid: (item) => validateText(item.name),
+      isValid: (item) => GsValidators.validateText(item.name),
     ),
-    DataField.selectRarity(
-      'Rarity',
-      (item) => item.rarity,
-      (item, value) => item.copyWith(rarity: value),
+    DataField.singleSelect(
+      'Type',
+      (item) => item.type,
+      (item) => GsSelectItems.namecardTypes,
+      (item, value) => item.copyWith(type: value),
     ),
     DataField.singleSelect(
       'Version',
@@ -31,25 +31,24 @@ List<DataField<GsCharacterOutfit>> getCharacterOutfitDfs(
       (item) => GsSelectItems.versions,
       (item, value) => item.copyWith(version: value),
     ),
-    DataField.singleSelect(
-      'Character',
-      (item) => item.character,
-      (item) => GsSelectItems.chars,
-      (item, value) => item.copyWith(character: value),
-    ),
     DataField.textField(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
-      isValid: (item) => validateImage(item.image),
-      process: processImage,
+      isValid: (item) => GsValidators.validateImage(item.image),
+      process: GsValidators.processImage,
     ),
     DataField.textField(
-      'Full Image',
-      (item) => item.fullImage,
-      (item, value) => item.copyWith(fullImage: value),
-      isValid: (item) => validateImage(item.fullImage),
-      process: processImage,
+      'Desc',
+      (item) => item.desc,
+      (item, value) => item.copyWith(desc: value),
+      isValid: (item) => GsValidators.validateText(item.desc),
+    ),
+    DataField.textField(
+      'Obtain',
+      (item) => item.obtain,
+      (item, value) => item.copyWith(obtain: value),
+      isValid: (item) => GsValidators.validateText(item.obtain),
     ),
   ];
 }

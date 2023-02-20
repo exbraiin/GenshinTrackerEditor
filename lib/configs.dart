@@ -1,6 +1,5 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
-import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/screens/item_edit_screen.dart';
 import 'package:data_editor/screens/items_list_screen.dart';
 import 'package:data_editor/style/style.dart';

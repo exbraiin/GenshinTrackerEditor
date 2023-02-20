@@ -8,7 +8,8 @@ List<DataField<GsVersion>> getVersionDfs(GsVersion? model) {
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      isValid: (item) => validateId(item, model, Database.i.versions),
+      isValid: (item) =>
+          GsValidators.validateId(item, model, Database.i.versions),
     ),
     DataField.textField(
       'Name',
@@ -19,7 +20,7 @@ List<DataField<GsVersion>> getVersionDfs(GsVersion? model) {
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
-      process: processImage,
+      process: GsValidators.processImage,
     ),
     DataField.textField(
       'Release Date',

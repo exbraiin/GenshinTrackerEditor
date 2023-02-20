@@ -1,5 +1,5 @@
-import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/style/style.dart';
+import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:data_editor/widgets/text_style_parser.dart';
 import 'package:flutter/material.dart';

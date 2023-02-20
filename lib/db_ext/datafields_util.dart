@@ -5,42 +5,6 @@ import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 
-export 'gs_artifact_ext.dart';
-export 'gs_banner_ext.dart';
-export 'gs_character_ext.dart';
-export 'gs_character_info_ext.dart';
-export 'gs_character_outfit_ext.dart';
-export 'gs_city_ext.dart';
-export 'gs_ingredient_ext.dart';
-export 'gs_material_ext.dart';
-export 'gs_namecard_ext.dart';
-export 'gs_recipe_ext.dart';
-export 'gs_serenitea_ext.dart';
-export 'gs_spincrystal_ext.dart';
-export 'gs_version_ext.dart';
-export 'gs_weapon_ext.dart';
-
-extension StringExt on String {
-  String toTitle() {
-    final words = <String>[''];
-    final chars = characters;
-    for (var char in chars) {
-      late final lastChar = words.last.characters.lastOrNull;
-      late final isUpper = lastChar?.isCapitalized ?? false;
-      if (char == '_' && !isUpper) {
-        words.add('');
-        continue;
-      }
-      if (char.isCapitalized && !isUpper) words.add('');
-      words.last += char;
-    }
-    return words
-        .where((e) => e.isNotEmpty)
-        .map((e) => e.capitalize())
-        .join(' ');
-  }
-}
-
 typedef It = Iterable<GsSelectItem<String>>;
 
 class GsSelectItems {
@@ -137,68 +101,82 @@ class GsSelectItems {
       GsSelectItem(v, l, color: GsStyle.getSereniteaColor(c));
 }
 
-String _toNameId(GsModel item) {
-  if (item is GsBanner) {
-    return '${item.name}_${item.dateStart.replaceAll('-', '_')}'.toDbId();
+class GsValidators {
+  GsValidators._();
+
+  static String _toNameId(GsModel item) {
+    if (item is GsBanner) {
+      return '${item.name}_${item.dateStart.replaceAll('-', '_')}'.toDbId();
+    }
+    if (item is GsSpincrystal) {
+      return item.number.toString();
+    }
+    if (item is GsVersion) {
+      return item.id;
+    }
+
+    final name = ((item as dynamic)?.name as String?) ?? '';
+    return name.toDbId();
   }
-  if (item is GsSpincrystal) {
-    return item.number.toString();
+
+  static String processListOfStrings(String value) => value
+      .split(',')
+      .map((e) => e.trim())
+      .where((e) => e.isNotBlank)
+      .join(', ');
+
+  static String processImage(String value) {
+    final idx = value.indexOf('/revision');
+    if (idx != -1) return value.substring(0, idx);
+    return value;
   }
-  if (item is GsVersion) {
-    return item.id;
+
+  static GsValidLevel validateId<T extends GsModel<T>>(
+    T item,
+    T? model,
+    GsCollection<T> collection,
+  ) {
+    final id = item.id;
+    if (id.isEmpty) return GsValidLevel.error;
+    final nameId = _toNameId(item);
+    final ids = collection.data.map((e) => e.id).where((e) => e != model?.id);
+    final check = id != nameId ? GsValidLevel.warn1 : GsValidLevel.good;
+    return !ids.contains(id) ? check : GsValidLevel.error;
   }
 
-  final name = ((item as dynamic)?.name as String?) ?? '';
-  return name.toDbId();
-}
+  static GsValidLevel validateText(
+    String name, [
+    GsValidLevel emptyLevel = GsValidLevel.warn1,
+  ]) {
+    if (name.isEmpty) return emptyLevel;
+    if (name.trim() != name) return GsValidLevel.warn2;
+    return GsValidLevel.good;
+  }
 
-String processListOfStrings(String value) =>
-    value.split(',').map((e) => e.trim()).where((e) => e.isNotBlank).join(', ');
+  static GsValidLevel validateImage(String image) {
+    if (image.isEmpty) return GsValidLevel.warn2;
+    if (image.trim() != image) return GsValidLevel.warn1;
+    return GsValidLevel.good;
+  }
 
-String processImage(String value) {
-  final idx = value.indexOf('/revision');
-  if (idx != -1) return value.substring(0, idx);
-  return value;
-}
+  static GsValidLevel validateDates(String start, String end) {
+    final src = DateTime.tryParse(start);
+    final dst = DateTime.tryParse(end);
+    return src != null && dst != null && dst.isAfter(src)
+        ? GsValidLevel.good
+        : GsValidLevel.error;
+  }
 
-GsValidLevel validateId<T extends GsModel<T>>(T item, T? m, GsCollection<T> c) {
-  final id = item.id;
-  if (id.isEmpty) return GsValidLevel.error;
-  final nameId = _toNameId(item);
-  final ids = c.data.map((e) => e.id).where((e) => e != m?.id);
-  final check = id != nameId ? GsValidLevel.warn1 : GsValidLevel.good;
-  return !ids.contains(id) ? check : GsValidLevel.error;
-}
+  static GsValidLevel validateBday(String birthday) {
+    final date = DateTime.tryParse(birthday);
+    return date != null && date.year == 0
+        ? GsValidLevel.good
+        : GsValidLevel.error;
+  }
 
-GsValidLevel validateText(String name) {
-  if (name.isEmpty) return GsValidLevel.warn1;
-  if (name.trim() != name) return GsValidLevel.warn2;
-  return GsValidLevel.good;
-}
-
-GsValidLevel validateImage(String image) {
-  if (image.isEmpty) return GsValidLevel.warn2;
-  if (image.trim() != image) return GsValidLevel.warn1;
-  return GsValidLevel.good;
-}
-
-GsValidLevel validateDates(String start, String end) {
-  final src = DateTime.tryParse(start);
-  final dst = DateTime.tryParse(end);
-  return src != null && dst != null && dst.isAfter(src)
-      ? GsValidLevel.good
-      : GsValidLevel.error;
-}
-
-GsValidLevel validateBday(String birthday) {
-  final date = DateTime.tryParse(birthday);
-  return date != null && date.year == 0
-      ? GsValidLevel.good
-      : GsValidLevel.error;
-}
-
-GsValidLevel validateAscension(String value) {
-  if (value.isEmpty) return GsValidLevel.warn1;
-  if (value.split(',').length != 8) return GsValidLevel.warn2;
-  return GsValidLevel.good;
+  static GsValidLevel validateAscension(String value) {
+    if (value.isEmpty) return GsValidLevel.warn1;
+    if (value.split(',').length != 8) return GsValidLevel.warn2;
+    return GsValidLevel.good;
+  }
 }

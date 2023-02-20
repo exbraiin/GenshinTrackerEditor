@@ -22,6 +22,7 @@ class GsConfigurations {
   static final weaponTypes = _list('weapon_type');
   static final elements = _list('elements');
   static final statTypes = _list('weapon_stats');
+  static final recipeTypes = _list('recipe_types');
   static final weekdays = _list('weekdays');
   static final artifactPieces = _list('artifact_pieces');
   static final sereniteaType = _list('serenitea_sets');

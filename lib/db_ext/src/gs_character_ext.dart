@@ -10,14 +10,15 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      isValid: (item) => validateId(item, model, Database.i.characters),
+      isValid: (item) =>
+          GsValidators.validateId(item, model, Database.i.characters),
       refresh: (item) => item.copyWith(id: item.name.toDbId()),
     ),
     DataField.textField(
       'Name',
       (item) => item.name,
       (item, value) => item.copyWith(name: value),
-      isValid: (item) => validateText(item.name),
+      isValid: (item) => GsValidators.validateText(item.name),
     ),
     DataField.textField(
       'Title',
@@ -85,7 +86,7 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
       'Birthday',
       (item) => item.birthday,
       (item, value) => item.copyWith(birthday: value),
-      isValid: (item) => validateBday(item.birthday),
+      isValid: (item) => GsValidators.validateBday(item.birthday),
     ),
     DataField.textField(
       'Release Date',
@@ -96,15 +97,15 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
-      isValid: (item) => validateImage(item.image),
-      process: processImage,
+      isValid: (item) => GsValidators.validateImage(item.image),
+      process: GsValidators.processImage,
     ),
     DataField.textField(
       'Full Image',
       (item) => item.fullImage,
       (item, value) => item.copyWith(fullImage: value),
-      isValid: (item) => validateImage(item.fullImage),
-      process: processImage,
+      isValid: (item) => GsValidators.validateImage(item.fullImage),
+      process: GsValidators.processImage,
     ),
   ];
 }

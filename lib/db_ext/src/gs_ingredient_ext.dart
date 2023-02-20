@@ -9,14 +9,15 @@ List<DataField<GsIngredient>> getIngredientDfs(GsIngredient? model) {
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      isValid: (item) => validateId(item, model, Database.i.ingredients),
+      isValid: (item) =>
+          GsValidators.validateId(item, model, Database.i.ingredients),
       refresh: (item) => item.copyWith(id: item.name.toDbId()),
     ),
     DataField.textField(
       'Name',
       (item) => item.name,
       (item, value) => item.copyWith(name: value),
-      isValid: (item) => validateText(item.name),
+      isValid: (item) => GsValidators.validateText(item.name),
     ),
     DataField.selectRarity(
       'Rarity',
@@ -27,14 +28,14 @@ List<DataField<GsIngredient>> getIngredientDfs(GsIngredient? model) {
       'Desc',
       (item) => item.desc,
       (item, value) => item.copyWith(desc: value),
-      isValid: (item) => validateText(item.desc),
+      isValid: (item) => GsValidators.validateText(item.desc),
     ),
     DataField.textField(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
-      isValid: (item) => validateImage(item.image),
-      process: processImage,
+      isValid: (item) => GsValidators.validateImage(item.image),
+      process: GsValidators.processImage,
     ),
     DataField.singleSelect(
       'Version',
