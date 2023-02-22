@@ -9,6 +9,7 @@ class GsRemarkableChest extends GsModel<GsRemarkableChest> {
   final String image;
   final int rarity;
   final int energy;
+  final String region;
   final String source;
   final String version;
   final String category;
@@ -19,6 +20,7 @@ class GsRemarkableChest extends GsModel<GsRemarkableChest> {
     this.type = '',
     this.image = '',
     this.version = '',
+    this.region = '',
     this.source = '',
     this.category = '',
     this.rarity = 1,
@@ -32,6 +34,7 @@ class GsRemarkableChest extends GsModel<GsRemarkableChest> {
         image = m.getString('image'),
         rarity = m.getInt('rarity', 1),
         energy = m.getInt('energy'),
+        region = m.getString('region'),
         source = m.getString('source'),
         version = m.getString('version'),
         category = m.getString('category');
@@ -44,6 +47,7 @@ class GsRemarkableChest extends GsModel<GsRemarkableChest> {
     String? image,
     int? rarity,
     int? energy,
+    String? region,
     String? source,
     String? version,
     String? category,
@@ -55,6 +59,7 @@ class GsRemarkableChest extends GsModel<GsRemarkableChest> {
       image: image ?? this.image,
       rarity: rarity ?? this.rarity,
       energy: energy ?? this.energy,
+      region: region ?? this.region,
       source: source ?? this.source,
       version: version ?? this.version,
       category: category ?? this.category,
@@ -68,6 +73,7 @@ class GsRemarkableChest extends GsModel<GsRemarkableChest> {
         'image': image,
         'rarity': rarity,
         'energy': energy,
+        'region': region,
         'source': source,
         'version': version,
         'category': category,

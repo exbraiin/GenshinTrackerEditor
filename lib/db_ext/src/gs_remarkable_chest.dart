@@ -47,6 +47,12 @@ List<DataField<GsRemarkableChest>> getRemarkableChestDfs(
       isValid: (i) => i.energy > 0 ? GsValidLevel.good : GsValidLevel.warn2,
     ),
     DataField.singleSelect(
+      'Region',
+      (item) => item.region,
+      (item) => GsSelectItems.regions,
+      (item, value) => item.copyWith(region: value),
+    ),
+    DataField.singleSelect(
       'Source',
       (item) => item.source,
       (item) => GsSelectItems.getFromList(GsConfigurations.rChestSource),

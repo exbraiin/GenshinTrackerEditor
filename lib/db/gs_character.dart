@@ -20,6 +20,7 @@ class GsCharacter extends GsModel<GsCharacter> {
   final String releaseDate;
   final String image;
   final String fullImage;
+  final String constellationImage;
 
   GsCharacter._({
     this.id = '',
@@ -39,6 +40,7 @@ class GsCharacter extends GsModel<GsCharacter> {
     this.releaseDate = '',
     this.image = '',
     this.fullImage = '',
+    this.constellationImage = '',
   });
 
   GsCharacter.fromMap(JsonMap m)
@@ -58,7 +60,8 @@ class GsCharacter extends GsModel<GsCharacter> {
         birthday = m.getString('birthday'),
         releaseDate = m.getString('release_date'),
         image = m.getString('image'),
-        fullImage = m.getString('full_image');
+        fullImage = m.getString('full_image'),
+        constellationImage = m.getString('constellation_image');
 
   @override
   GsCharacter copyWith({
@@ -79,6 +82,7 @@ class GsCharacter extends GsModel<GsCharacter> {
     String? releaseDate,
     String? image,
     String? fullImage,
+    String? constellationImage,
   }) {
     return GsCharacter._(
       id: id ?? this.id,
@@ -98,6 +102,7 @@ class GsCharacter extends GsModel<GsCharacter> {
       releaseDate: releaseDate ?? this.releaseDate,
       image: image ?? this.image,
       fullImage: fullImage ?? this.fullImage,
+      constellationImage: constellationImage ?? this.constellationImage,
     );
   }
 
@@ -119,5 +124,6 @@ class GsCharacter extends GsModel<GsCharacter> {
         'release_date': releaseDate,
         'image': image,
         'full_image': fullImage,
+        'constellation_image': constellationImage,
       };
 }

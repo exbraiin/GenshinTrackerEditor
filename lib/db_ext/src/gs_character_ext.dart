@@ -107,5 +107,12 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
       isValid: (item) => GsValidators.validateImage(item.fullImage),
       process: GsValidators.processImage,
     ),
+    DataField.textField(
+      'Constellation Image',
+      (item) => item.constellationImage,
+      (item, value) => item.copyWith(constellationImage: value),
+      isValid: (item) => GsValidators.validateImage(item.constellationImage),
+      process: GsValidators.processImage,
+    ),
   ];
 }
