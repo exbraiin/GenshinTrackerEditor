@@ -26,6 +26,12 @@ List<DataField<GsMaterial>> getMaterialDfs(GsMaterial? model) {
       (item, value) => item.copyWith(rarity: value),
     ),
     DataField.singleSelect(
+      'Region',
+      (item) => item.region,
+      (item) => GsSelectItems.regions,
+      (item, value) => item.copyWith(region: value),
+    ),
+    DataField.singleSelect(
       'Group',
       (item) => item.group,
       (item) => GsSelectItems.getFromList(GsConfigurations.materialCategories),

@@ -8,6 +8,7 @@ class GsMaterial extends GsModel<GsMaterial> {
   final int rarity;
   final String group;
   final String image;
+  final String region;
   final int subgroup;
   final String version;
   final List<String> weekdays;
@@ -18,6 +19,7 @@ class GsMaterial extends GsModel<GsMaterial> {
     this.rarity = 1,
     this.group = '',
     this.image = '',
+    this.region = '',
     this.subgroup = 0,
     this.version = '',
     this.weekdays = const [],
@@ -29,6 +31,7 @@ class GsMaterial extends GsModel<GsMaterial> {
         rarity = m.getInt('rarity', 1),
         group = m.getString('group'),
         image = m.getString('image'),
+        region = m.getString('region'),
         subgroup = m.getInt('subgroup', 0),
         version = m.getString('version'),
         weekdays = m.getStringList('weekdays');
@@ -40,6 +43,7 @@ class GsMaterial extends GsModel<GsMaterial> {
     int? rarity,
     String? group,
     String? image,
+    String? region,
     int? subgroup,
     String? version,
     List<String>? weekdays,
@@ -50,6 +54,7 @@ class GsMaterial extends GsModel<GsMaterial> {
       rarity: rarity ?? this.rarity,
       group: group ?? this.group,
       image: image ?? this.image,
+      region: region ?? this.region,
       subgroup: subgroup ?? this.subgroup,
       version: version ?? this.version,
       weekdays: weekdays ?? this.weekdays,
@@ -61,6 +66,7 @@ class GsMaterial extends GsModel<GsMaterial> {
         'name': name,
         'group': group,
         'image': image,
+        'region': region,
         'rarity': rarity,
         'subgroup': subgroup,
         'version': version,

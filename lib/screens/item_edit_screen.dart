@@ -33,7 +33,8 @@ class _ItemEditScreenState<T extends GsModel<T>>
   void initState() {
     super.initState();
     _notifier = ValueNotifier(
-        widget.item ?? widget.duplicated ?? widget.collection.create({}));
+      widget.item ?? widget.duplicated ?? widget.collection.create({}),
+    );
   }
 
   @override

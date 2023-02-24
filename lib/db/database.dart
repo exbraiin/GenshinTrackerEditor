@@ -297,7 +297,7 @@ extension DatabaseExt on Database {
   }
 
   List<GsCity> getRegions() {
-    return cities.data.toList()..insert(0, GsCity(id: 'none', name: 'None'));
+    return cities.data.toList()..insert(0, GsCity(id: '', name: 'None'));
   }
 
   List<GsWish> getAllWishes([int? rarity, String? type]) {
