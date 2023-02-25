@@ -102,40 +102,6 @@ class GsConfigs<T extends GsModel<T>> {
           item.version,
           GsStyle.getRarityColor(item.rarity),
           GsStyle.getRegionElementColor(item.region),
-          Positioned(
-            top: 2,
-            left: 2,
-            child: Container(
-              width: 20,
-              height: 20,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.circular(20),
-                gradient: LinearGradient(
-                  colors: [
-                    Color.lerp(Colors.grey, Colors.white, 0.4)!,
-                    Color.lerp(Colors.grey, Colors.black, 0.4)!,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  item.subgroup.toString(),
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      BoxShadow(
-                        blurRadius: 2,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
         ),
       ),
       GsConfigs<GsNamecard>._(

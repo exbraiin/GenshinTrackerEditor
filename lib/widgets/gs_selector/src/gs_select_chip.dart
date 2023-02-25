@@ -22,12 +22,21 @@ class GsSelectChip<T> extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
         decoration: BoxDecoration(
-          color: item.color,
           border: Border.all(
             width: 2,
-            color: selected ? Colors.white : item.color,
+            color: selected
+                ? Colors.white
+                : Color.lerp(item.color, Colors.white, 0.2)!,
           ),
           borderRadius: BorderRadius.circular(100),
+          gradient: LinearGradient(
+            colors: [
+              item.color,
+              Color.lerp(item.color, Colors.black, 0.2)!,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
         ),
         child: _content(),
       ),
@@ -45,6 +54,12 @@ class GsSelectChip<T> extends StatelessWidget {
       style: const TextStyle(
         fontWeight: FontWeight.bold,
         color: Colors.white,
+        shadows: [
+          BoxShadow(
+            color: Colors.black38,
+            offset: Offset(1, 1),
+          )
+        ],
       ),
     );
 
