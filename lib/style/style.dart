@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,9 +34,6 @@ class GsConfigurations {
   static final rChestSource = _list('rchest_source');
   static final rChestCategory = _list('rchest_category');
   static final characterStatTypes = _list('character_ascension_stats');
-  static final matCatRegionCommon = _list('material_category_region_common');
-  static final matCatRegionTalent = _list('material_category_region_talent');
-  static final matCatRegionWeapon = _list('material_category_region_weapon');
 }
 
 class GsGraphics {
@@ -100,6 +98,12 @@ class GsStyle {
           'cryo': Color(0xFFa4d6e3),
         }[element] ??
         Colors.grey;
+  }
+
+  static Color? getRegionElementColor(String region) {
+    final element = Database.i.cities.getItem(region)?.element;
+    if (element == null) return null;
+    return getElementColor(element);
   }
 
   static Color getNamecardColor(String type) {

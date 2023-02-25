@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 class GsGridItem extends StatelessWidget {
   final Color color;
+  final Color? circleColor;
   final String label;
   final String version;
   final Widget? child;
@@ -15,6 +16,7 @@ class GsGridItem extends StatelessWidget {
     super.key,
     this.onTap,
     this.child,
+    this.circleColor,
     this.version = '',
     this.validLevel = GsValidLevel.none,
     required this.color,
@@ -72,6 +74,28 @@ class GsGridItem extends StatelessWidget {
                 ),
               ),
             ),
+            if (circleColor != null)
+              Positioned(
+                right: 2,
+                bottom: 2,
+                child: Container(
+                  width: 16,
+                  height: 16,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                    borderRadius: BorderRadius.circular(20),
+                    gradient: LinearGradient(
+                      colors: [
+                        Color.lerp(circleColor, Colors.white, 0.4)!,
+                        Color.lerp(circleColor, Colors.black, 0.4)!,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                ),
+              ),
+            if (child != null) child!,
             _getBanner(),
             _getInvalidBanner(),
           ],

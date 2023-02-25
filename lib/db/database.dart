@@ -113,6 +113,7 @@ class Database {
     validator: DataValidator.materials,
     sorted: (list) => list
         .sortedBy((element) => element.group)
+        .thenBy((element) => element.region)
         .thenBy((element) => element.subgroup)
         .thenBy((element) => element.rarity)
         .thenBy((element) => element.id),
@@ -227,7 +228,7 @@ class Database {
     saving.add(true);
     await Future.wait(collections.map((e) => e.save()));
     await _combine('src', 'data.json');
-    if (Platform.isWindows) await Process.run('explorer', ['.']);
+    // if (Platform.isWindows) await Process.run('explorer', ['.']);
     saving.add(false);
   }
 
@@ -261,7 +262,7 @@ extension DatabaseExt on Database {
   }
 
   GsCity getMaterialRegion(GsMaterial material) {
-    return cities.data.firstOrNullWhere((m) => material.group.contains(m.id)) ??
+    return cities.data.firstOrNullWhere((m) => material.region == m.id) ??
         GsCity(id: 'none', name: 'None');
   }
 

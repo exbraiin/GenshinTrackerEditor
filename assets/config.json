@@ -111,44 +111,17 @@
         "circlet_of_logos"
     ],
     "material_category": [
+        "none",
         "ascension_gems",
-        "elite_drops",
         "forging",
         "furnishing",
-        "normal_boss_drops",
         "normal_drops",
-        "region_materials_inazuma",
-        "region_materials_liyue",
-        "region_materials_mondstadt",
-        "region_materials_sumeru",
+        "elite_drops",
+        "normal_boss_drops",
+        "weekly_boss_drops",
+        "region_materials",
         "talent_materials",
-        "talent_materials_inazuma",
-        "talent_materials_liyue",
-        "talent_materials_mondstadt",
-        "talent_materials_sumeru",
-        "weapon_materials_inazuma",
-        "weapon_materials_liyue",
-        "weapon_materials_mondstadt",
-        "weapon_materials_sumeru",
-        "weekly_boss_drops"
-    ],
-    "material_category_region_common": [
-        "region_materials_mondstadt",
-        "region_materials_liyue",
-        "region_materials_inazuma",
-        "region_materials_sumeru"
-    ],
-    "material_category_region_talent": [
-        "talent_materials_mondstadt",
-        "talent_materials_liyue",
-        "talent_materials_inazuma",
-        "talent_materials_sumeru"
-    ],
-    "material_category_region_weapon": [
-        "weapon_materials_mondstadt",
-        "weapon_materials_liyue",
-        "weapon_materials_inazuma",
-        "weapon_materials_sumeru"
+        "weapon_materials"
     ],
     "serenitea_sets": [
         "indoor",

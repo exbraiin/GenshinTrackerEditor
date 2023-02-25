@@ -27,6 +27,7 @@ class GsConfigs<T extends GsModel<T>> {
           item.name,
           item.version,
           GsStyle.getRarityColor(item.rarity),
+          GsStyle.getRegionElementColor(item.region),
         ),
       ),
       GsConfigs<GsBanner>._(
@@ -45,6 +46,7 @@ class GsConfigs<T extends GsModel<T>> {
           item.name,
           item.version,
           GsStyle.getRarityColor(item.rarity),
+          GsStyle.getRegionElementColor(item.region),
         ),
       ),
       GsConfigs<GsCharacterInfo>._(
@@ -56,16 +58,21 @@ class GsConfigs<T extends GsModel<T>> {
             char?.name ?? item.id,
             char?.version ?? '',
             GsStyle.getRarityColor(char?.rarity ?? 0),
+            GsStyle.getRegionElementColor(char?.region ?? ''),
           );
         },
       ),
       GsConfigs<GsCharacterOutfit>._(
         title: 'Character Outfits',
-        getDecor: (item) => GsItemDecor(
-          item.name,
-          item.version,
-          GsStyle.getRarityColor(item.rarity),
-        ),
+        getDecor: (item) {
+          final char = Database.i.characters.getItem(item.id);
+          return GsItemDecor(
+            item.name,
+            item.version,
+            GsStyle.getRarityColor(item.rarity),
+            GsStyle.getRegionElementColor(char?.region ?? ''),
+          );
+        },
         collection: Database.i.characterOutfit,
       ),
       GsConfigs<GsCity>._(
@@ -75,6 +82,7 @@ class GsConfigs<T extends GsModel<T>> {
           item.name,
           '',
           GsStyle.getElementColor(item.element),
+          GsStyle.getRegionElementColor(item.id),
         ),
       ),
       GsConfigs<GsIngredient>._(
@@ -93,11 +101,40 @@ class GsConfigs<T extends GsModel<T>> {
           item.name,
           item.version,
           GsStyle.getRarityColor(item.rarity),
-          Text(
-            '${item.subgroup}: ${item.group.toTitle()}',
-            maxLines: 1,
-            softWrap: false,
-            style: const TextStyle(color: Colors.black38),
+          GsStyle.getRegionElementColor(item.region),
+          Positioned(
+            top: 2,
+            left: 2,
+            child: Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(
+                  colors: [
+                    Color.lerp(Colors.grey, Colors.white, 0.4)!,
+                    Color.lerp(Colors.grey, Colors.black, 0.4)!,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  item.subgroup.toString(),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      BoxShadow(
+                        blurRadius: 2,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -125,6 +162,7 @@ class GsConfigs<T extends GsModel<T>> {
           item.name,
           item.version,
           GsStyle.getRarityColor(item.rarity),
+          GsStyle.getRegionElementColor(item.region),
         ),
         collection: Database.i.remarkableChests,
       ),
@@ -144,6 +182,7 @@ class GsConfigs<T extends GsModel<T>> {
           '${item.number}',
           item.version,
           GsStyle.getRarityColor(5),
+          GsStyle.getRegionElementColor(item.region),
         ),
       ),
       GsConfigs<GsWeapon>._(

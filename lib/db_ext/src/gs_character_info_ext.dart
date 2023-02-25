@@ -23,7 +23,7 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
     DataField.singleSelect(
       'Material Boss',
       (item) => item.bossMaterial,
-      (item) => GsSelectItems.getMaterialGroupWithRarity('normal_boss_drops'),
+      (item) => GsSelectItems.getMaterialGroupWithRegion('normal_boss_drops'),
       (item, value) => item.copyWith(bossMaterial: value),
     ),
     DataField.singleSelect(
@@ -37,38 +37,28 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
     DataField.singleSelect(
       'Material Region',
       (item) => item.regionMaterial,
-      (item) {
-        final types = GsConfigurations.matCatRegionCommon;
-        return GsSelectItems.getMaterialGroupsWithRegion(types);
-      },
+      (item) => GsSelectItems.getMaterialGroupWithRegion('region_materials'),
       (item, value) => item.copyWith(regionMaterial: value),
       isValid: (item) {
         if (item.regionMaterial.isEmpty) return GsValidLevel.error;
         final chr = Database.i.characters.getItem(item.id);
         final mat = Database.i.materials.getItem(item.regionMaterial);
         if (chr == null || mat == null) return GsValidLevel.error;
-        if (mat.group != 'region_materials_${chr.region}') {
-          return GsValidLevel.warn1;
-        }
+        if (mat.region != chr.region) return GsValidLevel.warn1;
         return GsValidLevel.good;
       },
     ),
     DataField.singleSelect(
       'Material Talent',
       (item) => item.talentMaterial,
-      (item) {
-        final types = GsConfigurations.matCatRegionTalent;
-        return GsSelectItems.getMaterialGroupsWithRegion(types);
-      },
+      (item) => GsSelectItems.getMaterialGroupWithRegion('talent_materials'),
       (item, value) => item.copyWith(talentMaterial: value),
       isValid: (item) {
         if (item.talentMaterial.isEmpty) return GsValidLevel.error;
         final chr = Database.i.characters.getItem(item.id);
         final mat = Database.i.materials.getItem(item.talentMaterial);
         if (chr == null || mat == null) return GsValidLevel.error;
-        if (mat.group != 'talent_materials_${chr.region}') {
-          return GsValidLevel.warn1;
-        }
+        if (mat.region != chr.region) return GsValidLevel.warn1;
         return GsValidLevel.good;
       },
     ),

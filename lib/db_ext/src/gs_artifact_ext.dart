@@ -32,6 +32,12 @@ List<DataField<GsArtifact>> getArtifactDfs(GsArtifact? model) {
       (item) => item.rarity,
       (item, value) => item.copyWith(rarity: value),
     ),
+    DataField.singleSelect(
+      'Region',
+      (item) => item.region,
+      (item) => GsSelectItems.regions,
+      (item, value) => item.copyWith(region: value),
+    ),
     DataField.textField(
       'Piece 1',
       (item) => item.pc1,

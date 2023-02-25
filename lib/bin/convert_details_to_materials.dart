@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
-import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 
 void convertCharacterDetailsToInfo() {
@@ -43,8 +42,8 @@ void convertCharacterDetailsToInfo() {
       'mat_gem': getAscMaterial(['ascension_gems']),
       'mat_boss': getAscMaterial(['normal_boss_drops'], 2),
       'mat_common': getAscMaterial(['normal_drops', 'elite_drops']),
-      'mat_region': getAscMaterial(GsConfigurations.matCatRegionCommon),
-      'mat_talent': getTalMaterial(GsConfigurations.matCatRegionTalent),
+      // 'mat_region': getAscMaterial(GsConfigurations.matCatRegionCommon),
+      // 'mat_talent': getTalMaterial(GsConfigurations.matCatRegionTalent),
       'mat_weekly': getTalMaterial(['weekly_boss_drops'], 5),
       'asc_stat_type': ascStatType,
       'asc_hp_values': _extract(asc, 'hp').join(', '),
@@ -81,9 +80,10 @@ Future<void> convertWeaponDetailsToInfo() async {
     final mats = (asc.elementAtOrNull(1))?['materials'] as JsonMap?;
     final materials = mats?.keys ?? [];
 
-    final matWeapon = Database.i
-        .getMaterialGroups(GsConfigurations.matCatRegionWeapon)
-        .firstOrNullWhere((element) => materials.contains(element.id));
+    // GsConfigurations.matCatRegionWeapon
+    final matWeapon = Database.i.getMaterialGroups([]).firstOrNullWhere(
+      (element) => materials.contains(element.id),
+    );
     final matCommon = Database.i
         .getMaterialGroup('normal_drops')
         .firstOrNullWhere((element) => materials.contains(element.id));

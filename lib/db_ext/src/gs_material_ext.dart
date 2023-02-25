@@ -38,13 +38,6 @@ List<DataField<GsMaterial>> getMaterialDfs(GsMaterial? model) {
       (item, value) => item.copyWith(group: value),
     ),
     DataField.textField(
-      'Image',
-      (item) => item.image,
-      (item, value) => item.copyWith(image: value),
-      isValid: (item) => GsValidators.validateImage(item.image),
-      process: GsValidators.processImage,
-    ),
-    DataField.textField(
       'Subgroup',
       (item) => item.subgroup.toString(),
       (item, value) => item.copyWith(subgroup: int.tryParse(value) ?? -1),
@@ -56,6 +49,13 @@ List<DataField<GsMaterial>> getMaterialDfs(GsMaterial? model) {
       (item) => item.version,
       (item) => GsSelectItems.versions,
       (item, value) => item.copyWith(version: value),
+    ),
+    DataField.textField(
+      'Image',
+      (item) => item.image,
+      (item, value) => item.copyWith(image: value),
+      isValid: (item) => GsValidators.validateImage(item.image),
+      process: GsValidators.processImage,
     ),
     DataField.multiSelect<GsMaterial, String>(
       'Weekdays',

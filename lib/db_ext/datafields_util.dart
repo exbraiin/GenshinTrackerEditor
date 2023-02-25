@@ -65,8 +65,10 @@ class GsSelectItems {
       .getMaterialGroup(type)
       .map((e) => _fromRarity(e.id, e.name, e.rarity));
 
-  static It getMaterialGroupWithRegion(String type) =>
-      Database.i.getMaterialGroup(type).map(_fromMatRegion);
+  static It getMaterialGroupWithRegion(String type) => Database.i
+      .getMaterialGroup(type)
+      .map(_fromMatRegion)
+      .sortedBy((element) => element.color.value);
 
   static It getMaterialGroupsWithRarity(List<String> types) => Database.i
       .getMaterialGroups(types)

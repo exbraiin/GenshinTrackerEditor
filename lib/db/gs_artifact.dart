@@ -5,6 +5,7 @@ class GsArtifact extends GsModel<GsArtifact> {
   @override
   final String id;
   final String name;
+  final String region;
   final String version;
   final int rarity;
   final String pc1;
@@ -16,6 +17,7 @@ class GsArtifact extends GsModel<GsArtifact> {
   GsArtifact._({
     this.id = '',
     this.name = '',
+    this.region = '',
     this.version = '',
     this.rarity = 1,
     this.pc1 = '',
@@ -28,6 +30,7 @@ class GsArtifact extends GsModel<GsArtifact> {
   GsArtifact.fromMap(JsonMap m)
       : id = m.getString('id'),
         name = m.getString('name'),
+        region = m.getString('region'),
         version = m.getString('version'),
         rarity = m.getInt('rarity', 1),
         pc1 = m.getString('1pc'),
@@ -40,6 +43,7 @@ class GsArtifact extends GsModel<GsArtifact> {
   GsArtifact copyWith({
     String? id,
     String? name,
+    String? region,
     String? version,
     int? rarity,
     String? pc1,
@@ -51,6 +55,7 @@ class GsArtifact extends GsModel<GsArtifact> {
     return GsArtifact._(
       id: id ?? this.id,
       name: name ?? this.name,
+      region: region ?? this.region,
       version: version ?? this.version,
       rarity: rarity ?? this.rarity,
       pc1: pc1 ?? this.pc1,
@@ -64,6 +69,7 @@ class GsArtifact extends GsModel<GsArtifact> {
   @override
   JsonMap toJsonMap() => {
         'name': name,
+        'region': region,
         'version': version,
         'rarity': rarity,
         'domain': domain,

@@ -27,10 +27,7 @@ List<DataField<GsWeaponInfo>> getWeaponInfoDfs(GsWeaponInfo? model) {
     DataField.singleSelect(
       'Material Weapon',
       (item) => item.matWeapon,
-      (item) {
-        final types = GsConfigurations.matCatRegionWeapon;
-        return GsSelectItems.getMaterialGroupsWithRegion(types);
-      },
+      (item) => GsSelectItems.getMaterialGroupWithRegion('weapon_materials'),
       (item, value) => item.copyWith(matWeapon: value),
     ),
     DataField.singleSelect(
