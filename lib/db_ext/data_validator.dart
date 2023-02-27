@@ -11,7 +11,7 @@ import 'package:data_editor/db_ext/src/gs_ingredient_ext.dart';
 import 'package:data_editor/db_ext/src/gs_material_ext.dart';
 import 'package:data_editor/db_ext/src/gs_namecard_ext.dart';
 import 'package:data_editor/db_ext/src/gs_recipe_ext.dart';
-import 'package:data_editor/db_ext/src/gs_remarkable_chest.dart';
+import 'package:data_editor/db_ext/src/gs_remarkable_chest_ext.dart';
 import 'package:data_editor/db_ext/src/gs_serenitea_ext.dart';
 import 'package:data_editor/db_ext/src/gs_spincrystal_ext.dart';
 import 'package:data_editor/db_ext/src/gs_version_ext.dart';

@@ -49,12 +49,22 @@ List<DataField<GsBanner>> getBannerDfs(GsBanner? model) {
       (item) => item.feature4,
       (item) => GsSelectItems.getWishes(4, item.type),
       (item, value) => item.copyWith(feature4: value),
+      isValid: (item) {
+        final validType = item.type != 'standard' && item.type != 'beginner';
+        if (validType && item.feature4.isEmpty) return GsValidLevel.warn2;
+        return GsValidLevel.good;
+      },
     ),
     DataField.multiSelect<GsBanner, String>(
       'Feature 5',
       (item) => item.feature5,
       (item) => GsSelectItems.getWishes(5, item.type),
       (item, value) => item.copyWith(feature5: value),
+      isValid: (item) {
+        final validType = item.type != 'standard' && item.type != 'beginner';
+        if (validType && item.feature5.isEmpty) return GsValidLevel.warn2;
+        return GsValidLevel.good;
+      },
     ),
     DataField.singleSelect(
       'Type',

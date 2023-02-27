@@ -39,6 +39,13 @@ List<DataField<GsNamecard>> getNamecardDfs(GsNamecard? model) {
       process: GsValidators.processImage,
     ),
     DataField.textField(
+      'Background',
+      (item) => item.fullImage,
+      (item, value) => item.copyWith(fullImage: value),
+      isValid: (item) => GsValidators.validateImage(item.fullImage),
+      process: GsValidators.processImage,
+    ),
+    DataField.textField(
       'Desc',
       (item) => item.desc,
       (item, value) => item.copyWith(desc: value),
