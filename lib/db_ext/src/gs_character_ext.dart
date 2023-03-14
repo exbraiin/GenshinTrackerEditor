@@ -15,6 +15,15 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
       refresh: (item) => item.copyWith(id: item.name.toDbId()),
     ),
     DataField.textField(
+      'Enka ID',
+      (item) => item.enkaId,
+      (item, value) => item.copyWith(enkaId: value),
+      isValid: (item) => GsValidators.validateText(
+        item.enkaId,
+        GsValidLevel.warn2,
+      ),
+    ),
+    DataField.textField(
       'Name',
       (item) => item.name,
       (item, value) => item.copyWith(name: value),

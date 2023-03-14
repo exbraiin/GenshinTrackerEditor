@@ -105,6 +105,9 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
     DataField.list(
       'Talents',
       (item) => item.talents.mapIndexed((idx, tal) {
+        final level = tal.type == 'Alternate Sprint'
+            ? GsValidLevel.warn1
+            : GsValidLevel.warn2;
         return DataField.list(
           tal.type,
           (item) => [
@@ -117,7 +120,7 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 return item.copyWith(talents: list);
               },
               isValid: (item) =>
-                  GsValidators.validateText(item.talents[idx].name),
+                  GsValidators.validateText(item.talents[idx].name, level),
             ),
             DataField.textField(
               'Icon',
@@ -128,7 +131,7 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 return item.copyWith(talents: list);
               },
               isValid: (item) =>
-                  GsValidators.validateText(item.talents[idx].icon),
+                  GsValidators.validateImage(item.talents[idx].icon, level),
               process: GsValidators.processImage,
             ),
             DataField.textEditor(
@@ -139,6 +142,8 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 list[idx] = item.talents[idx].copyWith(desc: value);
                 return item.copyWith(talents: list);
               },
+              isValid: (item) =>
+                  GsValidators.validateText(item.talents[idx].desc, level),
             ),
           ],
         );
@@ -147,6 +152,7 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
     DataField.list(
       'Constellations',
       (item) => item.constellations.mapIndexed((idx, con) {
+        const level = GsValidLevel.warn2;
         return DataField.list(
           'C${idx + 1}',
           (item) => [
@@ -158,8 +164,10 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 list[idx] = list[idx].copyWith(name: value);
                 return item.copyWith(constellations: list);
               },
-              isValid: (item) =>
-                  GsValidators.validateText(item.constellations[idx].name),
+              isValid: (item) => GsValidators.validateText(
+                item.constellations[idx].name,
+                level,
+              ),
             ),
             DataField.textField(
               'Icon',
@@ -169,8 +177,10 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 list[idx] = list[idx].copyWith(icon: value);
                 return item.copyWith(constellations: list);
               },
-              isValid: (item) =>
-                  GsValidators.validateImage(item.constellations[idx].icon),
+              isValid: (item) => GsValidators.validateImage(
+                item.constellations[idx].icon,
+                level,
+              ),
               process: GsValidators.processImage,
             ),
             DataField.textEditor(
@@ -181,6 +191,10 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 list[idx] = list[idx].copyWith(desc: value);
                 return item.copyWith(constellations: list);
               },
+              isValid: (item) => GsValidators.validateText(
+                item.constellations[idx].desc,
+                level,
+              ),
             ),
           ],
         );

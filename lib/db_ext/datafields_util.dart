@@ -155,8 +155,11 @@ class GsValidators {
     return GsValidLevel.good;
   }
 
-  static GsValidLevel validateImage(String image) {
-    if (image.isEmpty) return GsValidLevel.warn2;
+  static GsValidLevel validateImage(
+    String image, [
+    GsValidLevel empty = GsValidLevel.warn2,
+  ]) {
+    if (image.isEmpty) return empty;
     if (image.trim() != image) return GsValidLevel.warn1;
     return GsValidLevel.good;
   }

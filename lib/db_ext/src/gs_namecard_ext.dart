@@ -25,6 +25,12 @@ List<DataField<GsNamecard>> getNamecardDfs(GsNamecard? model) {
       (item) => GsSelectItems.namecardTypes,
       (item, value) => item.copyWith(type: value),
     ),
+    DataField.selectRarity(
+      'Rarity',
+      (item) => item.rarity,
+      (item, value) => item.copyWith(rarity: value),
+      min: 4,
+    ),
     DataField.singleSelect(
       'Version',
       (item) => item.version,

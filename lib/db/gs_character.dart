@@ -4,6 +4,7 @@ import 'package:data_editor/style/utils.dart';
 class GsCharacter extends GsModel<GsCharacter> {
   @override
   final String id;
+  final String enkaId;
   final String name;
   final String title;
   final int rarity;
@@ -24,6 +25,7 @@ class GsCharacter extends GsModel<GsCharacter> {
 
   GsCharacter._({
     this.id = '',
+    this.enkaId = '',
     this.name = '',
     this.rarity = 1,
     this.title = '',
@@ -45,6 +47,7 @@ class GsCharacter extends GsModel<GsCharacter> {
 
   GsCharacter.fromMap(JsonMap m)
       : id = m.getString('id'),
+        enkaId = m.getString('enka_id'),
         name = m.getString('name'),
         rarity = m.getInt('rarity', 1),
         title = m.getString('title'),
@@ -66,6 +69,7 @@ class GsCharacter extends GsModel<GsCharacter> {
   @override
   GsCharacter copyWith({
     String? id,
+    String? enkaId,
     String? name,
     String? title,
     int? rarity,
@@ -86,6 +90,7 @@ class GsCharacter extends GsModel<GsCharacter> {
   }) {
     return GsCharacter._(
       id: id ?? this.id,
+      enkaId: enkaId ?? this.id,
       name: name ?? this.name,
       rarity: rarity ?? this.rarity,
       title: title ?? this.title,
@@ -109,6 +114,7 @@ class GsCharacter extends GsModel<GsCharacter> {
   @override
   JsonMap toJsonMap() => {
         'name': name,
+        'enka_id': enkaId,
         'rarity': rarity,
         'title': title,
         'region': region,
