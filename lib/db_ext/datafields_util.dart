@@ -164,6 +164,12 @@ class GsValidators {
     return GsValidLevel.good;
   }
 
+  static GsValidLevel validateDate(String date) {
+    return DateTime.tryParse(date) == null
+        ? GsValidLevel.warn2
+        : GsValidLevel.none;
+  }
+
   static GsValidLevel validateDates(String start, String end) {
     final src = DateTime.tryParse(start);
     final dst = DateTime.tryParse(end);

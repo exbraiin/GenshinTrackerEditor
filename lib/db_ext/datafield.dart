@@ -289,11 +289,13 @@ TableRow _getFieldTableRow<T extends GsModel<T>>(
                 color: color,
               ),
             ),
-            if (color != null)
-              Padding(
+            Opacity(
+              opacity: color != null ? 1 : 0,
+              child: Padding(
                 padding: const EdgeInsets.only(left: 8),
                 child: Icon(Icons.info_outline_rounded, color: color),
               ),
+            ),
           ],
         ),
       ),
@@ -380,6 +382,10 @@ class _ExtendedTextFieldState extends State<ExtendedTextField> {
         focusNode: _node,
         controller: _controller,
         decoration: const InputDecoration.collapsed(hintText: ''),
+        onChanged: (value) {
+          value = widget.process?.call(value) ?? value;
+          widget.onEdit(value);
+        },
         onEditingComplete: () {
           var value = _controller.text;
           value = value.trim();

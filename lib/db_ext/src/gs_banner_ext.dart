@@ -28,6 +28,7 @@ List<DataField<GsBanner>> getBannerDfs(GsBanner? model) {
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
+      isValid: (item) => GsValidators.validateImage(item.image),
       process: GsValidators.processImage,
     ),
     DataField.textField(

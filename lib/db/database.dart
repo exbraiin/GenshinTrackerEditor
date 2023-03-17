@@ -42,6 +42,9 @@ export 'package:data_editor/db/gs_weapon.dart';
 export 'package:data_editor/db/gs_weapon_info.dart';
 export 'package:data_editor/db/gs_wish.dart';
 
+int _getCityIndex(String id) =>
+    Database.i.cities._data.indexWhere((e) => e.id == id);
+
 class Database {
   static final i = Database._();
 
@@ -54,7 +57,9 @@ class Database {
     GsArtifact.fromMap,
     validator: DataValidator.artifacts,
     sorted: (list) => list
-        .sortedBy((element) => element.rarity)
+        .sortedByDescending((element) => element.rarity)
+        .thenBy((element) => _getCityIndex(element.region))
+        .thenBy((element) => element.domain)
         .thenBy((element) => element.id),
   );
   final banners = GsCollection(
@@ -113,7 +118,7 @@ class Database {
     validator: DataValidator.materials,
     sorted: (list) => list
         .sortedBy((element) => element.group)
-        .thenBy((element) => element.region)
+        .thenBy((element) => _getCityIndex(element.region))
         .thenBy((element) => element.subgroup)
         .thenBy((element) => element.rarity)
         .thenBy((element) => element.id),

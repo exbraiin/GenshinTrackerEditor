@@ -114,8 +114,7 @@ class _ItemEditScreenState<T extends GsModel<T>>
                   children: [
                     Opacity(
                       opacity: widget.item != null ? 1 : 0.2,
-                      child: FloatingActionButton(
-                        heroTag: 'delete',
+                      child: DeleteButton(
                         onPressed: widget.item != null ? onDelete : null,
                         child: const Icon(Icons.delete),
                       ),
@@ -126,7 +125,8 @@ class _ItemEditScreenState<T extends GsModel<T>>
                       child: FloatingActionButton(
                         heroTag: 'save',
                         onPressed: valid ? onSave : null,
-                        child: const Icon(Icons.save),
+                        splashColor: Colors.black.withOpacity(0.4),
+                        child: const Icon(Icons.save, color: Colors.white),
                       ),
                     ),
                   ],
@@ -134,6 +134,102 @@ class _ItemEditScreenState<T extends GsModel<T>>
               },
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class DeleteButton extends StatefulWidget {
+  final Widget child;
+  final VoidCallback? onPressed;
+
+  const DeleteButton({
+    super.key,
+    this.onPressed,
+    required this.child,
+  });
+
+  @override
+  State<DeleteButton> createState() => _DeleteButtonState();
+}
+
+class _DeleteButtonState extends State<DeleteButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onTapDown(TapDownDetails d) {
+    _controller.animateTo(1, curve: Curves.easeOut);
+  }
+
+  void _onTapUp(TapUpDetails d) {
+    _onTapCancel();
+    if (_controller.value >= 1) widget.onPressed?.call();
+  }
+
+  void _onTapCancel() {
+    _controller.animateTo(
+      0,
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.easeIn,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const size = 55.0;
+    return GestureDetector(
+      onTapUp: widget.onPressed != null ? _onTapUp : null,
+      onTapDown: widget.onPressed != null ? _onTapDown : null,
+      onTapCancel: widget.onPressed != null ? _onTapCancel : null,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+            borderRadius: BorderRadius.circular(size),
+            boxShadow: const [BoxShadow(blurRadius: 2)],
+          ),
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  Transform.scale(
+                    scale: _controller.value,
+                    child: Container(
+                      width: size,
+                      height: size,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.4),
+                        border: Border.all(color: Colors.white, width: 2),
+                        borderRadius: BorderRadius.circular(size),
+                      ),
+                    ),
+                  ),
+                  widget.child,
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
