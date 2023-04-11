@@ -1,6 +1,8 @@
+import 'package:data_editor/configs.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/exporter.dart';
 import 'package:data_editor/style/style.dart';
+import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:flutter/material.dart';
 
 class InfoScreen extends StatefulWidget {
@@ -12,6 +14,8 @@ class InfoScreen extends StatefulWidget {
 
 class _InfoScreenState extends State<InfoScreen> {
   late final ValueNotifier<String> _notifier;
+
+  bool _isExpanded(String version) => version == _notifier.value;
 
   @override
   void initState() {
@@ -42,20 +46,20 @@ class _InfoScreenState extends State<InfoScreen> {
         builder: (context, value, child) {
           return ListView(
             padding: const EdgeInsets.all(8).copyWith(bottom: 0),
-            children: Database.i.versions.data.reversed
-                .map((version) => _getChild(version, value == version.id))
-                .toList(),
+            children: Database.i.versions.data.reversed.map(_getChild).toList(),
           );
         },
       ),
     );
   }
 
-  Widget _getChild(GsVersion version, bool expanded) {
+  Widget _getChild(GsVersion version) {
+    final expanded = _isExpanded(version.id);
+    final vColor = GsStyle.getVersionColor(version.id);
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.2),
+        color: vColor.withOpacity(0.2),
         border: Border.all(color: Colors.grey),
         borderRadius: BorderRadius.circular(8),
       ),
@@ -64,157 +68,70 @@ class _InfoScreenState extends State<InfoScreen> {
           Container(
             height: 44,
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.6),
+              color: vColor.withOpacity(0.6),
               borderRadius: BorderRadius.vertical(
                 top: const Radius.circular(8),
                 bottom: expanded ? Radius.zero : const Radius.circular(8),
               ),
             ),
             child: InkWell(
-              onTap: () => _notifier.value = version.id,
+              onTap: () {
+                _notifier.value =
+                    _notifier.value != version.id ? version.id : '';
+              },
               child: Center(
                 child: Text(version.id),
               ),
             ),
           ),
-          _getByVersion(
-            'Artifacts',
-            version.id,
-            expanded,
-            Database.i.artifacts,
-            (i) => i.version,
-            (i) => i.name,
-            (i) => GsStyle.getRarityColor(i.rarity),
-          ),
-          _getByVersion(
-            'Banners',
-            version.id,
-            expanded,
-            Database.i.banners,
-            (i) => i.version,
-            (i) => i.name,
-            (i) => GsStyle.getBannerColor(i.type),
-          ),
-          _getByVersion(
-            'Characters',
-            version.id,
-            expanded,
-            Database.i.characters,
-            (i) => i.version,
-            (i) => i.name,
-            (i) => GsStyle.getRarityColor(i.rarity),
-          ),
-          _getByVersion(
-            'Ingredients',
-            version.id,
-            expanded,
-            Database.i.ingredients,
-            (i) => i.version,
-            (i) => i.name,
-            (i) => GsStyle.getRarityColor(i.rarity),
-          ),
-          _getByVersion(
-            'Materials',
-            version.id,
-            expanded,
-            Database.i.materials,
-            (i) => i.version,
-            (i) => i.name,
-            (i) => GsStyle.getRarityColor(i.rarity),
-          ),
-          _getByVersion(
-            'Namecards',
-            version.id,
-            expanded,
-            Database.i.namecards,
-            (i) => i.version,
-            (i) => i.name,
-            (i) => GsStyle.getNamecardColor(i.type),
-          ),
-          _getByVersion(
-            'Recipes',
-            version.id,
-            expanded,
-            Database.i.recipes,
-            (i) => i.version,
-            (i) => i.name,
-            (i) => GsStyle.getRarityColor(i.rarity),
-          ),
-          _getByVersion(
-            'Remarkable Chests',
-            version.id,
-            expanded,
-            Database.i.remarkableChests,
-            (i) => i.version,
-            (i) => i.name,
-            (i) => GsStyle.getRarityColor(i.rarity),
-          ),
-          _getByVersion(
-            'Sereniteas',
-            version.id,
-            expanded,
-            Database.i.sereniteas,
-            (i) => i.version,
-            (i) => i.name,
-            (i) => GsStyle.getSereniteaColor(i.category),
-          ),
-          _getByVersion(
-            'Spincrystal',
-            version.id,
-            expanded,
-            Database.i.spincrystal,
-            (i) => i.version,
-            (i) => i.number.toString(),
-            (i) => GsStyle.getRarityColor(5),
-          ),
-          _getByVersion(
-            'Weapons',
-            version.id,
-            expanded,
-            Database.i.weapons,
-            (i) => i.version,
-            (i) => i.name,
-            (i) => GsStyle.getRarityColor(i.rarity),
-          ),
+          _getByVersion<GsArtifact>(version.id),
+          _getByVersion<GsBanner>(version.id),
+          _getByVersion<GsCharacter>(version.id),
+          _getByVersion<GsIngredient>(version.id),
+          _getByVersion<GsMaterial>(version.id),
+          _getByVersion<GsNamecard>(version.id),
+          _getByVersion<GsRecipe>(version.id),
+          _getByVersion<GsRemarkableChest>(version.id),
+          _getByVersion<GsSerenitea>(version.id),
+          _getByVersion<GsSpincrystal>(version.id),
+          _getByVersion<GsWeapon>(version.id),
         ],
       ),
     );
   }
 
-  Widget _getByVersion<T extends GsModel<T>>(
-    String title,
-    String version,
-    bool expanded,
-    GsCollection<T> collection,
-    String Function(T i) gVersion,
-    String Function(T i) label,
-    Color Function(T i) color,
-  ) {
-    if (!expanded) return const SizedBox();
-    final versionItems = collection.data.where((e) => gVersion(e) == version);
+  Widget _getByVersion<T extends GsModel<T>>(String version) {
+    if (!_isExpanded(version)) return const SizedBox();
+    final config = GsConfigs.getConfig<T>();
+    if (config == null) return const SizedBox();
+    final versionItems = config.collection.data
+        .where((e) => config.getDecor(e).version == version);
     if (versionItems.isEmpty) return const SizedBox();
 
+    final vColor = GsStyle.getVersionColor(version);
     return Column(
       children: [
         Container(
           height: 32,
-          color: Colors.black.withOpacity(0.4),
-          child: Center(child: Text('$title (${versionItems.length})')),
+          color: vColor.withOpacity(0.4),
+          child: Center(
+            child: Text('${config.title} (${versionItems.length})'),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: versionItems.map((e) {
-              return Container(
-                padding: const EdgeInsets.fromLTRB(6, 4, 6, 4),
-                decoration: BoxDecoration(
-                  color: color(e).withOpacity(0.6),
-                  borderRadius: BorderRadius.circular(100),
-                  border: Border.all(color: color(e).withOpacity(0.8)),
+            children: versionItems.map((item) {
+              final decor = config.getDecor(item);
+              return GsSelectChip(
+                GsSelectItem(
+                  item,
+                  decor.label,
+                  color: decor.color,
                 ),
-                child: Text(label(e)),
+                onTap: (item) => config.openEditScreen(context, item),
               );
             }).toList(),
           ),

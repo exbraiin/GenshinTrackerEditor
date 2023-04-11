@@ -1,6 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
+import 'package:data_editor/importer.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 
@@ -13,6 +14,8 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
       isValid: (item) =>
           GsValidators.validateId(item, model, Database.i.characters),
       refresh: (item) => item.copyWith(id: item.name.toDbId()),
+      import: Importer.importCharacterFromFandom,
+      importTooltip: 'Import from fandom URL',
     ),
     DataField.textField(
       'Enka ID',
@@ -101,6 +104,7 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
       'Release Date',
       (item) => item.releaseDate,
       (item, value) => item.copyWith(releaseDate: value),
+      isValid: (item) => GsValidators.validateDate(item.releaseDate),
     ),
     DataField.textField(
       'Image',

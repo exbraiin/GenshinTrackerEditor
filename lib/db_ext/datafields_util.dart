@@ -165,8 +165,9 @@ class GsValidators {
   }
 
   static GsValidLevel validateDate(String date) {
+    if (date.isEmpty) return GsValidLevel.warn2;
     return DateTime.tryParse(date) == null
-        ? GsValidLevel.warn2
+        ? GsValidLevel.error
         : GsValidLevel.none;
   }
 

@@ -51,6 +51,7 @@ class GsSelectChip<T> extends StatelessWidget {
   Widget _content() {
     final text = Text(
       item.label,
+      textAlign: TextAlign.center,
       style: const TextStyle(
         fontWeight: FontWeight.bold,
         color: Colors.white,

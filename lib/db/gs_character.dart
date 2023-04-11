@@ -23,7 +23,7 @@ class GsCharacter extends GsModel<GsCharacter> {
   final String fullImage;
   final String constellationImage;
 
-  GsCharacter._({
+  GsCharacter({
     this.id = '',
     this.enkaId = '',
     this.name = '',
@@ -88,9 +88,9 @@ class GsCharacter extends GsModel<GsCharacter> {
     String? fullImage,
     String? constellationImage,
   }) {
-    return GsCharacter._(
+    return GsCharacter(
       id: id ?? this.id,
-      enkaId: enkaId ?? this.id,
+      enkaId: enkaId ?? this.enkaId,
       name: name ?? this.name,
       rarity: rarity ?? this.rarity,
       title: title ?? this.title,

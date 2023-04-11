@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Data Editor',
       theme: ThemeData(
+        fontFamily: 'Comfortaa',
         primarySwatch: Colors.blue,
         brightness: Brightness.dark,
         floatingActionButtonTheme: const FloatingActionButtonThemeData(

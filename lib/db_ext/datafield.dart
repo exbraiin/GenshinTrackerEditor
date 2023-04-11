@@ -12,32 +12,24 @@ enum GsValidLevel { none, good, warn1, warn2, error }
 typedef DEdit<T extends GsModel<T>> = void Function(T v);
 typedef DValid<T extends GsModel<T>> = GsValidLevel Function(T item);
 typedef DUpdate<T extends GsModel<T>> = T Function(T item);
-typedef DPaste<T extends GsModel<T>> = T Function(T item, String value);
-typedef DRefresh<T extends GsModel<T>> = void Function(T item, DEdit<T> edit);
 typedef DBuilder<T extends GsModel<T>> = Widget Function(T item, DEdit<T> edit);
 
 class DataField<T extends GsModel<T>> {
   final String label;
   final DValid<T>? isValid;
-  final DPaste<T>? onPaste;
-  final DUpdate<T>? refresh;
   final DBuilder<T> builder;
 
   DataField._(
     this.label,
     this.builder, {
     this.isValid,
-    this.onPaste,
-    this.refresh,
   });
 
   DataField.text(
     this.label,
     String Function(T item) content, {
     this.isValid,
-    this.refresh,
-  })  : onPaste = null,
-        builder = ((item, edit) => Container(
+  }) : builder = ((item, edit) => Container(
               padding: const EdgeInsets.symmetric(vertical: 8),
               constraints: const BoxConstraints(minHeight: 36),
               alignment: Alignment.centerLeft,
@@ -49,9 +41,7 @@ class DataField<T extends GsModel<T>> {
     String Function(T item) content,
     VoidCallback? onPressed, {
     this.isValid,
-    this.refresh,
-  })  : onPaste = null,
-        builder = ((item, edit) {
+  }) : builder = ((item, edit) {
           return InkWell(
             onTap: onPressed,
             child: Container(
@@ -68,25 +58,37 @@ class DataField<T extends GsModel<T>> {
     String Function(T item) content,
     T Function(T item, String value) update, {
     this.isValid,
-    this.refresh,
-  })  : onPaste = null,
-        builder = ((item, edit) {
+  }) : builder = ((item, edit) {
           var text = content(item).split('\n').first;
           if (text.length > 40) text = text.substring(0, 40);
           if (text.isNotEmpty) text = '$text...';
-          return Builder(
-            builder: (context) => InkWell(
-              onTap: () => GsTextEditorDialog(
-                initialText: content(item),
-                onConfirm: (value) => edit(update(item, value)),
-              ).show(context),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                constraints: const BoxConstraints(minHeight: 36),
-                alignment: Alignment.centerLeft,
-                child: Text(text),
+          return Row(
+            children: [
+              Expanded(
+                child: Builder(
+                  builder: (context) => InkWell(
+                    onTap: () => GsTextEditorDialog(
+                      initialText: content(item),
+                      onConfirm: (value) => edit(update(item, value)),
+                    ).show(context),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      constraints: const BoxConstraints(minHeight: 36),
+                      alignment: Alignment.centerLeft,
+                      child: Text(text),
+                    ),
+                  ),
+                ),
               ),
-            ),
+              IconButton(
+                onPressed: () async {
+                  const type = Clipboard.kTextPlain;
+                  final text = (await Clipboard.getData(type))?.text;
+                  if (text != null) edit(update(item, text));
+                },
+                icon: const Icon(Icons.paste_rounded),
+              ),
+            ],
           );
         });
 
@@ -95,17 +97,41 @@ class DataField<T extends GsModel<T>> {
     String Function(T item) content,
     T Function(T item, String value) update, {
     String Function(String value)? process,
+    Future<T> Function(T item)? import,
+    DUpdate<T>? refresh,
+    String? importTooltip,
     this.isValid,
-    this.refresh,
-  })  : onPaste = ((item, v) => update(item, process?.call(v) ?? v)),
-        builder = ((item, edit) => SizedBox(
+  }) : builder = ((item, edit) => SizedBox(
               height: 44,
-              child: Center(
-                child: ExtendedTextField(
-                  initialValue: content(item),
-                  process: process,
-                  onEdit: (value) => edit(update(item, value)),
-                ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ExtendedTextField(
+                      initialValue: content(item),
+                      process: process,
+                      onEdit: (value) => edit(update(item, value)),
+                    ),
+                  ),
+                  if (refresh != null)
+                    IconButton(
+                      onPressed: () => edit(refresh(item)),
+                      icon: const Icon(Icons.upload_rounded),
+                    ),
+                  if (import != null)
+                    IconButton(
+                      onPressed: () async => edit(await import(item)),
+                      icon: const Icon(Icons.bolt_outlined),
+                      tooltip: importTooltip,
+                    ),
+                  IconButton(
+                    onPressed: () async {
+                      const type = Clipboard.kTextPlain;
+                      final text = (await Clipboard.getData(type))?.text;
+                      if (text != null) edit(update(item, text));
+                    },
+                    icon: const Icon(Icons.paste_rounded),
+                  ),
+                ],
               ),
             ));
 
@@ -115,7 +141,6 @@ class DataField<T extends GsModel<T>> {
     Iterable<GsSelectItem<V>> Function(T item) options,
     T Function(T item, List<V> value) update, {
     DValid<T>? isValid,
-    DUpdate<T>? onRefresh,
   }) {
     return DataField._(
       label,
@@ -130,7 +155,6 @@ class DataField<T extends GsModel<T>> {
                   .containsAll(values(item))
               ? GsValidLevel.good
               : GsValidLevel.error),
-      refresh: onRefresh,
     );
   }
 
@@ -140,9 +164,7 @@ class DataField<T extends GsModel<T>> {
     Iterable<GsSelectItem<String>> Function(T item) items,
     T Function(T item, String value) update, {
     DValid<T>? isValid,
-    this.refresh,
-  })  : onPaste = null,
-        builder = ((item, edit) => GsSingleSelect(
+  })  : builder = ((item, edit) => GsSingleSelect(
               items: items(item),
               selected: value(item),
               onConfirm: (value) => edit(update(item, value ?? '')),
@@ -159,10 +181,8 @@ class DataField<T extends GsModel<T>> {
     this.label,
     int Function(T item) value,
     T Function(T item, int value) update, {
-    this.refresh,
     int min = 1,
-  })  : onPaste = null,
-        builder = ((item, edit) => GsSingleSelect(
+  })  : builder = ((item, edit) => GsSingleSelect(
               items: List.generate(
                 6 - min,
                 (index) => GsSelectItem(
@@ -180,10 +200,8 @@ class DataField<T extends GsModel<T>> {
 
   DataField.list(
     this.label,
-    Iterable<DataField<T>> Function(T item) fields, {
-    this.refresh,
-  })  : onPaste = null,
-        builder = ((item, edit) => getTableForFields(item, fields(item), edit)),
+    Iterable<DataField<T>> Function(T item) fields,
+  )   : builder = ((item, edit) => getTableForFields(item, fields(item), edit)),
         isValid = ((item) =>
             fields(item)
                 .map((e) => e.isValid?.call(item))
@@ -285,7 +303,7 @@ TableRow _getFieldTableRow<T extends GsModel<T>>(
               field.label,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
+                fontSize: 14,
                 color: color,
               ),
             ),
@@ -301,25 +319,7 @@ TableRow _getFieldTableRow<T extends GsModel<T>>(
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Row(
-          children: [
-            Expanded(child: field.builder(value, edit)),
-            if (field.refresh != null)
-              IconButton(
-                onPressed: () => edit(field.refresh!(value)),
-                icon: const Icon(Icons.upload_rounded),
-              ),
-            if (field.onPaste != null)
-              IconButton(
-                onPressed: () async {
-                  const type = Clipboard.kTextPlain;
-                  final text = (await Clipboard.getData(type))?.text;
-                  if (text != null) edit(field.onPaste!(value, text));
-                },
-                icon: const Icon(Icons.paste_rounded),
-              ),
-          ],
-        ),
+        child: field.builder(value, edit),
       ),
     ],
   );
@@ -379,6 +379,7 @@ class _ExtendedTextFieldState extends State<ExtendedTextField> {
         }
       },
       child: TextField(
+        style: const TextStyle(fontSize: 14),
         focusNode: _node,
         controller: _controller,
         decoration: const InputDecoration.collapsed(hintText: ''),

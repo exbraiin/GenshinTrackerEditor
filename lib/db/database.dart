@@ -323,12 +323,20 @@ extension DatabaseExt on Database {
 class GsCollection<T extends GsModel<T>> {
   final String src;
   final T Function(JsonMap m) create;
-  final DataValidator<T> validator;
   final List<T> Function(List<T> list)? sorted;
   final _data = <T>[];
   List<T> get data => sorted?.call(_data) ?? _data.toList();
 
-  GsCollection(this.src, this.create, {required this.validator, this.sorted});
+  final DataValidator<T> validator;
+
+  String get type => (T == GsArtifact).toString();
+
+  GsCollection(
+    this.src,
+    this.create, {
+    this.sorted,
+    required this.validator,
+  });
 
   T? getItem(String id) => _data.firstOrNullWhere((e) => e.id == id);
 

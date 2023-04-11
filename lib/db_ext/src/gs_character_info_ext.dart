@@ -2,6 +2,7 @@ import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
+import 'package:data_editor/importer.dart';
 import 'package:data_editor/style/style.dart';
 
 List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
@@ -80,6 +81,8 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
       (item, value) => item.copyWith(ascHpValues: value),
       isValid: (item) => GsValidators.validateAscension(item.ascHpValues),
       process: GsValidators.processListOfStrings,
+      import: Importer.importAscensionStatsFromAmbr,
+      importTooltip: 'Import from Ambr table',
     ),
     DataField.textField(
       'Ascension Atk Values',

@@ -74,7 +74,7 @@ class _ItemEditScreenState<T extends GsModel<T>>
               Colors.black.withOpacity(0.6),
               BlendMode.multiply,
             ),
-            image: const AssetImage(GsGraphics.bgImg),
+            image: FileImage(GsGraphics.bgImg),
           ),
         ),
         child: Column(
