@@ -20,6 +20,12 @@ List<DataField<GsMaterial>> getMaterialDfs(GsMaterial? model) {
       (item, value) => item.copyWith(name: value),
       isValid: (item) => GsValidators.validateText(item.name),
     ),
+    DataField.textField(
+      'Desc',
+      (item) => item.desc,
+      (item, value) => item.copyWith(desc: value),
+      isValid: (item) => GsValidators.validateText(item.desc),
+    ),
     DataField.selectRarity(
       'Rarity',
       (item) => item.rarity,

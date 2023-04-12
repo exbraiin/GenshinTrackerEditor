@@ -22,6 +22,7 @@ import 'package:data_editor/db/gs_wish.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
+import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 export 'package:data_editor/db/gs_artifact.dart';
@@ -253,6 +254,17 @@ class Database {
   }
 }
 
+enum ItemState {
+  none,
+  current(color: Colors.green, label: 'New'),
+  upcoming(color: Colors.lightBlue, label: 'Upcoming');
+
+  final Color? color;
+  final String? label;
+
+  const ItemState({this.color, this.label});
+}
+
 extension DatabaseExt on Database {
   Iterable<GsMaterial> getMaterialGroup(String group) {
     final matGroup = materials.data.where((e) => e.group == group);
@@ -275,17 +287,16 @@ extension DatabaseExt on Database {
     return characters.getItem(id)?.rarity ?? weapons.getItem(id)?.rarity ?? 0;
   }
 
-  bool getNewByVersion(String version) {
+  ItemState getItemStateByVersion(String version) {
     final now = DateTime.now();
     final current = versions.data
         .lastOrNullWhere((element) => element.dateTime.isBefore(now));
-    return current != null && current.id == version;
-  }
+    if (current != null && current.id == version) return ItemState.current;
 
-  bool getUpcomingByVersion(String version) {
-    final now = DateTime.now();
     final vs = versions.data.firstOrNullWhere((e) => e.id == version);
-    return vs != null && vs.dateTime.isAfter(now);
+    if (vs != null && vs.dateTime.isAfter(now)) return ItemState.upcoming;
+
+    return ItemState.none;
   }
 
   Set<String> getVersions() {

@@ -16,7 +16,7 @@ class GsGridView extends StatelessWidget {
             Colors.black.withOpacity(0.6),
             BlendMode.multiply,
           ),
-          image: FileImage(GsGraphics.bgImg),
+          image: const AssetImage(GsGraphics.bgImg),
         ),
       ),
       child: GridView(

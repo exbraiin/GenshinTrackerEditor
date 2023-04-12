@@ -108,6 +108,28 @@ class _InfoScreenState extends State<InfoScreen> {
         .where((e) => config.getDecor(e).version == version);
     if (versionItems.isEmpty) return const SizedBox();
 
+    Widget badge(Color color) {
+      return Container(
+        width: 16,
+        height: 16,
+        decoration: BoxDecoration(
+          border: Border.all(
+            width: 2,
+            color: Color.lerp(color, Colors.white, 0.2)!,
+          ),
+          gradient: LinearGradient(
+            colors: [
+              color,
+              Color.lerp(color, Colors.black, 0.2)!,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+      );
+    }
+
     final vColor = GsStyle.getVersionColor(version);
     return Column(
       children: [
@@ -123,9 +145,10 @@ class _InfoScreenState extends State<InfoScreen> {
           child: Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: versionItems.map((item) {
+            children: versionItems.map<Widget>((item) {
               final decor = config.getDecor(item);
-              return GsSelectChip(
+              final level = config.collection.validator.getLevel(item.id);
+              Widget widget = GsSelectChip(
                 GsSelectItem(
                   item,
                   decor.label,
@@ -133,6 +156,21 @@ class _InfoScreenState extends State<InfoScreen> {
                 ),
                 onTap: (item) => config.openEditScreen(context, item),
               );
+              final levelColor = level.color;
+              if (levelColor != null) {
+                widget = Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    widget,
+                    Positioned(
+                      top: -4,
+                      right: -4,
+                      child: badge(levelColor),
+                    ),
+                  ],
+                );
+              }
+              return widget;
             }).toList(),
           ),
         ),

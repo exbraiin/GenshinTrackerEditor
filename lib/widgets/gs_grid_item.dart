@@ -96,7 +96,7 @@ class GsGridItem extends StatelessWidget {
                 ),
               ),
             if (child != null) child!,
-            _getBanner(),
+            _getStateBanner(),
             _getInvalidBanner(),
           ],
         ),
@@ -106,29 +106,15 @@ class GsGridItem extends StatelessWidget {
 
   Widget _getInvalidBanner() {
     const offset = Offset(2, -2);
-    if (validLevel == GsValidLevel.error) {
+    if (validLevel.isErrorOrWarn2) {
       return Positioned.fill(
         child: ClipRect(
           child: Transform.translate(
             offset: offset,
-            child: const Banner(
-              message: 'Invalid',
+            child: Banner(
+              message: validLevel.label ?? '',
               location: BannerLocation.topEnd,
-              color: Colors.red,
-            ),
-          ),
-        ),
-      );
-    }
-    if (validLevel == GsValidLevel.warn2) {
-      return Positioned.fill(
-        child: ClipRect(
-          child: Transform.translate(
-            offset: offset,
-            child: const Banner(
-              message: 'Missing',
-              location: BannerLocation.topEnd,
-              color: Colors.orange,
+              color: validLevel.color ?? Colors.transparent,
             ),
           ),
         ),
@@ -137,30 +123,18 @@ class GsGridItem extends StatelessWidget {
     return const SizedBox();
   }
 
-  Widget _getBanner() {
+  Widget _getStateBanner() {
     if (version.isEmpty) return const SizedBox();
-    if (Database.i.getNewByVersion(version)) {
-      return const Positioned.fill(
-        child: ClipRect(
-          child: Banner(
-            location: BannerLocation.topEnd,
-            message: 'New',
-            color: Colors.green,
-          ),
+    final state = Database.i.getItemStateByVersion(version);
+    if (state == ItemState.none) return const SizedBox();
+    return Positioned.fill(
+      child: ClipRect(
+        child: Banner(
+          location: BannerLocation.topEnd,
+          message: state.label ?? '',
+          color: state.color ?? Colors.transparent,
         ),
-      );
-    }
-    if (Database.i.getUpcomingByVersion(version)) {
-      return const Positioned.fill(
-        child: ClipRect(
-          child: Banner(
-            location: BannerLocation.topEnd,
-            message: 'Upcoming',
-            color: Colors.lightBlue,
-          ),
-        ),
-      );
-    }
-    return const SizedBox();
+      ),
+    );
   }
 }

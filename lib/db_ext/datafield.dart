@@ -7,7 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // The validator level.
-enum GsValidLevel { none, good, warn1, warn2, error }
+enum GsValidLevel {
+  none,
+  good,
+  warn1(color: Colors.lightBlue),
+  warn2(color: Colors.orange, label: 'Missing'),
+  error(color: Colors.red, label: 'Invalid');
+
+  final Color? color;
+  final String? label;
+
+  bool get isErrorOrWarn2 =>
+      this == GsValidLevel.error || this == GsValidLevel.warn2;
+
+  const GsValidLevel({this.color, this.label});
+}
 
 typedef DEdit<T extends GsModel<T>> = void Function(T v);
 typedef DValid<T extends GsModel<T>> = GsValidLevel Function(T item);
@@ -84,7 +98,8 @@ class DataField<T extends GsModel<T>> {
                 onPressed: () async {
                   const type = Clipboard.kTextPlain;
                   final text = (await Clipboard.getData(type))?.text;
-                  if (text != null) edit(update(item, text));
+                  if (text == null) return;
+                  edit(update(item, text));
                 },
                 icon: const Icon(Icons.paste_rounded),
               ),
@@ -127,7 +142,9 @@ class DataField<T extends GsModel<T>> {
                     onPressed: () async {
                       const type = Clipboard.kTextPlain;
                       final text = (await Clipboard.getData(type))?.text;
-                      if (text != null) edit(update(item, text));
+                      if (text == null) return;
+                      final processed = process?.call(text) ?? text;
+                      edit(update(item, processed));
                     },
                     icon: const Icon(Icons.paste_rounded),
                   ),
@@ -282,17 +299,7 @@ TableRow _getFieldTableRow<T extends GsModel<T>>(
   DataField<T> field,
   void Function(T item) edit,
 ) {
-  Color? color;
-  if (field.isValid != null) {
-    final state = field.isValid!(value);
-    if (state == GsValidLevel.warn1) {
-      color = Colors.lightBlue;
-    } else if (state == GsValidLevel.warn2) {
-      color = Colors.orange;
-    } else if (state == GsValidLevel.error) {
-      color = Colors.red;
-    }
-  }
+  final color = field.isValid?.call(value).color;
   return TableRow(
     children: [
       Padding(

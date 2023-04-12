@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/utils.dart';
@@ -40,7 +39,7 @@ class GsConfigurations {
 class GsGraphics {
   GsGraphics._();
 
-  static final bgImg = File('assets/bg.png');
+  static const bgImg = 'assets/bg.png';
 
   static const _icons = {
     'adventure': 'assets/icons_food/adventure.png',

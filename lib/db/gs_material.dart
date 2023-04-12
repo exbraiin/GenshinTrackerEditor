@@ -5,6 +5,7 @@ class GsMaterial extends GsModel<GsMaterial> {
   @override
   final String id;
   final String name;
+  final String desc;
   final int rarity;
   final String group;
   final String image;
@@ -16,6 +17,7 @@ class GsMaterial extends GsModel<GsMaterial> {
   GsMaterial({
     this.id = '',
     this.name = '',
+    this.desc = '',
     this.rarity = 1,
     this.group = '',
     this.image = '',
@@ -28,6 +30,7 @@ class GsMaterial extends GsModel<GsMaterial> {
   GsMaterial.fromMap(JsonMap m)
       : id = m.getString('id'),
         name = m.getString('name'),
+        desc = m.getString('desc'),
         rarity = m.getInt('rarity', 1),
         group = m.getString('group'),
         image = m.getString('image'),
@@ -40,6 +43,7 @@ class GsMaterial extends GsModel<GsMaterial> {
   GsMaterial copyWith({
     String? id,
     String? name,
+    String? desc,
     int? rarity,
     String? group,
     String? image,
@@ -51,6 +55,7 @@ class GsMaterial extends GsModel<GsMaterial> {
     return GsMaterial(
       id: id ?? this.id,
       name: name ?? this.name,
+      desc: desc ?? this.desc,
       rarity: rarity ?? this.rarity,
       group: group ?? this.group,
       image: image ?? this.image,
@@ -64,6 +69,7 @@ class GsMaterial extends GsModel<GsMaterial> {
   @override
   JsonMap toJsonMap() => {
         'name': name,
+        'desc': desc,
         'group': group,
         'image': image,
         'region': region,
