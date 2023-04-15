@@ -41,12 +41,18 @@ class _InfoScreenState extends State<InfoScreen> {
           ),
         ],
       ),
-      body: ValueListenableBuilder(
-        valueListenable: _notifier,
-        builder: (context, value, child) {
-          return ListView(
-            padding: const EdgeInsets.all(8).copyWith(bottom: 0),
-            children: Database.i.versions.data.reversed.map(_getChild).toList(),
+      body: StreamBuilder(
+        stream: Database.i.modified,
+        builder: (context, snapshot) {
+          return ValueListenableBuilder(
+            valueListenable: _notifier,
+            builder: (context, value, child) {
+              return ListView(
+                padding: const EdgeInsets.all(8).copyWith(bottom: 0),
+                children:
+                    Database.i.versions.data.reversed.map(_getChild).toList(),
+              );
+            },
           );
         },
       ),
