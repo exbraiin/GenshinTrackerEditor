@@ -100,6 +100,7 @@ class _InfoScreenState extends State<InfoScreen> {
           _getByVersion<GsRemarkableChest>(version.id),
           _getByVersion<GsSerenitea>(version.id),
           _getByVersion<GsSpincrystal>(version.id),
+          _getByVersion<GsViewpoint>(version.id),
           _getByVersion<GsWeapon>(version.id),
         ],
       ),

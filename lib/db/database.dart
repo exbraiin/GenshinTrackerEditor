@@ -16,6 +16,7 @@ import 'package:data_editor/db/gs_remarkable_chest.dart';
 import 'package:data_editor/db/gs_serenitea.dart';
 import 'package:data_editor/db/gs_spincrystal.dart';
 import 'package:data_editor/db/gs_version.dart';
+import 'package:data_editor/db/gs_viewpoint.dart';
 import 'package:data_editor/db/gs_weapon.dart';
 import 'package:data_editor/db/gs_weapon_info.dart';
 import 'package:data_editor/db/gs_wish.dart';
@@ -39,6 +40,7 @@ export 'package:data_editor/db/gs_remarkable_chest.dart';
 export 'package:data_editor/db/gs_serenitea.dart';
 export 'package:data_editor/db/gs_spincrystal.dart';
 export 'package:data_editor/db/gs_version.dart';
+export 'package:data_editor/db/gs_viewpoint.dart';
 export 'package:data_editor/db/gs_weapon.dart';
 export 'package:data_editor/db/gs_weapon_info.dart';
 export 'package:data_editor/db/gs_wish.dart';
@@ -170,6 +172,15 @@ class Database {
     validator: DataValidator.versions,
     sorted: (list) => list.sortedBy((element) => element.id),
   );
+  final viewpoints = GsCollection(
+    'src/viewpoints.json',
+    GsViewpoint.fromMap,
+    validator: DataValidator.viewpoints,
+    sorted: (list) => list
+        .sortedBy((element) => element.region)
+        .thenBy((element) => element.version)
+        .thenBy((element) => element.name),
+  );
   final weapons = GsCollection(
     'src/weapons.json',
     GsWeapon.fromMap,
@@ -203,6 +214,7 @@ class Database {
         sereniteas,
         spincrystal,
         versions,
+        viewpoints,
         weapons,
         weaponInfo,
       ];

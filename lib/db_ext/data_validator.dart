@@ -15,6 +15,7 @@ import 'package:data_editor/db_ext/src/gs_remarkable_chest_ext.dart';
 import 'package:data_editor/db_ext/src/gs_serenitea_ext.dart';
 import 'package:data_editor/db_ext/src/gs_spincrystal_ext.dart';
 import 'package:data_editor/db_ext/src/gs_version_ext.dart';
+import 'package:data_editor/db_ext/src/gs_viewpoint_ext.dart';
 import 'package:data_editor/db_ext/src/gs_weapon_ext.dart';
 import 'package:data_editor/db_ext/src/gs_weapon_info_ext.dart';
 
@@ -31,6 +32,7 @@ export 'src/gs_recipe_ext.dart';
 export 'src/gs_serenitea_ext.dart';
 export 'src/gs_spincrystal_ext.dart';
 export 'src/gs_version_ext.dart';
+export 'src/gs_viewpoint_ext.dart';
 export 'src/gs_weapon_ext.dart';
 
 class DataValidator<T extends GsModel<T>> {
@@ -48,6 +50,7 @@ class DataValidator<T extends GsModel<T>> {
   static final sereniteas = DataValidator._(getSereniteaDfs);
   static final spincrystals = DataValidator._(getSpincrystalDfs);
   static final versions = DataValidator._(getVersionDfs);
+  static final viewpoints = DataValidator._(getViewpointtDfs);
   static final weapons = DataValidator._(getWeaponDfs);
   static final weaponsInfo = DataValidator._(getWeaponInfoDfs);
 

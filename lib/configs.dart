@@ -150,6 +150,16 @@ class GsConfigs<T extends GsModel<T>> {
         GsStyle.getRegionElementColor(item.region),
       ),
     ),
+    GsViewpoint: GsConfigs<GsViewpoint>._(
+      title: 'Viewpoints',
+      collection: Database.i.viewpoints,
+      getDecor: (item) => GsItemDecor(
+        item.name,
+        item.version,
+        GsStyle.getRarityColor(4),
+        GsStyle.getRegionElementColor(item.region),
+      ),
+    ),
     GsWeapon: GsConfigs<GsWeapon>._(
       title: 'Weapons',
       collection: Database.i.weapons,
