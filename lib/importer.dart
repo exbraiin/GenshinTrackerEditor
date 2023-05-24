@@ -111,9 +111,9 @@ class Importer {
     );
   }
 
-  static Future<GsCharacterInfo> importAscensionStatsFromAmbr(
-    GsCharacterInfo info, {
+  static Future<void> _importAscensionStatsFromAmbr({
     String? data,
+    required List<List<String>> info,
   }) async {
     const format = Clipboard.kTextPlain;
     data ??= (await Clipboard.getData(format))?.text ?? '';
@@ -123,13 +123,12 @@ class Importer {
       ...['60', '60+', '70', '70+', '80', '80+', '90']
     ];
 
-    final hp = <String>[];
-    final atk = <String>[];
-    final def = <String>[];
-    final stats = <String>[];
     for (final line in data.split('\n')) {
-      final values =
-          line.split(' ').map((e) => e.trim()).where((e) => e.isNotEmpty);
+      final values = line
+          .replaceAll('\t', ' ')
+          .split(' ')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty);
       final ilvl = values.elementAtOrNull(0);
       if (ilvl == null) continue;
       if (!levels.contains(ilvl)) continue;
@@ -149,17 +148,33 @@ class Importer {
         lst.add(rValue);
       }
 
-      parseValue(hp, 1);
-      parseValue(atk, 2);
-      parseValue(def, 3);
-      parseValue(stats, 4);
+      info.forEachIndexed((lst, idx) => parseValue(lst, idx + 1));
     }
+  }
 
+  static Future<GsCharacterInfo> importCharacterAscensionStatsFromAmbr(
+    GsCharacterInfo info, {
+    String? data,
+  }) async {
+    final infos = <List<String>>[[], [], [], []];
+    await _importAscensionStatsFromAmbr(info: infos);
     return info.copyWith(
-      ascHpValues: hp.join(', '),
-      ascAtkValues: atk.join(', '),
-      ascDefValues: def.join(', '),
-      ascStatValues: stats.join(', '),
+      ascHpValues: infos[0].join(', '),
+      ascAtkValues: infos[1].join(', '),
+      ascDefValues: infos[2].join(', '),
+      ascStatValues: infos[3].join(', '),
+    );
+  }
+
+  static Future<GsWeaponInfo> importWeaponAscensionStatsFromAmbr(
+    GsWeaponInfo info, {
+    String? data,
+  }) async {
+    final infos = <List<String>>[[], []];
+    await _importAscensionStatsFromAmbr(info: infos);
+    return info.copyWith(
+      ascAtkValues: infos[0].join(', '),
+      ascStatValues: infos[1].join(', '),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
+import 'package:data_editor/importer.dart';
 import 'package:data_editor/style/style.dart';
 
 List<DataField<GsWeaponInfo>> getWeaponInfoDfs(GsWeaponInfo? model) {
@@ -62,6 +63,7 @@ List<DataField<GsWeaponInfo>> getWeaponInfoDfs(GsWeaponInfo? model) {
             ? GsValidLevel.good
             : GsValidLevel.error;
       },
+      import: Importer.importWeaponAscensionStatsFromAmbr,
       process: GsValidators.processListOfStrings,
     ),
     DataField.textField(

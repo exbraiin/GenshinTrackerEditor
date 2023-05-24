@@ -81,7 +81,7 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
       (item, value) => item.copyWith(ascHpValues: value),
       isValid: (item) => GsValidators.validateAscension(item.ascHpValues),
       process: GsValidators.processListOfStrings,
-      import: Importer.importAscensionStatsFromAmbr,
+      import: Importer.importCharacterAscensionStatsFromAmbr,
       importTooltip: 'Import from Ambr table',
     ),
     DataField.textField(
