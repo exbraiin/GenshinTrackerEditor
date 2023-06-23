@@ -43,6 +43,7 @@ class ItemsListScreen<T extends GsModel<T>> extends StatelessWidget {
               final decor = getDecor(item);
               return GsGridItem(
                 color: decor.color,
+                image: decor.image ?? '',
                 circleColor: decor.regionColor,
                 label: decor.label,
                 version: decor.version,
@@ -62,14 +63,16 @@ class GsItemDecor {
   final Color color;
   final String label;
   final String version;
+  final String? image;
   final Color? regionColor;
   final Widget? child;
 
-  GsItemDecor(
-    this.label,
-    this.version,
-    this.color, [
-    this.regionColor,
+  GsItemDecor({
+    required this.label,
+    required this.version,
+    required this.color,
+    this.image,
     this.child,
-  ]);
+    this.regionColor,
+  });
 }

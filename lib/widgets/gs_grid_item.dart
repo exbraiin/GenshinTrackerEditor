@@ -7,6 +7,7 @@ class GsGridItem extends StatelessWidget {
   final Color color;
   final Color? circleColor;
   final String label;
+  final String image;
   final String version;
   final Widget? child;
   final GsValidLevel validLevel;
@@ -17,6 +18,7 @@ class GsGridItem extends StatelessWidget {
     this.onTap,
     this.child,
     this.circleColor,
+    this.image = '',
     this.version = '',
     this.validLevel = GsValidLevel.none,
     required this.color,
@@ -55,6 +57,19 @@ class GsGridItem extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
+            if (image.isNotEmpty)
+              Positioned(
+                right: 2,
+                bottom: 2,
+                child: Image.network(
+                  image.toFandom(46),
+                  width: 46,
+                  height: 46,
+                  fit: BoxFit.contain,
+                  errorBuilder: (ctx, obj, stc) =>
+                      const Icon(Icons.info_outline_rounded, size: 32),
+                ),
+              ),
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -136,5 +151,14 @@ class GsGridItem extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+extension on String {
+  String toFandom(int size) {
+    if (startsWith('https://static.wikia.nocookie.net/')) {
+      return '$this/revision/latest/scale-to-width-down/$size';
+    }
+    return this;
   }
 }

@@ -23,29 +23,39 @@ class GsConfigs<T extends GsModel<T>> {
       title: 'Artifacts',
       collection: Database.i.artifacts,
       getDecor: (item) => GsItemDecor(
-        item.name,
-        item.version,
-        GsStyle.getRarityColor(item.rarity),
-        GsStyle.getRegionElementColor(item.region),
+        label: item.name,
+        image: item.pieces.first.icon,
+        version: item.version,
+        color: GsStyle.getRarityColor(item.rarity),
+        regionColor: GsStyle.getRegionElementColor(item.region),
       ),
     ),
     GsBanner: GsConfigs<GsBanner>._(
       title: 'Banners',
       collection: Database.i.banners,
-      getDecor: (item) => GsItemDecor(
-        '${item.name}\n${item.dateStart}',
-        item.version,
-        GsStyle.getBannerColor(item.type),
-      ),
+      getDecor: (item) {
+        final data = item.feature5.firstOrNull;
+        final image = data != null
+            ? Database.i.characters.getItem(data)?.image ??
+                Database.i.weapons.getItem(data)?.image
+            : null;
+        return GsItemDecor(
+          label: '${item.name}\n${item.dateStart}',
+          image: image,
+          version: item.version,
+          color: GsStyle.getBannerColor(item.type),
+        );
+      },
     ),
     GsCharacter: GsConfigs<GsCharacter>._(
       title: 'Characters',
       collection: Database.i.characters,
       getDecor: (item) => GsItemDecor(
-        item.name,
-        item.version,
-        GsStyle.getRarityColor(item.rarity),
-        GsStyle.getRegionElementColor(item.region),
+        label: item.name,
+        image: item.image,
+        version: item.version,
+        color: GsStyle.getRarityColor(item.rarity),
+        regionColor: GsStyle.getRegionElementColor(item.region),
       ),
     ),
     GsCharacterInfo: GsConfigs<GsCharacterInfo>._(
@@ -54,22 +64,24 @@ class GsConfigs<T extends GsModel<T>> {
       getDecor: (item) {
         final char = Database.i.characters.getItem(item.id);
         return GsItemDecor(
-          char?.name ?? item.id,
-          char?.version ?? '',
-          GsStyle.getRarityColor(char?.rarity ?? 0),
-          GsStyle.getRegionElementColor(char?.region ?? ''),
+          label: char?.name ?? item.id,
+          image: char?.image,
+          version: char?.version ?? '',
+          color: GsStyle.getRarityColor(char?.rarity ?? 0),
+          regionColor: GsStyle.getRegionElementColor(char?.region ?? ''),
         );
       },
     ),
     GsCharacterOutfit: GsConfigs<GsCharacterOutfit>._(
       title: 'Character Outfits',
       getDecor: (item) {
-        final char = Database.i.characters.getItem(item.id);
+        final char = Database.i.characters.getItem(item.character);
         return GsItemDecor(
-          item.name,
-          item.version,
-          GsStyle.getRarityColor(item.rarity),
-          GsStyle.getRegionElementColor(char?.region ?? ''),
+          label: item.name,
+          image: char?.image,
+          version: item.version,
+          color: GsStyle.getRarityColor(item.rarity),
+          regionColor: GsStyle.getRegionElementColor(char?.region ?? ''),
         );
       },
       collection: Database.i.characterOutfit,
@@ -78,56 +90,62 @@ class GsConfigs<T extends GsModel<T>> {
       title: 'Cities',
       collection: Database.i.cities,
       getDecor: (item) => GsItemDecor(
-        item.name,
-        '',
-        GsStyle.getElementColor(item.element),
-        GsStyle.getRegionElementColor(item.id),
+        label: item.name,
+        image: item.image,
+        version: '',
+        color: GsStyle.getElementColor(item.element),
+        regionColor: GsStyle.getRegionElementColor(item.id),
       ),
     ),
     GsIngredient: GsConfigs<GsIngredient>._(
       title: 'Ingredients',
       collection: Database.i.ingredients,
       getDecor: (item) => GsItemDecor(
-        item.name,
-        item.version,
-        GsStyle.getRarityColor(item.rarity),
+        label: item.name,
+        image: item.image,
+        version: item.version,
+        color: GsStyle.getRarityColor(item.rarity),
       ),
     ),
     GsMaterial: GsConfigs<GsMaterial>._(
       title: 'Materials',
       collection: Database.i.materials,
       getDecor: (item) => GsItemDecor(
-        item.name,
-        item.version,
-        GsStyle.getRarityColor(item.rarity),
-        GsStyle.getRegionElementColor(item.region),
+        label: item.name,
+        image: item.image,
+        version: item.version,
+        color: GsStyle.getRarityColor(item.rarity),
+        regionColor: GsStyle.getRegionElementColor(item.region),
       ),
     ),
     GsNamecard: GsConfigs<GsNamecard>._(
       title: 'Namecards',
       collection: Database.i.namecards,
       getDecor: (item) => GsItemDecor(
-        item.name,
-        item.version,
-        GsStyle.getNamecardColor(item.type),
+        label: item.name,
+        image: item.image,
+        version: item.version,
+        color: GsStyle.getNamecardColor(item.type),
       ),
     ),
     GsRecipe: GsConfigs<GsRecipe>._(
       title: 'Recipes',
       collection: Database.i.recipes,
       getDecor: (item) => GsItemDecor(
-        item.name,
-        item.version,
-        GsStyle.getRarityColor(item.rarity),
+        label: item.name,
+        image: item.image,
+        version: item.version,
+        color: GsStyle.getRarityColor(item.rarity),
       ),
     ),
     GsRemarkableChest: GsConfigs<GsRemarkableChest>._(
       title: 'Remarkable Chests',
       getDecor: (item) => GsItemDecor(
-        item.name,
-        item.version,
-        GsStyle.getRarityColor(item.rarity),
-        GsStyle.getRegionElementColor(item.region),
+        label: item.name,
+        image: item.image,
+        version: item.version,
+        color: GsStyle.getRarityColor(item.rarity),
+        regionColor: GsStyle.getRegionElementColor(item.region),
       ),
       collection: Database.i.remarkableChests,
     ),
@@ -135,38 +153,39 @@ class GsConfigs<T extends GsModel<T>> {
       title: 'Sereniteas',
       collection: Database.i.sereniteas,
       getDecor: (item) => GsItemDecor(
-        item.name,
-        item.version,
-        GsStyle.getSereniteaColor(item.category),
+        label: item.name,
+        version: item.version,
+        color: GsStyle.getSereniteaColor(item.category),
       ),
     ),
     GsSpincrystal: GsConfigs<GsSpincrystal>._(
       title: 'Spincrystals',
       collection: Database.i.spincrystal,
       getDecor: (item) => GsItemDecor(
-        '${item.number}',
-        item.version,
-        GsStyle.getRarityColor(5),
-        GsStyle.getRegionElementColor(item.region),
+        label: '${item.number}',
+        version: item.version,
+        color: GsStyle.getRarityColor(5),
+        regionColor: GsStyle.getRegionElementColor(item.region),
       ),
     ),
     GsViewpoint: GsConfigs<GsViewpoint>._(
       title: 'Viewpoints',
       collection: Database.i.viewpoints,
       getDecor: (item) => GsItemDecor(
-        item.name,
-        item.version,
-        GsStyle.getRarityColor(4),
-        GsStyle.getRegionElementColor(item.region),
+        label: item.name,
+        version: item.version,
+        color: GsStyle.getRarityColor(4),
+        regionColor: GsStyle.getRegionElementColor(item.region),
       ),
     ),
     GsWeapon: GsConfigs<GsWeapon>._(
       title: 'Weapons',
       collection: Database.i.weapons,
       getDecor: (item) => GsItemDecor(
-        item.name,
-        item.version,
-        GsStyle.getRarityColor(item.rarity),
+        label: item.name,
+        image: item.image,
+        version: item.version,
+        color: GsStyle.getRarityColor(item.rarity),
       ),
     ),
     GsWeaponInfo: GsConfigs<GsWeaponInfo>._(
@@ -175,9 +194,10 @@ class GsConfigs<T extends GsModel<T>> {
       getDecor: (item) {
         final weapon = Database.i.weapons.getItem(item.id);
         return GsItemDecor(
-          weapon?.name ?? item.id,
-          weapon?.version ?? '',
-          GsStyle.getRarityColor(weapon?.rarity ?? 0),
+          label: weapon?.name ?? item.id,
+          image: weapon?.image,
+          version: weapon?.version ?? '',
+          color: GsStyle.getRarityColor(weapon?.rarity ?? 0),
         );
       },
     ),
@@ -185,9 +205,9 @@ class GsConfigs<T extends GsModel<T>> {
       title: 'Versions',
       collection: Database.i.versions,
       getDecor: (item) => GsItemDecor(
-        item.id,
-        item.id,
-        GsStyle.getVersionColor(item.id),
+        label: item.id,
+        version: item.id,
+        color: GsStyle.getVersionColor(item.id),
       ),
     ),
   };
