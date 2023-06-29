@@ -1,10 +1,17 @@
+// ignore_for_file: avoid_positional_boolean_parameters
+
 import 'package:flutter/widgets.dart';
+
+typedef HoverCallback = Widget Function(
+  BuildContext context,
+  bool hover,
+  Widget? child,
+);
 
 class MouseButton extends StatefulWidget {
   final Widget? child;
   final VoidCallback? onTap;
-  final Widget Function(BuildContext context, bool hover, Widget? child)
-      builder;
+  final HoverCallback builder;
 
   const MouseButton({
     super.key,

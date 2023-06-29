@@ -90,6 +90,8 @@ class _InfoScreenState extends State<InfoScreen> {
               ),
             ),
           ),
+          _getByVersion<GsAchievementCategory>(version.id),
+          _getByVersion<GsAchievement>(version.id),
           _getByVersion<GsArtifact>(version.id),
           _getByVersion<GsBanner>(version.id),
           _getByVersion<GsCharacter>(version.id),

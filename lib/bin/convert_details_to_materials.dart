@@ -77,7 +77,7 @@ Future<void> convertWeaponDetailsToInfo() async {
     }
 
     final asc = (e.value['ascension'] as List? ?? []).cast<JsonMap>();
-    final mats = (asc.elementAtOrNull(1))?['materials'] as JsonMap?;
+    final mats = asc.elementAtOrNull(1)?['materials'] as JsonMap?;
     final materials = mats?.keys ?? [];
 
     // GsConfigurations.matCatRegionWeapon

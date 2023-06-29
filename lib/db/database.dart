@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dartx/dartx.dart';
+import 'package:data_editor/db/gs_achievement_group.dart';
 import 'package:data_editor/db/gs_artifact.dart';
 import 'package:data_editor/db/gs_banner.dart';
 import 'package:data_editor/db/gs_character.dart';
@@ -26,6 +27,7 @@ import 'package:data_editor/style/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
+export 'package:data_editor/db/gs_achievement_group.dart';
 export 'package:data_editor/db/gs_artifact.dart';
 export 'package:data_editor/db/gs_banner.dart';
 export 'package:data_editor/db/gs_character.dart';
@@ -48,6 +50,9 @@ export 'package:data_editor/db/gs_wish.dart';
 int _getCityIndex(String id) =>
     Database.i.cities._data.indexWhere((e) => e.id == id);
 
+int _getCategoryIndex(String id) =>
+    Database.i.achievementCategories.data.indexWhere((e) => e.id == id);
+
 class Database {
   static final i = Database._();
 
@@ -55,6 +60,21 @@ class Database {
   final modified = PublishSubject();
   final saving = BehaviorSubject<bool>.seeded(false);
 
+  final achievementCategories = GsCollection(
+    'src/achievement_categories.json',
+    GsAchievementCategory.fromMap,
+    validator: DataValidator.achievementCategories,
+  );
+  final achievements = GsCollection(
+    'src/achievements.json',
+    GsAchievement.fromMap,
+    validator: DataValidator.achievements,
+    sorted: (list) => list
+        .sortedBy((element) => _getCategoryIndex(element.group))
+        .thenByDescending((element) => element.version)
+        .thenBy((element) => element.name)
+        .thenBy((element) => element.reward),
+  );
   final artifacts = GsCollection(
     'src/artifacts.json',
     GsArtifact.fromMap,
@@ -200,6 +220,8 @@ class Database {
   );
 
   List<GsCollection> get collections => [
+        achievementCategories,
+        achievements,
         artifacts,
         banners,
         characters,
@@ -410,6 +432,11 @@ extension JsonMapExt on JsonMap {
   /// Gets an [int] by [key] or [defaultValue].
   int getInt(String key, [int defaultValue = 0]) =>
       this[key] as int? ?? defaultValue;
+
+  /// Gets a [bool] by [key] or [defaultValue].
+  // ignore: avoid_positional_boolean_parameters
+  bool getBool(String key, [bool defaultValue = false]) =>
+      this[key] as bool? ?? defaultValue;
 
   /// Gets a [List] of [int] by [key] or [value].
   List<int> getIntList(String key, [List<int> value = const []]) =>

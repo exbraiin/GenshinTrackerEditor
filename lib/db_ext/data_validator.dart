@@ -1,6 +1,8 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
+import 'package:data_editor/db_ext/src/gs_achievement_categories_ext.dart';
+import 'package:data_editor/db_ext/src/gs_achievement_ext.dart';
 import 'package:data_editor/db_ext/src/gs_artifact_ext.dart';
 import 'package:data_editor/db_ext/src/gs_banner_ext.dart';
 import 'package:data_editor/db_ext/src/gs_character_ext.dart';
@@ -36,6 +38,9 @@ export 'src/gs_viewpoint_ext.dart';
 export 'src/gs_weapon_ext.dart';
 
 class DataValidator<T extends GsModel<T>> {
+  static final achievements = DataValidator._(getAchievementsDfs);
+  static final achievementCategories =
+      DataValidator._(getAchievementCategoriesDfs);
   static final artifacts = DataValidator._(getArtifactDfs);
   static final banners = DataValidator._(getBannerDfs);
   static final characters = DataValidator._(getCharacterDfs);

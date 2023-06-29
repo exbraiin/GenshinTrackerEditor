@@ -1,4 +1,10 @@
 {
+    "achievement_type": [
+        "exploration",
+        "quest",
+        "commission",
+        "boss"
+    ],
     "namecard_type": [
         "achievement",
         "battlepass",

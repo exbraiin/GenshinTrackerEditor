@@ -11,6 +11,84 @@ import 'package:html/parser.dart' as html;
 class Importer {
   Importer._();
 
+  static Future<List<GsAchievement>> importAchievementsFromFandom(
+    GsAchievementCategory category, {
+    String? url,
+    bool useFile = false,
+  }) async {
+    const format = Clipboard.kTextPlain;
+    url ??= (await Clipboard.getData(format))?.text ?? '';
+
+    late final String raw;
+    if (useFile) {
+      final file = File('temp.html');
+      if (!await file.exists()) {
+        raw = await _getUrl(url);
+        await file.writeAsString(raw);
+      } else {
+        raw = await file.readAsString();
+      }
+    } else {
+      raw = await _getUrl(url);
+    }
+
+    final document = html.parse(raw);
+
+    final table = document.querySelector('table.article-table');
+    final entries = table?.querySelectorAll('tr') ?? [];
+
+    final type = entries.skip(1).firstOrNull?.querySelectorAll('td') ?? [];
+    if (type.length != 7 && type.length != 6 && type.length != 4) return [];
+
+    final achvs = <GsAchievement>[];
+    for (var entry in entries.skip(1)) {
+      final tds = entry.querySelectorAll('td');
+
+      final sz = tds.length;
+      late final int reward;
+      late final String name;
+      late final String desc;
+      late final String type;
+      late final bool hidden;
+      late final String version;
+
+      name = tds[0].text.trim();
+      desc = tds[1].text.split('\n').map((e) => e.trim()).join(' ').trim();
+      if (sz == 4) {
+        hidden = false;
+        type = '';
+        version = category.version;
+        reward = int.tryParse(tds[3].text.trim()) ?? 0;
+      } else if (sz == 6) {
+        hidden = tds[3].text.trim().toLowerCase() == 'yes';
+        type = '';
+        version = tds[4].text.trim();
+        reward = int.tryParse(tds[5].text.trim()) ?? 0;
+      } else if (sz == 7) {
+        hidden = tds[3].text.trim().toLowerCase() == 'yes';
+        type = tds[4].text.trim().toLowerCase().toDbId();
+        version = tds[5].text.trim();
+        reward = int.tryParse(tds[6].text.trim()) ?? 0;
+      } else {
+        continue;
+      }
+
+      final item = GsAchievement.fromMap({
+        'id': '${category.id} $name $reward'.toDbId(),
+        'name': name,
+        'desc': desc,
+        'type': type,
+        'group': category.id,
+        'hidden': hidden,
+        'reward': reward,
+        'version': version,
+      });
+      achvs.add(item);
+    }
+
+    return achvs;
+  }
+
   static Future<GsCharacter> importCharacterFromFandom(
     GsCharacter item, {
     String? url,

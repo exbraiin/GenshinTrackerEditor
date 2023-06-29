@@ -17,6 +17,7 @@ class GsConfigurations {
   }
 
   static List<String> _list(String name) => _map?[name] ?? const [];
+  static final achievementTypes = _list('achievement_type');
   static final namecardTypes = _list('namecard_type');
   static final recipeEffect = _list('recipe_effect');
   static final bannerTypes = _list('banner_type');

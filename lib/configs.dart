@@ -19,6 +19,34 @@ class GsConfigs<T extends GsModel<T>> {
   });
 
   static final _map = <Type, GsConfigs>{
+    GsAchievementCategory: GsConfigs<GsAchievementCategory>._(
+      title: 'Achievement Category',
+      collection: Database.i.achievementCategories,
+      getDecor: (item) {
+        final collection = Database.i.achievements;
+        final items = collection.data.where((e) => e.group == item.id);
+        final reward = items.sumBy((e) => e.reward);
+        return GsItemDecor(
+          label: '${item.name}\n${items.length} ($reward✦)',
+          version: item.version,
+          image: item.icon,
+          color: GsStyle.getRarityColor(4),
+        );
+      },
+    ),
+    GsAchievement: GsConfigs<GsAchievement>._(
+      title: 'Achievement',
+      collection: Database.i.achievements,
+      getDecor: (item) {
+        final cat = Database.i.achievementCategories.getItem(item.group);
+        return GsItemDecor(
+          label: '${item.name}\n(${item.reward}✦)',
+          version: item.version,
+          color: GsStyle.getRarityColor(4),
+          image: cat?.icon,
+        );
+      },
+    ),
     GsArtifact: GsConfigs<GsArtifact>._(
       title: 'Artifacts',
       collection: Database.i.artifacts,

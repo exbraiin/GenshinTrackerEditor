@@ -10,6 +10,12 @@ typedef It = Iterable<GsSelectItem<String>>;
 class GsSelectItems {
   GsSelectItems._();
 
+  static It get achievementTypes => [
+        GsSelectItem('', 'None'),
+        ...GsConfigurations.achievementTypes
+            .map((e) => GsSelectItem(e, e.toTitle())),
+      ];
+
   static It get versions => Database.i
       .getVersions()
       .map((e) => GsSelectItem(e, e, color: GsStyle.getVersionColor(e)));
@@ -41,6 +47,27 @@ class GsSelectItems {
   static It get nonBaseRecipes => Database.i
       .getAllNonBaseRecipes()
       .map((e) => _fromRarity(e.id, e.name, e.rarity));
+
+  static It get achievementGroups => Database.i.achievementCategories.data
+      .map((e) => GsSelectItem(e.id, e.name, color: GsStyle.getRarityColor(4)));
+
+  static It get namecards => [
+        GsSelectItem('none', 'None'),
+        ...Database.i.namecards.data
+            .where((e) => e.type == 'achievement')
+            .map((e) {
+          return GsSelectItem(
+            e.id,
+            e.name,
+            color: GsStyle.getRarityColor(
+              Database.i.achievementCategories.data
+                      .any((element) => element.namecard == e.id)
+                  ? 1
+                  : 4,
+            ),
+          );
+        }),
+      ];
 
   static It get namecardTypes => GsConfigurations.namecardTypes
       .map((e) => _fromNamecardType(e, e.toTitle(), e));

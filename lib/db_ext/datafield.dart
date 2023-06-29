@@ -42,12 +42,24 @@ class DataField<T extends GsModel<T>> {
   DataField.text(
     this.label,
     String Function(T item) content, {
+    DUpdate<T>? swap,
     this.isValid,
-  }) : builder = ((item, edit) => Container(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              constraints: const BoxConstraints(minHeight: 36),
-              alignment: Alignment.centerLeft,
-              child: Text(content(item)),
+  }) : builder = ((item, edit) => Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    constraints: const BoxConstraints(minHeight: 36),
+                    alignment: Alignment.centerLeft,
+                    child: Text(content(item)),
+                  ),
+                ),
+                if (swap != null)
+                  IconButton(
+                    onPressed: () => edit(swap(item)),
+                    icon: const Icon(Icons.swap_horiz_rounded),
+                  ),
+              ],
             ));
 
   DataField.button(
@@ -138,6 +150,10 @@ class DataField<T extends GsModel<T>> {
                       icon: const Icon(Icons.bolt_outlined),
                       tooltip: importTooltip,
                     ),
+                  IconButton(
+                    onPressed: () => edit(update(item, '')),
+                    icon: const Icon(Icons.clear_rounded),
+                  ),
                   IconButton(
                     onPressed: () async {
                       const type = Clipboard.kTextPlain;
@@ -333,15 +349,21 @@ TableRow _getFieldTableRow<T extends GsModel<T>>(
 }
 
 class ExtendedTextField extends StatefulWidget {
+  final bool autoFocus;
+  final String hintText;
   final String initialValue;
   final void Function(String value) onEdit;
+  final void Function(String value)? onSubmit;
   final String Function(String value)? process;
 
   const ExtendedTextField({
     super.key,
     this.process,
+    this.hintText = '',
+    this.autoFocus = false,
     required this.initialValue,
     required this.onEdit,
+    this.onSubmit,
   });
 
   @override
@@ -376,34 +398,27 @@ class _ExtendedTextFieldState extends State<ExtendedTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onDoubleTap: () {
-        if (_controller.text.isNotEmpty) {
-          _controller.selection = TextSelection(
-            baseOffset: 0,
-            extentOffset: _controller.text.length,
-          );
-        }
+    return TextField(
+      autofocus: widget.autoFocus,
+      style: const TextStyle(fontSize: 16),
+      focusNode: _node,
+      controller: _controller,
+      maxLines: 1,
+      decoration: InputDecoration.collapsed(hintText: widget.hintText),
+      onChanged: (value) {
+        value = widget.process?.call(value) ?? value;
+        widget.onEdit(value);
       },
-      child: TextField(
-        style: const TextStyle(fontSize: 14),
-        focusNode: _node,
-        controller: _controller,
-        decoration: const InputDecoration.collapsed(hintText: ''),
-        onChanged: (value) {
-          value = widget.process?.call(value) ?? value;
-          widget.onEdit(value);
-        },
-        onEditingComplete: () {
-          var value = _controller.text;
-          value = value.trim();
-          value = widget.process?.call(value) ?? value;
-          _controller.text = value;
+      onEditingComplete: () {
+        var value = _controller.text;
+        value = value.trim();
+        value = widget.process?.call(value) ?? value;
+        _controller.text = value;
 
-          widget.onEdit(value);
-          _node.unfocus();
-        },
-      ),
+        widget.onEdit(value);
+        widget.onSubmit?.call(value);
+        _node.unfocus();
+      },
     );
   }
 }
