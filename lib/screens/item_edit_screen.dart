@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
@@ -10,7 +11,7 @@ class ItemEditScreen<T extends GsModel<T>> extends StatefulWidget {
   final T? item;
   final T? duplicated;
   final GsCollection<T> collection;
-  final Iterable<DataField<T>> fields;
+  final DataFields<T> fields;
 
   const ItemEditScreen({
     super.key,
@@ -46,6 +47,7 @@ class _ItemEditScreenState<T extends GsModel<T>>
   @override
   Widget build(BuildContext context) {
     void edit(T value) => _notifier.value = value;
+    final fields = widget.fields.getDataFields(widget.item);
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit ${widget.title}'),
@@ -57,7 +59,7 @@ class _ItemEditScreenState<T extends GsModel<T>>
                 duplicated: _notifier.value.copyWith(),
                 title: widget.title,
                 collection: widget.collection,
-                fields: widget.collection.validator.getDataFields(null),
+                fields: widget.fields,
               ),
             ),
             icon: const Icon(Icons.control_point_duplicate_rounded),
@@ -84,7 +86,7 @@ class _ItemEditScreenState<T extends GsModel<T>>
                 child: ValueListenableBuilder(
                   valueListenable: _notifier,
                   builder: (context, value, child) {
-                    return getTableForFields(value, widget.fields, edit);
+                    return getTableForFields(value, fields, edit);
                   },
                 ),
               ),
@@ -93,8 +95,8 @@ class _ItemEditScreenState<T extends GsModel<T>>
             ValueListenableBuilder(
               valueListenable: _notifier,
               builder: (context, value, child) {
-                final valid = widget.fields
-                        .map((e) => e.isValid?.call(value))
+                final valid = fields
+                        .map((e) => e.validate(value))
                         .whereNotNull()
                         .maxBy((element) => element.index) !=
                     GsValidLevel.error;

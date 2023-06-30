@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/style/utils.dart';
@@ -6,51 +7,54 @@ import 'package:data_editor/style/utils.dart';
 List<DataField<GsCharacterOutfit>> getCharacterOutfitDfs(
   GsCharacterOutfit? model,
 ) {
+  final validator = DataValidator.i.getValidator<GsCharacterOutfit>();
   return [
     DataField.textField(
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      isValid: (item) =>
-          GsValidators.validateId(item, model, Database.i.characterOutfit),
+      validate: (item) => validator.validateEntry('id', item, model),
       refresh: (item) => item.copyWith(id: item.name.toDbId()),
     ),
     DataField.textField(
       'Name',
       (item) => item.name,
       (item, value) => item.copyWith(name: value),
-      isValid: (item) => GsValidators.validateText(item.name),
+      validate: (item) => validator.validateEntry('name', item, model),
     ),
     DataField.selectRarity(
       'Rarity',
       (item) => item.rarity,
       (item, value) => item.copyWith(rarity: value),
+      validate: (item) => validator.validateEntry('rarity', item, model),
     ),
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsSelectItems.versions,
+      (item) => GsItemFilter.versions().items,
       (item, value) => item.copyWith(version: value),
+      validate: (item) => validator.validateEntry('version', item, model),
     ),
     DataField.singleSelect(
       'Character',
       (item) => item.character,
-      (item) => GsSelectItems.chars,
+      (item) => GsItemFilter.chars().items,
       (item, value) => item.copyWith(character: value),
+      validate: (item) => validator.validateEntry('character', item, model),
     ),
     DataField.textField(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
-      isValid: (item) => GsValidators.validateImage(item.image),
-      process: GsValidators.processImage,
+      validate: (item) => validator.validateEntry('image', item, model),
+      process: GsDataParser.processImage,
     ),
     DataField.textField(
       'Full Image',
       (item) => item.fullImage,
       (item, value) => item.copyWith(fullImage: value),
-      isValid: (item) => GsValidators.validateImage(item.fullImage),
-      process: GsValidators.processImage,
+      validate: (item) => validator.validateEntry('full_image', item, model),
+      process: GsDataParser.processImage,
     ),
   ];
 }

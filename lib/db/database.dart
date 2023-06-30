@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dartx/dartx.dart';
+import 'package:data_editor/db/gs_achievement.dart';
 import 'package:data_editor/db/gs_achievement_group.dart';
 import 'package:data_editor/db/gs_artifact.dart';
 import 'package:data_editor/db/gs_banner.dart';
@@ -27,6 +28,7 @@ import 'package:data_editor/style/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
+export 'package:data_editor/db/gs_achievement.dart';
 export 'package:data_editor/db/gs_achievement_group.dart';
 export 'package:data_editor/db/gs_artifact.dart';
 export 'package:data_editor/db/gs_banner.dart';
@@ -51,7 +53,7 @@ int _getCityIndex(String id) =>
     Database.i.cities._data.indexWhere((e) => e.id == id);
 
 int _getCategoryIndex(String id) =>
-    Database.i.achievementCategories.data.indexWhere((e) => e.id == id);
+    Database.i.achievementGroups.data.indexWhere((e) => e.id == id);
 
 class Database {
   static final i = Database._();
@@ -60,15 +62,13 @@ class Database {
   final modified = PublishSubject();
   final saving = BehaviorSubject<bool>.seeded(false);
 
-  final achievementCategories = GsCollection(
+  final achievementGroups = GsCollection(
     'src/achievement_categories.json',
-    GsAchievementCategory.fromMap,
-    validator: DataValidator.achievementCategories,
+    GsAchievementGroup.fromMap,
   );
   final achievements = GsCollection(
     'src/achievements.json',
     GsAchievement.fromMap,
-    validator: DataValidator.achievements,
     sorted: (list) => list
         .sortedBy((element) => _getCategoryIndex(element.group))
         .thenByDescending((element) => element.version)
@@ -78,7 +78,6 @@ class Database {
   final artifacts = GsCollection(
     'src/artifacts.json',
     GsArtifact.fromMap,
-    validator: DataValidator.artifacts,
     sorted: (list) => list
         .sortedByDescending((element) => element.rarity)
         .thenBy((element) => _getCityIndex(element.region))
@@ -88,7 +87,6 @@ class Database {
   final banners = GsCollection(
     'src/banners.json',
     GsBanner.fromMap,
-    validator: DataValidator.banners,
     sorted: (list) => list
         .sortedBy((e) => GsConfigurations.bannerTypes.indexOf(e.type))
         .thenBy((e) => DateTime.tryParse(e.dateStart) ?? DateTime(0))
@@ -97,7 +95,6 @@ class Database {
   final characters = GsCollection(
     'src/characters.json',
     GsCharacter.fromMap,
-    validator: DataValidator.characters,
     sorted: (list) => list
         .sortedBy((element) => element.rarity)
         .thenBy((element) => element.id),
@@ -105,7 +102,6 @@ class Database {
   final characterInfo = GsCollection(
     'src/characters_info.json',
     GsCharacterInfo.fromMap,
-    validator: DataValidator.charactersInfo,
     sorted: (list) {
       final characters = Database.i.characters.data;
       return list.sortedBy((e) => characters.indexWhere((c) => c.id == e.id));
@@ -114,7 +110,6 @@ class Database {
   final characterOutfit = GsCollection(
     'src/characters_outfits.json',
     GsCharacterOutfit.fromMap,
-    validator: DataValidator.charactersOutfit,
     sorted: (list) => list
         .sortedBy((element) => element.rarity)
         .thenBy((element) => element.name),
@@ -122,7 +117,6 @@ class Database {
   final cities = GsCollection(
     'src/cities.json',
     GsCity.fromMap,
-    validator: DataValidator.cities,
     sorted: (list) => list
         .sortedBy((e) => GsConfigurations.elements.indexOf(e.element))
         .thenBy((element) => element.id),
@@ -130,7 +124,6 @@ class Database {
   final ingredients = GsCollection(
     'src/ingredients.json',
     GsIngredient.fromMap,
-    validator: DataValidator.ingredients,
     sorted: (list) => list
         .sortedBy((element) => element.rarity)
         .thenBy((element) => element.id),
@@ -138,7 +131,6 @@ class Database {
   final materials = GsCollection(
     'src/materials.json',
     GsMaterial.fromMap,
-    validator: DataValidator.materials,
     sorted: (list) => list
         .sortedBy((element) => element.group)
         .thenBy((element) => _getCityIndex(element.region))
@@ -149,7 +141,6 @@ class Database {
   final namecards = GsCollection(
     'src/namecards.json',
     GsNamecard.fromMap,
-    validator: DataValidator.namecards,
     sorted: (list) => list
         .sortedBy((e) => GsConfigurations.namecardTypes.indexOf(e.type))
         .thenBy((element) => element.id),
@@ -157,7 +148,6 @@ class Database {
   final recipes = GsCollection(
     'src/recipes.json',
     GsRecipe.fromMap,
-    validator: DataValidator.recipes,
     sorted: (list) => list
         .sortedBy((element) => element.rarity)
         .thenBy((element) => element.id),
@@ -170,12 +160,10 @@ class Database {
         .thenBy((element) => element.type)
         .thenBy((element) => element.category)
         .thenBy((element) => element.name),
-    validator: DataValidator.remarkableChests,
   );
   final sereniteas = GsCollection(
     'src/serenitea_sets.json',
     GsSerenitea.fromMap,
-    validator: DataValidator.sereniteas,
     sorted: (list) => list
         .sortedBy((e) => GsConfigurations.sereniteaType.indexOf(e.category))
         .thenBy((element) => element.id),
@@ -183,19 +171,16 @@ class Database {
   final spincrystal = GsCollection(
     'src/spincrystals.json',
     GsSpincrystal.fromMap,
-    validator: DataValidator.spincrystals,
     sorted: (list) => list.sortedBy((element) => element.number),
   );
   final versions = GsCollection(
     'src/versions.json',
     GsVersion.fromMap,
-    validator: DataValidator.versions,
     sorted: (list) => list.sortedBy((element) => element.id),
   );
   final viewpoints = GsCollection(
     'src/viewpoints.json',
     GsViewpoint.fromMap,
-    validator: DataValidator.viewpoints,
     sorted: (list) => list
         .sortedBy((element) => element.region)
         .thenBy((element) => element.version)
@@ -204,7 +189,6 @@ class Database {
   final weapons = GsCollection(
     'src/weapons.json',
     GsWeapon.fromMap,
-    validator: DataValidator.weapons,
     sorted: (list) => list
         .sortedBy((element) => element.rarity)
         .thenBy((element) => element.id),
@@ -212,7 +196,6 @@ class Database {
   final weaponInfo = GsCollection(
     'src/weapons_info.json',
     GsWeaponInfo.fromMap,
-    validator: DataValidator.weaponsInfo,
     sorted: (list) {
       final weapons = Database.i.weapons.data;
       return list.sortedBy((w) => weapons.indexWhere((e) => e.id == w.id));
@@ -220,7 +203,7 @@ class Database {
   );
 
   List<GsCollection> get collections => [
-        achievementCategories,
+        achievementGroups,
         achievements,
         artifacts,
         banners,
@@ -243,13 +226,8 @@ class Database {
 
   Database._();
 
-  void _updateAllDataValidators() {
-    for (var collection in collections) {
-      final validator = collection.validator;
-      for (var item in collection._data) {
-        validator.checkLevel(item.id, item);
-      }
-    }
+  Future<void> _updateAllDataValidators() {
+    return DataValidator.i.checkAll();
   }
 
   Future<bool> load() async {
@@ -257,7 +235,7 @@ class Database {
     _loaded = true;
     await GsConfigurations.load();
     await Future.wait(collections.map((e) => e.load()));
-    _updateAllDataValidators();
+    await _updateAllDataValidators();
     modified.add(null);
     return _loaded;
   }
@@ -372,15 +350,12 @@ class GsCollection<T extends GsModel<T>> {
   final _data = <T>[];
   List<T> get data => sorted?.call(_data) ?? _data.toList();
 
-  final DataValidator<T> validator;
-
   String get type => (T == GsArtifact).toString();
 
   GsCollection(
     this.src,
     this.create, {
     this.sorted,
-    required this.validator,
   });
 
   T? getItem(String id) => _data.firstOrNullWhere((e) => e.id == id);
@@ -409,15 +384,15 @@ class GsCollection<T extends GsModel<T>> {
     } else {
       _data[idx] = item;
     }
-    if (id != null) validator.checkLevel(id, null);
-    validator.checkLevel(item.id, item);
+    if (id != null) DataValidator.i.checkLevel<T>(id, null);
+    DataValidator.i.checkLevel<T>(item.id, item);
     Database.i.modified.add(null);
   }
 
   void delete(String? id) {
     if (id == null) return;
     _data.removeWhere((element) => element.id == id);
-    validator.checkLevel(id, null);
+    DataValidator.i.checkLevel<T>(id, null);
     Database.i.modified.add(null);
   }
 }

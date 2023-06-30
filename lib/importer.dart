@@ -12,7 +12,7 @@ class Importer {
   Importer._();
 
   static Future<List<GsAchievement>> importAchievementsFromFandom(
-    GsAchievementCategory category, {
+    GsAchievementGroup category, {
     String? url,
     bool useFile = false,
   }) async {
@@ -147,7 +147,7 @@ class Importer {
 
     const wishSel = 'a[title="Wish"] img';
     var wish = document.querySelector(wishSel)?.attributes['src'];
-    wish = wish != null ? GsValidators.processImage(wish) : null;
+    wish = wish != null ? GsDataParser.processImage(wish) : null;
 
     const releaseSel = 'div[data-source="releaseDate"] div';
     final release = document.querySelector(releaseSel)?.text;

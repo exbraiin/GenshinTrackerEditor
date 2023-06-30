@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/screens/item_edit_screen.dart';
 import 'package:data_editor/screens/items_list_screen.dart';
 import 'package:data_editor/style/style.dart';
@@ -11,17 +12,20 @@ class GsConfigs<T extends GsModel<T>> {
   final String title;
   final GsItemDecor Function(T item) getDecor;
   final GsCollection<T> collection;
+  final DataFields<T> dataFields;
 
   GsConfigs._({
     required this.title,
     required this.getDecor,
     required this.collection,
+    required this.dataFields,
   });
 
   static final _map = <Type, GsConfigs>{
-    GsAchievementCategory: GsConfigs<GsAchievementCategory>._(
+    GsAchievementGroup: GsConfigs<GsAchievementGroup>._(
       title: 'Achievement Category',
-      collection: Database.i.achievementCategories,
+      collection: Database.i.achievementGroups,
+      dataFields: DataFields.achievementGroups,
       getDecor: (item) {
         final collection = Database.i.achievements;
         final items = collection.data.where((e) => e.group == item.id);
@@ -37,8 +41,9 @@ class GsConfigs<T extends GsModel<T>> {
     GsAchievement: GsConfigs<GsAchievement>._(
       title: 'Achievement',
       collection: Database.i.achievements,
+      dataFields: DataFields.achievements,
       getDecor: (item) {
-        final cat = Database.i.achievementCategories.getItem(item.group);
+        final cat = Database.i.achievementGroups.getItem(item.group);
         return GsItemDecor(
           label: '${item.name}\n(${item.reward}✦)',
           version: item.version,
@@ -50,6 +55,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsArtifact: GsConfigs<GsArtifact>._(
       title: 'Artifacts',
       collection: Database.i.artifacts,
+      dataFields: DataFields.artifacts,
       getDecor: (item) => GsItemDecor(
         label: item.name,
         image: item.pieces.first.icon,
@@ -61,6 +67,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsBanner: GsConfigs<GsBanner>._(
       title: 'Banners',
       collection: Database.i.banners,
+      dataFields: DataFields.banners,
       getDecor: (item) {
         final data = item.feature5.firstOrNull;
         final image = data != null
@@ -78,6 +85,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsCharacter: GsConfigs<GsCharacter>._(
       title: 'Characters',
       collection: Database.i.characters,
+      dataFields: DataFields.characters,
       getDecor: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
@@ -89,6 +97,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsCharacterInfo: GsConfigs<GsCharacterInfo>._(
       title: 'Character Info',
       collection: Database.i.characterInfo,
+      dataFields: DataFields.charactersInfo,
       getDecor: (item) {
         final char = Database.i.characters.getItem(item.id);
         return GsItemDecor(
@@ -113,10 +122,12 @@ class GsConfigs<T extends GsModel<T>> {
         );
       },
       collection: Database.i.characterOutfit,
+      dataFields: DataFields.charactersOutfit,
     ),
     GsCity: GsConfigs<GsCity>._(
       title: 'Cities',
       collection: Database.i.cities,
+      dataFields: DataFields.cities,
       getDecor: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
@@ -128,6 +139,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsIngredient: GsConfigs<GsIngredient>._(
       title: 'Ingredients',
       collection: Database.i.ingredients,
+      dataFields: DataFields.ingredients,
       getDecor: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
@@ -138,6 +150,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsMaterial: GsConfigs<GsMaterial>._(
       title: 'Materials',
       collection: Database.i.materials,
+      dataFields: DataFields.materials,
       getDecor: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
@@ -149,6 +162,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsNamecard: GsConfigs<GsNamecard>._(
       title: 'Namecards',
       collection: Database.i.namecards,
+      dataFields: DataFields.namecards,
       getDecor: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
@@ -159,6 +173,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsRecipe: GsConfigs<GsRecipe>._(
       title: 'Recipes',
       collection: Database.i.recipes,
+      dataFields: DataFields.recipes,
       getDecor: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
@@ -176,10 +191,12 @@ class GsConfigs<T extends GsModel<T>> {
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
       collection: Database.i.remarkableChests,
+      dataFields: DataFields.remarkableChests,
     ),
     GsSerenitea: GsConfigs<GsSerenitea>._(
       title: 'Sereniteas',
       collection: Database.i.sereniteas,
+      dataFields: DataFields.sereniteas,
       getDecor: (item) => GsItemDecor(
         label: item.name,
         version: item.version,
@@ -189,6 +206,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsSpincrystal: GsConfigs<GsSpincrystal>._(
       title: 'Spincrystals',
       collection: Database.i.spincrystal,
+      dataFields: DataFields.spincrystals,
       getDecor: (item) => GsItemDecor(
         label: '${item.number}',
         version: item.version,
@@ -199,6 +217,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsViewpoint: GsConfigs<GsViewpoint>._(
       title: 'Viewpoints',
       collection: Database.i.viewpoints,
+      dataFields: DataFields.viewpoints,
       getDecor: (item) => GsItemDecor(
         label: item.name,
         version: item.version,
@@ -209,6 +228,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsWeapon: GsConfigs<GsWeapon>._(
       title: 'Weapons',
       collection: Database.i.weapons,
+      dataFields: DataFields.weapons,
       getDecor: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
@@ -219,6 +239,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsWeaponInfo: GsConfigs<GsWeaponInfo>._(
       title: 'Weapon Info',
       collection: Database.i.weaponInfo,
+      dataFields: DataFields.weaponsInfo,
       getDecor: (item) {
         final weapon = Database.i.weapons.getItem(item.id);
         return GsItemDecor(
@@ -232,6 +253,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsVersion: GsConfigs<GsVersion>._(
       title: 'Versions',
       collection: Database.i.versions,
+      dataFields: DataFields.versions,
       getDecor: (item) => GsItemDecor(
         label: item.id,
         version: item.id,
@@ -249,7 +271,7 @@ class GsConfigs<T extends GsModel<T>> {
   }
 
   Widget toGridItem(BuildContext context) {
-    final level = collection.validator.getMaxLevel();
+    final level = DataValidator.i.getMaxLevel<T>();
     final version = collection.data
             .map((e) => getDecor(e).version)
             .toSet()
@@ -272,7 +294,6 @@ class GsConfigs<T extends GsModel<T>> {
         title: title,
         list: () => collection.data,
         getDecor: getDecor,
-        validator: collection.validator,
         onTap: openEditScreen,
       );
     });
@@ -284,7 +305,7 @@ class GsConfigs<T extends GsModel<T>> {
         item: item,
         title: title,
         collection: collection,
-        fields: collection.validator.getDataFields(item),
+        fields: dataFields,
       );
     });
   }

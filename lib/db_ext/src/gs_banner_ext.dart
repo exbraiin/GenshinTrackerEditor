@@ -1,16 +1,17 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/style/utils.dart';
 
 List<DataField<GsBanner>> getBannerDfs(GsBanner? model) {
+  final validator = DataValidator.i.getValidator<GsBanner>();
   return [
     DataField.textField(
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      isValid: (item) =>
-          GsValidators.validateId(item, model, Database.i.banners),
+      validate: (item) => validator.validateEntry('id', item, model),
       refresh: (item) {
         final nameId = item.name.toDbId();
         final dateId = item.dateStart.replaceAll('-', '_');
@@ -22,62 +23,54 @@ List<DataField<GsBanner>> getBannerDfs(GsBanner? model) {
       'Name',
       (item) => item.name,
       (item, value) => item.copyWith(name: value),
-      isValid: (item) => GsValidators.validateText(item.name),
+      validate: (item) => validator.validateEntry('name', item, model),
     ),
     DataField.textField(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
-      isValid: (item) => GsValidators.validateImage(item.image),
-      process: GsValidators.processImage,
+      validate: (item) => validator.validateEntry('image', item, model),
+      process: GsDataParser.processImage,
     ),
     DataField.textField(
       'Date Start',
       (item) => item.dateStart,
       (item, value) => item.copyWith(dateStart: value),
-      isValid: (item) =>
-          GsValidators.validateDates(item.dateStart, item.dateEnd),
+      validate: (item) => validator.validateEntry('date_start', item, model),
     ),
     DataField.textField(
       'Date End',
       (item) => item.dateEnd,
       (item, value) => item.copyWith(dateEnd: value),
-      isValid: (item) =>
-          GsValidators.validateDates(item.dateStart, item.dateEnd),
+      validate: (item) => validator.validateEntry('date_end', item, model),
     ),
     DataField.multiSelect<GsBanner, String>(
       'Feature 4',
       (item) => item.feature4,
-      (item) => GsSelectItems.getWishes(4, item.type),
+      (item) => GsItemFilter.wishes(4, item.type).items,
       (item, value) => item.copyWith(feature4: value),
-      isValid: (item) {
-        final validType = item.type != 'standard' && item.type != 'beginner';
-        if (validType && item.feature4.isEmpty) return GsValidLevel.warn2;
-        return GsValidLevel.good;
-      },
+      validate: (item) => validator.validateEntry('feature_4', item, model),
     ),
     DataField.multiSelect<GsBanner, String>(
       'Feature 5',
       (item) => item.feature5,
-      (item) => GsSelectItems.getWishes(5, item.type),
+      (item) => GsItemFilter.wishes(5, item.type).items,
       (item, value) => item.copyWith(feature5: value),
-      isValid: (item) {
-        final validType = item.type != 'standard' && item.type != 'beginner';
-        if (validType && item.feature5.isEmpty) return GsValidLevel.warn2;
-        return GsValidLevel.good;
-      },
+      validate: (item) => validator.validateEntry('feature_5', item, model),
     ),
     DataField.singleSelect(
       'Type',
       (item) => item.type,
-      (item) => GsSelectItems.bannerTypes,
+      (item) => GsItemFilter.bannerTypes().items,
       (item, value) => item.copyWith(type: value),
+      validate: (item) => validator.validateEntry('type', item, model),
     ),
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsSelectItems.versions,
+      (item) => GsItemFilter.versions().items,
       (item, value) => item.copyWith(version: value),
+      validate: (item) => validator.validateEntry('version', item, model),
     ),
   ];
 }

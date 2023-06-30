@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 class ItemsListScreen<T extends GsModel<T>> extends StatelessWidget {
   final String title;
   final List<T> Function() list;
-  final DataValidator? validator;
 
   final GsItemDecor Function(T i) getDecor;
   final void Function(BuildContext context, T? i)? onTap;
@@ -19,7 +18,6 @@ class ItemsListScreen<T extends GsModel<T>> extends StatelessWidget {
     required this.title,
     required this.list,
     required this.getDecor,
-    this.validator,
     this.onTap,
   });
 
@@ -53,8 +51,7 @@ class ItemsListScreen<T extends GsModel<T>> extends StatelessWidget {
                   return notifier.value.isEmpty ||
                       e.id.contains(notifier.value);
                 }).map((item) {
-                  final level =
-                      validator?.getLevel(item.id) ?? GsValidLevel.good;
+                  final level = DataValidator.i.getLevel<T>(item.id);
                   final decor = getDecor(item);
                   return GsGridItem(
                     color: decor.color,

@@ -1,67 +1,75 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
-import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 
 List<DataField<GsArtifact>> getArtifactDfs(GsArtifact? model) {
+  final validator = DataValidator.i.getValidator<GsArtifact>();
+  final pieces = DataValidator.i.getValidator<GsArtifactPiece>();
   return [
     DataField.textField(
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      isValid: (item) =>
-          GsValidators.validateId(item, model, Database.i.artifacts),
+      validate: (item) => validator.validateEntry('id', item, model),
       refresh: (item) => item.copyWith(id: item.name.toDbId()),
     ),
     DataField.textField(
       'Name',
       (item) => item.name,
       (item, value) => item.copyWith(name: value),
-      isValid: (item) => GsValidators.validateText(item.name),
+      validate: (item) => validator.validateEntry('name', item, model),
     ),
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsSelectItems.versions,
+      (item) => GsItemFilter.versions().items,
       (item, value) => item.copyWith(version: value),
+      validate: (item) => validator.validateEntry('version', item, model),
     ),
     DataField.selectRarity(
       'Rarity',
       (item) => item.rarity,
       (item, value) => item.copyWith(rarity: value),
+      validate: (item) => validator.validateEntry('rarity', item, model),
     ),
     DataField.singleSelect(
       'Region',
       (item) => item.region,
-      (item) => GsSelectItems.regions,
+      (item) => GsItemFilter.regions().items,
       (item, value) => item.copyWith(region: value),
+      validate: (item) => validator.validateEntry('region', item, model),
     ),
     DataField.textField(
       'Piece 1',
       (item) => item.pc1,
       (item, value) => item.copyWith(pc1: value),
+      validate: (item) => validator.validateEntry('1pc', item, model),
     ),
     DataField.textField(
       'Piece 2',
       (item) => item.pc2,
       (item, value) => item.copyWith(pc2: value),
+      validate: (item) => validator.validateEntry('2pc', item, model),
     ),
     DataField.textField(
       'Piece 4',
       (item) => item.pc4,
       (item, value) => item.copyWith(pc4: value),
+      validate: (item) => validator.validateEntry('4pc', item, model),
     ),
     DataField.textField(
       'Domain',
       (item) => item.domain,
       (item, value) => item.copyWith(domain: value),
+      validate: (item) => validator.validateEntry('domain', item, model),
     ),
     DataField.build<GsArtifact, GsArtifactPiece>(
       'Pieces',
       (item) => item.pieces,
-      (item) => GsSelectItems.getFromList(GsConfigurations.artifactPieces),
+      (item) => GsItemFilter.artifactPieces().items,
       (item, child) => DataField.list(
         child.id,
         (item) => [
@@ -69,17 +77,20 @@ List<DataField<GsArtifact>> getArtifactDfs(GsArtifact? model) {
             'Name',
             (item) => item.name,
             (item, value) => item.copyWith(name: value),
+            validate: (item) => pieces.validateEntry('name', item, null),
           ),
           DataField.textField(
             'Icon',
             (item) => item.icon,
             (item, value) => item.copyWith(icon: value),
-            process: GsValidators.processImage,
+            process: GsDataParser.processImage,
+            validate: (item) => pieces.validateEntry('icon', item, null),
           ),
           DataField.textField(
             'Desc',
             (item) => item.desc,
             (item, value) => item.copyWith(desc: value),
+            validate: (item) => pieces.validateEntry('desc', item, null),
           ),
         ],
       ),

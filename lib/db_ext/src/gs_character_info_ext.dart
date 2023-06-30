@@ -1,86 +1,85 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/importer.dart';
-import 'package:data_editor/style/style.dart';
 
 List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
+  final validator = DataValidator.i.getValidator<GsCharacterInfo>();
+  final talents = DataValidator.i.getValidator<GsCharTalent>();
+  final constellations = DataValidator.i.getValidator<GsCharConstellation>();
   return [
     model != null
-        ? DataField.text('ID', (item) => item.id)
+        ? DataField.text(
+            'ID',
+            (item) => item.id,
+            validate: (item) => GsValidLevel.good,
+          )
         : DataField.singleSelect(
             'ID',
             (item) => item.id,
-            (item) => GsSelectItems.charsWithoutInfo,
+            (item) => GsItemFilter.charsWithoutInfo().items,
             (item, value) => item.copyWith(id: value),
+            validate: (item) => validator.validateEntry('id', item, model),
           ),
     DataField.singleSelect(
       'Material Gem',
       (item) => item.gemMaterial,
-      (item) => GsSelectItems.getMaterialGroupWithRarity('ascension_gems'),
+      (item) => GsItemFilter.matGroupsWithRarity(GsItemFilter.matGems).items,
       (item, value) => item.copyWith(gemMaterial: value),
+      validate: (item) => validator.validateEntry('mat_gem', item, model),
     ),
     DataField.singleSelect(
       'Material Boss',
       (item) => item.bossMaterial,
-      (item) => GsSelectItems.getMaterialGroupWithRegion('normal_boss_drops'),
+      (item) => GsItemFilter.matGroupsWithRegion(GsItemFilter.matBoss).items,
       (item, value) => item.copyWith(bossMaterial: value),
+      validate: (item) => validator.validateEntry('mat_boss', item, model),
     ),
     DataField.singleSelect(
       'Material Common',
       (item) => item.commonMaterial,
-      (item) => GsSelectItems.getMaterialGroupsWithRarity(
-        ['normal_drops', 'elite_drops'],
-      ),
+      (item) =>
+          GsItemFilter.matGroupsWithRarity(['normal_drops', 'elite_drops'])
+              .items,
       (item, value) => item.copyWith(commonMaterial: value),
+      validate: (item) => validator.validateEntry('mat_common', item, model),
     ),
     DataField.singleSelect(
       'Material Region',
       (item) => item.regionMaterial,
-      (item) => GsSelectItems.getMaterialGroupWithRegion('region_materials'),
+      (item) => GsItemFilter.matGroupsWithRegion(GsItemFilter.matRegion).items,
       (item, value) => item.copyWith(regionMaterial: value),
-      isValid: (item) {
-        if (item.regionMaterial.isEmpty) return GsValidLevel.error;
-        final chr = Database.i.characters.getItem(item.id);
-        final mat = Database.i.materials.getItem(item.regionMaterial);
-        if (chr == null || mat == null) return GsValidLevel.error;
-        if (mat.region != chr.region) return GsValidLevel.warn1;
-        return GsValidLevel.good;
-      },
+      validate: (item) => validator.validateEntry('mat_region', item, model),
     ),
     DataField.singleSelect(
       'Material Talent',
       (item) => item.talentMaterial,
-      (item) => GsSelectItems.getMaterialGroupWithRegion('talent_materials'),
+      (item) => GsItemFilter.matGroupsWithRegion(GsItemFilter.matTalent).items,
       (item, value) => item.copyWith(talentMaterial: value),
-      isValid: (item) {
-        if (item.talentMaterial.isEmpty) return GsValidLevel.error;
-        final chr = Database.i.characters.getItem(item.id);
-        final mat = Database.i.materials.getItem(item.talentMaterial);
-        if (chr == null || mat == null) return GsValidLevel.error;
-        if (mat.region != chr.region) return GsValidLevel.warn1;
-        return GsValidLevel.good;
-      },
+      validate: (item) => validator.validateEntry('mat_talent', item, model),
     ),
     DataField.singleSelect(
       'Material Weekly',
       (item) => item.weeklyMaterial,
-      (item) => GsSelectItems.getMaterialGroupWithRarity('weekly_boss_drops'),
+      (item) => GsItemFilter.matGroupsWithRarity(GsItemFilter.matWeek).items,
       (item, value) => item.copyWith(weeklyMaterial: value),
+      validate: (item) => validator.validateEntry('mat_weekly', item, model),
     ),
     DataField.singleSelect(
       'Ascension Stat',
       (item) => item.ascStatType,
-      (item) => GsSelectItems.getFromList(GsConfigurations.characterStatTypes),
+      (item) => GsItemFilter.chrStatTypes().items,
       (item, value) => item.copyWith(ascStatType: value),
+      validate: (item) => validator.validateEntry('asc_stat_type', item, model),
     ),
     DataField.textField(
       'Ascension HP Values',
       (item) => item.ascHpValues,
       (item, value) => item.copyWith(ascHpValues: value),
-      isValid: (item) => GsValidators.validateAscension(item.ascHpValues),
-      process: GsValidators.processListOfStrings,
+      validate: (item) => validator.validateEntry('asc_hp_values', item, model),
+      process: GsDataParser.processListOfStrings,
       import: Importer.importCharacterAscensionStatsFromAmbr,
       importTooltip: 'Import from Ambr table',
     ),
@@ -88,29 +87,29 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
       'Ascension Atk Values',
       (item) => item.ascAtkValues,
       (item, value) => item.copyWith(ascAtkValues: value),
-      isValid: (item) => GsValidators.validateAscension(item.ascAtkValues),
-      process: GsValidators.processListOfStrings,
+      validate: (item) =>
+          validator.validateEntry('asc_atk_values', item, model),
+      process: GsDataParser.processListOfStrings,
     ),
     DataField.textField(
       'Ascension Def Values',
       (item) => item.ascDefValues,
       (item, value) => item.copyWith(ascDefValues: value),
-      isValid: (item) => GsValidators.validateAscension(item.ascDefValues),
-      process: GsValidators.processListOfStrings,
+      validate: (item) =>
+          validator.validateEntry('asc_def_values', item, model),
+      process: GsDataParser.processListOfStrings,
     ),
     DataField.textField(
       'Ascension Stat Values',
       (item) => item.ascStatValues,
       (item, value) => item.copyWith(ascStatValues: value),
-      isValid: (item) => GsValidators.validateAscension(item.ascStatValues),
-      process: GsValidators.processListOfStrings,
+      validate: (item) =>
+          validator.validateEntry('asc_stat_values', item, model),
+      process: GsDataParser.processListOfStrings,
     ),
     DataField.list(
       'Talents',
       (item) => item.talents.mapIndexed((idx, tal) {
-        final level = tal.type == 'Alternate Sprint'
-            ? GsValidLevel.warn1
-            : GsValidLevel.warn2;
         return DataField.list(
           tal.type,
           (item) => [
@@ -122,8 +121,7 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 list[idx] = item.talents[idx].copyWith(name: value);
                 return item.copyWith(talents: list);
               },
-              isValid: (item) =>
-                  GsValidators.validateText(item.talents[idx].name, level),
+              validate: (item) => talents.validateEntry('name', tal, null),
             ),
             DataField.textField(
               'Icon',
@@ -133,9 +131,8 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 list[idx] = item.talents[idx].copyWith(icon: value);
                 return item.copyWith(talents: list);
               },
-              isValid: (item) =>
-                  GsValidators.validateImage(item.talents[idx].icon, level),
-              process: GsValidators.processImage,
+              validate: (item) => talents.validateEntry('icon', tal, null),
+              process: GsDataParser.processImage,
             ),
             DataField.textEditor(
               'Desc',
@@ -145,8 +142,7 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 list[idx] = item.talents[idx].copyWith(desc: value);
                 return item.copyWith(talents: list);
               },
-              isValid: (item) =>
-                  GsValidators.validateText(item.talents[idx].desc, level),
+              validate: (item) => talents.validateEntry('desc', tal, null),
             ),
           ],
         );
@@ -155,7 +151,6 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
     DataField.list(
       'Constellations',
       (item) => item.constellations.mapIndexed((idx, con) {
-        const level = GsValidLevel.warn2;
         return DataField.list(
           'C${idx + 1}',
           (item) => [
@@ -167,10 +162,8 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 list[idx] = list[idx].copyWith(name: value);
                 return item.copyWith(constellations: list);
               },
-              isValid: (item) => GsValidators.validateText(
-                item.constellations[idx].name,
-                level,
-              ),
+              validate: (item) =>
+                  constellations.validateEntry('name', con, null),
             ),
             DataField.textField(
               'Icon',
@@ -180,11 +173,9 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 list[idx] = list[idx].copyWith(icon: value);
                 return item.copyWith(constellations: list);
               },
-              isValid: (item) => GsValidators.validateImage(
-                item.constellations[idx].icon,
-                level,
-              ),
-              process: GsValidators.processImage,
+              validate: (item) =>
+                  constellations.validateEntry('icon', con, null),
+              process: GsDataParser.processImage,
             ),
             DataField.textEditor(
               'Desc',
@@ -194,10 +185,8 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 list[idx] = list[idx].copyWith(desc: value);
                 return item.copyWith(constellations: list);
               },
-              isValid: (item) => GsValidators.validateText(
-                item.constellations[idx].desc,
-                level,
-              ),
+              validate: (item) =>
+                  constellations.validateEntry('desc', con, null),
             ),
           ],
         );

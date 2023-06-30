@@ -1,153 +1,202 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
-import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
+import 'package:flutter/material.dart';
 
-typedef It = Iterable<GsSelectItem<String>>;
+typedef SI = Iterable<String>;
 
-class GsSelectItems {
-  GsSelectItems._();
+class GsItemFilter {
+  static const wishChar = 'character';
+  static const matGems = ['ascension_gems'];
+  static const matBoss = ['normal_boss_drops'];
+  static const matDrops = ['normal_drops', 'elite_drops'];
+  static const matElite = ['elite_drops'];
+  static const matNormal = ['normal_drops'];
+  static const matWeek = ['weekly_boss_drops'];
+  static const matWeapons = ['weapon_materials'];
+  static const matRegion = ['region_materials'];
+  static const matTalent = ['talent_materials'];
 
-  static It get achievementTypes => [
-        GsSelectItem('', 'None'),
-        ...GsConfigurations.achievementTypes
-            .map((e) => GsSelectItem(e, e.toTitle())),
-      ];
+  final Iterable<String> ids;
+  final Iterable<GsSelectItem<String>> items;
 
-  static It get versions => Database.i
-      .getVersions()
-      .map((e) => GsSelectItem(e, e, color: GsStyle.getVersionColor(e)));
+  GsItemFilter._(this.ids, this.items);
 
-  static It get regions =>
-      Database.i.getRegions().map((e) => _fromElement(e.id, e.name, e.element));
-
-  static It get elements =>
-      GsConfigurations.elements.map((e) => _fromElement(e, e.toTitle(), e));
-
-  static It get ingredients => Database.i.ingredients.data
-      .map((e) => _fromRarity(e.id, e.name, e.rarity));
-
-  static It get bannerTypes => GsConfigurations.bannerTypes
-      .map((e) => _fromBannerType(e, e.toTitle(), e));
-
-  static It get baseRecipes => Database.i
-      .getAllBaseRecipes()
-      .map((e) => _fromRarity(e.id, e.name, e.rarity));
-
-  static It get recipeEffects => GsConfigurations.recipeEffect.map((e) {
-        final icon = GsGraphics.getRecipeEffectIcon(e);
-        return GsSelectItem(e, e.toTitle(), icon: icon);
-      });
-
-  static It get sereniteas => GsConfigurations.sereniteaType
-      .map((e) => _fromSetCategory(e, e.toTitle(), e));
-
-  static It get nonBaseRecipes => Database.i
-      .getAllNonBaseRecipes()
-      .map((e) => _fromRarity(e.id, e.name, e.rarity));
-
-  static It get achievementGroups => Database.i.achievementCategories.data
-      .map((e) => GsSelectItem(e.id, e.name, color: GsStyle.getRarityColor(4)));
-
-  static It get namecards => [
-        GsSelectItem('none', 'None'),
-        ...Database.i.namecards.data
-            .where((e) => e.type == 'achievement')
-            .map((e) {
-          return GsSelectItem(
-            e.id,
-            e.name,
-            color: GsStyle.getRarityColor(
-              Database.i.achievementCategories.data
-                      .any((element) => element.namecard == e.id)
-                  ? 1
-                  : 4,
-            ),
-          );
-        }),
-      ];
-
-  static It get namecardTypes => GsConfigurations.namecardTypes
-      .map((e) => _fromNamecardType(e, e.toTitle(), e));
-
-  static It get chars => Database.i.characters.data
-      .map((e) => _fromRarity(e.id, e.name, e.rarity));
-
-  static It get charsWithoutInfo => Database.i.characters.data
-      .where((e) => Database.i.characterInfo.getItem(e.id) == null)
-      .map((e) => _fromRarity(e.id, e.name, e.rarity));
-
-  static It get weaponsWithoutInfo => Database.i.weapons.data
-      .where((e) => Database.i.weaponInfo.getItem(e.id) == null)
-      .map((e) => _fromRarity(e.id, e.name, e.rarity));
-
-  static It getFromList(List<String> items, {bool withNone = false}) => [
-        if (withNone) GsSelectItem('', 'None'),
-        ...items.map((e) => GsSelectItem(e, e.toTitle())),
-      ];
-
-  static It getMaterialGroupWithRarity(String type) => Database.i
-      .getMaterialGroup(type)
-      .map((e) => _fromRarity(e.id, e.name, e.rarity));
-
-  static It getMaterialGroupWithRegion(String type) => Database.i
-      .getMaterialGroup(type)
-      .map(_fromMatRegion)
-      .sortedBy((element) => element.color.value);
-
-  static It getMaterialGroupsWithRarity(List<String> types) => Database.i
-      .getMaterialGroups(types)
-      .map((e) => _fromRarity(e.id, e.name, e.rarity));
-
-  static It getMaterialGroupsWithRegion(List<String> types) =>
-      Database.i.getMaterialGroups(types).map(_fromMatRegion);
-
-  static It getWishes(int? rarity, String? type) => Database.i
-      .getAllWishes(rarity, type)
-      .sortedBy((e) => e.name)
-      .map((e) => _fromRarity(e.id, e.name, e.rarity));
-
-  static GsSelectItem<String> _fromMatRegion(GsMaterial mat) {
-    final element = Database.i.getMaterialRegion(mat).element;
-    return _fromElement(mat.id, mat.name, element);
+  static GsItemFilter _from<T>(
+    Iterable<T> models,
+    String Function(T i) selector, {
+    String Function(T i)? title,
+    String Function(T i)? icon,
+    Color Function(T i)? color,
+  }) {
+    return GsItemFilter._(
+      models.map((e) => selector(e)),
+      models.map((e) {
+        final value = selector(e);
+        return GsSelectItem(
+          value,
+          title?.call(e) ?? value.toTitle(),
+          icon: icon?.call(e) ?? '',
+          color: color?.call(e) ?? Colors.grey,
+        );
+      }),
+    );
   }
 
-  static GsSelectItem<String> _fromRarity(String v, String l, int r) =>
-      GsSelectItem(v, l, color: GsStyle.getRarityColor(r));
+  static GsItemFilter _fromStrings(
+    Iterable<String> models, {
+    String Function(String i)? title,
+    String Function(String i)? icon,
+    Color Function(String i)? color,
+  }) =>
+      GsItemFilter._from(
+        models,
+        (i) => i,
+        title: title,
+        icon: icon,
+        color: color,
+      );
 
-  static GsSelectItem<String> _fromElement(String v, String l, String e) =>
-      GsSelectItem(v, l, color: GsStyle.getElementColor(e));
+  factory GsItemFilter.artifactPieces() =>
+      GsItemFilter._fromStrings(GsConfigurations.artifactPieces);
+  factory GsItemFilter.rChestCategory() =>
+      GsItemFilter._fromStrings(GsConfigurations.rChestCategory);
+  factory GsItemFilter.rChestSource() =>
+      GsItemFilter._fromStrings(GsConfigurations.rChestSource);
+  factory GsItemFilter.recipeType() =>
+      GsItemFilter._fromStrings(GsConfigurations.recipeTypes);
+  factory GsItemFilter.matCategories() =>
+      GsItemFilter._fromStrings(GsConfigurations.materialCategories);
+  factory GsItemFilter.weekdays() =>
+      GsItemFilter._fromStrings(GsConfigurations.weekdays);
+  factory GsItemFilter.itemSource() =>
+      GsItemFilter._fromStrings(GsConfigurations.itemSource);
+  factory GsItemFilter.chrStatTypes() =>
+      GsItemFilter._fromStrings(GsConfigurations.characterStatTypes);
+  factory GsItemFilter.weaponTypes() =>
+      GsItemFilter._fromStrings(GsConfigurations.weaponTypes);
+  factory GsItemFilter.statTypes() =>
+      GsItemFilter._fromStrings(GsConfigurations.statTypes);
+  factory GsItemFilter.weaponStatTypes() => GsItemFilter._fromStrings(
+        ['', ...GsConfigurations.weaponStatTypes],
+        title: (i) => i.isEmpty ? 'None' : i.toTitle(),
+      );
+  factory GsItemFilter.namecardTypes() => GsItemFilter._fromStrings(
+        GsConfigurations.namecardTypes,
+        color: GsStyle.getNamecardColor,
+      );
+  factory GsItemFilter.elements() => GsItemFilter._fromStrings(
+        GsConfigurations.elements,
+        color: GsStyle.getElementColor,
+      );
+  factory GsItemFilter.bannerTypes() => GsItemFilter._fromStrings(
+        GsConfigurations.bannerTypes,
+        color: GsStyle.getBannerColor,
+      );
+  factory GsItemFilter.achievementTypes() => GsItemFilter._fromStrings(
+        ['', ...GsConfigurations.achievementTypes],
+        title: (i) => i.isEmpty ? 'None' : i.toTitle(),
+      );
+  factory GsItemFilter.recipeEffects() => GsItemFilter._fromStrings(
+        GsConfigurations.recipeEffect,
+        icon: GsGraphics.getRecipeEffectIcon,
+      );
+  factory GsItemFilter.sereniteas() => GsItemFilter._fromStrings(
+        GsConfigurations.sereniteaType,
+        color: GsStyle.getSereniteaColor,
+      );
 
-  static GsSelectItem<String> _fromBannerType(String v, String l, String t) =>
-      GsSelectItem(v, l, color: GsStyle.getBannerColor(t));
+  // ----- DATABASE ------------------------------------------------------------
 
-  static GsSelectItem<String> _fromNamecardType(String v, String l, String t) =>
-      GsSelectItem(v, l, color: GsStyle.getNamecardColor(t));
-
-  static GsSelectItem<String> _fromSetCategory(String v, String l, String c) =>
-      GsSelectItem(v, l, color: GsStyle.getSereniteaColor(c));
+  factory GsItemFilter.versions() => GsItemFilter._from(
+        Database.i.versions.data,
+        (i) => i.id,
+        color: (i) => GsStyle.getVersionColor(i.id),
+      );
+  factory GsItemFilter.regions() => GsItemFilter._from(
+        [GsCity(id: '', name: 'None'), ...Database.i.cities.data],
+        (i) => i.id,
+        title: (i) => i.name,
+        color: (i) => GsStyle.getElementColor(i.element),
+      );
+  factory GsItemFilter.ingredients() => GsItemFilter._from(
+        Database.i.ingredients.data,
+        (i) => i.id,
+        title: (i) => i.name,
+        color: (i) => GsStyle.getRarityColor(i.rarity),
+      );
+  factory GsItemFilter.baseRecipes() => GsItemFilter._from(
+        Database.i.getAllBaseRecipes(),
+        (i) => i.id,
+        title: (i) => i.name,
+        color: (i) => GsStyle.getRarityColor(i.rarity),
+      );
+  factory GsItemFilter.nonBaseRecipes() => GsItemFilter._from(
+        Database.i.getAllNonBaseRecipes(),
+        (i) => i.id,
+        title: (i) => i.name,
+        color: (i) => GsStyle.getRarityColor(i.rarity),
+      );
+  factory GsItemFilter.achievementGroups() => GsItemFilter._from(
+        Database.i.achievementGroups.data,
+        (i) => i.id,
+        title: (i) => i.name,
+        color: (i) => GsStyle.getRarityColor(4),
+      );
+  factory GsItemFilter.chars() => GsItemFilter._from(
+        Database.i.characters.data,
+        (i) => i.id,
+        title: (i) => i.name,
+        color: (i) => GsStyle.getRarityColor(i.rarity),
+      );
+  factory GsItemFilter.charsWithoutInfo() => GsItemFilter._from(
+        Database.i.characters.data
+            .where((e) => Database.i.characterInfo.getItem(e.id) == null),
+        (i) => i.id,
+        title: (i) => i.name,
+        color: (i) => GsStyle.getRarityColor(i.rarity),
+      );
+  factory GsItemFilter.weaponsWithoutInfo() => GsItemFilter._from(
+        Database.i.weapons.data
+            .where((e) => Database.i.weaponInfo.getItem(e.id) == null),
+        (i) => i.id,
+        title: (i) => i.name,
+        color: (i) => GsStyle.getRarityColor(i.rarity),
+      );
+  factory GsItemFilter.matGroupsWithRarity(List<String> types) =>
+      GsItemFilter._from(
+        Database.i.getMaterialGroups(types).toList(),
+        (i) => i.id,
+        title: (i) => i.name,
+        color: (i) => GsStyle.getRarityColor(i.rarity),
+      );
+  factory GsItemFilter.matGroupsWithRegion(List<String> types) =>
+      GsItemFilter._from(
+        Database.i.getMaterialGroups(types).toList(),
+        (i) => i.id,
+        title: (i) => i.name,
+        color: (i) => GsStyle.getRegionElementColor(i.region) ?? Colors.grey,
+      );
+  factory GsItemFilter.wishes(int? rarity, String? type) => GsItemFilter._from(
+        Database.i.getAllWishes(rarity, type).sortedBy((e) => e.name),
+        (i) => i.id,
+        title: (i) => i.name,
+        color: (i) => GsStyle.getRarityColor(i.rarity),
+      );
+  factory GsItemFilter.achievementNamecards() => GsItemFilter._from(
+        [
+          GsNamecard(id: 'none', name: 'None'),
+          ...Database.i.namecards.data.where((e) => e.type == 'achievement'),
+        ],
+        (i) => i.id,
+        title: (i) => i.name,
+        color: (i) => GsStyle.getRarityColor(i.rarity),
+      );
 }
 
-class GsValidators {
-  GsValidators._();
-
-  static String _toNameId(GsModel item) {
-    if (item is GsBanner) {
-      return '${item.name}_${item.dateStart.replaceAll('-', '_')}'.toDbId();
-    }
-    if (item is GsSpincrystal) {
-      return item.number.toString();
-    }
-    if (item is GsVersion) {
-      return item.id;
-    }
-
-    final name = ((item as dynamic)?.name as String?) ?? '';
-    return name.toDbId();
-  }
-
+class GsDataParser {
   static String processListOfStrings(String value) => value
       .split(',')
       .map((e) => e.trim())
@@ -160,62 +209,5 @@ class GsValidators {
     return value;
   }
 
-  static GsValidLevel validateId<T extends GsModel<T>>(
-    T item,
-    T? model,
-    GsCollection<T> collection,
-  ) {
-    final id = item.id;
-    if (id.isEmpty) return GsValidLevel.error;
-    final nameId = _toNameId(item);
-    final ids = collection.data.map((e) => e.id).where((e) => e != model?.id);
-    final check = id != nameId ? GsValidLevel.warn1 : GsValidLevel.good;
-    return !ids.contains(id) ? check : GsValidLevel.error;
-  }
-
-  static GsValidLevel validateText(
-    String name, [
-    GsValidLevel emptyLevel = GsValidLevel.warn1,
-  ]) {
-    if (name.isEmpty) return emptyLevel;
-    if (name.trim() != name) return GsValidLevel.warn2;
-    return GsValidLevel.good;
-  }
-
-  static GsValidLevel validateImage(
-    String image, [
-    GsValidLevel empty = GsValidLevel.warn2,
-  ]) {
-    if (image.isEmpty) return empty;
-    if (image.trim() != image) return GsValidLevel.warn1;
-    return GsValidLevel.good;
-  }
-
-  static GsValidLevel validateDate(String date) {
-    if (date.isEmpty) return GsValidLevel.warn2;
-    return DateTime.tryParse(date) == null
-        ? GsValidLevel.error
-        : GsValidLevel.none;
-  }
-
-  static GsValidLevel validateDates(String start, String end) {
-    final src = DateTime.tryParse(start);
-    final dst = DateTime.tryParse(end);
-    return src != null && dst != null && dst.isAfter(src)
-        ? GsValidLevel.good
-        : GsValidLevel.error;
-  }
-
-  static GsValidLevel validateBday(String birthday) {
-    final date = DateTime.tryParse(birthday);
-    return date != null && date.year == 0
-        ? GsValidLevel.good
-        : GsValidLevel.error;
-  }
-
-  static GsValidLevel validateAscension(String value) {
-    if (value.isEmpty) return GsValidLevel.warn1;
-    if (value.split(',').length != 8) return GsValidLevel.warn2;
-    return GsValidLevel.good;
-  }
+  GsDataParser._();
 }

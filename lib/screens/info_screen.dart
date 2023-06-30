@@ -1,5 +1,6 @@
 import 'package:data_editor/configs.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/exporter.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
@@ -90,7 +91,7 @@ class _InfoScreenState extends State<InfoScreen> {
               ),
             ),
           ),
-          _getByVersion<GsAchievementCategory>(version.id),
+          _getByVersion<GsAchievementGroup>(version.id),
           _getByVersion<GsAchievement>(version.id),
           _getByVersion<GsArtifact>(version.id),
           _getByVersion<GsBanner>(version.id),
@@ -156,7 +157,7 @@ class _InfoScreenState extends State<InfoScreen> {
             runSpacing: 8,
             children: versionItems.map<Widget>((item) {
               final decor = config.getDecor(item);
-              final level = config.collection.validator.getLevel(item.id);
+              final level = DataValidator.i.getLevel<T>(item.id);
               Widget widget = GsSelectChip(
                 GsSelectItem(
                   item,

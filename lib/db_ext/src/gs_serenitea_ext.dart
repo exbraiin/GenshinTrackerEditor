@@ -1,63 +1,58 @@
-import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/style/utils.dart';
 
 List<DataField<GsSerenitea>> getSereniteaDfs(GsSerenitea? model) {
+  final validator = DataValidator.i.getValidator<GsSerenitea>();
   return [
     DataField.textField(
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      isValid: (item) =>
-          GsValidators.validateId(item, model, Database.i.sereniteas),
+      validate: (item) => validator.validateEntry('id', item, model),
       refresh: (item) => item.copyWith(id: item.name.toDbId()),
     ),
     DataField.textField(
       'Name',
       (item) => item.name,
       (item, value) => item.copyWith(name: value),
-      isValid: (item) => GsValidators.validateText(item.name),
+      validate: (item) => validator.validateEntry('name', item, model),
     ),
     DataField.singleSelect(
       'Category',
       (item) => item.category,
-      (item) => GsSelectItems.sereniteas,
+      (item) => GsItemFilter.sereniteas().items,
       (item, value) => item.copyWith(category: value),
+      validate: (item) => validator.validateEntry('category', item, model),
     ),
     DataField.textField(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
-      process: GsValidators.processImage,
+      process: GsDataParser.processImage,
+      validate: (item) => validator.validateEntry('image', item, model),
     ),
     DataField.textField(
       'Energy',
       (item) => item.energy.toString(),
       (item, value) => item.copyWith(energy: int.tryParse(value) ?? -1),
-      isValid: (item) =>
-          item.energy >= 0 ? GsValidLevel.good : GsValidLevel.error,
+      validate: (item) => validator.validateEntry('energy', item, model),
     ),
     DataField.multiSelect<GsSerenitea, String>(
       'Chars',
       (item) => item.chars,
-      (item) => GsSelectItems.getWishes(null, 'character'),
+      (item) => GsItemFilter.wishes(null, GsItemFilter.wishChar).items,
       (item, value) => item.copyWith(chars: value),
-      isValid: (item) => item.chars.isEmpty
-          ? GsValidLevel.warn2
-          : (Database.i
-                  .getAllWishes(null, 'character')
-                  .map((e) => e.id)
-                  .containsAll(item.chars)
-              ? GsValidLevel.good
-              : GsValidLevel.error),
+      validate: (item) => validator.validateEntry('chars', item, model),
     ),
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsSelectItems.versions,
+      (item) => GsItemFilter.versions().items,
       (item, value) => item.copyWith(version: value),
+      validate: (item) => validator.validateEntry('version', item, model),
     ),
   ];
 }

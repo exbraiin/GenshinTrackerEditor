@@ -1,83 +1,81 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/importer.dart';
-import 'package:data_editor/style/style.dart';
 
 List<DataField<GsWeaponInfo>> getWeaponInfoDfs(GsWeaponInfo? model) {
+  final validator = DataValidator.i.getValidator<GsWeaponInfo>();
   return [
     model != null
-        ? DataField.text('ID', (item) => item.id)
+        ? DataField.text(
+            'ID',
+            (item) => item.id,
+            validate: (item) => GsValidLevel.good,
+          )
         : DataField.singleSelect(
             'ID',
             (item) => item.id,
-            (item) => GsSelectItems.weaponsWithoutInfo,
+            (item) => GsItemFilter.weaponsWithoutInfo().items,
             (item, value) => item.copyWith(id: value),
+            validate: (item) => validator.validateEntry('id', item, model),
           ),
     DataField.textField(
       'Effect Name',
       (item) => item.effectName,
       (item, value) => item.copyWith(effectName: value),
-      isValid: (item) => GsValidators.validateText(item.effectName),
+      validate: (item) => validator.validateEntry('effect_name', item, model),
     ),
     DataField.textEditor(
       'Effect Desc',
       (item) => item.effectDesc,
       (item, value) => item.copyWith(effectDesc: value),
+      validate: (item) => validator.validateEntry('effect_desc', item, model),
     ),
     DataField.singleSelect(
       'Material Weapon',
       (item) => item.matWeapon,
-      (item) => GsSelectItems.getMaterialGroupWithRegion('weapon_materials'),
+      (item) => GsItemFilter.matGroupsWithRegion(GsItemFilter.matWeapons).items,
       (item, value) => item.copyWith(matWeapon: value),
+      validate: (item) => validator.validateEntry('mat_weapon', item, model),
     ),
     DataField.singleSelect(
       'Material Common',
       (item) => item.matCommon,
-      (item) => GsSelectItems.getMaterialGroupWithRarity('normal_drops'),
+      (item) => GsItemFilter.matGroupsWithRarity(GsItemFilter.matNormal).items,
       (item, value) => item.copyWith(matCommon: value),
+      validate: (item) => validator.validateEntry('mat_common', item, model),
     ),
     DataField.singleSelect(
       'Material Elite',
       (item) => item.matElite,
-      (item) => GsSelectItems.getMaterialGroupWithRarity('elite_drops'),
+      (item) => GsItemFilter.matGroupsWithRarity(GsItemFilter.matElite).items,
       (item, value) => item.copyWith(matElite: value),
+      validate: (item) => validator.validateEntry('mat_elite', item, model),
     ),
     DataField.singleSelect(
       'Ascension Stat',
       (item) => item.ascStatType,
-      (item) => GsSelectItems.getFromList(
-        GsConfigurations.weaponStatTypes,
-        withNone: true,
-      ),
+      (item) => GsItemFilter.weaponStatTypes().items,
       (item, value) => item.copyWith(ascStatType: value),
+      validate: (item) => validator.validateEntry('asc_stat_type', item, model),
     ),
     DataField.textField(
       'Ascension Atk Values',
       (item) => item.ascAtkValues,
       (item, value) => item.copyWith(ascAtkValues: value),
-      isValid: (item) {
-        final atk = item.ascAtkValues.split(',').where((e) => e.isNotEmpty);
-        final stat = item.ascStatValues.split(',').where((e) => e.isNotEmpty);
-        return (atk.isNotEmpty && stat.isEmpty) || atk.length == stat.length
-            ? GsValidLevel.good
-            : GsValidLevel.error;
-      },
+      validate: (item) =>
+          validator.validateEntry('asc_atk_values', item, model),
       import: Importer.importWeaponAscensionStatsFromAmbr,
-      process: GsValidators.processListOfStrings,
+      process: GsDataParser.processListOfStrings,
     ),
     DataField.textField(
       'Ascension Stat Values',
       (item) => item.ascStatValues,
       (item, value) => item.copyWith(ascStatValues: value),
-      isValid: (item) {
-        final atk = item.ascAtkValues.split(',').where((e) => e.isNotEmpty);
-        final stat = item.ascStatValues.split(',').where((e) => e.isNotEmpty);
-        return (atk.isNotEmpty && stat.isEmpty) || atk.length == stat.length
-            ? GsValidLevel.good
-            : GsValidLevel.error;
-      },
-      process: GsValidators.processListOfStrings,
+      validate: (item) =>
+          validator.validateEntry('asc_stat_values', item, model),
+      process: GsDataParser.processListOfStrings,
     ),
   ];
 }
