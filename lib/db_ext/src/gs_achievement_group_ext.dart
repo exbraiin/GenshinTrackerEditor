@@ -31,24 +31,23 @@ List<DataField<GsAchievementGroup>> getAchievementGroupsDfs(
       (item, value) => item.copyWith(name: value),
       validate: (item) => validator.validateEntry('name', item, model),
     ),
-    DataField.textField(
+    DataField.textImage(
       'Icon',
       (item) => item.icon,
       (item, value) => item.copyWith(icon: value),
-      process: GsDataParser.processImage,
       validate: (item) => validator.validateEntry('icon', item, model),
     ),
     DataField.singleSelect(
       'Namecard',
       (item) => item.namecard,
-      (item) => GsItemFilter.achievementNamecards().items,
+      (item) => GsItemFilter.achievementNamecards().filters,
       (item, value) => item.copyWith(namecard: value),
       validate: (item) => validator.validateEntry('namecard', item, model),
     ),
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsItemFilter.versions().items,
+      (item) => GsItemFilter.versions().filters,
       (item, value) => item.copyWith(version: value),
       validate: (item) => validator.validateEntry('version', item, model),
     ),

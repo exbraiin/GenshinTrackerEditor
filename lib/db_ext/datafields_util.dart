@@ -5,8 +5,6 @@ import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:flutter/material.dart';
 
-typedef SI = Iterable<String>;
-
 class GsItemFilter {
   static const wishChar = 'character';
   static const matGems = ['ascension_gems'];
@@ -19,10 +17,11 @@ class GsItemFilter {
   static const matRegion = ['region_materials'];
   static const matTalent = ['talent_materials'];
 
-  final Iterable<String> ids;
-  final Iterable<GsSelectItem<String>> items;
+  final Iterable<GsSelectItem<String>> filters;
 
-  GsItemFilter._(this.ids, this.items);
+  Iterable<String> get ids => filters.map((e) => e.value);
+
+  GsItemFilter._(this.filters);
 
   static GsItemFilter _from<T>(
     Iterable<T> models,
@@ -32,7 +31,6 @@ class GsItemFilter {
     Color Function(T i)? color,
   }) {
     return GsItemFilter._(
-      models.map((e) => selector(e)),
       models.map((e) {
         final value = selector(e);
         return GsSelectItem(
@@ -194,20 +192,4 @@ class GsItemFilter {
         title: (i) => i.name,
         color: (i) => GsStyle.getRarityColor(i.rarity),
       );
-}
-
-class GsDataParser {
-  static String processListOfStrings(String value) => value
-      .split(',')
-      .map((e) => e.trim())
-      .where((e) => e.isNotBlank)
-      .join(', ');
-
-  static String processImage(String value) {
-    final idx = value.indexOf('/revision');
-    if (idx != -1) return value.substring(0, idx);
-    return value;
-  }
-
-  GsDataParser._();
 }

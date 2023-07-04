@@ -31,30 +31,28 @@ List<DataField<GsCharacterOutfit>> getCharacterOutfitDfs(
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsItemFilter.versions().items,
+      (item) => GsItemFilter.versions().filters,
       (item, value) => item.copyWith(version: value),
       validate: (item) => validator.validateEntry('version', item, model),
     ),
     DataField.singleSelect(
       'Character',
       (item) => item.character,
-      (item) => GsItemFilter.chars().items,
+      (item) => GsItemFilter.chars().filters,
       (item, value) => item.copyWith(character: value),
       validate: (item) => validator.validateEntry('character', item, model),
     ),
-    DataField.textField(
+    DataField.textImage(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
       validate: (item) => validator.validateEntry('image', item, model),
-      process: GsDataParser.processImage,
     ),
-    DataField.textField(
+    DataField.textImage(
       'Full Image',
       (item) => item.fullImage,
       (item, value) => item.copyWith(fullImage: value),
       validate: (item) => validator.validateEntry('full_image', item, model),
-      process: GsDataParser.processImage,
     ),
   ];
 }

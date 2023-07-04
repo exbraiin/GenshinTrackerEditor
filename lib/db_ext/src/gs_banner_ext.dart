@@ -25,12 +25,11 @@ List<DataField<GsBanner>> getBannerDfs(GsBanner? model) {
       (item, value) => item.copyWith(name: value),
       validate: (item) => validator.validateEntry('name', item, model),
     ),
-    DataField.textField(
+    DataField.textImage(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
       validate: (item) => validator.validateEntry('image', item, model),
-      process: GsDataParser.processImage,
     ),
     DataField.textField(
       'Date Start',
@@ -47,28 +46,28 @@ List<DataField<GsBanner>> getBannerDfs(GsBanner? model) {
     DataField.multiSelect<GsBanner, String>(
       'Feature 4',
       (item) => item.feature4,
-      (item) => GsItemFilter.wishes(4, item.type).items,
+      (item) => GsItemFilter.wishes(4, item.type).filters,
       (item, value) => item.copyWith(feature4: value),
       validate: (item) => validator.validateEntry('feature_4', item, model),
     ),
     DataField.multiSelect<GsBanner, String>(
       'Feature 5',
       (item) => item.feature5,
-      (item) => GsItemFilter.wishes(5, item.type).items,
+      (item) => GsItemFilter.wishes(5, item.type).filters,
       (item, value) => item.copyWith(feature5: value),
       validate: (item) => validator.validateEntry('feature_5', item, model),
     ),
     DataField.singleSelect(
       'Type',
       (item) => item.type,
-      (item) => GsItemFilter.bannerTypes().items,
+      (item) => GsItemFilter.bannerTypes().filters,
       (item, value) => item.copyWith(type: value),
       validate: (item) => validator.validateEntry('type', item, model),
     ),
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsItemFilter.versions().items,
+      (item) => GsItemFilter.versions().filters,
       (item, value) => item.copyWith(version: value),
       validate: (item) => validator.validateEntry('version', item, model),
     ),

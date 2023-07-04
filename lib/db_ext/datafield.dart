@@ -1,27 +1,11 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:data_editor/widgets/gs_text_editor_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-// The validator level.
-enum GsValidLevel {
-  none,
-  good,
-  warn1(color: Colors.lightBlue),
-  warn2(color: Colors.orange, label: 'Missing'),
-  error(color: Colors.red, label: 'Invalid');
-
-  final Color? color;
-  final String? label;
-
-  bool get isErrorOrWarn2 =>
-      this == GsValidLevel.error || this == GsValidLevel.warn2;
-
-  const GsValidLevel({this.color, this.label});
-}
 
 typedef DEdit<T extends GsModel<T>> = void Function(T v);
 typedef DValid<T extends GsModel<T>> = GsValidLevel Function(T item);
@@ -167,6 +151,48 @@ class DataField<T extends GsModel<T>> {
                 ],
               ),
             ));
+
+  static DataField<T> textList<T extends GsModel<T>>(
+    String label,
+    String Function(T item) content,
+    T Function(T item, String value) update, {
+    required DValid<T> validate,
+    Future<T> Function(T item)? import,
+    String? importTooltip,
+  }) {
+    return DataField.textField(
+      label,
+      content,
+      update,
+      import: import,
+      importTooltip: importTooltip,
+      validate: validate,
+      process: (value) => value
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotBlank)
+          .join(', '),
+    );
+  }
+
+  static DataField<T> textImage<T extends GsModel<T>>(
+    String label,
+    String Function(T item) content,
+    T Function(T item, String value) update, {
+    required DValid<T> validate,
+  }) {
+    return DataField.textField(
+      label,
+      content,
+      update,
+      validate: validate,
+      process: (value) {
+        final idx = value.indexOf('/revision');
+        if (idx != -1) return value.substring(0, idx);
+        return value;
+      },
+    );
+  }
 
   static DataField<T> multiSelect<T extends GsModel<T>, V>(
     String label,

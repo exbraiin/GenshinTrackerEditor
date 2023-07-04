@@ -26,31 +26,29 @@ List<DataField<GsWeapon>> getWeaponDfs(GsWeapon? model) {
       (item, value) => item.copyWith(rarity: value),
       validate: (item) => validator.validateEntry('rarity', item, model),
     ),
-    DataField.textField(
+    DataField.textImage(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
       validate: (item) => validator.validateEntry('image', item, model),
-      process: GsDataParser.processImage,
     ),
-    DataField.textField(
+    DataField.textImage(
       'Asc Image',
       (item) => item.imageAsc,
       (item, value) => item.copyWith(imageAsc: value),
       validate: (item) => validator.validateEntry('image_asc', item, model),
-      process: GsDataParser.processImage,
     ),
     DataField.singleSelect(
       'Type',
       (item) => item.type,
-      (item) => GsItemFilter.weaponTypes().items,
+      (item) => GsItemFilter.weaponTypes().filters,
       (item, value) => item.copyWith(type: value),
       validate: (item) => validator.validateEntry('type', item, model),
     ),
     DataField.singleSelect(
       'Source',
       (item) => item.source,
-      (item) => GsItemFilter.itemSource().items,
+      (item) => GsItemFilter.itemSource().filters,
       (item, value) => item.copyWith(source: value),
       validate: (item) => validator.validateEntry('source', item, model),
     ),
@@ -63,7 +61,7 @@ List<DataField<GsWeapon>> getWeaponDfs(GsWeapon? model) {
     DataField.singleSelect(
       'Stat Type',
       (item) => item.statType,
-      (item) => GsItemFilter.statTypes().items,
+      (item) => GsItemFilter.statTypes().filters,
       (item, value) => item.copyWith(statType: value),
       validate: (item) => validator.validateEntry('stat_type', item, model),
     ),
@@ -82,7 +80,7 @@ List<DataField<GsWeapon>> getWeaponDfs(GsWeapon? model) {
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsItemFilter.versions().items,
+      (item) => GsItemFilter.versions().filters,
       (item, value) => item.copyWith(version: value),
       validate: (item) => validator.validateEntry('version', item, model),
     ),

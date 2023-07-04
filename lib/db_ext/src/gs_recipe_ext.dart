@@ -26,7 +26,7 @@ List<DataField<GsRecipe>> getRecipeDfs(GsRecipe? model) {
     DataField.singleSelect(
       'Type',
       (item) => item.type,
-      (item) => GsItemFilter.recipeType().items,
+      (item) => GsItemFilter.recipeType().filters,
       (item, value) => item.copyWith(type: value),
       validate: (item) => validator.validateEntry('type', item, model),
     ),
@@ -39,21 +39,20 @@ List<DataField<GsRecipe>> getRecipeDfs(GsRecipe? model) {
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsItemFilter.versions().items,
+      (item) => GsItemFilter.versions().filters,
       (item, value) => item.copyWith(version: value),
       validate: (item) => validator.validateEntry('version', item, model),
     ),
-    DataField.textField(
+    DataField.textImage(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
       validate: (item) => validator.validateEntry('image', item, model),
-      process: GsDataParser.processImage,
     ),
     DataField.singleSelect(
       'Effect',
       (item) => item.effect,
-      (item) => GsItemFilter.recipeEffects().items,
+      (item) => GsItemFilter.recipeEffects().filters,
       (item, value) => item.copyWith(effect: value),
       validate: (item) => validator.validateEntry('effect', item, model),
     ),
@@ -72,14 +71,14 @@ List<DataField<GsRecipe>> getRecipeDfs(GsRecipe? model) {
     DataField.singleSelect(
       'Base Recipe',
       (item) => item.baseRecipe,
-      (item) => GsItemFilter.nonBaseRecipes().items,
+      (item) => GsItemFilter.nonBaseRecipes().filters,
       (item, value) => item.copyWith(baseRecipe: value),
       validate: (item) => validator.validateEntry('base_recipe', item, model),
     ),
     DataField.build<GsRecipe, GsAmount>(
       'Ingredients',
       (item) => item.ingredients,
-      (item) => GsItemFilter.ingredients().items,
+      (item) => GsItemFilter.ingredients().filters,
       (item, child) => DataField.textField(
         Database.i.ingredients.getItem(child.id)?.name ?? child.id,
         (item) => item.amount.toString(),

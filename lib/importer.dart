@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
-import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:flutter/services.dart';
 import 'package:html/parser.dart' as html;
@@ -147,7 +146,7 @@ class Importer {
 
     const wishSel = 'a[title="Wish"] img';
     var wish = document.querySelector(wishSel)?.attributes['src'];
-    wish = wish != null ? GsDataParser.processImage(wish) : null;
+    wish = wish != null ? _processImage(wish) : null;
 
     const releaseSel = 'div[data-source="releaseDate"] div';
     final release = document.querySelector(releaseSel)?.text;
@@ -263,4 +262,10 @@ Future<String> _getUrl(String url) async {
   final response = await request.close();
   client.close();
   return await response.transform(utf8.decoder).join();
+}
+
+String _processImage(String value) {
+  final idx = value.indexOf('/revision');
+  if (idx != -1) return value.substring(0, idx);
+  return value;
 }

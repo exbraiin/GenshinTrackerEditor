@@ -23,7 +23,7 @@ List<DataField<GsNamecard>> getNamecardDfs(GsNamecard? model) {
     DataField.singleSelect(
       'Type',
       (item) => item.type,
-      (item) => GsItemFilter.namecardTypes().items,
+      (item) => GsItemFilter.namecardTypes().filters,
       (item, value) => item.copyWith(type: value),
       validate: (item) => validator.validateEntry('type', item, model),
     ),
@@ -37,23 +37,21 @@ List<DataField<GsNamecard>> getNamecardDfs(GsNamecard? model) {
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsItemFilter.versions().items,
+      (item) => GsItemFilter.versions().filters,
       (item, value) => item.copyWith(version: value),
       validate: (item) => validator.validateEntry('version', item, model),
     ),
-    DataField.textField(
+    DataField.textImage(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
       validate: (item) => validator.validateEntry('image', item, model),
-      process: GsDataParser.processImage,
     ),
-    DataField.textField(
+    DataField.textImage(
       'Background',
       (item) => item.fullImage,
       (item, value) => item.copyWith(fullImage: value),
       validate: (item) => validator.validateEntry('full_image', item, model),
-      process: GsDataParser.processImage,
     ),
     DataField.textField(
       'Desc',

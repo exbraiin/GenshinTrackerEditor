@@ -23,6 +23,7 @@ import 'package:data_editor/db_ext/src/gs_weapon_ext.dart';
 import 'package:data_editor/db_ext/src/gs_weapon_info_ext.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 export 'src/gs_artifact_ext.dart';
 export 'src/gs_banner_ext.dart';
@@ -64,6 +65,23 @@ class DataFields<T extends GsModel<T>> {
   final List<DataField<T>> Function(T? item) getDataFields;
 
   DataFields._(this.getDataFields);
+}
+
+// The validator level.
+enum GsValidLevel {
+  none,
+  good,
+  warn1(color: Colors.lightBlue),
+  warn2(color: Colors.orange, label: 'Missing'),
+  error(color: Colors.red, label: 'Invalid');
+
+  final Color? color;
+  final String? label;
+
+  bool get isErrorOrWarn2 =>
+      this == GsValidLevel.error || this == GsValidLevel.warn2;
+
+  const GsValidLevel({this.color, this.label});
 }
 
 class DataValidator {
@@ -177,9 +195,9 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
     Iterable<String> ids,
   ) {
     final id = item.id;
-    final nameId = _toNameId(item);
+    final expectedId = _expectedId(item);
     if (id.isEmpty) return GsValidLevel.error;
-    final check = id != nameId ? GsValidLevel.warn1 : GsValidLevel.good;
+    final check = id != expectedId ? GsValidLevel.warn1 : GsValidLevel.good;
     final withoutSelf = ids.where((e) => e != inDb?.id);
     return !withoutSelf.contains(id) ? check : GsValidLevel.error;
   }
@@ -245,11 +263,14 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
         : GsValidLevel.error;
   }
 
-  GsValidLevel validateValues(String value, Iterable<String> values) {
+  GsValidLevel validateContains(String value, Iterable<String> values) {
     return values.contains(value) ? GsValidLevel.good : GsValidLevel.error;
   }
 
-  GsValidLevel validateValues2(List<String> value, Iterable<String> values) {
+  GsValidLevel validateContainsAll(
+    List<String> value,
+    Iterable<String> values,
+  ) {
     return values.all((e) => values.contains(e))
         ? GsValidLevel.good
         : GsValidLevel.error;
@@ -272,8 +293,8 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
       'icon': (item, other) => validateImage(item.icon),
-      'version': (item, other) => validateValues(item.version, versions),
-      'namecard': (item, other) => validateValues(item.namecard, namecards),
+      'version': (item, other) => validateContains(item.version, versions),
+      'namecard': (item, other) => validateContains(item.namecard, namecards),
     }) as GsValidator<T>;
   }
 
@@ -285,11 +306,11 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
       'desc': (item, other) => validateText(item.desc),
-      'type': (item, other) => validateValues(item.type, types),
-      'group': (item, other) => validateValues(item.group, groups),
+      'type': (item, other) => validateContains(item.type, types),
+      'group': (item, other) => validateContains(item.group, groups),
       'hidden': (item, other) => GsValidLevel.good,
       'reward': (item, other) => validateNum(item.reward, 1),
-      'version': (item, other) => validateValues(item.version, versions),
+      'version': (item, other) => validateContains(item.version, versions),
     }) as GsValidator<T>;
   }
 
@@ -300,8 +321,8 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
     return GsValidator<GsArtifact>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
-      'region': (item, other) => validateValues(item.region, regions),
-      'version': (item, other) => validateValues(item.version, versions),
+      'region': (item, other) => validateContains(item.region, regions),
+      'version': (item, other) => validateContains(item.version, versions),
       'rarity': (item, other) => validateRarity(item.rarity),
       'domain': (item, other) => validateText(item.domain),
       '1pc': (item, other) => validateText(item.pc1),
@@ -329,8 +350,8 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'date_start': (item, other) =>
           validateDates(item.dateStart, item.dateEnd),
       'date_end': (item, other) => validateDates(item.dateStart, item.dateEnd),
-      'type': (item, other) => validateValues(item.type, types),
-      'version': (item, other) => validateValues(item.version, versions),
+      'type': (item, other) => validateContains(item.type, types),
+      'version': (item, other) => validateContains(item.version, versions),
       'feature_4': (item, other) {
         final validType = item.type != 'standard' && item.type != 'beginner';
         if (validType && item.feature4.isEmpty) return GsValidLevel.warn2;
@@ -357,16 +378,16 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'enka_id': (item, other) => validateText(item.enkaId, GsValidLevel.warn2),
       'rarity': (item, other) => validateRarity(item.rarity, 4),
       'title': (item, other) => validateText(item.title),
-      'region': (item, other) => validateValues(item.region, regions),
-      'weapon': (item, other) => validateValues(item.weapon, weapons),
-      'element': (item, other) => validateValues(item.element, elements),
-      'version': (item, other) => validateValues(item.version, versions),
-      'source': (item, other) => validateValues(item.source, sources),
+      'region': (item, other) => validateContains(item.region, regions),
+      'weapon': (item, other) => validateContains(item.weapon, weapons),
+      'element': (item, other) => validateContains(item.element, elements),
+      'version': (item, other) => validateContains(item.version, versions),
+      'source': (item, other) => validateContains(item.source, sources),
       'description': (item, other) => validateText(item.description),
       'constellation': (item, other) => validateText(item.constellation),
       'affiliation': (item, other) => validateText(item.affiliation),
       'special_dish': (item, other) =>
-          validateValues(item.specialDish, recipes),
+          validateContains(item.specialDish, recipes),
       'birthday': (item, other) => validateBday(item.birthday),
       'release_date': (item, other) => validateDate(item.releaseDate),
       'image': (item, other) => validateImage(item.image),
@@ -392,10 +413,10 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
     return GsValidator<GsCharacterInfo>({
       'id': (item, other) =>
           item.id.isEmpty ? GsValidLevel.error : GsValidLevel.good,
-      'mat_gem': (item, other) => validateValues(item.gemMaterial, matGem),
-      'mat_boss': (item, other) => validateValues(item.bossMaterial, matBss),
+      'mat_gem': (item, other) => validateContains(item.gemMaterial, matGem),
+      'mat_boss': (item, other) => validateContains(item.bossMaterial, matBss),
       'mat_common': (item, other) =>
-          validateValues(item.commonMaterial, matMob),
+          validateContains(item.commonMaterial, matMob),
       'mat_region': (item, other) {
         if (item.regionMaterial.isEmpty) return GsValidLevel.error;
         final chrRegion = chrWithRegion[item.id];
@@ -413,9 +434,9 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
         return GsValidLevel.good;
       },
       'mat_weekly': (item, other) =>
-          validateValues(item.weeklyMaterial, matWeek),
+          validateContains(item.weeklyMaterial, matWeek),
       'asc_stat_type': (item, other) =>
-          validateValues(item.ascStatType, ascTypes),
+          validateContains(item.ascStatType, ascTypes),
       'asc_hp_values': (item, other) => validateCharAsc(item.ascHpValues),
       'asc_atk_values': (item, other) => validateCharAsc(item.ascAtkValues),
       'asc_def_values': (item, other) => validateCharAsc(item.ascDefValues),
@@ -471,8 +492,9 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'name': (item, other) => validateText(item.name),
       'image': (item, other) => validateImage(item.image),
       'rarity': (item, other) => validateRarity(item.rarity),
-      'version': (item, other) => validateValues(item.version, versions),
-      'character': (item, other) => validateValues(item.character, characters),
+      'version': (item, other) => validateContains(item.version, versions),
+      'character': (item, other) =>
+          validateContains(item.character, characters),
       'full_image': (item, other) => validateImage(item.fullImage),
     }) as GsValidator<T>;
   }
@@ -484,7 +506,7 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
       'image': (item, other) => validateImage(item.image),
-      'element': (item, other) => validateValues(item.element, elements),
+      'element': (item, other) => validateContains(item.element, elements),
       'reputation': (item, other) =>
           item.reputation.isEmpty ? GsValidLevel.warn2 : GsValidLevel.good,
     }) as GsValidator<T>;
@@ -498,7 +520,7 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'desc': (item, other) => validateText(item.desc),
       'image': (item, other) => validateImage(item.image),
       'rarity': (item, other) => validateRarity(item.rarity),
-      'version': (item, other) => validateValues(item.version, versions),
+      'version': (item, other) => validateContains(item.version, versions),
     }) as GsValidator<T>;
   }
 
@@ -511,13 +533,13 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
       'desc': (item, other) => validateText(item.desc),
-      'group': (item, other) => validateValues(item.group, categories),
+      'group': (item, other) => validateContains(item.group, categories),
       'image': (item, other) => validateText(item.image),
-      'region': (item, other) => validateValues(item.region, regions),
+      'region': (item, other) => validateContains(item.region, regions),
       'rarity': (item, other) => validateRarity(item.rarity),
       'subgroup': (item, other) => validateNum(item.subgroup),
-      'version': (item, other) => validateValues(item.version, versions),
-      'weekdays': (item, other) => validateValues2(item.weekdays, weekdays),
+      'version': (item, other) => validateContains(item.version, versions),
+      'weekdays': (item, other) => validateContainsAll(item.weekdays, weekdays),
     }) as GsValidator<T>;
   }
 
@@ -528,12 +550,12 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
       'rarity': (item, other) => validateRarity(item.rarity),
-      'version': (item, other) => validateValues(item.version, versions),
+      'version': (item, other) => validateContains(item.version, versions),
       'image': (item, other) => validateImage(item.image),
       'full_image': (item, other) => validateImage(item.fullImage),
       'desc': (item, other) => validateText(item.desc),
       'obtain': (item, other) => validateText(item.obtain),
-      'type': (item, other) => validateValues(item.type, types),
+      'type': (item, other) => validateContains(item.type, types),
     }) as GsValidator<T>;
   }
 
@@ -545,15 +567,15 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
     return GsValidator<GsRecipe>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
-      'type': (item, other) => validateValues(item.type, types),
-      'version': (item, other) => validateValues(item.version, versions),
+      'type': (item, other) => validateContains(item.type, types),
+      'version': (item, other) => validateContains(item.version, versions),
       'image': (item, other) => validateImage(item.image),
-      'effect': (item, other) => validateValues(item.effect, effects),
+      'effect': (item, other) => validateContains(item.effect, effects),
       'rarity': (item, other) => validateRarity(item.rarity),
       'desc': (item, other) => validateText(item.desc),
       'effect_desc': (item, other) => validateText(item.effectDesc),
       'base_recipe': (item, other) =>
-          validateValues(item.baseRecipe, baseRecipes),
+          validateContains(item.baseRecipe, baseRecipes),
     }) as GsValidator<T>;
   }
 
@@ -573,14 +595,14 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
     return GsValidator<GsRemarkableChest>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
-      'type': (item, other) => validateValues(item.type, types),
+      'type': (item, other) => validateContains(item.type, types),
       'image': (item, other) => validateImage(item.image),
       'rarity': (item, other) => validateRarity(item.rarity),
       'energy': (item, other) => validateNum(item.energy, 1),
-      'region': (item, other) => validateValues(item.region, regions),
-      'source': (item, other) => validateValues(item.source, sources),
-      'version': (item, other) => validateValues(item.version, versions),
-      'category': (item, other) => validateValues(item.category, categories),
+      'region': (item, other) => validateContains(item.region, regions),
+      'source': (item, other) => validateContains(item.source, sources),
+      'version': (item, other) => validateContains(item.version, versions),
+      'category': (item, other) => validateContains(item.category, categories),
     }) as GsValidator<T>;
   }
 
@@ -593,13 +615,13 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'name': (item, other) => validateText(item.name),
       'image': (item, other) => validateImage(item.image),
       'energy': (item, other) => validateNum(item.energy, 1),
-      'category': (item, other) => validateValues(item.category, categories),
+      'category': (item, other) => validateContains(item.category, categories),
       'chars': (item, other) => item.chars.isEmpty
           ? GsValidLevel.warn2
           : (chars.containsAll(item.chars)
               ? GsValidLevel.good
               : GsValidLevel.error),
-      'version': (item, other) => validateValues(item.version, versions),
+      'version': (item, other) => validateContains(item.version, versions),
     }) as GsValidator<T>;
   }
 
@@ -611,8 +633,8 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'name': (item, other) => validateText(item.name),
       'number': (item, other) => validateNum(item.number, 1),
       'source': (item, other) => validateText(item.source),
-      'region': (item, other) => validateValues(item.region, regions),
-      'version': (item, other) => validateValues(item.version, versions),
+      'region': (item, other) => validateContains(item.region, regions),
+      'version': (item, other) => validateContains(item.version, versions),
     }) as GsValidator<T>;
   }
 
@@ -634,8 +656,8 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'name': (item, other) => validateText(item.name),
       'desc': (item, other) => validateText(item.desc),
       'image': (item, other) => validateImage(item.image),
-      'region': (item, other) => validateValues(item.region, regions),
-      'version': (item, other) => validateValues(item.version, versions),
+      'region': (item, other) => validateContains(item.region, regions),
+      'version': (item, other) => validateContains(item.version, versions),
     }) as GsValidator<T>;
   }
 
@@ -649,11 +671,11 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'name': (item, other) => validateText(item.name),
       'image': (item, other) => validateImage(item.image),
       'image_asc': (item, other) => validateImage(item.imageAsc),
-      'version': (item, other) => validateValues(item.version, versions),
+      'version': (item, other) => validateContains(item.version, versions),
       'rarity': (item, other) => validateRarity(item.rarity),
-      'type': (item, other) => validateValues(item.type, types),
+      'type': (item, other) => validateContains(item.type, types),
       'atk': (item, other) => validateNum(item.atk, 1),
-      'stat_type': (item, other) => validateValues(item.statType, statTypes),
+      'stat_type': (item, other) => validateContains(item.statType, statTypes),
       'stat_value': (item, other) {
         if (item.statType == 'none') {
           return item.statValue == 0 ? GsValidLevel.good : GsValidLevel.error;
@@ -661,7 +683,7 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
         return validateNum(item.statValue, 1);
       },
       'desc': (item, other) => validateText(item.desc),
-      'source': (item, other) => validateValues(item.source, sources),
+      'source': (item, other) => validateContains(item.source, sources),
     }) as GsValidator<T>;
   }
 
@@ -675,14 +697,16 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
         GsItemFilter.matGroupsWithRarity(GsItemFilter.matElite).ids;
     final ascType = GsItemFilter.weaponStatTypes().ids;
     return GsValidator<GsWeaponInfo>({
-      'id': (item, other) => validateValues(item.id, ids),
+      'id': (item, other) => validateContains(item.id, ids),
       'effect_name': (item, other) => validateText(item.effectName),
       'effect_desc': (item, other) => validateText(item.effectDesc),
-      'mat_weapon': (item, other) => validateValues(item.matWeapon, matWeapon),
-      'mat_common': (item, other) => validateValues(item.matCommon, matCommon),
-      'mat_elite': (item, other) => validateValues(item.matElite, matElite),
+      'mat_weapon': (item, other) =>
+          validateContains(item.matWeapon, matWeapon),
+      'mat_common': (item, other) =>
+          validateContains(item.matCommon, matCommon),
+      'mat_elite': (item, other) => validateContains(item.matElite, matElite),
       'asc_stat_type': (item, other) =>
-          validateValues(item.ascStatType, ascType),
+          validateContains(item.ascStatType, ascType),
       'asc_atk_values': (item, other) =>
           validateWeaponAsc(item.ascAtkValues, item.ascStatValues),
       'asc_stat_values': (item, other) =>
@@ -693,9 +717,12 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
   return GsValidator({});
 }
 
-String _toNameId(GsModel item) {
+String _expectedId(GsModel item) {
   if (item is GsBanner) {
     return '${item.name}_${item.dateStart.replaceAll('-', '_')}'.toDbId();
+  }
+  if (item is GsAchievement) {
+    return '${item.group}_${item.name}_${item.reward}'.toDbId();
   }
   if (item is GsSpincrystal) {
     return item.number.toString();

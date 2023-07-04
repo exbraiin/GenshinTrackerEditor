@@ -3,6 +3,7 @@ import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/exporter.dart';
 import 'package:data_editor/style/style.dart';
+import 'package:data_editor/widgets/gs_notifier_provider.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:flutter/material.dart';
 
@@ -120,8 +121,8 @@ class _InfoScreenState extends State<InfoScreen> {
 
     Widget badge(Color color) {
       return Container(
-        width: 16,
-        height: 16,
+        width: 12,
+        height: 12,
         decoration: BoxDecoration(
           border: Border.all(
             width: 2,
@@ -141,50 +142,64 @@ class _InfoScreenState extends State<InfoScreen> {
     }
 
     final vColor = GsStyle.getVersionColor(version);
-    return Column(
-      children: [
-        Container(
-          height: 32,
-          color: vColor.withOpacity(0.4),
-          child: Center(
-            child: Text('${config.title} (${versionItems.length})'),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: versionItems.map<Widget>((item) {
-              final decor = config.getDecor(item);
-              final level = DataValidator.i.getLevel<T>(item.id);
-              Widget widget = GsSelectChip(
-                GsSelectItem(
-                  item,
-                  decor.label,
-                  color: decor.color,
+    return GsNotifierProvider(
+      value: false,
+      builder: (context, notifier, child) {
+        return Column(
+          children: [
+            InkWell(
+              onTap: () => notifier.value = !notifier.value,
+              child: Container(
+                height: 32,
+                color: vColor.withOpacity(0.4),
+                child: Center(
+                  child: Text('${config.title} (${versionItems.length})'),
                 ),
-                onTap: (item) => config.openEditScreen(context, item),
-              );
-              final levelColor = level.color;
-              if (levelColor != null) {
-                widget = Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    widget,
-                    Positioned(
-                      top: -4,
-                      right: -4,
-                      child: badge(levelColor),
-                    ),
-                  ],
+              ),
+            ),
+            ValueListenableBuilder(
+              valueListenable: notifier,
+              builder: (context, value, child) {
+                if (!value) return const SizedBox();
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: versionItems.map<Widget>((item) {
+                      final decor = config.getDecor(item);
+                      final level = DataValidator.i.getLevel<T>(item.id);
+                      Widget widget = GsSelectChip(
+                        GsSelectItem(
+                          item,
+                          decor.label,
+                          color: decor.color,
+                        ),
+                        onTap: (item) => config.openEditScreen(context, item),
+                      );
+                      final levelColor = level.color;
+                      if (levelColor != null) {
+                        widget = Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            widget,
+                            Positioned(
+                              top: -2,
+                              right: -2,
+                              child: badge(levelColor),
+                            ),
+                          ],
+                        );
+                      }
+                      return widget;
+                    }).toList(),
+                  ),
                 );
-              }
-              return widget;
-            }).toList(),
-          ),
-        ),
-      ],
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

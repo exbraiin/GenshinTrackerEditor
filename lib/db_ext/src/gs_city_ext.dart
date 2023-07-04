@@ -21,21 +21,20 @@ List<DataField<GsCity>> getCityDfs(GsCity? model) {
       (item, value) => item.copyWith(name: value),
       validate: (item) => validator.validateEntry('name', item, model),
     ),
-    DataField.textField(
+    DataField.textImage(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
       validate: (item) => validator.validateEntry('image', item, model),
-      process: GsDataParser.processImage,
     ),
     DataField.singleSelect(
       'Element',
       (item) => item.element,
-      (item) => GsItemFilter.elements().items,
+      (item) => GsItemFilter.elements().filters,
       (item, value) => item.copyWith(element: value),
       validate: (item) => validator.validateEntry('element', item, model),
     ),
-    DataField.textField(
+    DataField.textList(
       'Reputation',
       (item) => item.reputation.join(', '),
       (item, value) {
@@ -44,7 +43,6 @@ List<DataField<GsCity>> getCityDfs(GsCity? model) {
         final tValue = r.whereNotNull().toList();
         return item.copyWith(reputation: tValue);
       },
-      process: GsDataParser.processListOfStrings,
       validate: (item) => validator.validateEntry('reputation', item, model),
     ),
   ];

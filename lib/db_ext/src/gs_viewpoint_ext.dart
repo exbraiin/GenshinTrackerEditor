@@ -29,22 +29,21 @@ List<DataField<GsViewpoint>> getViewpointtDfs(GsViewpoint? model) {
     DataField.singleSelect(
       'Region',
       (item) => item.region,
-      (item) => GsItemFilter.regions().items,
+      (item) => GsItemFilter.regions().filters,
       (item, value) => item.copyWith(region: value),
       validate: (item) => validator.validateEntry('region', item, model),
     ),
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsItemFilter.versions().items,
+      (item) => GsItemFilter.versions().filters,
       (item, value) => item.copyWith(version: value),
       validate: (item) => validator.validateEntry('version', item, model),
     ),
-    DataField.textField(
+    DataField.textImage(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
-      process: GsDataParser.processImage,
       validate: (item) => validator.validateEntry('image', item, model),
     ),
   ];

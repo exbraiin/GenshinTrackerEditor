@@ -1,5 +1,5 @@
 import 'package:data_editor/db/database.dart';
-import 'package:data_editor/db_ext/datafield.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/widgets/mouse_button.dart';
 import 'package:flutter/material.dart';
 

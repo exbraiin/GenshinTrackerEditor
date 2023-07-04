@@ -25,16 +25,15 @@ List<DataField<GsRemarkableChest>> getRemarkableChestDfs(
     DataField.singleSelect(
       'Type',
       (item) => item.type,
-      (item) => GsItemFilter.sereniteas().items,
+      (item) => GsItemFilter.sereniteas().filters,
       (item, value) => item.copyWith(type: value),
       validate: (item) => validator.validateEntry('type', item, model),
     ),
-    DataField.textField(
+    DataField.textImage(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
       validate: (item) => validator.validateEntry('image', item, model),
-      process: GsDataParser.processImage,
     ),
     DataField.selectRarity(
       'Rarity',
@@ -51,28 +50,28 @@ List<DataField<GsRemarkableChest>> getRemarkableChestDfs(
     DataField.singleSelect(
       'Region',
       (item) => item.region,
-      (item) => GsItemFilter.regions().items,
+      (item) => GsItemFilter.regions().filters,
       (item, value) => item.copyWith(region: value),
       validate: (item) => validator.validateEntry('region', item, model),
     ),
     DataField.singleSelect(
       'Source',
       (item) => item.source,
-      (item) => GsItemFilter.rChestSource().items,
+      (item) => GsItemFilter.rChestSource().filters,
       (item, value) => item.copyWith(source: value),
       validate: (item) => validator.validateEntry('source', item, model),
     ),
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsItemFilter.versions().items,
+      (item) => GsItemFilter.versions().filters,
       (item, value) => item.copyWith(version: value),
       validate: (item) => validator.validateEntry('version', item, model),
     ),
     DataField.singleSelect(
       'Category',
       (item) => item.category,
-      (item) => GsItemFilter.rChestCategory().items,
+      (item) => GsItemFilter.rChestCategory().filters,
       (item, value) => item.copyWith(category: value),
       validate: (item) => validator.validateEntry('category', item, model),
     ),

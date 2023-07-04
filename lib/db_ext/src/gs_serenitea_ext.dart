@@ -23,15 +23,14 @@ List<DataField<GsSerenitea>> getSereniteaDfs(GsSerenitea? model) {
     DataField.singleSelect(
       'Category',
       (item) => item.category,
-      (item) => GsItemFilter.sereniteas().items,
+      (item) => GsItemFilter.sereniteas().filters,
       (item, value) => item.copyWith(category: value),
       validate: (item) => validator.validateEntry('category', item, model),
     ),
-    DataField.textField(
+    DataField.textImage(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
-      process: GsDataParser.processImage,
       validate: (item) => validator.validateEntry('image', item, model),
     ),
     DataField.textField(
@@ -43,14 +42,14 @@ List<DataField<GsSerenitea>> getSereniteaDfs(GsSerenitea? model) {
     DataField.multiSelect<GsSerenitea, String>(
       'Chars',
       (item) => item.chars,
-      (item) => GsItemFilter.wishes(null, GsItemFilter.wishChar).items,
+      (item) => GsItemFilter.wishes(null, GsItemFilter.wishChar).filters,
       (item, value) => item.copyWith(chars: value),
       validate: (item) => validator.validateEntry('chars', item, model),
     ),
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsItemFilter.versions().items,
+      (item) => GsItemFilter.versions().filters,
       (item, value) => item.copyWith(version: value),
       validate: (item) => validator.validateEntry('version', item, model),
     ),

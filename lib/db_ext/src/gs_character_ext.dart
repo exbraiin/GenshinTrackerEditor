@@ -45,35 +45,35 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
     DataField.singleSelect(
       'Region',
       (item) => item.region,
-      (item) => GsItemFilter.regions().items,
+      (item) => GsItemFilter.regions().filters,
       (item, value) => item.copyWith(region: value),
       validate: (item) => validator.validateEntry('region', item, model),
     ),
     DataField.singleSelect(
       'Weapon',
       (item) => item.weapon,
-      (item) => GsItemFilter.weaponTypes().items,
+      (item) => GsItemFilter.weaponTypes().filters,
       (item, value) => item.copyWith(weapon: value),
       validate: (item) => validator.validateEntry('weapon', item, model),
     ),
     DataField.singleSelect(
       'Element',
       (item) => item.element,
-      (item) => GsItemFilter.elements().items,
+      (item) => GsItemFilter.elements().filters,
       (item, value) => item.copyWith(element: value),
       validate: (item) => validator.validateEntry('element', item, model),
     ),
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsItemFilter.versions().items,
+      (item) => GsItemFilter.versions().filters,
       (item, value) => item.copyWith(version: value),
       validate: (item) => validator.validateEntry('version', item, model),
     ),
     DataField.singleSelect(
       'Obtain',
       (item) => item.source,
-      (item) => GsItemFilter.itemSource().items,
+      (item) => GsItemFilter.itemSource().filters,
       (item, value) => item.copyWith(source: value),
       validate: (item) => validator.validateEntry('source', item, model),
     ),
@@ -98,7 +98,7 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
     DataField.singleSelect(
       'Special Dish',
       (item) => item.specialDish,
-      (item) => GsItemFilter.baseRecipes().items,
+      (item) => GsItemFilter.baseRecipes().filters,
       (item, value) => item.copyWith(specialDish: value),
       validate: (item) => validator.validateEntry('special_dish', item, model),
     ),
@@ -114,27 +114,24 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
       (item, value) => item.copyWith(releaseDate: value),
       validate: (item) => validator.validateEntry('release_date', item, model),
     ),
-    DataField.textField(
+    DataField.textImage(
       'Image',
       (item) => item.image,
       (item, value) => item.copyWith(image: value),
       validate: (item) => validator.validateEntry('image', item, model),
-      process: GsDataParser.processImage,
     ),
-    DataField.textField(
+    DataField.textImage(
       'Full Image',
       (item) => item.fullImage,
       (item, value) => item.copyWith(fullImage: value),
       validate: (item) => validator.validateEntry('full_image', item, model),
-      process: GsDataParser.processImage,
     ),
-    DataField.textField(
+    DataField.textImage(
       'Constellation Image',
       (item) => item.constellationImage,
       (item, value) => item.copyWith(constellationImage: value),
       validate: (item) =>
           validator.validateEntry('constellation_image', item, model),
-      process: GsDataParser.processImage,
     ),
   ];
 }

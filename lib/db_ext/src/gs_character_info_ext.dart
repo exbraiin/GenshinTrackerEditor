@@ -19,21 +19,21 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
         : DataField.singleSelect(
             'ID',
             (item) => item.id,
-            (item) => GsItemFilter.charsWithoutInfo().items,
+            (item) => GsItemFilter.charsWithoutInfo().filters,
             (item, value) => item.copyWith(id: value),
             validate: (item) => validator.validateEntry('id', item, model),
           ),
     DataField.singleSelect(
       'Material Gem',
       (item) => item.gemMaterial,
-      (item) => GsItemFilter.matGroupsWithRarity(GsItemFilter.matGems).items,
+      (item) => GsItemFilter.matGroupsWithRarity(GsItemFilter.matGems).filters,
       (item, value) => item.copyWith(gemMaterial: value),
       validate: (item) => validator.validateEntry('mat_gem', item, model),
     ),
     DataField.singleSelect(
       'Material Boss',
       (item) => item.bossMaterial,
-      (item) => GsItemFilter.matGroupsWithRegion(GsItemFilter.matBoss).items,
+      (item) => GsItemFilter.matGroupsWithRegion(GsItemFilter.matBoss).filters,
       (item, value) => item.copyWith(bossMaterial: value),
       validate: (item) => validator.validateEntry('mat_boss', item, model),
     ),
@@ -42,70 +42,68 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
       (item) => item.commonMaterial,
       (item) =>
           GsItemFilter.matGroupsWithRarity(['normal_drops', 'elite_drops'])
-              .items,
+              .filters,
       (item, value) => item.copyWith(commonMaterial: value),
       validate: (item) => validator.validateEntry('mat_common', item, model),
     ),
     DataField.singleSelect(
       'Material Region',
       (item) => item.regionMaterial,
-      (item) => GsItemFilter.matGroupsWithRegion(GsItemFilter.matRegion).items,
+      (item) =>
+          GsItemFilter.matGroupsWithRegion(GsItemFilter.matRegion).filters,
       (item, value) => item.copyWith(regionMaterial: value),
       validate: (item) => validator.validateEntry('mat_region', item, model),
     ),
     DataField.singleSelect(
       'Material Talent',
       (item) => item.talentMaterial,
-      (item) => GsItemFilter.matGroupsWithRegion(GsItemFilter.matTalent).items,
+      (item) =>
+          GsItemFilter.matGroupsWithRegion(GsItemFilter.matTalent).filters,
       (item, value) => item.copyWith(talentMaterial: value),
       validate: (item) => validator.validateEntry('mat_talent', item, model),
     ),
     DataField.singleSelect(
       'Material Weekly',
       (item) => item.weeklyMaterial,
-      (item) => GsItemFilter.matGroupsWithRarity(GsItemFilter.matWeek).items,
+      (item) => GsItemFilter.matGroupsWithRarity(GsItemFilter.matWeek).filters,
       (item, value) => item.copyWith(weeklyMaterial: value),
       validate: (item) => validator.validateEntry('mat_weekly', item, model),
     ),
     DataField.singleSelect(
       'Ascension Stat',
       (item) => item.ascStatType,
-      (item) => GsItemFilter.chrStatTypes().items,
+      (item) => GsItemFilter.chrStatTypes().filters,
       (item, value) => item.copyWith(ascStatType: value),
       validate: (item) => validator.validateEntry('asc_stat_type', item, model),
     ),
-    DataField.textField(
+    DataField.textList(
       'Ascension HP Values',
       (item) => item.ascHpValues,
       (item, value) => item.copyWith(ascHpValues: value),
       validate: (item) => validator.validateEntry('asc_hp_values', item, model),
-      process: GsDataParser.processListOfStrings,
       import: Importer.importCharacterAscensionStatsFromAmbr,
       importTooltip: 'Import from Ambr table',
     ),
-    DataField.textField(
+    DataField.textList(
       'Ascension Atk Values',
       (item) => item.ascAtkValues,
       (item, value) => item.copyWith(ascAtkValues: value),
       validate: (item) =>
           validator.validateEntry('asc_atk_values', item, model),
-      process: GsDataParser.processListOfStrings,
     ),
-    DataField.textField(
+    DataField.textList(
       'Ascension Def Values',
       (item) => item.ascDefValues,
       (item, value) => item.copyWith(ascDefValues: value),
       validate: (item) =>
           validator.validateEntry('asc_def_values', item, model),
-      process: GsDataParser.processListOfStrings,
     ),
-    DataField.textField(
+    DataField.textList(
       'Ascension Stat Values',
       (item) => item.ascStatValues,
       (item, value) => item.copyWith(ascStatValues: value),
       validate: (item) =>
           validator.validateEntry('asc_stat_values', item, model),
-      process: GsDataParser.processListOfStrings,
     ),
     DataField.list(
       'Talents',
@@ -123,7 +121,7 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
               },
               validate: (item) => talents.validateEntry('name', tal, null),
             ),
-            DataField.textField(
+            DataField.textImage(
               'Icon',
               (item) => tal.icon,
               (item, value) {
@@ -132,7 +130,6 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
                 return item.copyWith(talents: list);
               },
               validate: (item) => talents.validateEntry('icon', tal, null),
-              process: GsDataParser.processImage,
             ),
             DataField.textEditor(
               'Desc',
@@ -165,7 +162,7 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
               validate: (item) =>
                   constellations.validateEntry('name', con, null),
             ),
-            DataField.textField(
+            DataField.textImage(
               'Icon',
               (item) => con.icon,
               (item, value) {
@@ -175,7 +172,6 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
               },
               validate: (item) =>
                   constellations.validateEntry('icon', con, null),
-              process: GsDataParser.processImage,
             ),
             DataField.textEditor(
               'Desc',

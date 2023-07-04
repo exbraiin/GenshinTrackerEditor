@@ -25,7 +25,7 @@ List<DataField<GsArtifact>> getArtifactDfs(GsArtifact? model) {
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsItemFilter.versions().items,
+      (item) => GsItemFilter.versions().filters,
       (item, value) => item.copyWith(version: value),
       validate: (item) => validator.validateEntry('version', item, model),
     ),
@@ -38,7 +38,7 @@ List<DataField<GsArtifact>> getArtifactDfs(GsArtifact? model) {
     DataField.singleSelect(
       'Region',
       (item) => item.region,
-      (item) => GsItemFilter.regions().items,
+      (item) => GsItemFilter.regions().filters,
       (item, value) => item.copyWith(region: value),
       validate: (item) => validator.validateEntry('region', item, model),
     ),
@@ -69,7 +69,7 @@ List<DataField<GsArtifact>> getArtifactDfs(GsArtifact? model) {
     DataField.build<GsArtifact, GsArtifactPiece>(
       'Pieces',
       (item) => item.pieces,
-      (item) => GsItemFilter.artifactPieces().items,
+      (item) => GsItemFilter.artifactPieces().filters,
       (item, child) => DataField.list(
         child.id,
         (item) => [
@@ -79,11 +79,10 @@ List<DataField<GsArtifact>> getArtifactDfs(GsArtifact? model) {
             (item, value) => item.copyWith(name: value),
             validate: (item) => pieces.validateEntry('name', item, null),
           ),
-          DataField.textField(
+          DataField.textImage(
             'Icon',
             (item) => item.icon,
             (item, value) => item.copyWith(icon: value),
-            process: GsDataParser.processImage,
             validate: (item) => pieces.validateEntry('icon', item, null),
           ),
           DataField.textField(

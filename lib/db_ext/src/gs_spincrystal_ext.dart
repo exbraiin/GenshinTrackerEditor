@@ -34,14 +34,14 @@ List<DataField<GsSpincrystal>> getSpincrystalDfs(GsSpincrystal? model) {
     DataField.singleSelect(
       'Region',
       (item) => item.region,
-      (item) => GsItemFilter.regions().items,
+      (item) => GsItemFilter.regions().filters,
       (item, value) => item.copyWith(region: value),
       validate: (item) => validator.validateEntry('region', item, model),
     ),
     DataField.singleSelect(
       'Version',
       (item) => item.version,
-      (item) => GsItemFilter.versions().items,
+      (item) => GsItemFilter.versions().filters,
       (item, value) => item.copyWith(version: value),
       validate: (item) => validator.validateEntry('version', item, model),
     ),
