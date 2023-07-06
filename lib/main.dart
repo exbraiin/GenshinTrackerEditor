@@ -1,6 +1,7 @@
 import 'package:data_editor/configs.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/screens/info_screen.dart';
+import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_grid_view.dart';
 import 'package:flutter/gestures.dart';
@@ -83,10 +84,22 @@ class Home extends StatelessWidget {
           }
 
           if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 2,
+            return Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.6),
+                    BlendMode.multiply,
+                  ),
+                  image: const AssetImage(GsGraphics.bgImg),
+                ),
+              ),
+              child: const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
               ),
             );
           }

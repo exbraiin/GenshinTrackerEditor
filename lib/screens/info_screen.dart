@@ -1,7 +1,6 @@
 import 'package:data_editor/configs.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
-import 'package:data_editor/exporter.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/widgets/gs_notifier_provider.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
@@ -34,15 +33,7 @@ class _InfoScreenState extends State<InfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Info Screen'),
-        actions: const [
-          IconButton(
-            onPressed: Exporter.export,
-            icon: Icon(Icons.download_for_offline_rounded),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Info Screen')),
       body: StreamBuilder(
         stream: Database.i.modified,
         builder: (context, snapshot) {

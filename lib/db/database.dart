@@ -143,6 +143,7 @@ class Database {
     GsNamecard.fromMap,
     sorted: (list) => list
         .sortedBy((e) => GsConfigurations.namecardTypes.indexOf(e.type))
+        .thenBy((element) => element.version)
         .thenBy((element) => element.id),
   );
   final recipes = GsCollection(
