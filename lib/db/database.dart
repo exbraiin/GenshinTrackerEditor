@@ -430,6 +430,9 @@ extension JsonMapExt on JsonMap {
   List<String> getStringList(String key, [List<String> value = const []]) =>
       (this[key] as List? ?? value).cast<String>();
 
+  List<T> getListOf<T>(String key, T Function(JsonMap m) create) =>
+      (this[key] as List? ?? []).map((e) => create(e)).toList();
+
   /// Converts a [JsonMap] into a list of [T] by the [create] function with an id defined by key.
   List<T> getMapToList<T>(String key, T Function(JsonMap m) create) =>
       (this[key] as JsonMap? ?? {})

@@ -20,12 +20,6 @@ List<DataField<GsAchievement>> getAchievementsDfs(GsAchievement? model) {
       (item, value) => item.copyWith(name: value),
       validate: (item) => validator.validateEntry('name', item, model),
     ),
-    DataField.textField(
-      'Desc',
-      (item) => item.desc,
-      (item, value) => item.copyWith(desc: value),
-      validate: (item) => validator.validateEntry('desc', item, model),
-    ),
     DataField.singleSelect(
       'Group',
       (item) => item.group,
@@ -46,18 +40,37 @@ List<DataField<GsAchievement>> getAchievementsDfs(GsAchievement? model) {
       swap: (item) => item.copyWith(hidden: !item.hidden),
       validate: (item) => validator.validateEntry('hidden', item, model),
     ),
-    DataField.textField(
-      'Reward',
-      (item) => item.reward.toString(),
-      (item, value) => item.copyWith(reward: int.tryParse(value) ?? 0),
-      validate: (item) => validator.validateEntry('reward', item, model),
-    ),
     DataField.singleSelect(
       'Version',
       (item) => item.version,
       (item) => GsItemFilter.versions().filters,
       (item, value) => item.copyWith(version: value),
       validate: (item) => validator.validateEntry('version', item, model),
+    ),
+    DataField.buildList<GsAchievement, GsAchievementPhase>(
+      'Phases',
+      (item) => item.phases,
+      (idx, a, child) => DataField.list(
+        '#$idx',
+        (item) {
+          return [
+            DataField.textField(
+              'Desc',
+              (item) => item.desc,
+              (item, value) => item.copyWith(desc: value),
+              validate: (e) => validator.validateEntry('phases', a, model),
+            ),
+            DataField.textField(
+              'Reward',
+              (item) => item.reward.toString(),
+              (item, value) => item.copyWith(reward: int.tryParse(value) ?? 0),
+              validate: (e) => validator.validateEntry('phases', a, model),
+            ),
+          ];
+        },
+      ),
+      () => GsAchievementPhase.fromMap({}),
+      (item, list) => item.copyWith(phases: list),
     ),
   ];
 }

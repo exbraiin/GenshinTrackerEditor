@@ -300,6 +300,63 @@ class DataField<T extends GsModel<T>> {
           GsValidLevel.none,
     );
   }
+
+  static DataField<T> buildList<T extends GsModel<T>, C extends GsModel<C>>(
+    String label,
+    List<C> Function(T item) values,
+    DataField<C> Function(int index, T item, C child) build,
+    C Function() create,
+    T Function(T item, List<C> list) update, {
+    GsValidLevel emptyLevel = GsValidLevel.error,
+  }) {
+    return DataField<T>._(
+      label,
+      (item, edit) {
+        final list = values(item).toList();
+        return Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () =>
+                      edit(update(item, list.toList()..removeLast())),
+                  icon: const Icon(Icons.remove_rounded),
+                ),
+                IconButton(
+                  onPressed: () =>
+                      edit(update(item, list.toList()..add(create()))),
+                  icon: const Icon(Icons.add_rounded),
+                ),
+              ],
+            ),
+            Table(
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              border: const TableBorder(
+                horizontalInside: BorderSide(color: Colors.grey),
+                top: BorderSide(color: Colors.grey),
+                bottom: BorderSide(color: Colors.grey),
+              ),
+              columnWidths: const {0: IntrinsicColumnWidth()},
+              children: list.mapIndexed((index, child) {
+                return _getFieldTableRow(
+                  child,
+                  build(index, item, child),
+                  (child) => edit(update(item, list.toList()..[index] = child)),
+                );
+              }).toList(),
+            ),
+          ],
+        );
+      },
+      validate: (item) =>
+          values(item)
+              .mapIndexed((i, e) => build(i, item, e).validate(e))
+              .whereNotNull()
+              .maxBy((element) => element.index) ??
+          emptyLevel,
+    );
+  }
 }
 
 Widget getTableForFields<T extends GsModel<T>>(

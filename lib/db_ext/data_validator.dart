@@ -305,12 +305,21 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
     return GsValidator<GsAchievement>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
-      'desc': (item, other) => validateText(item.desc),
       'type': (item, other) => validateContains(item.type, types),
       'group': (item, other) => validateContains(item.group, groups),
       'hidden': (item, other) => GsValidLevel.good,
-      'reward': (item, other) => validateNum(item.reward, 1),
       'version': (item, other) => validateContains(item.version, versions),
+      'phases': (item, other) {
+        if (item.phases.isEmpty) return GsValidLevel.warn2;
+        return item.phases.map((e) {
+              return [
+                    validateText(e.desc),
+                    validateNum(e.reward, 1),
+                  ].maxBy((e) => e.index) ??
+                  GsValidLevel.none;
+            }).maxBy((e) => e.index) ??
+            GsValidLevel.none;
+      },
     }) as GsValidator<T>;
   }
 
