@@ -27,11 +27,8 @@ class GsConfigs<T extends GsModel<T>> {
       collection: Database.i.achievementGroups,
       dataFields: DataFields.achievementGroups,
       getDecor: (item) {
-        final collection = Database.i.achievements;
-        final items = collection.data.where((e) => e.group == item.id);
-        final reward = items.sumBy((e) => e.reward);
         return GsItemDecor(
-          label: '${item.name}\n${items.length} ($reward✦)',
+          label: '${item.achievements} (${item.rewards}✦)\n${item.name}',
           version: item.version,
           image: item.icon,
           color: GsStyle.getRarityColor(4),
