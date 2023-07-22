@@ -381,6 +381,7 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
     final elements = GsItemFilter.elements().ids;
     final sources = GsItemFilter.itemSource().ids;
     final recipes = GsItemFilter.baseRecipes().ids;
+    final models = GsItemFilter.modelType().ids;
     return GsValidator<GsCharacter>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
@@ -394,6 +395,7 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'source': (item, other) => validateContains(item.source, sources),
       'description': (item, other) => validateText(item.description),
       'constellation': (item, other) => validateText(item.constellation),
+      'model_type': (item, other) => validateContains(item.modelType, models),
       'affiliation': (item, other) => validateText(item.affiliation),
       'special_dish': (item, other) =>
           validateContains(item.specialDish, recipes),
@@ -731,7 +733,7 @@ String _expectedId(GsModel item) {
     return '${item.name}_${item.dateStart.replaceAll('-', '_')}'.toDbId();
   }
   if (item is GsAchievement) {
-    return '${item.group}_${item.name}_${item.reward}'.toDbId();
+    return '${item.group}_${item.name}'.toDbId();
   }
   if (item is GsSpincrystal) {
     return item.number.toString();

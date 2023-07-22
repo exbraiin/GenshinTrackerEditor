@@ -96,6 +96,13 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
       validate: (item) => validator.validateEntry('affiliation', item, model),
     ),
     DataField.singleSelect(
+      'Model Type',
+      (item) => item.modelType,
+      (item) => GsItemFilter.modelType().filters,
+      (item, value) => item.copyWith(modelType: value),
+      validate: (item) => validator.validateEntry('model_type', item, model),
+    ),
+    DataField.singleSelect(
       'Special Dish',
       (item) => item.specialDish,
       (item) => GsItemFilter.baseRecipes().filters,

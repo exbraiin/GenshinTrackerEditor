@@ -174,5 +174,12 @@
         "1st Ascension Passive",
         "4th Ascension Passive",
         "Utility Passive"
+    ],
+    "character_model_type": [
+        "short_female",
+        "medium_male",
+        "medium_female",
+        "tall_male",
+        "tall_female"
     ]
 }

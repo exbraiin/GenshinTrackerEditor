@@ -16,6 +16,7 @@ class GsCharacter extends GsModel<GsCharacter> {
   final String description;
   final String constellation;
   final String affiliation;
+  final String modelType;
   final String specialDish;
   final String birthday;
   final String releaseDate;
@@ -37,6 +38,7 @@ class GsCharacter extends GsModel<GsCharacter> {
     this.description = '',
     this.constellation = '',
     this.affiliation = '',
+    this.modelType = '',
     this.specialDish = '',
     this.birthday = '',
     this.releaseDate = '',
@@ -59,6 +61,7 @@ class GsCharacter extends GsModel<GsCharacter> {
         description = m.getString('description'),
         constellation = m.getString('constellation'),
         affiliation = m.getString('affiliation'),
+        modelType = m.getString('model_type'),
         specialDish = m.getString('special_dish'),
         birthday = m.getString('birthday'),
         releaseDate = m.getString('release_date'),
@@ -80,6 +83,7 @@ class GsCharacter extends GsModel<GsCharacter> {
     String? source,
     String? description,
     String? constellation,
+    String? modelType,
     String? affiliation,
     String? specialDish,
     String? birthday,
@@ -101,6 +105,7 @@ class GsCharacter extends GsModel<GsCharacter> {
       source: source ?? this.source,
       description: description ?? this.description,
       constellation: constellation ?? this.constellation,
+      modelType: modelType ?? this.modelType,
       affiliation: affiliation ?? this.affiliation,
       specialDish: specialDish ?? this.specialDish,
       birthday: birthday ?? this.birthday,
@@ -124,6 +129,7 @@ class GsCharacter extends GsModel<GsCharacter> {
         'source': source,
         'description': description,
         'constellation': constellation,
+        'model_type': modelType,
         'affiliation': affiliation,
         'special_dish': specialDish,
         'birthday': birthday,

@@ -77,6 +77,9 @@ class GsItemFilter {
       GsItemFilter._fromStrings(GsConfigurations.weaponTypes);
   factory GsItemFilter.statTypes() =>
       GsItemFilter._fromStrings(GsConfigurations.statTypes);
+  factory GsItemFilter.modelType() =>
+      GsItemFilter._fromStrings(GsConfigurations.characterModelType);
+
   factory GsItemFilter.weaponStatTypes() => GsItemFilter._fromStrings(
         ['', ...GsConfigurations.weaponStatTypes],
         title: (i) => i.isEmpty ? 'None' : i.toTitle(),

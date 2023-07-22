@@ -35,6 +35,7 @@ class GsConfigurations {
   static final rChestSource = _list('rchest_source');
   static final rChestCategory = _list('rchest_category');
   static final characterStatTypes = _list('character_ascension_stats');
+  static final characterModelType = _list('character_model_type');
 }
 
 class GsGraphics {
