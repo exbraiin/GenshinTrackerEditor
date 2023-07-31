@@ -398,10 +398,16 @@ class GsCollection<T extends GsModel<T>> {
   }
 }
 
+typedef JsonMap = Map<String, dynamic>;
+
 abstract class GsModel<T extends GsModel<T>> {
   String get id;
   JsonMap toJsonMap();
   T copyWith();
+}
+
+extension MapEntryExt on MapEntry<String, dynamic> {
+  JsonMap toMapWithId() => {'id': key, ...value as JsonMap? ?? {}};
 }
 
 extension JsonMapExt on JsonMap {

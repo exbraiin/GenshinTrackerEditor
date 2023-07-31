@@ -1,5 +1,4 @@
 import 'package:data_editor/db/database.dart';
-import 'package:data_editor/style/utils.dart';
 
 class GsSerenitea extends GsModel<GsSerenitea> {
   @override

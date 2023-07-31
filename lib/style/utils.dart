@@ -1,8 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 
-typedef JsonMap = Map<String, dynamic>;
-
 extension BuildContextExt on BuildContext {
   Future<T?> pushWidget<T>(Widget Function() widget) {
     return Navigator.of(this)
@@ -56,8 +54,4 @@ extension StringExt on String {
 
 extension IterableMapExt<K, V> on Iterable<MapEntry<K, V>> {
   Map<K, V> toMap() => Map.fromEntries(this);
-}
-
-extension MapEntryExt on MapEntry<String, dynamic> {
-  JsonMap toMapWithId() => {'id': key, ...value as JsonMap? ?? {}};
 }

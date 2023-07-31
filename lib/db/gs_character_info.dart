@@ -1,6 +1,5 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/style.dart';
-import 'package:data_editor/style/utils.dart';
 
 class GsCharacterInfo extends GsModel<GsCharacterInfo> {
   @override

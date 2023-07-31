@@ -2,7 +2,6 @@ import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
-import 'package:data_editor/style/utils.dart';
 
 List<DataField<GsBanner>> getBannerDfs(GsBanner? model) {
   final validator = DataValidator.i.getValidator<GsBanner>();
@@ -12,12 +11,7 @@ List<DataField<GsBanner>> getBannerDfs(GsBanner? model) {
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
       validate: (item) => validator.validateEntry('id', item, model),
-      refresh: (item) {
-        final nameId = item.name.toDbId();
-        final dateId = item.dateStart.replaceAll('-', '_');
-        final id = '${nameId}_$dateId';
-        return item.copyWith(id: id);
-      },
+      refresh: (item) => item.copyWith(id: generateId(item)),
     ),
     DataField.textField(
       'Name',

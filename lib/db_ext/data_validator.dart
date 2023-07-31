@@ -195,7 +195,7 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
     Iterable<String> ids,
   ) {
     final id = item.id;
-    final expectedId = _expectedId(item);
+    final expectedId = generateId(item);
     if (id.isEmpty) return GsValidLevel.error;
     final check = id != expectedId ? GsValidLevel.warn1 : GsValidLevel.good;
     final withoutSelf = ids.where((e) => e != inDb?.id);
@@ -728,7 +728,7 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
   return GsValidator({});
 }
 
-String _expectedId(GsModel item) {
+String generateId(GsModel item) {
   if (item is GsBanner) {
     return '${item.name}_${item.dateStart.replaceAll('-', '_')}'.toDbId();
   }

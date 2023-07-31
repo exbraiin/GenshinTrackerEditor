@@ -2,7 +2,6 @@ import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
-import 'package:data_editor/style/utils.dart';
 
 List<DataField<GsWeapon>> getWeaponDfs(GsWeapon? model) {
   final validator = DataValidator.i.getValidator<GsWeapon>();
@@ -12,7 +11,7 @@ List<DataField<GsWeapon>> getWeaponDfs(GsWeapon? model) {
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
       validate: (item) => validator.validateEntry('id', item, model),
-      refresh: (item) => item.copyWith(id: item.name.toDbId()),
+      refresh: (item) => item.copyWith(id: generateId(item)),
     ),
     DataField.textField(
       'Name',

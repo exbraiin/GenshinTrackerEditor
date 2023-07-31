@@ -1,5 +1,4 @@
 import 'package:data_editor/db/database.dart';
-import 'package:data_editor/style/utils.dart';
 
 class GsCity extends GsModel<GsCity> {
   @override
