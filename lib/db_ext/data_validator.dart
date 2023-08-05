@@ -10,7 +10,6 @@ import 'package:data_editor/db_ext/src/gs_character_ext.dart';
 import 'package:data_editor/db_ext/src/gs_character_info_ext.dart';
 import 'package:data_editor/db_ext/src/gs_character_outfit_ext.dart';
 import 'package:data_editor/db_ext/src/gs_city_ext.dart';
-import 'package:data_editor/db_ext/src/gs_ingredient_ext.dart';
 import 'package:data_editor/db_ext/src/gs_material_ext.dart';
 import 'package:data_editor/db_ext/src/gs_namecard_ext.dart';
 import 'package:data_editor/db_ext/src/gs_recipe_ext.dart';
@@ -31,7 +30,6 @@ export 'src/gs_character_ext.dart';
 export 'src/gs_character_info_ext.dart';
 export 'src/gs_character_outfit_ext.dart';
 export 'src/gs_city_ext.dart';
-export 'src/gs_ingredient_ext.dart';
 export 'src/gs_material_ext.dart';
 export 'src/gs_namecard_ext.dart';
 export 'src/gs_recipe_ext.dart';
@@ -50,7 +48,6 @@ class DataFields<T extends GsModel<T>> {
   static final charactersInfo = DataFields._(getCharacterInfoDfs);
   static final charactersOutfit = DataFields._(getCharacterOutfitDfs);
   static final cities = DataFields._(getCityDfs);
-  static final ingredients = DataFields._(getIngredientDfs);
   static final materials = DataFields._(getMaterialDfs);
   static final namecards = DataFields._(getNamecardDfs);
   static final recipes = DataFields._(getRecipeDfs);
@@ -109,7 +106,6 @@ class DataValidator {
       process(db.characterInfo.data),
       process(db.characterOutfit.data),
       process(db.cities.data),
-      process(db.ingredients.data),
       process(db.materials.data),
       process(db.namecards.data),
       process(db.recipes.data),
@@ -523,18 +519,6 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
     }) as GsValidator<T>;
   }
 
-  if (T == GsIngredient) {
-    final ids = Database.i.ingredients.data.map((e) => e.id);
-    return GsValidator<GsIngredient>({
-      'id': (item, other) => validateId(item, other, ids),
-      'name': (item, other) => validateText(item.name),
-      'desc': (item, other) => validateText(item.desc),
-      'image': (item, other) => validateImage(item.image),
-      'rarity': (item, other) => validateRarity(item.rarity),
-      'version': (item, other) => validateContains(item.version, versions),
-    }) as GsValidator<T>;
-  }
-
   if (T == GsMaterial) {
     final ids = Database.i.materials.data.map((e) => e.id);
     final regions = GsItemFilter.regions().ids;
@@ -551,6 +535,7 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'subgroup': (item, other) => validateNum(item.subgroup),
       'version': (item, other) => validateContains(item.version, versions),
       'weekdays': (item, other) => validateContainsAll(item.weekdays, weekdays),
+      'ingredient': (item, other) => GsValidLevel.good,
     }) as GsValidator<T>;
   }
 

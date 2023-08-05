@@ -88,7 +88,6 @@ class _InfoScreenState extends State<InfoScreen> {
           _getByVersion<GsArtifact>(version.id),
           _getByVersion<GsBanner>(version.id),
           _getByVersion<GsCharacter>(version.id),
-          _getByVersion<GsIngredient>(version.id),
           _getByVersion<GsMaterial>(version.id),
           _getByVersion<GsNamecard>(version.id),
           _getByVersion<GsRecipe>(version.id),

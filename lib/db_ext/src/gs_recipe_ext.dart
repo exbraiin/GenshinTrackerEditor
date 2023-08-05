@@ -79,7 +79,7 @@ List<DataField<GsRecipe>> getRecipeDfs(GsRecipe? model) {
       (item) => item.ingredients,
       (item) => GsItemFilter.ingredients().filters,
       (item, child) => DataField.textField(
-        Database.i.ingredients.getItem(child.id)?.name ?? child.id,
+        Database.i.materials.getItem(child.id)?.name ?? child.id,
         (item) => item.amount.toString(),
         (item, value) => item.copyWith(amount: int.tryParse(value) ?? 0),
         validate: (item) => amounts.validateEntry('id', item, null),

@@ -10,7 +10,6 @@ import 'package:data_editor/db/gs_character.dart';
 import 'package:data_editor/db/gs_character_info.dart';
 import 'package:data_editor/db/gs_character_outfit.dart';
 import 'package:data_editor/db/gs_city.dart';
-import 'package:data_editor/db/gs_ingredient.dart';
 import 'package:data_editor/db/gs_material.dart';
 import 'package:data_editor/db/gs_namecard.dart';
 import 'package:data_editor/db/gs_recipe.dart';
@@ -36,7 +35,6 @@ export 'package:data_editor/db/gs_character.dart';
 export 'package:data_editor/db/gs_character_info.dart';
 export 'package:data_editor/db/gs_character_outfit.dart';
 export 'package:data_editor/db/gs_city.dart';
-export 'package:data_editor/db/gs_ingredient.dart';
 export 'package:data_editor/db/gs_material.dart';
 export 'package:data_editor/db/gs_namecard.dart';
 export 'package:data_editor/db/gs_recipe.dart';
@@ -121,6 +119,7 @@ class Database {
         .sortedBy((e) => GsConfigurations.elements.indexOf(e.element))
         .thenBy((element) => element.id),
   );
+  /*
   final ingredients = GsCollection(
     'src/ingredients.json',
     GsIngredient.fromMap,
@@ -128,6 +127,7 @@ class Database {
         .sortedBy((element) => element.rarity)
         .thenBy((element) => element.id),
   );
+  */
   final materials = GsCollection(
     'src/materials.json',
     GsMaterial.fromMap,
@@ -212,7 +212,7 @@ class Database {
         characterInfo,
         characterOutfit,
         cities,
-        ingredients,
+        // ingredients,
         materials,
         namecards,
         recipes,

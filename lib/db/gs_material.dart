@@ -11,6 +11,7 @@ class GsMaterial extends GsModel<GsMaterial> {
   final String region;
   final int subgroup;
   final String version;
+  final bool ingredient;
   final List<String> weekdays;
 
   GsMaterial({
@@ -23,6 +24,7 @@ class GsMaterial extends GsModel<GsMaterial> {
     this.region = '',
     this.subgroup = 0,
     this.version = '',
+    this.ingredient = false,
     this.weekdays = const [],
   });
 
@@ -36,6 +38,7 @@ class GsMaterial extends GsModel<GsMaterial> {
         region = m.getString('region'),
         subgroup = m.getInt('subgroup', 0),
         version = m.getString('version'),
+        ingredient = m.getBool('ingredient'),
         weekdays = m.getStringList('weekdays');
 
   @override
@@ -49,6 +52,7 @@ class GsMaterial extends GsModel<GsMaterial> {
     String? region,
     int? subgroup,
     String? version,
+    bool? ingredient,
     List<String>? weekdays,
   }) {
     return GsMaterial(
@@ -62,6 +66,7 @@ class GsMaterial extends GsModel<GsMaterial> {
       subgroup: subgroup ?? this.subgroup,
       version: version ?? this.version,
       weekdays: weekdays ?? this.weekdays,
+      ingredient: ingredient ?? this.ingredient,
     );
   }
 
@@ -75,6 +80,7 @@ class GsMaterial extends GsModel<GsMaterial> {
         'rarity': rarity,
         'subgroup': subgroup,
         'version': version,
+        'ingredient': ingredient,
         if (weekdays.isNotEmpty) 'weekdays': weekdays,
       };
 }

@@ -123,7 +123,10 @@ class GsItemFilter {
         color: (i) => GsStyle.getElementColor(i.element),
       );
   factory GsItemFilter.ingredients() => GsItemFilter._from(
-        Database.i.ingredients.data,
+        Database.i.materials.data
+            .where((e) => e.ingredient)
+            .sortedBy((e) => e.rarity)
+            .thenBy((e) => e.id),
         (i) => i.id,
         title: (i) => i.name,
         color: (i) => GsStyle.getRarityColor(i.rarity),

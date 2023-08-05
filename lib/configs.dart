@@ -133,17 +133,6 @@ class GsConfigs<T extends GsModel<T>> {
         regionColor: GsStyle.getRegionElementColor(item.id),
       ),
     ),
-    GsIngredient: GsConfigs<GsIngredient>._(
-      title: 'Ingredients',
-      collection: Database.i.ingredients,
-      dataFields: DataFields.ingredients,
-      getDecor: (item) => GsItemDecor(
-        label: item.name,
-        image: item.image,
-        version: item.version,
-        color: GsStyle.getRarityColor(item.rarity),
-      ),
-    ),
     GsMaterial: GsConfigs<GsMaterial>._(
       title: 'Materials',
       collection: Database.i.materials,

@@ -19,7 +19,13 @@ List<DataField<GsMaterial>> getMaterialDfs(GsMaterial? model) {
       (item, value) => item.copyWith(name: value),
       validate: (item) => validator.validateEntry('name', item, model),
     ),
-    DataField.textField(
+    DataField.text(
+      'Ingredient',
+      (item) => item.ingredient ? 'Yes' : 'No',
+      swap: (item) => item.copyWith(ingredient: !item.ingredient),
+      validate: (item) => validator.validateEntry('ingredient', item, model),
+    ),
+    DataField.textEditor(
       'Desc',
       (item) => item.desc,
       (item, value) => item.copyWith(desc: value),
