@@ -55,7 +55,7 @@ class GsConfigs<T extends GsModel<T>> {
       dataFields: DataFields.artifacts,
       getDecor: (item) => GsItemDecor(
         label: item.name,
-        image: item.pieces.first.icon,
+        image: item.pieces.firstOrNull?.icon,
         version: item.version,
         color: GsStyle.getRarityColor(item.rarity),
         regionColor: GsStyle.getRegionElementColor(item.region),
