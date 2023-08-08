@@ -78,6 +78,9 @@ class DataField<T extends GsModel<T>> {
                 child: Builder(
                   builder: (context) => InkWell(
                     onTap: () => GsTextEditorDialog(
+                      info: item is GsCharacterInfo
+                          ? item as GsCharacterInfo
+                          : null,
                       initialText: content(item),
                       onConfirm: (value) => edit(update(item, value)),
                     ).show(context),

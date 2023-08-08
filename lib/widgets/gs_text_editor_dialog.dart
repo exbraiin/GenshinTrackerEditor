@@ -1,3 +1,4 @@
+import 'package:data_editor/db/database.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
@@ -7,11 +8,13 @@ import 'package:flutter/material.dart';
 class GsTextEditorDialog extends StatefulWidget {
   final String title;
   final String initialText;
+  final GsCharacterInfo? info;
   final void Function(String value) onConfirm;
 
   const GsTextEditorDialog({
     super.key,
     this.title = 'Edit Text',
+    this.info,
     required this.initialText,
     required this.onConfirm,
   });
@@ -156,6 +159,13 @@ class _GsTextEditorDialogState<T> extends State<GsTextEditorDialog> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),
         child: GsSelectChip(
+          GsSelectItem('auto', 'Auto'),
+          onTap: (item) => _autoFormatText(),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 2),
+        child: GsSelectChip(
           GsSelectItem('bold', 'Bold'),
           onTap: (item) => _insertText((s) => '<b>$s</b>'),
         ),
@@ -204,5 +214,88 @@ class _GsTextEditorDialogState<T> extends State<GsTextEditorDialog> {
       baseOffset: textSelection.start + myTextLength,
       extentOffset: textSelection.start + myTextLength,
     );
+  }
+
+  void _autoFormatText() {
+    final matches = {
+      'AoE Anemo DMG': 'anemo',
+      'Anemo DMG Bonus': 'anemo',
+      'Anemo DMG': 'anemo',
+      'Anemo RES': 'anemo',
+      'Anemo': 'anemo',
+      'AoE Cryo DMG': 'cryo',
+      'Cryo DMG Bonus': 'cryo',
+      'Cryo DMG': 'cryo',
+      'Cryo RES': 'cryo',
+      'Cryo': 'cryo',
+      'AoE Dendro DMG': 'dendro',
+      'Dendro DMG Bonus': 'dendro',
+      'Dendro DMG': 'dendro',
+      'Dendro RES': 'dendro',
+      'Dendro': 'dendro',
+      'AoE Electro DMG': 'electro',
+      'Electro DMG Bonus': 'electro',
+      'Electro DMG': 'electro',
+      'Electro RES': 'electro',
+      'Electro Infusion': 'electro',
+      'Electro-Charged DMG': 'electro',
+      'Electro-Charged reaction DMG': 'electro',
+      'Electro-related Elemental Reaction': 'electro',
+      'Electro': 'electro',
+      'AoE Geo DMG': 'geo',
+      'Geo Construct': 'geo',
+      'Geo DMG Bonus': 'geo',
+      'Geo DMG': 'geo',
+      'Geo': 'geo',
+      'AoE Hydro DMG': 'hydro',
+      'Hydro DMG Bonus': 'hydro',
+      'Hydro DMG': 'hydro',
+      'Hydro RES': 'hydro',
+      'Hydro Infusion': 'hydro',
+      'Hydro-related Elemental Reactions': 'hydro',
+      'Hydro': 'hydro',
+      'Wet': 'hydro',
+      'AoE Pyro DMG': 'pyro',
+      'Pyro DMG Bonus': 'pyro',
+      'Pyro DMG': 'pyro',
+      'Pyro RES': 'pyro',
+      'Pyro': 'pyro',
+    };
+
+    if (widget.info != null) {
+      matches.addEntries([
+        ...widget.info!.talents
+            .map((e) => MapEntry(e.name, 'skill'))
+            .where((e) => e.key.isNotEmpty),
+        ...widget.info!.constellations
+            .map((e) => MapEntry(e.name, 'skill'))
+            .where((e) => e.key.isNotEmpty),
+      ]);
+    }
+
+    var finalText = '';
+    final text = _controller.text.toLowerCase();
+    for (var i = 0;; i < text.length) {
+      var min = -1;
+      MapEntry<String, String>? tEntry;
+      for (final entry in matches.entries) {
+        final t = text.indexOf(entry.key.toLowerCase(), i);
+        if (t == -1) continue;
+        if (t < min || min == -1) {
+          min = t;
+          tEntry = entry;
+        }
+      }
+
+      if (tEntry != null) {
+        finalText += _controller.text.substring(i, min);
+        finalText += '<color=${tEntry.value}>${tEntry.key}</color>';
+        i = min + tEntry.key.length;
+      } else {
+        finalText += _controller.text.substring(i);
+        break;
+      }
+    }
+    _controller.text = finalText;
   }
 }

@@ -212,7 +212,6 @@ class Database {
         characterInfo,
         characterOutfit,
         cities,
-        // ingredients,
         materials,
         namecards,
         recipes,
@@ -247,7 +246,6 @@ class Database {
     saving.add(true);
     await Future.wait(collections.map((e) => e.save()));
     await _combine('src', 'data.json');
-    // if (Platform.isWindows) await Process.run('explorer', ['.']);
     saving.add(false);
   }
 
