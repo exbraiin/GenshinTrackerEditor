@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
@@ -21,9 +22,9 @@ List<DataField<GsSerenitea>> getSereniteaDfs(GsSerenitea? model) {
     ),
     DataField.singleSelect(
       'Category',
-      (item) => item.category,
+      (item) => item.category.id,
       (item) => GsItemFilter.sereniteas().filters,
-      (item, value) => item.copyWith(category: value),
+      (item, value) => item.copyWith(category: GeSereniteaSets.fromId(value)),
       validate: (item) => validator.validateEntry('category', item, model),
     ),
     DataField.textImage(
@@ -41,7 +42,7 @@ List<DataField<GsSerenitea>> getSereniteaDfs(GsSerenitea? model) {
     DataField.multiSelect<GsSerenitea, String>(
       'Chars',
       (item) => item.chars,
-      (item) => GsItemFilter.wishes(null, GsItemFilter.wishChar).filters,
+      (item) => GsItemFilter.wishes(null, GeBannerType.character).filters,
       (item, value) => item.copyWith(chars: value),
       validate: (item) => validator.validateEntry('chars', item, model),
     ),

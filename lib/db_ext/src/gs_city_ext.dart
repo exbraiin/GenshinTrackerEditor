@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
@@ -28,9 +29,9 @@ List<DataField<GsCity>> getCityDfs(GsCity? model) {
     ),
     DataField.singleSelect(
       'Element',
-      (item) => item.element,
+      (item) => item.element.id,
       (item) => GsItemFilter.elements().filters,
-      (item, value) => item.copyWith(element: value),
+      (item, value) => item.copyWith(element: GeElements.fromId(value)),
       validate: (item) => validator.validateEntry('element', item, model),
     ),
     DataField.textList(

@@ -1,5 +1,5 @@
 import 'package:data_editor/db/database.dart';
-import 'package:data_editor/style/style.dart';
+import 'package:data_editor/db/ge_enums.dart';
 
 class GsCharacterInfo extends GsModel<GsCharacterInfo> {
   @override
@@ -56,10 +56,10 @@ class GsCharacterInfo extends GsModel<GsCharacterInfo> {
         .cast<JsonMap>()
         .map(GsCharTalent.fromMap)
         .toList();
-    return GsConfigurations.talentTypes.map((e) {
+    return GeCharacterTalentType.values.map((e) {
       return list.firstWhere(
-        (element) => element.type == e,
-        orElse: () => GsCharTalent(type: e),
+        (element) => element.type == e.id,
+        orElse: () => GsCharTalent(type: e.id),
       );
     }).toList();
   }

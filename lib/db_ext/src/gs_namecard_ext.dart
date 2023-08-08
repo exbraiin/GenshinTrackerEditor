@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
@@ -21,9 +22,9 @@ List<DataField<GsNamecard>> getNamecardDfs(GsNamecard? model) {
     ),
     DataField.singleSelect(
       'Type',
-      (item) => item.type,
+      (item) => item.type.id,
       (item) => GsItemFilter.namecardTypes().filters,
-      (item, value) => item.copyWith(type: value),
+      (item, value) => item.copyWith(type: GeNamecardType.fromId(value)),
       validate: (item) => validator.validateEntry('type', item, model),
     ),
     DataField.selectRarity(

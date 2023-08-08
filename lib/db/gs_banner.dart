@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 
 class GsBanner extends GsModel<GsBanner> {
   @override
@@ -7,8 +8,8 @@ class GsBanner extends GsModel<GsBanner> {
   final String image;
   final String dateStart;
   final String dateEnd;
-  final String type;
   final String version;
+  final GeBannerType type;
   final List<String> feature4;
   final List<String> feature5;
 
@@ -18,7 +19,7 @@ class GsBanner extends GsModel<GsBanner> {
     this.image = '',
     this.dateStart = '',
     this.dateEnd = '',
-    this.type = '',
+    this.type = GeBannerType.beginner,
     this.version = '',
     this.feature4 = const [],
     this.feature5 = const [],
@@ -30,7 +31,7 @@ class GsBanner extends GsModel<GsBanner> {
         image = m.getString('image'),
         dateStart = m.getString('date_start'),
         dateEnd = m.getString('date_end'),
-        type = m.getString('type'),
+        type = GeBannerType.fromId(m.getString('type')),
         version = m.getString('version'),
         feature4 = m.getStringList('feature_4'),
         feature5 = m.getStringList('feature_5');
@@ -42,8 +43,8 @@ class GsBanner extends GsModel<GsBanner> {
     String? image,
     String? dateStart,
     String? dateEnd,
-    String? type,
     String? version,
+    GeBannerType? type,
     List<String>? feature4,
     List<String>? feature5,
   }) {
@@ -66,7 +67,7 @@ class GsBanner extends GsModel<GsBanner> {
         'image': image,
         'date_start': dateStart,
         'date_end': dateEnd,
-        'type': type,
+        'type': type.id,
         'version': version,
         'feature_4': feature4,
         'feature_5': feature5,

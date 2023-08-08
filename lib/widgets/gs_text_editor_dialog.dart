@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
@@ -143,14 +144,14 @@ class _GsTextEditorDialogState<T> extends State<GsTextEditorDialog> {
           onTap: (item) => _insertText((s) => '<color=skill>$s</color>'),
         ),
       ),
-      ...GsConfigurations.elements.map((value) {
+      ...GeElements.values.map((value) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 2),
           child: GsSelectChip(
             GsSelectItem(
               value,
-              value.toTitle(),
-              color: GsStyle.getElementColor(value),
+              value.id.toTitle(),
+              color: GsStyle.getElementColor(value.id),
             ),
             onTap: (item) => _insertText((s) => '<color=$item>$s</color>'),
           ),

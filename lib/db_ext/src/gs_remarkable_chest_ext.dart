@@ -53,10 +53,9 @@ List<DataField<GsRemarkableChest>> getRemarkableChestDfs(
       (item, value) => item.copyWith(region: value),
       validate: (item) => validator.validateEntry('region', item, model),
     ),
-    DataField.singleSelect(
+    DataField.textField(
       'Source',
       (item) => item.source,
-      (item) => GsItemFilter.rChestSource().filters,
       (item, value) => item.copyWith(source: value),
       validate: (item) => validator.validateEntry('source', item, model),
     ),

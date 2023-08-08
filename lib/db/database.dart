@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dartx/dartx.dart';
+import 'package:data_editor/db/ge_enums.dart';
+// import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db/gs_achievement.dart';
 import 'package:data_editor/db/gs_achievement_group.dart';
 import 'package:data_editor/db/gs_artifact.dart';
@@ -22,7 +24,6 @@ import 'package:data_editor/db/gs_weapon.dart';
 import 'package:data_editor/db/gs_weapon_info.dart';
 import 'package:data_editor/db/gs_wish.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
-import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
@@ -86,7 +87,7 @@ class Database {
     'src/banners.json',
     GsBanner.fromMap,
     sorted: (list) => list
-        .sortedBy((e) => GsConfigurations.bannerTypes.indexOf(e.type))
+        .sortedBy((element) => element.type.index)
         .thenBy((e) => DateTime.tryParse(e.dateStart) ?? DateTime(0))
         .thenBy((element) => element.id),
   );
@@ -116,18 +117,9 @@ class Database {
     'src/cities.json',
     GsCity.fromMap,
     sorted: (list) => list
-        .sortedBy((e) => GsConfigurations.elements.indexOf(e.element))
+        .sortedBy((element) => element.element.index)
         .thenBy((element) => element.id),
   );
-  /*
-  final ingredients = GsCollection(
-    'src/ingredients.json',
-    GsIngredient.fromMap,
-    sorted: (list) => list
-        .sortedBy((element) => element.rarity)
-        .thenBy((element) => element.id),
-  );
-  */
   final materials = GsCollection(
     'src/materials.json',
     GsMaterial.fromMap,
@@ -142,7 +134,7 @@ class Database {
     'src/namecards.json',
     GsNamecard.fromMap,
     sorted: (list) => list
-        .sortedBy((e) => GsConfigurations.namecardTypes.indexOf(e.type))
+        .sortedBy((element) => element.type.index)
         .thenBy((element) => element.version)
         .thenBy((element) => element.id),
   );
@@ -166,7 +158,7 @@ class Database {
     'src/serenitea_sets.json',
     GsSerenitea.fromMap,
     sorted: (list) => list
-        .sortedBy((e) => GsConfigurations.sereniteaType.indexOf(e.category))
+        .sortedBy((element) => element.category.index)
         .thenBy((element) => element.id),
   );
   final spincrystal = GsCollection(
@@ -233,7 +225,6 @@ class Database {
   Future<bool> load() async {
     if (_loaded) return _loaded;
     _loaded = true;
-    await GsConfigurations.load();
     await Future.wait(collections.map((e) => e.load()));
     await _updateAllDataValidators();
     modified.add(null);
@@ -328,13 +319,13 @@ extension DatabaseExt on Database {
     return cities.data.toList()..insert(0, GsCity(id: '', name: 'None'));
   }
 
-  List<GsWish> getAllWishes([int? rarity, String? type]) {
+  List<GsWish> getAllWishes([int? rarity, GeBannerType? type]) {
     return [
-      if (type == null || type == 'weapon')
+      if (type == null || type == GeBannerType.weapon)
         ...weapons.data
             .where((e) => e.rarity == rarity || rarity == null)
             .map(GsWish.fromWeapon),
-      if (type == null || type == 'character')
+      if (type == null || type == GeBannerType.character)
         ...characters.data
             .where((e) => e.rarity == rarity || rarity == null)
             .map(GsWish.fromCharacter),

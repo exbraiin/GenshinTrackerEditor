@@ -1,10 +1,11 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 
 class GsSerenitea extends GsModel<GsSerenitea> {
   @override
   final String id;
   final String name;
-  final String category;
+  final GeSereniteaSets category;
   final String image;
   final int rarity;
   final int energy;
@@ -14,7 +15,7 @@ class GsSerenitea extends GsModel<GsSerenitea> {
   GsSerenitea({
     this.id = '',
     this.name = '',
-    this.category = '',
+    this.category = GeSereniteaSets.indoor,
     this.image = '',
     this.rarity = 0,
     this.energy = 0,
@@ -25,7 +26,7 @@ class GsSerenitea extends GsModel<GsSerenitea> {
   GsSerenitea.fromMap(JsonMap m)
       : id = m.getString('id'),
         name = m.getString('name'),
-        category = m.getString('category'),
+        category = GeSereniteaSets.fromId(m.getString('category')),
         image = m.getString('image'),
         rarity = m.getInt('rarity'),
         energy = m.getInt('energy'),
@@ -36,12 +37,12 @@ class GsSerenitea extends GsModel<GsSerenitea> {
   GsSerenitea copyWith({
     String? id,
     String? name,
-    String? category,
     String? image,
     int? rarity,
     int? energy,
     List<String>? chars,
     String? version,
+    GeSereniteaSets? category,
   }) {
     return GsSerenitea(
       id: id ?? this.id,
@@ -61,7 +62,7 @@ class GsSerenitea extends GsModel<GsSerenitea> {
         'image': image,
         'rarity': rarity,
         'energy': energy,
-        'category': category,
+        'category': category.id,
         'chars': chars,
         'version': version,
       };

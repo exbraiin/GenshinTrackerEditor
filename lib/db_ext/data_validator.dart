@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/gs_achievement_ext.dart';
@@ -259,7 +260,7 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
         : GsValidLevel.error;
   }
 
-  GsValidLevel validateContains(String value, Iterable<String> values) {
+  GsValidLevel validateContains<E>(E value, Iterable<E> values) {
     return values.contains(value) ? GsValidLevel.good : GsValidLevel.error;
   }
 
@@ -347,7 +348,6 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
 
   if (T == GsBanner) {
     final ids = Database.i.banners.data.map((e) => e.id);
-    final types = GsItemFilter.bannerTypes().ids;
     return GsValidator<GsBanner>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
@@ -355,18 +355,16 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'date_start': (item, other) =>
           validateDates(item.dateStart, item.dateEnd),
       'date_end': (item, other) => validateDates(item.dateStart, item.dateEnd),
-      'type': (item, other) => validateContains(item.type, types),
+      'type': (item, other) => validateContains(item.type, GeBannerType.values),
       'version': (item, other) => validateContains(item.version, versions),
-      'feature_4': (item, other) {
-        final validType = item.type != 'standard' && item.type != 'beginner';
-        if (validType && item.feature4.isEmpty) return GsValidLevel.warn2;
-        return GsValidLevel.good;
-      },
-      'feature_5': (item, other) {
-        final validType = item.type != 'standard' && item.type != 'beginner';
-        if (validType && item.feature5.isEmpty) return GsValidLevel.warn2;
-        return GsValidLevel.good;
-      },
+      'feature_4': (item, other) =>
+          !item.type.isPermanent && item.feature4.isEmpty
+              ? GsValidLevel.warn2
+              : GsValidLevel.good,
+      'feature_5': (item, other) =>
+          !item.type.isPermanent && item.feature5.isEmpty
+              ? GsValidLevel.warn2
+              : GsValidLevel.good,
     }) as GsValidator<T>;
   }
 
@@ -508,12 +506,12 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
 
   if (T == GsCity) {
     final ids = Database.i.cities.data.map((e) => e.id);
-    final elements = GsItemFilter.elements().ids;
     return GsValidator<GsCity>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
       'image': (item, other) => validateImage(item.image),
-      'element': (item, other) => validateContains(item.element, elements),
+      'element': (item, other) =>
+          validateContains(item.element, GeElements.values),
       'reputation': (item, other) =>
           item.reputation.isEmpty ? GsValidLevel.warn2 : GsValidLevel.good,
     }) as GsValidator<T>;
@@ -541,7 +539,6 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
 
   if (T == GsNamecard) {
     final ids = Database.i.namecards.data.map((e) => e.id);
-    final types = GsItemFilter.namecardTypes().ids;
     return GsValidator<GsNamecard>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
@@ -551,7 +548,8 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'full_image': (item, other) => validateImage(item.fullImage),
       'desc': (item, other) => validateText(item.desc),
       'obtain': (item, other) => validateText(item.obtain),
-      'type': (item, other) => validateContains(item.type, types),
+      'type': (item, other) =>
+          validateContains(item.type, GeNamecardType.values),
     }) as GsValidator<T>;
   }
 
@@ -586,7 +584,6 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
     final ids = Database.i.remarkableChests.data.map((e) => e.id);
     final types = GsItemFilter.sereniteas().ids;
     final regions = GsItemFilter.regions().ids;
-    final sources = GsItemFilter.rChestSource().ids;
     final categories = GsItemFilter.rChestCategory().ids;
     return GsValidator<GsRemarkableChest>({
       'id': (item, other) => validateId(item, other, ids),
@@ -596,7 +593,7 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'rarity': (item, other) => validateRarity(item.rarity),
       'energy': (item, other) => validateNum(item.energy, 1),
       'region': (item, other) => validateContains(item.region, regions),
-      'source': (item, other) => validateContains(item.source, sources),
+      'source': (item, other) => validateText(item.source),
       'version': (item, other) => validateContains(item.version, versions),
       'category': (item, other) => validateContains(item.category, categories),
     }) as GsValidator<T>;
@@ -604,14 +601,14 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
 
   if (T == GsSerenitea) {
     final ids = Database.i.sereniteas.data.map((e) => e.id);
-    final categories = GsItemFilter.sereniteas().ids;
-    final chars = GsItemFilter.wishes(null, GsItemFilter.wishChar).ids;
+    final chars = GsItemFilter.wishes(null, GeBannerType.character).ids;
     return GsValidator<GsSerenitea>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
       'image': (item, other) => validateImage(item.image),
       'energy': (item, other) => validateNum(item.energy, 1),
-      'category': (item, other) => validateContains(item.category, categories),
+      'category': (item, other) =>
+          validateContains(item.category, GeSereniteaSets.values),
       'chars': (item, other) => item.chars.isEmpty
           ? GsValidLevel.warn2
           : (chars.containsAll(item.chars)
@@ -661,7 +658,7 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
     final ids = Database.i.weapons.data.map((e) => e.id);
     final types = GsItemFilter.weaponTypes().ids;
     final sources = GsItemFilter.itemSource().ids;
-    final statTypes = GsItemFilter.statTypes().ids;
+    final statTypes = GsItemFilter.weaponStatTypes().ids;
     return GsValidator<GsWeapon>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
@@ -684,7 +681,6 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
   }
 
   if (T == GsWeaponInfo) {
-    final ids = GsItemFilter.weaponsWithoutInfo().ids;
     final matWeapon =
         GsItemFilter.matGroupsWithRegion(GsItemFilter.matWeapons).ids;
     final matCommon =
@@ -693,7 +689,8 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
         GsItemFilter.matGroupsWithRarity(GsItemFilter.matElite).ids;
     final ascType = GsItemFilter.weaponStatTypes().ids;
     return GsValidator<GsWeaponInfo>({
-      'id': (item, other) => validateContains(item.id, ids),
+      'id': (item, other) =>
+          item.id.isEmpty ? GsValidLevel.error : GsValidLevel.good,
       'effect_name': (item, other) => validateText(item.effectName),
       'effect_desc': (item, other) => validateText(item.effectDesc),
       'mat_weapon': (item, other) =>

@@ -75,7 +75,7 @@ class GsConfigs<T extends GsModel<T>> {
           label: '${item.name}\n${item.dateStart}',
           image: image,
           version: item.version,
-          color: GsStyle.getBannerColor(item.type),
+          color: item.type.color,
         );
       },
     ),
@@ -129,7 +129,7 @@ class GsConfigs<T extends GsModel<T>> {
         label: item.name,
         image: item.image,
         version: '',
-        color: GsStyle.getElementColor(item.element),
+        color: item.element.color,
         regionColor: GsStyle.getRegionElementColor(item.id),
       ),
     ),
@@ -153,7 +153,7 @@ class GsConfigs<T extends GsModel<T>> {
         label: item.name,
         image: item.image,
         version: item.version,
-        color: GsStyle.getNamecardColor(item.type),
+        color: item.type.color,
       ),
     ),
     GsRecipe: GsConfigs<GsRecipe>._(
@@ -186,7 +186,7 @@ class GsConfigs<T extends GsModel<T>> {
       getDecor: (item) => GsItemDecor(
         label: item.name,
         version: item.version,
-        color: GsStyle.getSereniteaColor(item.category),
+        color: item.category.color,
       ),
     ),
     GsSpincrystal: GsConfigs<GsSpincrystal>._(

@@ -1,12 +1,12 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:flutter/material.dart';
 
 class GsItemFilter {
-  static const wishChar = 'character';
   static const matGems = ['ascension_gems'];
   static const matBoss = ['normal_boss_drops'];
   static const matDrops = ['normal_drops', 'elite_drops'];
@@ -43,70 +43,61 @@ class GsItemFilter {
     );
   }
 
-  static GsItemFilter _fromStrings(
-    Iterable<String> models, {
-    String Function(String i)? title,
-    String Function(String i)? icon,
-    Color Function(String i)? color,
+  static GsItemFilter _fromEnum<T extends GeEnum>(
+    List<T> list, {
+    String Function(T i)? title,
+    String Function(T i)? icon,
+    Color Function(T i)? color,
   }) =>
       GsItemFilter._from(
-        models,
-        (i) => i,
+        list,
+        (i) => i.id,
         title: title,
         icon: icon,
         color: color,
       );
 
   factory GsItemFilter.artifactPieces() =>
-      GsItemFilter._fromStrings(GsConfigurations.artifactPieces);
+      GsItemFilter._fromEnum(GeArtifactPieces.values);
   factory GsItemFilter.rChestCategory() =>
-      GsItemFilter._fromStrings(GsConfigurations.rChestCategory);
-  factory GsItemFilter.rChestSource() =>
-      GsItemFilter._fromStrings(GsConfigurations.rChestSource);
+      GsItemFilter._fromEnum(GeRmChestCategory.values);
   factory GsItemFilter.recipeType() =>
-      GsItemFilter._fromStrings(GsConfigurations.recipeTypes);
+      GsItemFilter._fromEnum(GeRecipeType.values);
   factory GsItemFilter.matCategories() =>
-      GsItemFilter._fromStrings(GsConfigurations.materialCategories);
-  factory GsItemFilter.weekdays() =>
-      GsItemFilter._fromStrings(GsConfigurations.weekdays);
+      GsItemFilter._fromEnum(GeMaterialCategory.values);
+  factory GsItemFilter.weekdays() => GsItemFilter._fromEnum(GeWeekdays.values);
   factory GsItemFilter.itemSource() =>
-      GsItemFilter._fromStrings(GsConfigurations.itemSource);
+      GsItemFilter._fromEnum(GeItemSource.values);
   factory GsItemFilter.chrStatTypes() =>
-      GsItemFilter._fromStrings(GsConfigurations.characterStatTypes);
+      GsItemFilter._fromEnum(GeCharacterAscensionStatType.values);
   factory GsItemFilter.weaponTypes() =>
-      GsItemFilter._fromStrings(GsConfigurations.weaponTypes);
-  factory GsItemFilter.statTypes() =>
-      GsItemFilter._fromStrings(GsConfigurations.statTypes);
+      GsItemFilter._fromEnum(GeWeaponType.values);
   factory GsItemFilter.modelType() =>
-      GsItemFilter._fromStrings(GsConfigurations.characterModelType);
+      GsItemFilter._fromEnum(GeCharacterModelType.values);
+  factory GsItemFilter.weaponStatTypes() =>
+      GsItemFilter._fromEnum(GeWeaponAscensionStatType.values);
+  factory GsItemFilter.achievementTypes() =>
+      GsItemFilter._fromEnum(GeAchievementType.values);
 
-  factory GsItemFilter.weaponStatTypes() => GsItemFilter._fromStrings(
-        ['', ...GsConfigurations.weaponStatTypes],
-        title: (i) => i.isEmpty ? 'None' : i.toTitle(),
+  factory GsItemFilter.namecardTypes() => GsItemFilter._fromEnum(
+        GeNamecardType.values,
+        color: (i) => i.color,
       );
-  factory GsItemFilter.namecardTypes() => GsItemFilter._fromStrings(
-        GsConfigurations.namecardTypes,
-        color: GsStyle.getNamecardColor,
+  factory GsItemFilter.elements() => GsItemFilter._fromEnum(
+        GeElements.values,
+        color: (i) => i.color,
       );
-  factory GsItemFilter.elements() => GsItemFilter._fromStrings(
-        GsConfigurations.elements,
-        color: GsStyle.getElementColor,
+  factory GsItemFilter.bannerTypes() => GsItemFilter._fromEnum(
+        GeBannerType.values,
+        color: (i) => i.color,
       );
-  factory GsItemFilter.bannerTypes() => GsItemFilter._fromStrings(
-        GsConfigurations.bannerTypes,
-        color: GsStyle.getBannerColor,
+  factory GsItemFilter.recipeEffects() => GsItemFilter._fromEnum(
+        GeRecipeEffectType.values,
+        icon: (i) => GsGraphics.getRecipeEffectIcon(i.id),
       );
-  factory GsItemFilter.achievementTypes() => GsItemFilter._fromStrings(
-        ['', ...GsConfigurations.achievementTypes],
-        title: (i) => i.isEmpty ? 'None' : i.toTitle(),
-      );
-  factory GsItemFilter.recipeEffects() => GsItemFilter._fromStrings(
-        GsConfigurations.recipeEffect,
-        icon: GsGraphics.getRecipeEffectIcon,
-      );
-  factory GsItemFilter.sereniteas() => GsItemFilter._fromStrings(
-        GsConfigurations.sereniteaType,
-        color: GsStyle.getSereniteaColor,
+  factory GsItemFilter.sereniteas() => GsItemFilter._fromEnum(
+        GeSereniteaSets.values,
+        color: (i) => i.color,
       );
 
   // ----- DATABASE ------------------------------------------------------------
@@ -120,7 +111,7 @@ class GsItemFilter {
         [GsCity(id: '', name: 'None'), ...Database.i.cities.data],
         (i) => i.id,
         title: (i) => i.name,
-        color: (i) => GsStyle.getElementColor(i.element),
+        color: (i) => i.element.color,
       );
   factory GsItemFilter.ingredients() => GsItemFilter._from(
         Database.i.materials.data
@@ -183,7 +174,8 @@ class GsItemFilter {
         title: (i) => i.name,
         color: (i) => GsStyle.getRegionElementColor(i.region) ?? Colors.grey,
       );
-  factory GsItemFilter.wishes(int? rarity, String? type) => GsItemFilter._from(
+  factory GsItemFilter.wishes(int? rarity, GeBannerType? type) =>
+      GsItemFilter._from(
         Database.i.getAllWishes(rarity, type).sortedBy((e) => e.name),
         (i) => i.id,
         title: (i) => i.name,
@@ -192,7 +184,8 @@ class GsItemFilter {
   factory GsItemFilter.achievementNamecards() => GsItemFilter._from(
         [
           GsNamecard(id: 'none', name: 'None'),
-          ...Database.i.namecards.data.where((e) => e.type == 'achievement'),
+          ...Database.i.namecards.data
+              .where((e) => e.type == GeNamecardType.achievement),
         ],
         (i) => i.id,
         title: (i) => i.name,

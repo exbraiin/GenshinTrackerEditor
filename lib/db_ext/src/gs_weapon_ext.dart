@@ -60,7 +60,7 @@ List<DataField<GsWeapon>> getWeaponDfs(GsWeapon? model) {
     DataField.singleSelect(
       'Stat Type',
       (item) => item.statType,
-      (item) => GsItemFilter.statTypes().filters,
+      (item) => GsItemFilter.weaponStatTypes().filters,
       (item, value) => item.copyWith(statType: value),
       validate: (item) => validator.validateEntry('stat_type', item, model),
     ),

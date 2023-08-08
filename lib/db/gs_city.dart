@@ -1,18 +1,19 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 
 class GsCity extends GsModel<GsCity> {
   @override
   final String id;
   final String name;
   final String image;
-  final String element;
+  final GeElements element;
   final List<int> reputation;
 
   GsCity({
     this.id = '',
     this.name = '',
     this.image = '',
-    this.element = '',
+    this.element = GeElements.anemo,
     this.reputation = const [],
   });
 
@@ -20,7 +21,7 @@ class GsCity extends GsModel<GsCity> {
       : id = m.getString('id'),
         name = m.getString('name'),
         image = m.getString('image'),
-        element = m.getString('element'),
+        element = GeElements.fromId(m.getString('element')),
         reputation = m.getIntList('reputation');
 
   @override
@@ -28,7 +29,7 @@ class GsCity extends GsModel<GsCity> {
     String? id,
     String? name,
     String? image,
-    String? element,
+    GeElements? element,
     List<int>? reputation,
   }) {
     return GsCity(
@@ -44,7 +45,7 @@ class GsCity extends GsModel<GsCity> {
   JsonMap toJsonMap() => {
         'name': name,
         'image': image,
-        'element': element,
+        'element': element.id,
         'reputation': reputation,
       };
 }

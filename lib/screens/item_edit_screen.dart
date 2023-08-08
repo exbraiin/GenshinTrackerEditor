@@ -102,6 +102,7 @@ class _ItemEditScreenState<T extends GsModel<T>>
                     GsValidLevel.error;
 
                 void onSave() {
+                  DataValidator.i.getValidator<T>().validateAll(value, debug: GsWeaponInfo);
                   widget.collection.updateItem(widget.item?.id, value);
                   Navigator.of(context).maybePop();
                 }

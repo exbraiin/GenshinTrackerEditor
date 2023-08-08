@@ -1,6 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
-import 'package:data_editor/style/style.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/style/utils.dart';
 
 class GsArtifact extends GsModel<GsArtifact> {
@@ -39,9 +39,9 @@ class GsArtifact extends GsModel<GsArtifact> {
         pc2 = m.getString('2pc'),
         pc4 = m.getString('4pc'),
         domain = m.getString('domain'),
-        pieces = m
-            .getMapToList('pieces', GsArtifactPiece.fromMap)
-            .sortedBy((e) => GsConfigurations.artifactPieces.indexOf(e.id));
+        pieces = m.getMapToList('pieces', GsArtifactPiece.fromMap).sortedBy(
+              (e) => GeArtifactPieces.values.indexWhere((t) => t.id == e.id),
+            );
 
   @override
   GsArtifact copyWith({
@@ -66,8 +66,9 @@ class GsArtifact extends GsModel<GsArtifact> {
       pc2: pc2 ?? this.pc2,
       pc4: pc4 ?? this.pc4,
       domain: domain ?? this.domain,
-      pieces: (pieces ?? this.pieces)
-          .sortedBy((e) => GsConfigurations.artifactPieces.indexOf(e.id)),
+      pieces: (pieces ?? this.pieces).sortedBy(
+        (e) => GeArtifactPieces.values.indexWhere((t) => t.id == e.id),
+      ),
     );
   }
 
@@ -82,7 +83,9 @@ class GsArtifact extends GsModel<GsArtifact> {
         if (pc2.isNotEmpty) '2pc': pc2,
         if (pc4.isNotEmpty) '4pc': pc4,
         'pieces': pieces
-            .sortedBy((e) => GsConfigurations.artifactPieces.indexOf(e.id))
+            .sortedBy(
+              (e) => GeArtifactPieces.values.indexWhere((t) => t.id == e.id),
+            )
             .map((e) => MapEntry(e.id, e.toJsonMap()))
             .toMap(),
       };
