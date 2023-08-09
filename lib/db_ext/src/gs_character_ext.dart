@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
@@ -48,17 +49,17 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
       (item, value) => item.copyWith(region: value),
       validate: (item) => validator.validateEntry('region', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum(
       'Weapon',
+      GeWeaponType.values.toChips(),
       (item) => item.weapon,
-      (item) => GsItemFilter.weaponTypes().filters,
       (item, value) => item.copyWith(weapon: value),
       validate: (item) => validator.validateEntry('weapon', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum(
       'Element',
+      GeElements.values.toChips(),
       (item) => item.element,
-      (item) => GsItemFilter.elements().filters,
       (item, value) => item.copyWith(element: value),
       validate: (item) => validator.validateEntry('element', item, model),
     ),
@@ -69,10 +70,10 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
       (item, value) => item.copyWith(version: value),
       validate: (item) => validator.validateEntry('version', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum(
       'Obtain',
+      GeItemSource.values.toChips(),
       (item) => item.source,
-      (item) => GsItemFilter.itemSource().filters,
       (item, value) => item.copyWith(source: value),
       validate: (item) => validator.validateEntry('source', item, model),
     ),
@@ -94,10 +95,10 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
       (item, value) => item.copyWith(affiliation: value),
       validate: (item) => validator.validateEntry('affiliation', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum(
       'Model Type',
+      GeCharacterModelType.values.toChips(),
       (item) => item.modelType,
-      (item) => GsItemFilter.modelType().filters,
       (item, value) => item.copyWith(modelType: value),
       validate: (item) => validator.validateEntry('model_type', item, model),
     ),

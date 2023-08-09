@@ -3,7 +3,6 @@ import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
-import 'package:data_editor/db_ext/datafields_util.dart';
 
 List<DataField<GsCity>> getCityDfs(GsCity? model) {
   final validator = DataValidator.i.getValidator<GsCity>();
@@ -27,11 +26,11 @@ List<DataField<GsCity>> getCityDfs(GsCity? model) {
       (item, value) => item.copyWith(image: value),
       validate: (item) => validator.validateEntry('image', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum(
       'Element',
-      (item) => item.element.id,
-      (item) => GsItemFilter.elements().filters,
-      (item, value) => item.copyWith(element: GeElements.fromId(value)),
+      GeElements.values.toChips(),
+      (item) => item.element,
+      (item, value) => item.copyWith(element: value),
       validate: (item) => validator.validateEntry('element', item, model),
     ),
     DataField.textList(

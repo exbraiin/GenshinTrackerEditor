@@ -21,7 +21,7 @@ class GsCity extends GsModel<GsCity> {
       : id = m.getString('id'),
         name = m.getString('name'),
         image = m.getString('image'),
-        element = GeElements.fromId(m.getString('element')),
+        element = GeElements.values.fromId(m.getString('element')),
         reputation = m.getIntList('reputation');
 
   @override

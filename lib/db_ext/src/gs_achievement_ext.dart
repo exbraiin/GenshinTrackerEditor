@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
@@ -26,10 +27,10 @@ List<DataField<GsAchievement>> getAchievementsDfs(GsAchievement? model) {
       (item, value) => item.copyWith(group: value),
       validate: (item) => validator.validateEntry('group', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum<GsAchievement, GeAchievementType>(
       'Type',
+      GeAchievementType.values.toChips(),
       (item) => item.type,
-      (item) => GsItemFilter.achievementTypes().filters,
       (item, value) => item.copyWith(type: value),
       validate: (item) => validator.validateEntry('type', item, model),
     ),

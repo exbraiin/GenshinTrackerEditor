@@ -26,7 +26,7 @@ class GsSerenitea extends GsModel<GsSerenitea> {
   GsSerenitea.fromMap(JsonMap m)
       : id = m.getString('id'),
         name = m.getString('name'),
-        category = GeSereniteaSets.fromId(m.getString('category')),
+        category = GeSereniteaSets.values.fromId(m.getString('category')),
         image = m.getString('image'),
         rarity = m.getInt('rarity'),
         energy = m.getInt('energy'),

@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
@@ -26,23 +27,26 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
     DataField.singleSelect(
       'Material Gem',
       (item) => item.gemMaterial,
-      (item) => GsItemFilter.matGroupsWithRarity(GsItemFilter.matGems).filters,
+      (item) =>
+          GsItemFilter.matGroups(GeMaterialCategory.ascensionGems).filters,
       (item, value) => item.copyWith(gemMaterial: value),
       validate: (item) => validator.validateEntry('mat_gem', item, model),
     ),
     DataField.singleSelect(
       'Material Boss',
       (item) => item.bossMaterial,
-      (item) => GsItemFilter.matGroupsWithRegion(GsItemFilter.matBoss).filters,
+      (item) =>
+          GsItemFilter.matGroups(GeMaterialCategory.normalBossDrops).filters,
       (item, value) => item.copyWith(bossMaterial: value),
       validate: (item) => validator.validateEntry('mat_boss', item, model),
     ),
     DataField.singleSelect(
       'Material Common',
       (item) => item.commonMaterial,
-      (item) =>
-          GsItemFilter.matGroupsWithRarity(['normal_drops', 'elite_drops'])
-              .filters,
+      (item) => GsItemFilter.matGroups(
+        GeMaterialCategory.normalDrops,
+        GeMaterialCategory.eliteDrops,
+      ).filters,
       (item, value) => item.copyWith(commonMaterial: value),
       validate: (item) => validator.validateEntry('mat_common', item, model),
     ),
@@ -50,7 +54,7 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
       'Material Region',
       (item) => item.regionMaterial,
       (item) =>
-          GsItemFilter.matGroupsWithRegion(GsItemFilter.matRegion).filters,
+          GsItemFilter.matGroups(GeMaterialCategory.regionMaterials).filters,
       (item, value) => item.copyWith(regionMaterial: value),
       validate: (item) => validator.validateEntry('mat_region', item, model),
     ),
@@ -58,21 +62,22 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
       'Material Talent',
       (item) => item.talentMaterial,
       (item) =>
-          GsItemFilter.matGroupsWithRegion(GsItemFilter.matTalent).filters,
+          GsItemFilter.matGroups(GeMaterialCategory.talentMaterials).filters,
       (item, value) => item.copyWith(talentMaterial: value),
       validate: (item) => validator.validateEntry('mat_talent', item, model),
     ),
     DataField.singleSelect(
       'Material Weekly',
       (item) => item.weeklyMaterial,
-      (item) => GsItemFilter.matGroupsWithRarity(GsItemFilter.matWeek).filters,
+      (item) =>
+          GsItemFilter.matGroups(GeMaterialCategory.weeklyBossDrops).filters,
       (item, value) => item.copyWith(weeklyMaterial: value),
       validate: (item) => validator.validateEntry('mat_weekly', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum(
       'Ascension Stat',
+      GeCharacterAscensionStatType.values.toChips(),
       (item) => item.ascStatType,
-      (item) => GsItemFilter.chrStatTypes().filters,
       (item, value) => item.copyWith(ascStatType: value),
       validate: (item) => validator.validateEntry('asc_stat_type', item, model),
     ),

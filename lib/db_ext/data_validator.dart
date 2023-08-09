@@ -264,9 +264,9 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
     return values.contains(value) ? GsValidLevel.good : GsValidLevel.error;
   }
 
-  GsValidLevel validateContainsAll(
-    List<String> value,
-    Iterable<String> values,
+  GsValidLevel validateContainsAll<E>(
+    List<E> value,
+    Iterable<E> values,
   ) {
     return values.all((e) => values.contains(e))
         ? GsValidLevel.good
@@ -297,12 +297,12 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
 
   if (T == GsAchievement) {
     final ids = Database.i.achievements.data.map((e) => e.id);
-    final types = GsItemFilter.achievementTypes().ids;
     final groups = GsItemFilter.achievementGroups().ids;
     return GsValidator<GsAchievement>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
-      'type': (item, other) => validateContains(item.type, types),
+      'type': (item, other) =>
+          validateContains(item.type, GeAchievementType.values),
       'group': (item, other) => validateContains(item.group, groups),
       'hidden': (item, other) => GsValidLevel.good,
       'version': (item, other) => validateContains(item.version, versions),
@@ -371,11 +371,7 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
   if (T == GsCharacter) {
     final ids = Database.i.characters.data.map((e) => e.id);
     final regions = GsItemFilter.regions().ids;
-    final weapons = GsItemFilter.weaponTypes().ids;
-    final elements = GsItemFilter.elements().ids;
-    final sources = GsItemFilter.itemSource().ids;
     final recipes = GsItemFilter.baseRecipes().ids;
-    final models = GsItemFilter.modelType().ids;
     return GsValidator<GsCharacter>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
@@ -383,13 +379,17 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'rarity': (item, other) => validateRarity(item.rarity, 4),
       'title': (item, other) => validateText(item.title),
       'region': (item, other) => validateContains(item.region, regions),
-      'weapon': (item, other) => validateContains(item.weapon, weapons),
-      'element': (item, other) => validateContains(item.element, elements),
+      'weapon': (item, other) =>
+          validateContains(item.weapon, GeWeaponType.values),
+      'element': (item, other) =>
+          validateContains(item.element, GeElements.values),
       'version': (item, other) => validateContains(item.version, versions),
-      'source': (item, other) => validateContains(item.source, sources),
+      'source': (item, other) =>
+          validateContains(item.source, GeItemSource.values),
       'description': (item, other) => validateText(item.description),
       'constellation': (item, other) => validateText(item.constellation),
-      'model_type': (item, other) => validateContains(item.modelType, models),
+      'model_type': (item, other) =>
+          validateContains(item.modelType, GeCharacterModelType.values),
       'affiliation': (item, other) => validateText(item.affiliation),
       'special_dish': (item, other) =>
           validateContains(item.specialDish, recipes),
@@ -403,11 +403,16 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
   }
 
   if (T == GsCharacterInfo) {
-    final ascTypes = GsItemFilter.chrStatTypes().ids;
-    final matGem = GsItemFilter.matGroupsWithRegion(GsItemFilter.matGems).ids;
-    final matBss = GsItemFilter.matGroupsWithRegion(GsItemFilter.matBoss).ids;
-    final matMob = GsItemFilter.matGroupsWithRarity(GsItemFilter.matDrops).ids;
-    final matWeek = GsItemFilter.matGroupsWithRarity(GsItemFilter.matWeek).ids;
+    const catGem = GeMaterialCategory.ascensionGems;
+    final matGem = GsItemFilter.matGroups(catGem).ids;
+    const catBss = GeMaterialCategory.normalBossDrops;
+    final matBss = GsItemFilter.matGroups(catBss).ids;
+    final matMob = GsItemFilter.matGroups(
+      GeMaterialCategory.normalDrops,
+      GeMaterialCategory.eliteDrops,
+    ).ids;
+    const catWeek = GeMaterialCategory.weeklyBossDrops;
+    final matWeek = GsItemFilter.matGroups(catWeek).ids;
     final matWithRegion =
         Database.i.materials.data.map((e) => MapEntry(e.id, e.region)).toMap();
     final chrWithRegion =
@@ -440,8 +445,10 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       },
       'mat_weekly': (item, other) =>
           validateContains(item.weeklyMaterial, matWeek),
-      'asc_stat_type': (item, other) =>
-          validateContains(item.ascStatType, ascTypes),
+      'asc_stat_type': (item, other) => validateContains(
+            item.ascStatType,
+            GeCharacterAscensionStatType.values,
+          ),
       'asc_hp_values': (item, other) => validateCharAsc(item.ascHpValues),
       'asc_atk_values': (item, other) => validateCharAsc(item.ascAtkValues),
       'asc_def_values': (item, other) => validateCharAsc(item.ascDefValues),
@@ -520,19 +527,19 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
   if (T == GsMaterial) {
     final ids = Database.i.materials.data.map((e) => e.id);
     final regions = GsItemFilter.regions().ids;
-    final weekdays = GsItemFilter.weekdays().ids;
-    final categories = GsItemFilter.matCategories().ids;
     return GsValidator<GsMaterial>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
       'desc': (item, other) => validateText(item.desc),
-      'group': (item, other) => validateContains(item.group, categories),
+      'group': (item, other) =>
+          validateContains(item.group, GeMaterialCategory.values),
       'image': (item, other) => validateText(item.image),
       'region': (item, other) => validateContains(item.region, regions),
       'rarity': (item, other) => validateRarity(item.rarity),
       'subgroup': (item, other) => validateNum(item.subgroup),
       'version': (item, other) => validateContains(item.version, versions),
-      'weekdays': (item, other) => validateContainsAll(item.weekdays, weekdays),
+      'weekdays': (item, other) =>
+          validateContainsAll(item.weekdays, GeWeekdays.values),
       'ingredient': (item, other) => GsValidLevel.good,
     }) as GsValidator<T>;
   }
@@ -555,16 +562,15 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
 
   if (T == GsRecipe) {
     final ids = Database.i.recipes.data.map((e) => e.id);
-    final types = GsItemFilter.recipeType().ids;
-    final effects = GsItemFilter.recipeEffects().ids;
     final baseRecipes = GsItemFilter.nonBaseRecipes().ids;
     return GsValidator<GsRecipe>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
-      'type': (item, other) => validateContains(item.type, types),
+      'type': (item, other) => validateContains(item.type, GeRecipeType.values),
       'version': (item, other) => validateContains(item.version, versions),
       'image': (item, other) => validateImage(item.image),
-      'effect': (item, other) => validateContains(item.effect, effects),
+      'effect': (item, other) =>
+          validateContains(item.effect, GeRecipeEffectType.values),
       'rarity': (item, other) => validateRarity(item.rarity),
       'desc': (item, other) => validateText(item.desc),
       'effect_desc': (item, other) => validateText(item.effectDesc),
@@ -582,20 +588,20 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
 
   if (T == GsRemarkableChest) {
     final ids = Database.i.remarkableChests.data.map((e) => e.id);
-    final types = GsItemFilter.sereniteas().ids;
     final regions = GsItemFilter.regions().ids;
-    final categories = GsItemFilter.rChestCategory().ids;
     return GsValidator<GsRemarkableChest>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
-      'type': (item, other) => validateContains(item.type, types),
+      'type': (item, other) =>
+          validateContains(item.type, GeSereniteaSets.values),
       'image': (item, other) => validateImage(item.image),
       'rarity': (item, other) => validateRarity(item.rarity),
       'energy': (item, other) => validateNum(item.energy, 1),
       'region': (item, other) => validateContains(item.region, regions),
       'source': (item, other) => validateText(item.source),
       'version': (item, other) => validateContains(item.version, versions),
-      'category': (item, other) => validateContains(item.category, categories),
+      'category': (item, other) =>
+          validateContains(item.category, GeRmChestCategory.values),
     }) as GsValidator<T>;
   }
 
@@ -656,9 +662,6 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
 
   if (T == GsWeapon) {
     final ids = Database.i.weapons.data.map((e) => e.id);
-    final types = GsItemFilter.weaponTypes().ids;
-    final sources = GsItemFilter.itemSource().ids;
-    final statTypes = GsItemFilter.weaponStatTypes().ids;
     return GsValidator<GsWeapon>({
       'id': (item, other) => validateId(item, other, ids),
       'name': (item, other) => validateText(item.name),
@@ -666,28 +669,29 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
       'image_asc': (item, other) => validateImage(item.imageAsc),
       'version': (item, other) => validateContains(item.version, versions),
       'rarity': (item, other) => validateRarity(item.rarity),
-      'type': (item, other) => validateContains(item.type, types),
+      'type': (item, other) => validateContains(item.type, GeWeaponType.values),
       'atk': (item, other) => validateNum(item.atk, 1),
-      'stat_type': (item, other) => validateContains(item.statType, statTypes),
+      'stat_type': (item, other) =>
+          validateContains(item.statType, GeWeaponAscensionStatType.values),
       'stat_value': (item, other) {
-        if (item.statType == 'none') {
+        if (item.statType == GeWeaponAscensionStatType.none) {
           return item.statValue == 0 ? GsValidLevel.good : GsValidLevel.error;
         }
         return validateNum(item.statValue, 1);
       },
       'desc': (item, other) => validateText(item.desc),
-      'source': (item, other) => validateContains(item.source, sources),
+      'source': (item, other) =>
+          validateContains(item.source, GeItemSource.values),
     }) as GsValidator<T>;
   }
 
   if (T == GsWeaponInfo) {
-    final matWeapon =
-        GsItemFilter.matGroupsWithRegion(GsItemFilter.matWeapons).ids;
-    final matCommon =
-        GsItemFilter.matGroupsWithRarity(GsItemFilter.matNormal).ids;
-    final matElite =
-        GsItemFilter.matGroupsWithRarity(GsItemFilter.matElite).ids;
-    final ascType = GsItemFilter.weaponStatTypes().ids;
+    const catWeapon = GeMaterialCategory.weaponMaterials;
+    final matWeapon = GsItemFilter.matGroups(catWeapon).ids;
+    const catCommon = GeMaterialCategory.normalDrops;
+    final matCommon = GsItemFilter.matGroups(catCommon).ids;
+    const catElite = GeMaterialCategory.eliteDrops;
+    final matElite = GsItemFilter.matGroups(catElite).ids;
     return GsValidator<GsWeaponInfo>({
       'id': (item, other) =>
           item.id.isEmpty ? GsValidLevel.error : GsValidLevel.good,
@@ -699,7 +703,7 @@ GsValidator<T> _getValidator<T extends GsModel<T>>() {
           validateContains(item.matCommon, matCommon),
       'mat_elite': (item, other) => validateContains(item.matElite, matElite),
       'asc_stat_type': (item, other) =>
-          validateContains(item.ascStatType, ascType),
+          validateContains(item.ascStatType, GeWeaponAscensionStatType.values),
       'asc_atk_values': (item, other) =>
           validateWeaponAsc(item.ascAtkValues, item.ascStatValues),
       'asc_stat_values': (item, other) =>

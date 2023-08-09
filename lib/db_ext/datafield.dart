@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
@@ -215,6 +216,24 @@ class DataField<T extends GsModel<T>> {
     );
   }
 
+  static DataField<T> multiEnum<T extends GsModel<T>, R extends GeEnum>(
+    String label,
+    List<R> Function(T item) values,
+    Iterable<GsSelectItem<R>> Function(T item) options,
+    T Function(T item, List<R> value) update, {
+    required DValid<T> validate,
+  }) {
+    return DataField._(
+      label,
+      (item, edit) => GsMultiSelect<R>(
+        items: options(item).toList(),
+        selected: values(item).toSet(),
+        onConfirm: (value) => edit(update(item, value.toList())),
+      ),
+      validate: validate,
+    );
+  }
+
   DataField.singleSelect(
     this.label,
     String Function(T item) value,
@@ -226,6 +245,26 @@ class DataField<T extends GsModel<T>> {
               selected: value(item),
               onConfirm: (value) => edit(update(item, value ?? '')),
             ));
+
+  static DataField<T> singleEnum<T extends GsModel<T>, R extends GeEnum>(
+    String label,
+    List<GsSelectItem<R>> items,
+    R Function(T item) value,
+    T Function(T item, R value) update, {
+    required GsValidLevel Function(T) validate,
+  }) {
+    return DataField._(
+      label,
+      (item, edit) {
+        return GsSingleSelect(
+          items: items,
+          selected: value(item),
+          onConfirm: (value) => edit(update(item, value ?? items.first.value)),
+        );
+      },
+      validate: validate,
+    );
+  }
 
   DataField.selectRarity(
     this.label,

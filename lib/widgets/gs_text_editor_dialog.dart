@@ -1,6 +1,5 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
-import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:data_editor/widgets/text_style_parser.dart';
@@ -151,7 +150,7 @@ class _GsTextEditorDialogState<T> extends State<GsTextEditorDialog> {
             GsSelectItem(
               value,
               value.id.toTitle(),
-              color: GsStyle.getElementColor(value.id),
+              color: value.color,
             ),
             onTap: (item) => _insertText((s) => '<color=$item>$s</color>'),
           ),

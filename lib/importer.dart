@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:flutter/services.dart';
 import 'package:html/parser.dart' as html;
@@ -177,8 +178,8 @@ class Importer {
       rarity: rarityInt,
       title: title,
       region: region?.toDbId(),
-      weapon: weapon?.toDbId(),
-      element: element.toDbId(),
+      weapon: GeWeaponType.values.fromId(weapon?.toDbId() ?? ''),
+      element: GeElements.values.fromId(element.toDbId()),
       releaseDate: release != null ? parseDate(release) : null,
       constellation: constellation,
       affiliation: affiliation,

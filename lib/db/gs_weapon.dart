@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 
 class GsWeapon extends GsModel<GsWeapon> {
   @override
@@ -7,13 +8,13 @@ class GsWeapon extends GsModel<GsWeapon> {
   final int rarity;
   final String image;
   final String imageAsc;
-  final String type;
+  final GeWeaponType type;
   final int atk;
-  final String statType;
+  final GeWeaponAscensionStatType statType;
   final double statValue;
   final String desc;
   final String version;
-  final String source;
+  final GeItemSource source;
 
   GsWeapon._({
     this.id = '',
@@ -21,13 +22,13 @@ class GsWeapon extends GsModel<GsWeapon> {
     this.rarity = 1,
     this.image = '',
     this.imageAsc = '',
-    this.type = '',
+    this.type = GeWeaponType.bow,
     this.atk = 0,
-    this.statType = '',
+    this.statType = GeWeaponAscensionStatType.none,
     this.statValue = 0,
     this.desc = '',
     this.version = '',
-    this.source = '',
+    this.source = GeItemSource.event,
   });
 
   GsWeapon.fromMap(JsonMap m)
@@ -36,13 +37,15 @@ class GsWeapon extends GsModel<GsWeapon> {
         rarity = m.getInt('rarity', 1),
         image = m.getString('image'),
         imageAsc = m.getString('image_asc'),
-        type = m.getString('type'),
+        type = GeWeaponType.values.fromId(m.getString('type')),
         atk = m.getInt('atk'),
-        statType = m.getString('stat_type'),
+        statType =
+            GeWeaponAscensionStatType.values.fromId(m.getString('stat_type')),
         statValue = m.getDouble('stat_value'),
         desc = m.getString('desc'),
         version = m.getString('version'),
-        source = m.getString('obtain', m.getString('source'));
+        source = GeItemSource.values
+            .fromId(m.getString('obtain', m.getString('source')));
 
   @override
   GsWeapon copyWith({
@@ -51,13 +54,13 @@ class GsWeapon extends GsModel<GsWeapon> {
     int? rarity,
     String? image,
     String? imageAsc,
-    String? type,
+    GeWeaponType? type,
     int? atk,
-    String? statType,
+    GeWeaponAscensionStatType? statType,
     double? statValue,
     String? desc,
     String? version,
-    String? source,
+    GeItemSource? source,
   }) {
     return GsWeapon._(
       id: id ?? this.id,
@@ -82,11 +85,11 @@ class GsWeapon extends GsModel<GsWeapon> {
         'image_asc': imageAsc,
         'version': version,
         'rarity': rarity,
-        'type': type,
+        'type': type.id,
         'atk': atk,
-        'stat_type': statType,
+        'stat_type': statType.id,
         'stat_value': statValue,
         'desc': desc,
-        'source': source,
+        'source': source.id,
       };
 }

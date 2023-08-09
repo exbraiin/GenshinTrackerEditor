@@ -20,11 +20,11 @@ List<DataField<GsNamecard>> getNamecardDfs(GsNamecard? model) {
       (item, value) => item.copyWith(name: value),
       validate: (item) => validator.validateEntry('name', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum(
       'Type',
-      (item) => item.type.id,
-      (item) => GsItemFilter.namecardTypes().filters,
-      (item, value) => item.copyWith(type: GeNamecardType.fromId(value)),
+      GeNamecardType.values.toChips(),
+      (item) => item.type,
+      (item, value) => item.copyWith(type: value),
       validate: (item) => validator.validateEntry('type', item, model),
     ),
     DataField.selectRarity(

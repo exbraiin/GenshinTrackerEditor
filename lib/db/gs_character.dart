@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 
 class GsCharacter extends GsModel<GsCharacter> {
   @override
@@ -8,14 +9,14 @@ class GsCharacter extends GsModel<GsCharacter> {
   final String title;
   final int rarity;
   final String region;
-  final String weapon;
-  final String element;
+  final GeWeaponType weapon;
+  final GeElements element;
   final String version;
-  final String source;
+  final GeItemSource source;
   final String description;
   final String constellation;
   final String affiliation;
-  final String modelType;
+  final GeCharacterModelType modelType;
   final String specialDish;
   final String birthday;
   final String releaseDate;
@@ -30,14 +31,14 @@ class GsCharacter extends GsModel<GsCharacter> {
     this.rarity = 1,
     this.title = '',
     this.region = '',
-    this.weapon = '',
-    this.element = '',
+    this.weapon = GeWeaponType.bow,
+    this.element = GeElements.anemo,
     this.version = '',
-    this.source = '',
+    this.source = GeItemSource.event,
     this.description = '',
     this.constellation = '',
     this.affiliation = '',
-    this.modelType = '',
+    this.modelType = GeCharacterModelType.shortFemale,
     this.specialDish = '',
     this.birthday = '',
     this.releaseDate = '',
@@ -53,14 +54,15 @@ class GsCharacter extends GsModel<GsCharacter> {
         rarity = m.getInt('rarity', 1),
         title = m.getString('title'),
         region = m.getString('region'),
-        weapon = m.getString('weapon'),
-        element = m.getString('element'),
+        weapon = GeWeaponType.values.fromId(m.getString('weapon')),
+        element = GeElements.values.fromId(m.getString('element')),
         version = m.getString('version'),
-        source = m.getString('source'),
+        source = GeItemSource.values.fromId(m.getString('source')),
         description = m.getString('description'),
         constellation = m.getString('constellation'),
         affiliation = m.getString('affiliation'),
-        modelType = m.getString('model_type'),
+        modelType =
+            GeCharacterModelType.values.fromId(m.getString('model_type')),
         specialDish = m.getString('special_dish'),
         birthday = m.getString('birthday'),
         releaseDate = m.getString('release_date'),
@@ -76,13 +78,13 @@ class GsCharacter extends GsModel<GsCharacter> {
     String? title,
     int? rarity,
     String? region,
-    String? weapon,
-    String? element,
+    GeWeaponType? weapon,
+    GeElements? element,
     String? version,
-    String? source,
+    GeItemSource? source,
     String? description,
     String? constellation,
-    String? modelType,
+    GeCharacterModelType? modelType,
     String? affiliation,
     String? specialDish,
     String? birthday,
@@ -122,13 +124,13 @@ class GsCharacter extends GsModel<GsCharacter> {
         'rarity': rarity,
         'title': title,
         'region': region,
-        'weapon': weapon,
-        'element': element,
+        'weapon': weapon.id,
+        'element': element.id,
         'version': version,
-        'source': source,
+        'source': source.id,
         'description': description,
         'constellation': constellation,
-        'model_type': modelType,
+        'model_type': modelType.id,
         'affiliation': affiliation,
         'special_dish': specialDish,
         'birthday': birthday,

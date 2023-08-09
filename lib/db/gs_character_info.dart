@@ -10,7 +10,7 @@ class GsCharacterInfo extends GsModel<GsCharacterInfo> {
   final String regionMaterial;
   final String talentMaterial;
   final String weeklyMaterial;
-  final String ascStatType;
+  final GeCharacterAscensionStatType ascStatType;
   final String ascHpValues;
   final String ascAtkValues;
   final String ascDefValues;
@@ -30,7 +30,7 @@ class GsCharacterInfo extends GsModel<GsCharacterInfo> {
     this.ascAtkValues = '',
     this.ascDefValues = '',
     this.ascStatValues = '',
-    this.ascStatType = '',
+    this.ascStatType = GeCharacterAscensionStatType.hpPercent,
     this.talents = const [],
     this.constellations = const [],
   });
@@ -43,7 +43,8 @@ class GsCharacterInfo extends GsModel<GsCharacterInfo> {
         regionMaterial = m.getString('mat_region'),
         talentMaterial = m.getString('mat_talent'),
         weeklyMaterial = m.getString('mat_weekly'),
-        ascStatType = m.getString('asc_stat_type'),
+        ascStatType = GeCharacterAscensionStatType.values
+            .fromId(m.getString('asc_stat_type')),
         ascHpValues = m.getString('asc_hp_values'),
         ascAtkValues = m.getString('asc_atk_values'),
         ascDefValues = m.getString('asc_def_values'),
@@ -85,7 +86,7 @@ class GsCharacterInfo extends GsModel<GsCharacterInfo> {
     String? ascAtkValues,
     String? ascDefValues,
     String? ascStatValues,
-    String? ascStatType,
+    GeCharacterAscensionStatType? ascStatType,
     List<GsCharTalent>? talents,
     List<GsCharConstellation>? constellations,
   }) {
@@ -115,7 +116,7 @@ class GsCharacterInfo extends GsModel<GsCharacterInfo> {
         'mat_region': regionMaterial,
         'mat_talent': talentMaterial,
         'mat_weekly': weeklyMaterial,
-        'asc_stat_type': ascStatType,
+        'asc_stat_type': ascStatType.id,
         'asc_hp_values': ascHpValues,
         'asc_atk_values': ascAtkValues,
         'asc_def_values': ascDefValues,

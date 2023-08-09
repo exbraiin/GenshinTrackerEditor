@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
@@ -21,10 +22,10 @@ List<DataField<GsRemarkableChest>> getRemarkableChestDfs(
       (item, value) => item.copyWith(name: value),
       validate: (item) => validator.validateEntry('name', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum<GsRemarkableChest, GeSereniteaSets>(
       'Type',
+      GeSereniteaSets.values.toChips(),
       (item) => item.type,
-      (item) => GsItemFilter.sereniteas().filters,
       (item, value) => item.copyWith(type: value),
       validate: (item) => validator.validateEntry('type', item, model),
     ),
@@ -66,10 +67,10 @@ List<DataField<GsRemarkableChest>> getRemarkableChestDfs(
       (item, value) => item.copyWith(version: value),
       validate: (item) => validator.validateEntry('version', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum<GsRemarkableChest, GeRmChestCategory>(
       'Category',
+      GeRmChestCategory.values.toChips(),
       (item) => item.category,
-      (item) => GsItemFilter.rChestCategory().filters,
       (item, value) => item.copyWith(category: value),
       validate: (item) => validator.validateEntry('category', item, model),
     ),

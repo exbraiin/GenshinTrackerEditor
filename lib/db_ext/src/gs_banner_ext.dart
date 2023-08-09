@@ -52,11 +52,11 @@ List<DataField<GsBanner>> getBannerDfs(GsBanner? model) {
       (item, value) => item.copyWith(feature5: value),
       validate: (item) => validator.validateEntry('feature_5', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum<GsBanner, GeBannerType>(
       'Type',
-      (item) => item.type.id,
-      (item) => GsItemFilter.bannerTypes().filters,
-      (item, value) => item.copyWith(type: GeBannerType.fromId(value)),
+      GeBannerType.values.toChips(),
+      (item) => item.type,
+      (item, value) => item.copyWith(type: value),
       validate: (item) => validator.validateEntry('type', item, model),
     ),
     DataField.singleSelect(

@@ -1,4 +1,3 @@
-import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:flutter/material.dart';
@@ -34,21 +33,6 @@ class GsStyle {
           5: Color(0xFFE2AA52),
         }[rarity] ??
         Colors.white;
-  }
-
-  static Color getBannerColor(String type) {
-    final item = GeBannerType.values.firstOrNullWhere((e) => e.id == type);
-    return item?.color ?? Colors.white;
-  }
-
-  static Color getSereniteaColor(String type) {
-    final item = GeSereniteaSets.values.firstOrNullWhere((e) => e.id == type);
-    return item?.color ?? Colors.white;
-  }
-
-  static Color getElementColor(String element) {
-    final item = GeElements.values.firstOrNullWhere((e) => e.id == element);
-    return item?.color ?? Colors.grey;
   }
 
   static Color? getRegionElementColor(String region) {

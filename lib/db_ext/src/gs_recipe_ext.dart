@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
@@ -22,10 +23,10 @@ List<DataField<GsRecipe>> getRecipeDfs(GsRecipe? model) {
       (item, value) => item.copyWith(name: value),
       validate: (item) => validator.validateEntry('name', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum(
       'Type',
+      GeRecipeType.values.toChips(),
       (item) => item.type,
-      (item) => GsItemFilter.recipeType().filters,
       (item, value) => item.copyWith(type: value),
       validate: (item) => validator.validateEntry('type', item, model),
     ),
@@ -48,10 +49,10 @@ List<DataField<GsRecipe>> getRecipeDfs(GsRecipe? model) {
       (item, value) => item.copyWith(image: value),
       validate: (item) => validator.validateEntry('image', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum(
       'Effect',
+      GeRecipeEffectType.values.toChips(),
       (item) => item.effect,
-      (item) => GsItemFilter.recipeEffects().filters,
       (item, value) => item.copyWith(effect: value),
       validate: (item) => validator.validateEntry('effect', item, model),
     ),

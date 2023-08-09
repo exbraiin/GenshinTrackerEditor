@@ -1,14 +1,15 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 
 class GsAchievement extends GsModel<GsAchievement> {
   @override
   final String id;
   final String name;
-  final String type;
   final String group;
   final bool hidden;
   final String version;
+  final GeAchievementType type;
   final List<GsAchievementPhase> phases;
 
   int get reward => phases.sumBy((element) => element.reward);
@@ -16,7 +17,7 @@ class GsAchievement extends GsModel<GsAchievement> {
   GsAchievement._({
     this.id = '',
     this.name = '',
-    this.type = '',
+    this.type = GeAchievementType.none,
     this.group = '',
     this.hidden = false,
     this.version = '',
@@ -26,7 +27,7 @@ class GsAchievement extends GsModel<GsAchievement> {
   GsAchievement.fromMap(JsonMap m)
       : id = m.getString('id'),
         name = m.getString('name'),
-        type = m.getString('type'),
+        type = GeAchievementType.values.fromId(m.getString('type')),
         group = m.getString('group'),
         hidden = m.getBool('hidden'),
         version = m.getString('version'),
@@ -36,7 +37,7 @@ class GsAchievement extends GsModel<GsAchievement> {
   GsAchievement copyWith({
     String? id,
     String? name,
-    String? type,
+    GeAchievementType? type,
     String? group,
     bool? hidden,
     String? version,
@@ -56,7 +57,7 @@ class GsAchievement extends GsModel<GsAchievement> {
   @override
   JsonMap toJsonMap() => {
         'name': name,
-        'type': type,
+        'type': type.id,
         'group': group,
         'hidden': hidden,
         'version': version,

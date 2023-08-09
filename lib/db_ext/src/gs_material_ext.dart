@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
@@ -44,10 +45,10 @@ List<DataField<GsMaterial>> getMaterialDfs(GsMaterial? model) {
       (item, value) => item.copyWith(region: value),
       validate: (item) => validator.validateEntry('region', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum(
       'Group',
+      GeMaterialCategory.values.toChips(),
       (item) => item.group,
-      (item) => GsItemFilter.matCategories().filters,
       (item, value) => item.copyWith(group: value),
       validate: (item) => validator.validateEntry('group', item, model),
     ),
@@ -70,10 +71,10 @@ List<DataField<GsMaterial>> getMaterialDfs(GsMaterial? model) {
       (item, value) => item.copyWith(image: value),
       validate: (item) => validator.validateEntry('image', item, model),
     ),
-    DataField.multiSelect<GsMaterial, String>(
+    DataField.multiEnum<GsMaterial, GeWeekdays>(
       'Weekdays',
       (item) => item.weekdays,
-      (item) => GsItemFilter.weekdays().filters,
+      (item) => GeWeekdays.values.toChips(),
       (item, value) => item.copyWith(weekdays: value),
       validate: (item) => validator.validateEntry('weekdays', item, model),
     ),

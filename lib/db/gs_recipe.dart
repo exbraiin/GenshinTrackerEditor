@@ -1,16 +1,17 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/style/utils.dart';
 
 class GsRecipe extends GsModel<GsRecipe> {
   @override
   final String id;
   final String name;
-  final String type;
+  final GeRecipeType type;
   final int rarity;
   final String version;
   final String image;
-  final String effect;
+  final GeRecipeEffectType effect;
   final String desc;
   final String effectDesc;
   final String baseRecipe;
@@ -19,11 +20,11 @@ class GsRecipe extends GsModel<GsRecipe> {
   GsRecipe({
     this.id = '',
     this.name = '',
-    this.type = '',
+    this.type = GeRecipeType.permanent,
     this.rarity = 1,
     this.version = '',
     this.image = '',
-    this.effect = '',
+    this.effect = GeRecipeEffectType.adventure,
     this.desc = '',
     this.effectDesc = '',
     this.baseRecipe = '',
@@ -33,11 +34,11 @@ class GsRecipe extends GsModel<GsRecipe> {
   GsRecipe.fromMap(JsonMap m)
       : id = m.getString('id'),
         name = m.getString('name'),
-        type = m.getString('type'),
+        type = GeRecipeType.values.fromId(m.getString('type')),
         rarity = m.getInt('rarity', 1),
         version = m.getString('version'),
         image = m.getString('image'),
-        effect = m.getString('effect'),
+        effect = GeRecipeEffectType.values.fromId(m.getString('effect')),
         desc = m.getString('desc'),
         effectDesc = m.getString('effect_desc'),
         ingredients = (m['ingredients'] as Map? ?? {})
@@ -50,11 +51,11 @@ class GsRecipe extends GsModel<GsRecipe> {
   GsRecipe copyWith({
     String? id,
     String? name,
-    String? type,
+    GeRecipeType? type,
     int? rarity,
     String? version,
     String? image,
-    String? effect,
+    GeRecipeEffectType? effect,
     String? desc,
     String? effectDesc,
     String? baseRecipe,
@@ -78,10 +79,10 @@ class GsRecipe extends GsModel<GsRecipe> {
   @override
   JsonMap toJsonMap() => {
         'name': name,
-        'type': type,
+        'type': type.id,
         'version': version,
         'image': image,
-        'effect': effect,
+        'effect': effect.id,
         'rarity': rarity,
         'desc': desc,
         'effect_desc': effectDesc,

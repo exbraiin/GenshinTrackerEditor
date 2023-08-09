@@ -29,7 +29,7 @@ class GsNamecard extends GsModel<GsNamecard> {
       : id = m.getString('id'),
         name = m.getString('name'),
         rarity = m.getInt('rarity'),
-        type = GeNamecardType.fromId(m.getString('type')),
+        type = GeNamecardType.values.fromId(m.getString('type')),
         version = m.getString('version'),
         image = m.getString('image'),
         fullImage = m.getString('full_image'),

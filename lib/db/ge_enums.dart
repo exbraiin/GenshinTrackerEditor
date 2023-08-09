@@ -1,12 +1,11 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/style/style.dart';
+import 'package:data_editor/style/utils.dart';
+import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:flutter/material.dart';
 
 abstract class GeEnum {
   String get id;
-
-  static T _getById<T extends GeEnum>(List<T> values, String id, [T? value]) =>
-      values.firstOrNullWhere((e) => e.id == id) ?? value ?? values.first;
 }
 
 enum GeAchievementType implements GeEnum {
@@ -34,8 +33,6 @@ enum GeNamecardType implements GeEnum {
   final String id;
   Color get color => GsStyle.getNamecardColor(id); // TODO
   const GeNamecardType(this.id);
-
-  static GeNamecardType fromId(String id) => GeEnum._getById(values, id);
 }
 
 enum GeRecipeEffectType implements GeEnum {
@@ -60,7 +57,6 @@ enum GeRecipeType implements GeEnum {
 
   @override
   final String id;
-
   const GeRecipeType(this.id);
 }
 
@@ -79,8 +75,6 @@ enum GeBannerType implements GeEnum {
       this == GeBannerType.beginner || this == GeBannerType.standard;
 
   const GeBannerType(this.id, this.color);
-
-  static GeBannerType fromId(String id) => GeEnum._getById(values, id);
 }
 
 enum GeWeaponType implements GeEnum {
@@ -108,8 +102,6 @@ enum GeElements implements GeEnum {
   final String id;
   final Color color;
   const GeElements(this.id, this.color);
-
-  static GeElements fromId(String id) => GeEnum._getById(values, id);
 }
 
 enum Regions implements GeEnum {
@@ -218,8 +210,6 @@ enum GeSereniteaSets implements GeEnum {
   final String id;
   final Color color;
   const GeSereniteaSets(this.id, this.color);
-
-  static GeSereniteaSets fromId(String id) => GeEnum._getById(values, id);
 }
 
 enum GeRmChestCategory implements GeEnum {
@@ -282,4 +272,33 @@ enum GeCharacterModelType implements GeEnum {
   @override
   final String id;
   const GeCharacterModelType(this.id);
+}
+
+extension GeEnumListExt<T extends GeEnum> on List<T> {
+  T fromId(String id) => firstOrNullWhere((e) => e.id == id) ?? first;
+
+  List<GsSelectItem<T>> toChips() {
+    Color getColor(T value) {
+      if (value is GeElements) return value.color;
+      if (value is GeBannerType) return value.color;
+      if (value is GeSereniteaSets) return value.color;
+      return Colors.grey;
+    }
+
+    String getAsset(T value) {
+      if (value is GeRecipeEffectType) {
+        return GsGraphics.getRecipeEffectIcon(value.id);
+      }
+      return '';
+    }
+
+    return map((value) {
+      return GsSelectItem(
+        value,
+        value.id.isEmpty ? 'None' : value.id.toTitle(),
+        color: getColor(value),
+        icon: getAsset(value),
+      );
+    }).toList();
+  }
 }

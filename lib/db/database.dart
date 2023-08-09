@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/ge_enums.dart';
-// import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db/gs_achievement.dart';
 import 'package:data_editor/db/gs_achievement_group.dart';
 import 'package:data_editor/db/gs_artifact.dart';
@@ -124,7 +123,7 @@ class Database {
     'src/materials.json',
     GsMaterial.fromMap,
     sorted: (list) => list
-        .sortedBy((element) => element.group)
+        .sortedBy((element) => element.group.index)
         .thenBy((element) => _getCityIndex(element.region))
         .thenBy((element) => element.subgroup)
         .thenBy((element) => element.rarity)
@@ -150,8 +149,8 @@ class Database {
     GsRemarkableChest.fromMap,
     sorted: (list) => list
         .sortedBy((element) => element.rarity)
-        .thenBy((element) => element.type)
-        .thenBy((element) => element.category)
+        .thenBy((element) => element.type.index)
+        .thenBy((element) => element.category.index)
         .thenBy((element) => element.name),
   );
   final sereniteas = GsCollection(
@@ -268,7 +267,7 @@ enum ItemState {
 }
 
 extension DatabaseExt on Database {
-  Iterable<GsMaterial> getMaterialGroup(String group) {
+  Iterable<GsMaterial> getMaterialGroup(GeMaterialCategory group) {
     final matGroup = materials.data.where((e) => e.group == group);
     return matGroup.groupBy((m) => m.subgroup).values.expand((l) {
       final rarity = l.minBy((m) => m.rarity)?.rarity ?? 1;
@@ -276,7 +275,11 @@ extension DatabaseExt on Database {
     });
   }
 
-  Iterable<GsMaterial> getMaterialGroups(List<String> groups) {
+  Iterable<GsMaterial> getMaterialGroups(
+    GeMaterialCategory type, [
+    GeMaterialCategory? type1,
+  ]) {
+    final groups = [type, type1].whereType<GeMaterialCategory>();
     return groups.map(getMaterialGroup).expand((list) => list);
   }
 

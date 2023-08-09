@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 
 class GsMaterial extends GsModel<GsMaterial> {
   @override
@@ -6,20 +7,20 @@ class GsMaterial extends GsModel<GsMaterial> {
   final String name;
   final String desc;
   final int rarity;
-  final String group;
+  final GeMaterialCategory group;
   final String image;
   final String region;
   final int subgroup;
   final String version;
   final bool ingredient;
-  final List<String> weekdays;
+  final List<GeWeekdays> weekdays;
 
   GsMaterial({
     this.id = '',
     this.name = '',
     this.desc = '',
     this.rarity = 1,
-    this.group = '',
+    this.group = GeMaterialCategory.none,
     this.image = '',
     this.region = '',
     this.subgroup = 0,
@@ -33,13 +34,16 @@ class GsMaterial extends GsModel<GsMaterial> {
         name = m.getString('name'),
         desc = m.getString('desc'),
         rarity = m.getInt('rarity', 1),
-        group = m.getString('group'),
+        group = GeMaterialCategory.values.fromId(m.getString('group')),
         image = m.getString('image'),
         region = m.getString('region'),
         subgroup = m.getInt('subgroup', 0),
         version = m.getString('version'),
         ingredient = m.getBool('ingredient'),
-        weekdays = m.getStringList('weekdays');
+        weekdays = m
+            .getStringList('weekdays')
+            .map((e) => GeWeekdays.values.fromId(e))
+            .toList();
 
   @override
   GsMaterial copyWith({
@@ -47,13 +51,13 @@ class GsMaterial extends GsModel<GsMaterial> {
     String? name,
     String? desc,
     int? rarity,
-    String? group,
+    GeMaterialCategory? group,
     String? image,
     String? region,
     int? subgroup,
     String? version,
     bool? ingredient,
-    List<String>? weekdays,
+    List<GeWeekdays>? weekdays,
   }) {
     return GsMaterial(
       id: id ?? this.id,
@@ -74,13 +78,13 @@ class GsMaterial extends GsModel<GsMaterial> {
   JsonMap toJsonMap() => {
         'name': name,
         'desc': desc,
-        'group': group,
+        'group': group.id,
         'image': image,
         'region': region,
         'rarity': rarity,
         'subgroup': subgroup,
         'version': version,
         'ingredient': ingredient,
-        if (weekdays.isNotEmpty) 'weekdays': weekdays,
+        if (weekdays.isNotEmpty) 'weekdays': weekdays.map((e) => e.id).toList(),
       };
 }

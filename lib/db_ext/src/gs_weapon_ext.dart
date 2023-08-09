@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
@@ -37,17 +38,17 @@ List<DataField<GsWeapon>> getWeaponDfs(GsWeapon? model) {
       (item, value) => item.copyWith(imageAsc: value),
       validate: (item) => validator.validateEntry('image_asc', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum(
       'Type',
+      GeWeaponType.values.toChips(),
       (item) => item.type,
-      (item) => GsItemFilter.weaponTypes().filters,
       (item, value) => item.copyWith(type: value),
       validate: (item) => validator.validateEntry('type', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum<GsWeapon, GeItemSource>(
       'Source',
+      GeItemSource.values.toChips(),
       (item) => item.source,
-      (item) => GsItemFilter.itemSource().filters,
       (item, value) => item.copyWith(source: value),
       validate: (item) => validator.validateEntry('source', item, model),
     ),
@@ -57,10 +58,10 @@ List<DataField<GsWeapon>> getWeaponDfs(GsWeapon? model) {
       (item, value) => item.copyWith(atk: int.tryParse(value) ?? -1),
       validate: (item) => validator.validateEntry('atk', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum(
       'Stat Type',
+      GeWeaponAscensionStatType.values.toChips(),
       (item) => item.statType,
-      (item) => GsItemFilter.weaponStatTypes().filters,
       (item, value) => item.copyWith(statType: value),
       validate: (item) => validator.validateEntry('stat_type', item, model),
     ),

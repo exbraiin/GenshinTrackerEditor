@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
@@ -36,29 +37,28 @@ List<DataField<GsWeaponInfo>> getWeaponInfoDfs(GsWeaponInfo? model) {
       'Material Weapon',
       (item) => item.matWeapon,
       (item) =>
-          GsItemFilter.matGroupsWithRegion(GsItemFilter.matWeapons).filters,
+          GsItemFilter.matGroups(GeMaterialCategory.weaponMaterials).filters,
       (item, value) => item.copyWith(matWeapon: value),
       validate: (item) => validator.validateEntry('mat_weapon', item, model),
     ),
     DataField.singleSelect(
       'Material Common',
       (item) => item.matCommon,
-      (item) =>
-          GsItemFilter.matGroupsWithRarity(GsItemFilter.matNormal).filters,
+      (item) => GsItemFilter.matGroups(GeMaterialCategory.normalDrops).filters,
       (item, value) => item.copyWith(matCommon: value),
       validate: (item) => validator.validateEntry('mat_common', item, model),
     ),
     DataField.singleSelect(
       'Material Elite',
       (item) => item.matElite,
-      (item) => GsItemFilter.matGroupsWithRarity(GsItemFilter.matElite).filters,
+      (item) => GsItemFilter.matGroups(GeMaterialCategory.eliteDrops).filters,
       (item, value) => item.copyWith(matElite: value),
       validate: (item) => validator.validateEntry('mat_elite', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum(
       'Ascension Stat',
+      GeWeaponAscensionStatType.values.toChips(),
       (item) => item.ascStatType,
-      (item) => GsItemFilter.weaponStatTypes().filters,
       (item, value) => item.copyWith(ascStatType: value),
       validate: (item) => validator.validateEntry('asc_stat_type', item, model),
     ),

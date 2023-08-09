@@ -20,11 +20,11 @@ List<DataField<GsSerenitea>> getSereniteaDfs(GsSerenitea? model) {
       (item, value) => item.copyWith(name: value),
       validate: (item) => validator.validateEntry('name', item, model),
     ),
-    DataField.singleSelect(
+    DataField.singleEnum<GsSerenitea, GeSereniteaSets>(
       'Category',
-      (item) => item.category.id,
-      (item) => GsItemFilter.sereniteas().filters,
-      (item, value) => item.copyWith(category: GeSereniteaSets.fromId(value)),
+      GeSereniteaSets.values.toChips(),
+      (item) => item.category,
+      (item, value) => item.copyWith(category: value),
       validate: (item) => validator.validateEntry('category', item, model),
     ),
     DataField.textImage(

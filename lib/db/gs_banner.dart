@@ -31,7 +31,7 @@ class GsBanner extends GsModel<GsBanner> {
         image = m.getString('image'),
         dateStart = m.getString('date_start'),
         dateEnd = m.getString('date_end'),
-        type = GeBannerType.fromId(m.getString('type')),
+        type = GeBannerType.values.fromId(m.getString('type')),
         version = m.getString('version'),
         feature4 = m.getStringList('feature_4'),
         feature5 = m.getStringList('feature_5');
