@@ -86,7 +86,7 @@ class _ItemEditScreenState<T extends GsModel<T>>
                 child: ValueListenableBuilder(
                   valueListenable: _notifier,
                   builder: (context, value, child) {
-                    return getTableForFields(value, fields, edit);
+                    return getTableForFields(context, value, fields, edit);
                   },
                 ),
               ),

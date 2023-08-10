@@ -1,5 +1,20 @@
-import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:flutter/material.dart';
+
+class GsSelectItem<T> {
+  final T value;
+  final Color color;
+  final String label;
+  final String asset;
+  final String image;
+
+  GsSelectItem(
+    this.value,
+    this.label, {
+    this.asset = '',
+    this.image = '',
+    this.color = Colors.grey,
+  });
+}
 
 class GsSelectChip<T> extends StatelessWidget {
   final bool hide;
@@ -49,34 +64,47 @@ class GsSelectChip<T> extends StatelessWidget {
   }
 
   Widget _content() {
-    final text = Text(
-      item.label,
-      textAlign: TextAlign.center,
-      style: const TextStyle(
-        fontWeight: FontWeight.bold,
-        color: Colors.white,
-        shadows: [
-          BoxShadow(
-            color: Colors.black38,
-            offset: Offset(1, 1),
-          )
-        ],
-      ),
-    );
-
-    if (item.icon.isEmpty) return text;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 4),
-          child: Image.asset(
-            item.icon,
-            width: 20,
-            height: 20,
+        if (item.image.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.identity()
+                ..scale(1.4)
+                ..translate(0.0, -8.0),
+              child: Image.network(
+                item.image,
+                width: 56,
+                height: 56,
+              ),
+            ),
+          ),
+        if (item.asset.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(right: 4),
+            child: Image.asset(
+              item.asset,
+              width: 20,
+              height: 20,
+            ),
+          ),
+        Text(
+          item.label,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            shadows: [
+              BoxShadow(
+                color: Colors.black38,
+                offset: Offset(1, 1),
+              )
+            ],
           ),
         ),
-        text,
       ],
     );
   }

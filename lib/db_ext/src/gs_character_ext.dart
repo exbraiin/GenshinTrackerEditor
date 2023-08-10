@@ -1,9 +1,16 @@
+import 'dart:async';
+
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/external/gs_enka.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/importer.dart';
+import 'package:data_editor/style/style.dart';
+import 'package:data_editor/style/utils.dart';
+import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
+import 'package:flutter/material.dart';
 
 List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
   final validator = DataValidator.i.getValidator<GsCharacter>();
@@ -13,14 +20,45 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
       validate: (item) => validator.validateEntry('id', item, model),
-      refresh: (item) => item.copyWith(id: generateId(item)),
-      import: Importer.importCharacterFromFandom,
-      importTooltip: 'Import from fandom URL',
+      refresh: DataButton(
+        'Generate Id',
+        (ctx, item) => item.copyWith(id: generateId(item)),
+      ),
+      import: DataButton(
+        'Import from fandom URL',
+        (ctx, item) => Importer.importCharacterFromFandom(item),
+      ),
     ),
     DataField.textField(
       'Enka ID',
       (item) => item.enkaId,
       (item, value) => item.copyWith(enkaId: value),
+      import: DataButton(
+        'Select from Enka API',
+        (context, item) async {
+          await GsEnka.i.load();
+          final controller = StreamController<GsCharacter>();
+          // ignore: use_build_context_synchronously
+          SelectDialog(
+            title: 'Select',
+            items: GsEnka.i.characters.map(
+              (e) => GsSelectItem(
+                e.id,
+                e.icon.isEmpty ? e.id.toTitle() : '',
+                image: e.icon,
+                color: GsStyle.getRarityColor(e.rarity),
+              ),
+            ),
+            selected: item.enkaId,
+            onConfirm: (value) {
+              controller.add(item.copyWith(enkaId: value));
+              controller.close();
+            },
+          ).show(context);
+          return controller.stream.first;
+        },
+        icon: const Icon(Icons.select_all_rounded),
+      ),
       validate: (item) => validator.validateEntry('enka_id', item, model),
     ),
     DataField.textField(

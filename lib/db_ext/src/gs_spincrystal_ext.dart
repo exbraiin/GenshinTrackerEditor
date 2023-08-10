@@ -10,7 +10,10 @@ List<DataField<GsSpincrystal>> getSpincrystalDfs(GsSpincrystal? model) {
       'ID',
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
-      refresh: (item) => item.copyWith(id: generateId(item)),
+      refresh: DataButton(
+        'Generate Id',
+        (ctx, item) => item.copyWith(id: generateId(item)),
+      ),
       validate: (item) => validator.validateEntry('id', item, model),
     ),
     DataField.textField(

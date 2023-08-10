@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
@@ -11,7 +13,18 @@ import 'package:flutter/services.dart';
 typedef DEdit<T extends GsModel<T>> = void Function(T v);
 typedef DValid<T extends GsModel<T>> = GsValidLevel Function(T item);
 typedef DUpdate<T extends GsModel<T>> = T Function(T item);
-typedef DBuilder<T extends GsModel<T>> = Widget Function(T item, DEdit<T> edit);
+typedef DBuilder<T extends GsModel<T>> = Widget Function(
+  BuildContext context,
+  T item,
+  DEdit<T> edit,
+);
+
+class DataButton<T extends GsModel<T>> {
+  final Widget? icon;
+  final String tooltip;
+  final FutureOr<T> Function(BuildContext context, T item) callback;
+  DataButton(this.tooltip, this.callback, {this.icon});
+}
 
 class DataField<T extends GsModel<T>> {
   final String label;
@@ -29,7 +42,7 @@ class DataField<T extends GsModel<T>> {
     String Function(T item) content, {
     DUpdate<T>? swap,
     required this.validate,
-  }) : builder = ((item, edit) => Row(
+  }) : builder = ((context, item, edit) => Row(
               children: [
                 Expanded(
                   child: Container(
@@ -52,7 +65,7 @@ class DataField<T extends GsModel<T>> {
     String Function(T item) content,
     VoidCallback? onPressed, {
     required this.validate,
-  }) : builder = ((item, edit) {
+  }) : builder = ((context, item, edit) {
           return InkWell(
             onTap: onPressed,
             child: Container(
@@ -69,7 +82,7 @@ class DataField<T extends GsModel<T>> {
     String Function(T item) content,
     T Function(T item, String value) update, {
     required this.validate,
-  }) : builder = ((item, edit) {
+  }) : builder = ((context, item, edit) {
           var text = content(item).split('\n').first;
           if (text.length > 40) text = text.substring(0, 40);
           if (text.isNotEmpty) text = '$text...';
@@ -112,11 +125,10 @@ class DataField<T extends GsModel<T>> {
     String Function(T item) content,
     T Function(T item, String value) update, {
     String Function(String value)? process,
-    Future<T> Function(T item)? import,
-    DUpdate<T>? refresh,
-    String? importTooltip,
+    DataButton<T>? import,
+    DataButton<T>? refresh,
     required this.validate,
-  }) : builder = ((item, edit) => SizedBox(
+  }) : builder = ((context, item, edit) => SizedBox(
               height: 44,
               child: Row(
                 children: [
@@ -129,14 +141,17 @@ class DataField<T extends GsModel<T>> {
                   ),
                   if (refresh != null)
                     IconButton(
-                      onPressed: () => edit(refresh(item)),
-                      icon: const Icon(Icons.upload_rounded),
+                      tooltip: refresh.tooltip,
+                      icon: refresh.icon ?? const Icon(Icons.upload_rounded),
+                      onPressed: () async =>
+                          edit(await refresh.callback(context, item)),
                     ),
                   if (import != null)
                     IconButton(
-                      onPressed: () async => edit(await import(item)),
-                      icon: const Icon(Icons.bolt_outlined),
-                      tooltip: importTooltip,
+                      tooltip: import.tooltip,
+                      icon: import.icon ?? const Icon(Icons.bolt_outlined),
+                      onPressed: () async =>
+                          edit(await import.callback(context, item)),
                     ),
                   IconButton(
                     onPressed: () => edit(update(item, '')),
@@ -161,7 +176,7 @@ class DataField<T extends GsModel<T>> {
     String Function(T item) content,
     T Function(T item, String value) update, {
     required DValid<T> validate,
-    Future<T> Function(T item)? import,
+    DataButton<T>? import,
     String? importTooltip,
   }) {
     return DataField.textField(
@@ -169,7 +184,6 @@ class DataField<T extends GsModel<T>> {
       content,
       update,
       import: import,
-      importTooltip: importTooltip,
       validate: validate,
       process: (value) => value
           .split(',')
@@ -207,7 +221,7 @@ class DataField<T extends GsModel<T>> {
   }) {
     return DataField._(
       label,
-      (item, edit) => GsMultiSelect<V>(
+      (context, item, edit) => GsMultiSelect<V>(
         items: options(item).toList(),
         selected: values(item).toSet(),
         onConfirm: (value) => edit(update(item, value.toList())),
@@ -225,7 +239,7 @@ class DataField<T extends GsModel<T>> {
   }) {
     return DataField._(
       label,
-      (item, edit) => GsMultiSelect<R>(
+      (context, item, edit) => GsMultiSelect<R>(
         items: options(item).toList(),
         selected: values(item).toSet(),
         onConfirm: (value) => edit(update(item, value.toList())),
@@ -240,7 +254,7 @@ class DataField<T extends GsModel<T>> {
     Iterable<GsSelectItem<String>> Function(T item) items,
     T Function(T item, String value) update, {
     required this.validate,
-  }) : builder = ((item, edit) => GsSingleSelect(
+  }) : builder = ((context, item, edit) => GsSingleSelect(
               items: items(item),
               selected: value(item),
               onConfirm: (value) => edit(update(item, value ?? '')),
@@ -255,7 +269,7 @@ class DataField<T extends GsModel<T>> {
   }) {
     return DataField._(
       label,
-      (item, edit) {
+      (context, item, edit) {
         return GsSingleSelect(
           items: items,
           selected: value(item),
@@ -272,7 +286,7 @@ class DataField<T extends GsModel<T>> {
     T Function(T item, int value) update, {
     int min = 1,
     required this.validate,
-  }) : builder = ((item, edit) => GsSingleSelect(
+  }) : builder = ((context, item, edit) => GsSingleSelect(
               items: List.generate(
                 6 - min,
                 (index) => GsSelectItem(
@@ -288,7 +302,8 @@ class DataField<T extends GsModel<T>> {
   DataField.list(
     this.label,
     Iterable<DataField<T>> Function(T item) fields,
-  )   : builder = ((item, edit) => getTableForFields(item, fields(item), edit)),
+  )   : builder = ((context, item, edit) =>
+            getTableForFields(context, item, fields(item), edit)),
         validate = ((item) =>
             fields(item)
                 .map((e) => e.validate(item))
@@ -306,7 +321,7 @@ class DataField<T extends GsModel<T>> {
   ) {
     return DataField<T>._(
       label,
-      (item, edit) {
+      (context, item, edit) {
         final list = values(item).toList();
         return Column(
           children: [
@@ -325,6 +340,7 @@ class DataField<T extends GsModel<T>> {
               columnWidths: const {0: IntrinsicColumnWidth()},
               children: list.map((child) {
                 return _getFieldTableRow(
+                  context,
                   child,
                   build(item, child),
                   (child) => edit(onFieldUpdated(item, child)),
@@ -353,7 +369,7 @@ class DataField<T extends GsModel<T>> {
   }) {
     return DataField<T>._(
       label,
-      (item, edit) {
+      (context, item, edit) {
         final list = values(item).toList();
         return Column(
           children: [
@@ -382,6 +398,7 @@ class DataField<T extends GsModel<T>> {
               columnWidths: const {0: IntrinsicColumnWidth()},
               children: list.mapIndexed((index, child) {
                 return _getFieldTableRow(
+                  context,
                   child,
                   build(index, item, child),
                   (child) => edit(update(item, list.toList()..[index] = child)),
@@ -402,6 +419,7 @@ class DataField<T extends GsModel<T>> {
 }
 
 Widget getTableForFields<T extends GsModel<T>>(
+  BuildContext context,
   T value,
   Iterable<DataField<T>> fields,
   void Function(T item) updateItem,
@@ -416,12 +434,13 @@ Widget getTableForFields<T extends GsModel<T>>(
     ),
     columnWidths: const {0: IntrinsicColumnWidth()},
     children: fields
-        .map((field) => _getFieldTableRow(value, field, updateItem))
+        .map((field) => _getFieldTableRow(context, value, field, updateItem))
         .toList(),
   );
 }
 
 TableRow _getFieldTableRow<T extends GsModel<T>>(
+  BuildContext context,
   T value,
   DataField<T> field,
   void Function(T item) edit,
@@ -453,7 +472,7 @@ TableRow _getFieldTableRow<T extends GsModel<T>>(
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: field.builder(value, edit),
+        child: field.builder(context, value, edit),
       ),
     ],
   );

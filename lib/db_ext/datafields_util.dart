@@ -26,7 +26,7 @@ class GsItemFilter {
         return GsSelectItem(
           value,
           title?.call(e) ?? value.toTitle(),
-          icon: icon?.call(e) ?? '',
+          asset: icon?.call(e) ?? '',
           color: color?.call(e) ?? Colors.grey,
         );
       }),

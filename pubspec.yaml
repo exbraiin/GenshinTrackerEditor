@@ -41,6 +41,7 @@ dependencies:
   excel: ^2.0.1
   flutter_lints: ^2.0.1
   html: ^0.15.2
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:

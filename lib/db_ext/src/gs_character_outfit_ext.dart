@@ -13,7 +13,10 @@ List<DataField<GsCharacterOutfit>> getCharacterOutfitDfs(
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
       validate: (item) => validator.validateEntry('id', item, model),
-      refresh: (item) => item.copyWith(id: generateId(item)),
+      refresh: DataButton(
+        'Generate Id',
+        (ctx, item) => item.copyWith(id: generateId(item)),
+      ),
     ),
     DataField.textField(
       'Name',

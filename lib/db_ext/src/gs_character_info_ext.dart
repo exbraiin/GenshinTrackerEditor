@@ -86,8 +86,10 @@ List<DataField<GsCharacterInfo>> getCharacterInfoDfs(GsCharacterInfo? model) {
       (item) => item.ascHpValues,
       (item, value) => item.copyWith(ascHpValues: value),
       validate: (item) => validator.validateEntry('asc_hp_values', item, model),
-      import: Importer.importCharacterAscensionStatsFromAmbr,
-      importTooltip: 'Import from Ambr table',
+      import: DataButton(
+        'Import from Ambr table',
+        (ctx, item) => Importer.importCharacterAscensionStatsFromAmbr(item),
+      ),
     ),
     DataField.textList(
       'Ascension Atk Values',

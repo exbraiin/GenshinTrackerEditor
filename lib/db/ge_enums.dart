@@ -297,7 +297,7 @@ extension GeEnumListExt<T extends GeEnum> on List<T> {
         value,
         value.id.isEmpty ? 'None' : value.id.toTitle(),
         color: getColor(value),
-        icon: getAsset(value),
+        asset: getAsset(value),
       );
     }).toList();
   }

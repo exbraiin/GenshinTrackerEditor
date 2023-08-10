@@ -18,7 +18,7 @@ class GsSingleSelect<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => _SelectDialog<T>(
+      onTap: () => SelectDialog<T>(
         title: title,
         items: items,
         selected: selected,
@@ -43,13 +43,14 @@ class GsSingleSelect<T> extends StatelessWidget {
   }
 }
 
-class _SelectDialog<T> extends StatefulWidget {
+class SelectDialog<T> extends StatefulWidget {
   final String title;
   final T? selected;
   final Iterable<GsSelectItem<T>> items;
   final void Function(T? value) onConfirm;
 
-  const _SelectDialog({
+  const SelectDialog({
+    super.key,
     required this.title,
     required this.items,
     required this.selected,
@@ -63,10 +64,10 @@ class _SelectDialog<T> extends StatefulWidget {
       );
 
   @override
-  State<_SelectDialog<T>> createState() => _SelectDialogState<T>();
+  State<SelectDialog<T>> createState() => _SelectDialogState<T>();
 }
 
-class _SelectDialogState<T> extends State<_SelectDialog<T>> {
+class _SelectDialogState<T> extends State<SelectDialog<T>> {
   late final TextEditingController _searching;
 
   @override

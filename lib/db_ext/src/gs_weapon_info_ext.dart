@@ -68,7 +68,10 @@ List<DataField<GsWeaponInfo>> getWeaponInfoDfs(GsWeaponInfo? model) {
       (item, value) => item.copyWith(ascAtkValues: value),
       validate: (item) =>
           validator.validateEntry('asc_atk_values', item, model),
-      import: Importer.importWeaponAscensionStatsFromAmbr,
+      import: DataButton(
+        'Import from Ambr table',
+        (ctx, item) => Importer.importWeaponAscensionStatsFromAmbr(item),
+      ),
     ),
     DataField.textList(
       'Ascension Stat Values',

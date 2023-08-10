@@ -14,15 +14,20 @@ List<DataField<GsAchievementGroup>> getAchievementGroupsDfs(
       (item) => item.id,
       (item, value) => item.copyWith(id: value),
       validate: (item) => validator.validateEntry('id', item, model),
-      refresh: (item) => item.copyWith(id: generateId(item)),
-      import: (item) async {
-        final achv = await Importer.importAchievementsFromFandom(item);
-        for (final entry in achv) {
-          Database.i.achievements.updateItem(entry.id, entry);
-        }
-        return item;
-      },
-      importTooltip: 'Import from fandom URL',
+      refresh: DataButton(
+        'Generate Id',
+        (ctx, item) => item.copyWith(id: generateId(item)),
+      ),
+      import: DataButton(
+        'Import from fandom URL',
+        (ctx, item) async {
+          final achv = await Importer.importAchievementsFromFandom(item);
+          for (final entry in achv) {
+            Database.i.achievements.updateItem(entry.id, entry);
+          }
+          return item;
+        },
+      ),
     ),
     DataField.textField(
       'Name',
