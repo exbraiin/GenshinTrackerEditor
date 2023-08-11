@@ -7,6 +7,7 @@ class GsWish extends GsModel<GsWish> {
   @override
   String get id => weapon?.id ?? character?.id ?? '';
   String get name => weapon?.name ?? character?.name ?? '';
+  String get image => weapon?.image ?? character?.image ?? '';
   int get rarity => weapon?.rarity ?? character?.rarity ?? 1;
 
   GsWish.fromWeapon(this.weapon) : character = null;

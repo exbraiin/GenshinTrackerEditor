@@ -1,5 +1,6 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
+import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/mouse_button.dart';
 import 'package:flutter/material.dart';
 
@@ -151,14 +152,5 @@ class GsGridItem extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-extension on String {
-  String toFandom(int size) {
-    if (startsWith('https://static.wikia.nocookie.net/')) {
-      return '$this/revision/latest/scale-to-width-down/$size';
-    }
-    return this;
   }
 }

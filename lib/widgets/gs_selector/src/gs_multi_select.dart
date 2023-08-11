@@ -37,7 +37,7 @@ class GsMultiSelect<T> extends StatelessWidget {
                 runSpacing: 6,
                 children: selected
                     .map((item) => items.firstWhere((e) => e.value == item))
-                    .map(GsSelectChip.new)
+                    .map((e) => GsSelectChip(e, disableImage: true))
                     .toList(),
               ),
       ),

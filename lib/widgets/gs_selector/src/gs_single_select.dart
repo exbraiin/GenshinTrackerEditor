@@ -35,7 +35,7 @@ class GsSingleSelect<T> extends StatelessWidget {
                 runSpacing: 6,
                 children: items
                     .where((e) => e.value == selected)
-                    .map(GsSelectChip.new)
+                    .map((e) => GsSelectChip(e, disableImage: true))
                     .toList(),
               ),
       ),

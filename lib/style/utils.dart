@@ -50,6 +50,13 @@ extension StringExt on String {
         .map((e) => e.capitalize())
         .join(' ');
   }
+
+  String toFandom(int size) {
+    if (startsWith('https://static.wikia.nocookie.net/')) {
+      return '$this/revision/latest/scale-to-width-down/$size';
+    }
+    return this;
+  }
 }
 
 extension IterableMapExt<K, V> on Iterable<MapEntry<K, V>> {

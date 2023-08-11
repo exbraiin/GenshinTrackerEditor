@@ -44,7 +44,7 @@ List<DataField<GsCharacter>> getCharacterDfs(GsCharacter? model) {
             items: GsEnka.i.characters.map(
               (e) => GsSelectItem(
                 e.id,
-                e.icon.isEmpty ? e.id.toTitle() : '',
+                e.id.toTitle(),
                 image: e.icon,
                 color: GsStyle.getRarityColor(e.rarity),
               ),

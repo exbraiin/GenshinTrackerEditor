@@ -18,6 +18,7 @@ class GsItemFilter {
     String Function(T i) selector, {
     String Function(T i)? title,
     String Function(T i)? icon,
+    String? Function(T i)? image,
     Color Function(T i)? color,
   }) {
     return GsItemFilter._(
@@ -28,6 +29,7 @@ class GsItemFilter {
           title?.call(e) ?? value.toTitle(),
           asset: icon?.call(e) ?? '',
           color: color?.call(e) ?? Colors.grey,
+          image: image?.call(e),
         );
       }),
     );
@@ -71,6 +73,7 @@ class GsItemFilter {
         (i) => i.id,
         title: (i) => i.name,
         color: (i) => GsStyle.getRarityColor(i.rarity),
+        image: (i) => i.image,
       );
   factory GsItemFilter.baseRecipes() => GsItemFilter._from(
         Database.i.getAllBaseRecipes(),
@@ -128,14 +131,21 @@ class GsItemFilter {
           : GsStyle.getRarityColor(mat.rarity);
     }
 
+    int regionElementIndex(String region) {
+      return Database.i.cities.getItem(region)?.element.index ?? -1;
+    }
+
     return GsItemFilter._from(
       Database.i
           .getMaterialGroups(type, type1)
-          .sortedBy((element) => element.region)
+          .sortedBy((element) => regionElementIndex(element.region))
           .thenBy((element) => element.rarity)
+          .thenBy((element) => element.version)
+          .thenBy((element) => element.name)
           .toList(),
       (i) => i.id,
       title: (i) => i.name,
+      image: (i) => i.image,
       color: getColor,
     );
   }
@@ -146,6 +156,7 @@ class GsItemFilter {
         (i) => i.id,
         title: (i) => i.name,
         color: (i) => GsStyle.getRarityColor(i.rarity),
+        image: (i) => i.image,
       );
   factory GsItemFilter.achievementNamecards() => GsItemFilter._from(
         [
