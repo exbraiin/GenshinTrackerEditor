@@ -37,22 +37,8 @@ class GsItemFilter {
     ]);
   }
 
-  static GsItemFilter _fromEnum<T extends GeEnum>(
-    List<T> list, {
-    String Function(T i)? title,
-    String Function(T i)? icon,
-    Color Function(T i)? color,
-  }) =>
-      GsItemFilter._from(
-        list,
-        (i) => i.id,
-        title: title,
-        icon: icon,
-        color: color,
-      );
-
   factory GsItemFilter.artifactPieces() =>
-      GsItemFilter._fromEnum(GeArtifactPieces.values);
+      GsItemFilter._from(GeArtifactPieces.values, (i) => i.id);
 
   // ----- DATABASE ------------------------------------------------------------
 
