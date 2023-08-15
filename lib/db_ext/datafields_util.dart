@@ -16,13 +16,15 @@ class GsItemFilter {
   static GsItemFilter _from<T>(
     Iterable<T> models,
     String Function(T i) selector, {
+    String? noneId,
     String Function(T i)? title,
     String Function(T i)? icon,
     String? Function(T i)? image,
     Color Function(T i)? color,
   }) {
-    return GsItemFilter._(
-      models.map((e) {
+    return GsItemFilter._([
+      if (noneId != null) GsSelectItem(noneId, 'None'),
+      ...models.map((e) {
         final value = selector(e);
         return GsSelectItem(
           value,
@@ -32,7 +34,7 @@ class GsItemFilter {
           image: image?.call(e),
         );
       }),
-    );
+    ]);
   }
 
   static GsItemFilter _fromEnum<T extends GeEnum>(
@@ -60,7 +62,8 @@ class GsItemFilter {
         color: (i) => GsStyle.getVersionColor(i.id),
       );
   factory GsItemFilter.regions() => GsItemFilter._from(
-        [GsCity(id: '', name: 'None'), ...Database.i.cities.data],
+        Database.i.cities.data,
+        noneId: '',
         (i) => i.id,
         title: (i) => i.name,
         color: (i) => i.element.color,
@@ -76,14 +79,16 @@ class GsItemFilter {
         image: (i) => i.image,
       );
   factory GsItemFilter.baseRecipes() => GsItemFilter._from(
-        Database.i.getAllBaseRecipes(),
+        Database.i.recipes.data.where((e) => e.baseRecipe.isNotEmpty),
         (i) => i.id,
+        noneId: 'none',
         title: (i) => i.name,
         color: (i) => GsStyle.getRarityColor(i.rarity),
       );
   factory GsItemFilter.nonBaseRecipes() => GsItemFilter._from(
-        Database.i.getAllNonBaseRecipes(),
+        Database.i.recipes.data.where((e) => e.baseRecipe.isEmpty),
         (i) => i.id,
+        noneId: '',
         title: (i) => i.name,
         color: (i) => GsStyle.getRarityColor(i.rarity),
       );
@@ -159,12 +164,10 @@ class GsItemFilter {
         image: (i) => i.image,
       );
   factory GsItemFilter.achievementNamecards() => GsItemFilter._from(
-        [
-          GsNamecard(id: 'none', name: 'None'),
-          ...Database.i.namecards.data
-              .where((e) => e.type == GeNamecardType.achievement),
-        ],
+        Database.i.namecards.data
+            .where((e) => e.type == GeNamecardType.achievement),
         (i) => i.id,
+        noneId: 'none',
         title: (i) => i.name,
         color: (i) => GsStyle.getRarityColor(i.rarity),
       );

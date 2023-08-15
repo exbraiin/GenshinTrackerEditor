@@ -255,87 +255,6 @@ class Database {
   }
 }
 
-enum ItemState {
-  none,
-  current(color: Colors.green, label: 'New'),
-  upcoming(color: Colors.lightBlue, label: 'Upcoming');
-
-  final Color? color;
-  final String? label;
-
-  const ItemState({this.color, this.label});
-}
-
-extension DatabaseExt on Database {
-  Iterable<GsMaterial> getMaterialGroup(GeMaterialCategory group) {
-    final matGroup = materials.data.where((e) => e.group == group);
-    return matGroup.groupBy((m) => m.subgroup).values.expand((l) {
-      final rarity = l.minBy((m) => m.rarity)?.rarity ?? 1;
-      return l.where((m) => m.rarity == rarity);
-    });
-  }
-
-  Iterable<GsMaterial> getMaterialGroups(
-    GeMaterialCategory type, [
-    GeMaterialCategory? type1,
-  ]) {
-    final groups = [type, type1].whereType<GeMaterialCategory>();
-    return groups.map(getMaterialGroup).expand((list) => list);
-  }
-
-  GsCity getMaterialRegion(GsMaterial material) {
-    return cities.data.firstOrNullWhere((m) => material.region == m.id) ??
-        GsCity(id: 'none', name: 'None');
-  }
-
-  int getWishRarity(String id) {
-    return characters.getItem(id)?.rarity ?? weapons.getItem(id)?.rarity ?? 0;
-  }
-
-  ItemState getItemStateByVersion(String version) {
-    final now = DateTime.now();
-    final current = versions.data
-        .lastOrNullWhere((element) => element.dateTime.isBefore(now));
-    if (current != null && current.id == version) return ItemState.current;
-
-    final vs = versions.data.firstOrNullWhere((e) => e.id == version);
-    if (vs != null && vs.dateTime.isAfter(now)) return ItemState.upcoming;
-
-    return ItemState.none;
-  }
-
-  Set<String> getVersions() {
-    return versions.data.map((e) => e.id).toSet();
-  }
-
-  List<GsRecipe> getAllNonBaseRecipes() {
-    return recipes.data.where((e) => e.baseRecipe.isEmpty).toList()
-      ..insert(0, GsRecipe.fromMap({'id': '', 'name': 'None'}));
-  }
-
-  List<GsRecipe> getAllBaseRecipes() {
-    return recipes.data.where((e) => e.baseRecipe.isNotEmpty).toList()
-      ..insert(0, GsRecipe.fromMap({'id': 'none', 'name': 'None'}));
-  }
-
-  List<GsCity> getRegions() {
-    return cities.data.toList()..insert(0, GsCity(id: '', name: 'None'));
-  }
-
-  List<GsWish> getAllWishes([int? rarity, GeBannerType? type]) {
-    return [
-      if (type == null || type == GeBannerType.weapon)
-        ...weapons.data
-            .where((e) => e.rarity == rarity || rarity == null)
-            .map(GsWish.fromWeapon),
-      if (type == null || type == GeBannerType.character)
-        ...characters.data
-            .where((e) => e.rarity == rarity || rarity == null)
-            .map(GsWish.fromCharacter),
-    ];
-  }
-}
-
 class GsCollection<T extends GsModel<T>> {
   final String src;
   final T Function(JsonMap m) create;
@@ -387,6 +306,57 @@ class GsCollection<T extends GsModel<T>> {
     _data.removeWhere((element) => element.id == id);
     DataValidator.i.checkLevel<T>(id, null);
     Database.i.modified.add(null);
+  }
+}
+
+enum ItemState {
+  none,
+  current(color: Colors.green, label: 'New'),
+  upcoming(color: Colors.lightBlue, label: 'Upcoming');
+
+  final Color? color;
+  final String? label;
+
+  const ItemState({this.color, this.label});
+}
+
+extension DatabaseExt on Database {
+  Iterable<GsMaterial> getMaterialGroups(
+    GeMaterialCategory type, [
+    GeMaterialCategory? type1,
+  ]) {
+    final matGroup = type1 == null
+        ? materials.data.where((e) => e.group == type)
+        : materials.data.where((e) => e.group == type || e.group == type1);
+    return matGroup.groupBy((m) => m.subgroup).values.expand((l) {
+      final rarity = l.minBy((m) => m.rarity)?.rarity ?? 1;
+      return l.where((m) => m.rarity == rarity);
+    });
+  }
+
+  ItemState getItemStateByVersion(String version) {
+    final now = DateTime.now();
+    final current = versions.data
+        .lastOrNullWhere((element) => element.dateTime.isBefore(now));
+    if (current != null && current.id == version) return ItemState.current;
+
+    final vs = versions.data.firstOrNullWhere((e) => e.id == version);
+    if (vs != null && vs.dateTime.isAfter(now)) return ItemState.upcoming;
+
+    return ItemState.none;
+  }
+
+  List<GsWish> getAllWishes([int? rarity, GeBannerType? type]) {
+    return [
+      if (type == null || type == GeBannerType.weapon)
+        ...weapons.data
+            .where((e) => e.rarity == rarity || rarity == null)
+            .map(GsWish.fromWeapon),
+      if (type == null || type == GeBannerType.character)
+        ...characters.data
+            .where((e) => e.rarity == rarity || rarity == null)
+            .map(GsWish.fromCharacter),
+    ];
   }
 }
 
