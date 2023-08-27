@@ -32,8 +32,6 @@ abstract class GsModelExt<T extends GsModel<T>> {
   const GsModelExt();
 
   List<DataField<T>> getFields(T? model);
-  GsValidator<T> getValidator() =>
-      GsValidator(getFields(null).map((e) => e.validator));
 
   GsValidLevel vdId<E extends GsModel<E>>(
     E item,

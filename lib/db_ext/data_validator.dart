@@ -51,7 +51,7 @@ class DataValidator {
     final db = Database.i;
 
     Future<void> process<T extends GsModel<T>>(List<T> models) {
-      final validator = GsModelExt.of<T>()!.getValidator();
+      final validator = _getValidator<T>();
       final data = _ComputeData(models, validator);
       return compute(_validateModels<T>, data)
           .then((value) => _levels[T] = value);
@@ -88,11 +88,14 @@ class DataValidator {
     return _levels[T]?.values.maxBy((e) => e.index) ?? GsValidLevel.good;
   }
 
+  /// Checks the level for the given [id].
+  /// * If [model] is null, it is removed from the levels list.
+  /// * Otherwise it updates its level value and returns it.
   GsValidLevel checkLevel<T extends GsModel<T>>(String id, T? model) {
-    final validator = GsModelExt.of<T>()!.getValidator();
     if (model == null) {
       _levels[T]?.remove(id);
     } else {
+      final validator = _getValidator<T>();
       (_levels[T] ??= {})[model.id] = validator.validate(model);
     }
     return getLevel<T>(id);
@@ -109,17 +112,22 @@ Map<String, GsValidLevel> _validateModels<T extends GsModel<T>>(
   return valid;
 }
 
+_GsValidator<T> _getValidator<T extends GsModel<T>>() {
+  final fields = GsModelExt.of<T>()?.getFields(null) ?? [];
+  return _GsValidator(fields.map((e) => e.validator));
+}
+
 class _ComputeData<T extends GsModel<T>> {
   final List<T> models;
-  final GsValidator<T> validator;
+  final _GsValidator validator;
+
   _ComputeData(this.models, this.validator);
 }
 
-class GsValidator<T extends GsModel<T>> {
+class _GsValidator<T extends GsModel<T>> {
   final Iterable<GsValidLevel Function(T item)> _validators;
 
-  GsValidator(this._validators);
-  GsValidator.empty() : _validators = const {};
+  _GsValidator(this._validators);
 
   GsValidLevel validate(T item) {
     return _validators

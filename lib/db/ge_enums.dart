@@ -31,7 +31,7 @@ enum GeNamecardType implements GeEnum {
 
   @override
   final String id;
-  Color get color => GsStyle.getNamecardColor(id); // TODO
+  Color get color => GsStyle.getNamecardColor(id);
   const GeNamecardType(this.id);
 }
 
