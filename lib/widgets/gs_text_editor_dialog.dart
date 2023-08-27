@@ -139,7 +139,7 @@ class _GsTextEditorDialogState<T> extends State<GsTextEditorDialog> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),
         child: GsSelectChip(
-          GsSelectItem('skill', 'Skill', color: Colors.orange),
+          const GsSelectItem('skill', 'Skill', color: Colors.orange),
           onTap: (item) => _insertText((s) => '<color=skill>$s</color>'),
         ),
       ),
@@ -159,35 +159,35 @@ class _GsTextEditorDialogState<T> extends State<GsTextEditorDialog> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),
         child: GsSelectChip(
-          GsSelectItem('auto', 'Auto'),
+          const GsSelectItem('auto', 'Auto'),
           onTap: (item) => _autoFormatText(),
         ),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),
         child: GsSelectChip(
-          GsSelectItem('bold', 'Bold'),
+          const GsSelectItem('bold', 'Bold'),
           onTap: (item) => _insertText((s) => '<b>$s</b>'),
         ),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),
         child: GsSelectChip(
-          GsSelectItem('italic', 'Italic'),
+          const GsSelectItem('italic', 'Italic'),
           onTap: (item) => _insertText((s) => '<i>$s</i>'),
         ),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),
         child: GsSelectChip(
-          GsSelectItem('underline', 'Underline'),
+          const GsSelectItem('underline', 'Underline'),
           onTap: (item) => _insertText((s) => '<u>$s</u>'),
         ),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),
         child: GsSelectChip(
-          GsSelectItem('list', 'List'),
+          const GsSelectItem('list', 'List'),
           onTap: (item) =>
               _insertText((s) => s.split('\n').map((e) => '● $e').join('\n')),
         ),

@@ -21,6 +21,7 @@ class GsCharacter extends GsModel<GsCharacter> {
   final String birthday;
   final String releaseDate;
   final String image;
+  final String sideImage;
   final String fullImage;
   final String constellationImage;
 
@@ -43,6 +44,7 @@ class GsCharacter extends GsModel<GsCharacter> {
     this.birthday = '',
     this.releaseDate = '',
     this.image = '',
+    this.sideImage = '',
     this.fullImage = '',
     this.constellationImage = '',
   });
@@ -67,6 +69,7 @@ class GsCharacter extends GsModel<GsCharacter> {
         birthday = m.getString('birthday'),
         releaseDate = m.getString('release_date'),
         image = m.getString('image'),
+        sideImage = m.getString('side_image'),
         fullImage = m.getString('full_image'),
         constellationImage = m.getString('constellation_image');
 
@@ -90,6 +93,7 @@ class GsCharacter extends GsModel<GsCharacter> {
     String? birthday,
     String? releaseDate,
     String? image,
+    String? sideImage,
     String? fullImage,
     String? constellationImage,
   }) {
@@ -112,6 +116,7 @@ class GsCharacter extends GsModel<GsCharacter> {
       birthday: birthday ?? this.birthday,
       releaseDate: releaseDate ?? this.releaseDate,
       image: image ?? this.image,
+      sideImage: sideImage ?? this.sideImage,
       fullImage: fullImage ?? this.fullImage,
       constellationImage: constellationImage ?? this.constellationImage,
     );
@@ -136,6 +141,7 @@ class GsCharacter extends GsModel<GsCharacter> {
         'birthday': birthday,
         'release_date': releaseDate,
         'image': image,
+        'side_image': sideImage,
         'full_image': fullImage,
         'constellation_image': constellationImage,
       };

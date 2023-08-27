@@ -194,6 +194,30 @@ class Database {
     },
   );
 
+  GsCollection<R>? collectionOf<R extends GsModel<R>>() {
+    return switch (R) {
+      GsAchievementGroup => achievementGroups,
+      GsAchievement => achievements,
+      GsArtifact => artifacts,
+      GsBanner => banners,
+      GsCharacter => characters,
+      GsCharacterInfo => characterInfo,
+      GsCharacterOutfit => characterOutfit,
+      GsCity => cities,
+      GsMaterial => materials,
+      GsNamecard => namecards,
+      GsRecipe => recipes,
+      GsRemarkableChest => remarkableChests,
+      GsSerenitea => sereniteas,
+      GsSpincrystal => spincrystal,
+      GsVersion => versions,
+      GsViewpoint => viewpoints,
+      GsWeapon => weapons,
+      GsWeaponInfo => weaponInfo,
+      _ => null,
+    } as GsCollection<R>?;
+  }
+
   List<GsCollection> get collections => [
         achievementGroups,
         achievements,
@@ -320,15 +344,24 @@ enum ItemState {
   const ItemState({this.color, this.label});
 }
 
+typedef JsonMap = Map<String, dynamic>;
+
+abstract class GsModel<T extends GsModel<T>> {
+  String get id;
+  JsonMap toJsonMap();
+  T copyWith();
+}
+
 extension DatabaseExt on Database {
   Iterable<GsMaterial> getMaterialGroups(
     GeMaterialCategory type, [
     GeMaterialCategory? type1,
   ]) {
-    final matGroup = type1 == null
-        ? materials.data.where((e) => e.group == type)
-        : materials.data.where((e) => e.group == type || e.group == type1);
-    return matGroup.groupBy((m) => m.subgroup).values.expand((l) {
+    return materials.data
+        .where((e) => e.group == type || e.group == type1)
+        .groupBy((e) => e.subgroup)
+        .values
+        .expand((l) {
       final rarity = l.minBy((m) => m.rarity)?.rarity ?? 1;
       return l.where((m) => m.rarity == rarity);
     });
@@ -358,14 +391,6 @@ extension DatabaseExt on Database {
             .map(GsWish.fromCharacter),
     ];
   }
-}
-
-typedef JsonMap = Map<String, dynamic>;
-
-abstract class GsModel<T extends GsModel<T>> {
-  String get id;
-  JsonMap toJsonMap();
-  T copyWith();
 }
 
 extension MapEntryExt on MapEntry<String, dynamic> {

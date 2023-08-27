@@ -2,6 +2,7 @@ import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
+import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +12,14 @@ class ItemEditScreen<T extends GsModel<T>> extends StatefulWidget {
   final T? item;
   final T? duplicated;
   final GsCollection<T> collection;
-  final DataFields<T> fields;
+  final GsModelExt<T> modelExt;
 
   const ItemEditScreen({
     super.key,
     this.duplicated,
     required this.item,
     required this.title,
-    required this.fields,
+    required this.modelExt,
     required this.collection,
   });
 
@@ -47,7 +48,7 @@ class _ItemEditScreenState<T extends GsModel<T>>
   @override
   Widget build(BuildContext context) {
     void edit(T value) => _notifier.value = value;
-    final fields = widget.fields.getDataFields(widget.item);
+    final fields = widget.modelExt.getFields(widget.item);
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit ${widget.title}'),
@@ -59,7 +60,7 @@ class _ItemEditScreenState<T extends GsModel<T>>
                 duplicated: _notifier.value.copyWith(),
                 title: widget.title,
                 collection: widget.collection,
-                fields: widget.fields,
+                modelExt: widget.modelExt,
               ),
             ),
             icon: const Icon(Icons.control_point_duplicate_rounded),
@@ -96,15 +97,12 @@ class _ItemEditScreenState<T extends GsModel<T>>
               valueListenable: _notifier,
               builder: (context, value, child) {
                 final valid = fields
-                        .map((e) => e.validate(value))
+                        .map((e) => e.validator(value))
                         .whereNotNull()
                         .maxBy((element) => element.index) !=
                     GsValidLevel.error;
 
                 void onSave() {
-                  DataValidator.i
-                      .getValidator<T>()
-                      .validateAll(value, debug: GsWeaponInfo);
                   widget.collection.updateItem(widget.item?.id, value);
                   Navigator.of(context).maybePop();
                 }

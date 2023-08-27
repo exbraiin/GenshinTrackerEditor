@@ -161,9 +161,9 @@ enum GeCharacterAscensionStatType implements GeEnum {
 enum GeWeekdays implements GeEnum {
   sunday('Sunday'),
   monday('Monday'),
-  thursday('Thursday'),
-  wednesday('Wednesday'),
   tuesday('Tuesday'),
+  wednesday('Wednesday'),
+  thursday('Thursday'),
   friday('Friday'),
   saturday('Saturday');
 
@@ -279,6 +279,7 @@ extension GeEnumListExt<T extends GeEnum> on List<T> {
 
   List<GsSelectItem<T>> toChips() {
     Color getColor(T value) {
+      if (value is GeWeekdays) return GeElements.values[value.index].color;
       if (value is GeElements) return value.color;
       if (value is GeBannerType) return value.color;
       if (value is GeSereniteaSets) return value.color;

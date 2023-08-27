@@ -8,6 +8,7 @@ class GsCharacterOutfit extends GsModel<GsCharacterOutfit> {
   final String image;
   final String version;
   final String character;
+  final String sideImage;
   final String fullImage;
 
   GsCharacterOutfit._({
@@ -17,6 +18,7 @@ class GsCharacterOutfit extends GsModel<GsCharacterOutfit> {
     required this.image,
     required this.version,
     required this.character,
+    required this.sideImage,
     required this.fullImage,
   });
 
@@ -27,6 +29,7 @@ class GsCharacterOutfit extends GsModel<GsCharacterOutfit> {
         rarity = m.getInt('rarity'),
         version = m.getString('version'),
         character = m.getString('character'),
+        sideImage = m.getString('side_image'),
         fullImage = m.getString('full_image');
 
   @override
@@ -37,6 +40,7 @@ class GsCharacterOutfit extends GsModel<GsCharacterOutfit> {
     String? image,
     String? version,
     String? character,
+    String? sideImage,
     String? fullImage,
   }) {
     return GsCharacterOutfit._(
@@ -46,6 +50,7 @@ class GsCharacterOutfit extends GsModel<GsCharacterOutfit> {
       image: image ?? this.image,
       version: version ?? this.version,
       character: character ?? this.character,
+      sideImage: sideImage ?? this.sideImage,
       fullImage: fullImage ?? this.fullImage,
     );
   }
@@ -57,6 +62,7 @@ class GsCharacterOutfit extends GsModel<GsCharacterOutfit> {
         'rarity': rarity,
         'version': version,
         'character': character,
+        'side_image': sideImage,
         'full_image': fullImage,
       };
 }

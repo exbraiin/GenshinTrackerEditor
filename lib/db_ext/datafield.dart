@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 typedef DEdit<T extends GsModel<T>> = void Function(T v);
-typedef DValid<T extends GsModel<T>> = GsValidLevel Function(T item);
+typedef DValidator<T extends GsModel<T>> = GsValidLevel Function(T item);
 typedef DUpdate<T extends GsModel<T>> = T Function(T item);
 typedef DBuilder<T extends GsModel<T>> = Widget Function(
   BuildContext context,
@@ -28,21 +28,20 @@ class DataButton<T extends GsModel<T>> {
 
 class DataField<T extends GsModel<T>> {
   final String label;
-  final DValid<T> validate;
   final DBuilder<T> builder;
+  final DValidator<T> validator;
 
   DataField._(
     this.label,
     this.builder, {
-    required this.validate,
+    required this.validator,
   });
 
   DataField.text(
     this.label,
     String Function(T item) content, {
     DUpdate<T>? swap,
-    required this.validate,
-  }) : builder = ((context, item, edit) => Row(
+  })  : builder = ((context, item, edit) => Row(
               children: [
                 Expanded(
                   child: Container(
@@ -58,13 +57,14 @@ class DataField<T extends GsModel<T>> {
                     icon: const Icon(Icons.swap_horiz_rounded),
                   ),
               ],
-            ));
+            )),
+        validator = ((item) => GsValidLevel.good);
 
   DataField.button(
     this.label,
     String Function(T item) content,
     VoidCallback? onPressed, {
-    required this.validate,
+    required this.validator,
   }) : builder = ((context, item, edit) {
           return InkWell(
             onTap: onPressed,
@@ -81,7 +81,7 @@ class DataField<T extends GsModel<T>> {
     this.label,
     String Function(T item) content,
     T Function(T item, String value) update, {
-    required this.validate,
+    required this.validator,
   }) : builder = ((context, item, edit) {
           var text = content(item).split('\n').first;
           if (text.length > 40) text = text.substring(0, 40);
@@ -127,7 +127,7 @@ class DataField<T extends GsModel<T>> {
     String Function(String value)? process,
     DataButton<T>? import,
     DataButton<T>? refresh,
-    required this.validate,
+    required this.validator,
   }) : builder = ((context, item, edit) => SizedBox(
               height: 44,
               child: Row(
@@ -175,7 +175,7 @@ class DataField<T extends GsModel<T>> {
     String label,
     String Function(T item) content,
     T Function(T item, String value) update, {
-    required DValid<T> validate,
+    required DValidator<T> validator,
     DataButton<T>? import,
     String? importTooltip,
   }) {
@@ -184,7 +184,7 @@ class DataField<T extends GsModel<T>> {
       content,
       update,
       import: import,
-      validate: validate,
+      validator: validator,
       process: (value) => value
           .split(',')
           .map((e) => e.trim())
@@ -197,13 +197,13 @@ class DataField<T extends GsModel<T>> {
     String label,
     String Function(T item) content,
     T Function(T item, String value) update, {
-    required DValid<T> validate,
+    required DValidator<T> validator,
   }) {
     return DataField.textField(
       label,
       content,
       update,
-      validate: validate,
+      validator: validator,
       process: (value) {
         final idx = value.indexOf('/revision');
         if (idx != -1) return value.substring(0, idx);
@@ -217,7 +217,7 @@ class DataField<T extends GsModel<T>> {
     List<V> Function(T item) values,
     Iterable<GsSelectItem<V>> Function(T item) options,
     T Function(T item, List<V> value) update, {
-    required DValid<T> validate,
+    required DValidator<T> validator,
   }) {
     return DataField._(
       label,
@@ -226,7 +226,7 @@ class DataField<T extends GsModel<T>> {
         selected: values(item).toSet(),
         onConfirm: (value) => edit(update(item, value.toList())),
       ),
-      validate: validate,
+      validator: validator,
     );
   }
 
@@ -235,7 +235,7 @@ class DataField<T extends GsModel<T>> {
     List<R> Function(T item) values,
     Iterable<GsSelectItem<R>> Function(T item) options,
     T Function(T item, List<R> value) update, {
-    required DValid<T> validate,
+    required DValidator<T> validator,
   }) {
     return DataField._(
       label,
@@ -244,7 +244,7 @@ class DataField<T extends GsModel<T>> {
         selected: values(item).toSet(),
         onConfirm: (value) => edit(update(item, value.toList())),
       ),
-      validate: validate,
+      validator: validator,
     );
   }
 
@@ -253,19 +253,39 @@ class DataField<T extends GsModel<T>> {
     String Function(T item) value,
     Iterable<GsSelectItem<String>> Function(T item) items,
     T Function(T item, String value) update, {
-    required this.validate,
+    required this.validator,
   }) : builder = ((context, item, edit) => GsSingleSelect(
               items: items(item),
               selected: value(item),
               onConfirm: (value) => edit(update(item, value ?? '')),
             ));
 
+  static DataField<T> singleSelectOf<T extends GsModel<T>, R>(
+    String label,
+    List<GsSelectItem<R>> items,
+    R Function(T item) value,
+    T Function(T item, R? value) update, {
+    required DValidator<T> validator,
+  }) {
+    return DataField._(
+      label,
+      (context, item, edit) {
+        return GsSingleSelect(
+          items: items,
+          selected: value(item),
+          onConfirm: (value) => edit(update(item, value)),
+        );
+      },
+      validator: validator,
+    );
+  }
+
   static DataField<T> singleEnum<T extends GsModel<T>, R extends GeEnum>(
     String label,
     List<GsSelectItem<R>> items,
     R Function(T item) value,
     T Function(T item, R value) update, {
-    required GsValidLevel Function(T) validate,
+    required DValidator<T> validator,
   }) {
     return DataField._(
       label,
@@ -276,7 +296,7 @@ class DataField<T extends GsModel<T>> {
           onConfirm: (value) => edit(update(item, value ?? items.first.value)),
         );
       },
-      validate: validate,
+      validator: validator,
     );
   }
 
@@ -285,7 +305,7 @@ class DataField<T extends GsModel<T>> {
     int Function(T item) value,
     T Function(T item, int value) update, {
     int min = 1,
-    required this.validate,
+    required this.validator,
   }) : builder = ((context, item, edit) => GsSingleSelect(
               items: List.generate(
                 6 - min,
@@ -304,12 +324,12 @@ class DataField<T extends GsModel<T>> {
     Iterable<DataField<T>> Function(T item) fields,
   )   : builder = ((context, item, edit) =>
             getTableForFields(context, item, fields(item), edit)),
-        validate = ((item) =>
-            fields(item)
-                .map((e) => e.validate(item))
-                .whereNotNull()
-                .maxBy((e) => e.index) ??
-            GsValidLevel.none);
+        validator = ((item) {
+          return fields(item)
+                  .map((e) => e.validator(item))
+                  .maxBy((e) => e.index) ??
+              GsValidLevel.none;
+        });
 
   static DataField<T> build<T extends GsModel<T>, C extends GsModel<C>>(
     String label,
@@ -350,12 +370,12 @@ class DataField<T extends GsModel<T>> {
           ],
         );
       },
-      validate: (item) =>
-          values(item)
-              .map((e) => build(item, e).validate(e))
-              .whereNotNull()
-              .maxBy((element) => element.index) ??
-          GsValidLevel.none,
+      validator: (item) {
+        return values(item)
+                .map((e) => build(item, e).validator(e))
+                .maxBy((element) => element.index) ??
+            GsValidLevel.none;
+      },
     );
   }
 
@@ -408,12 +428,12 @@ class DataField<T extends GsModel<T>> {
           ],
         );
       },
-      validate: (item) =>
-          values(item)
-              .mapIndexed((i, e) => build(i, item, e).validate(e))
-              .whereNotNull()
-              .maxBy((element) => element.index) ??
-          emptyLevel,
+      validator: (item) {
+        return values(item)
+                .mapIndexed((i, e) => build(i, item, e).validator(e))
+                .maxBy((element) => element.index) ??
+            emptyLevel;
+      },
     );
   }
 }
@@ -445,7 +465,7 @@ TableRow _getFieldTableRow<T extends GsModel<T>>(
   DataField<T> field,
   void Function(T item) edit,
 ) {
-  final color = field.validate.call(value).color;
+  final color = field.validator.call(value).color;
   return TableRow(
     children: [
       Padding(

@@ -1,72 +1,78 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
-import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
+import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
 
-List<DataField<GsNamecard>> getNamecardDfs(GsNamecard? model) {
-  final validator = DataValidator.i.getValidator<GsNamecard>();
-  return [
-    DataField.textField(
-      'ID',
-      (item) => item.id,
-      (item, value) => item.copyWith(id: value),
-      validate: (item) => validator.validateEntry('id', item, model),
-      refresh: DataButton(
-        'Generate Id',
-        (ctx, item) => item.copyWith(id: generateId(item)),
+class GsNamecardExt extends GsModelExt<GsNamecard> {
+  const GsNamecardExt();
+
+  @override
+  List<DataField<GsNamecard>> getFields(GsNamecard? model) {
+    final ids = Database.i.namecards.data.map((e) => e.id);
+    final versions = GsItemFilter.versions().ids;
+    return [
+      DataField.textField(
+        'ID',
+        (item) => item.id,
+        (item, value) => item.copyWith(id: value),
+        validator: (item) => vdId(item, model, ids),
+        refresh: DataButton(
+          'Generate Id',
+          (ctx, item) => item.copyWith(id: generateId(item)),
+        ),
       ),
-    ),
-    DataField.textField(
-      'Name',
-      (item) => item.name,
-      (item, value) => item.copyWith(name: value),
-      validate: (item) => validator.validateEntry('name', item, model),
-    ),
-    DataField.singleEnum(
-      'Type',
-      GeNamecardType.values.toChips(),
-      (item) => item.type,
-      (item, value) => item.copyWith(type: value),
-      validate: (item) => validator.validateEntry('type', item, model),
-    ),
-    DataField.selectRarity(
-      'Rarity',
-      (item) => item.rarity,
-      (item, value) => item.copyWith(rarity: value),
-      validate: (item) => validator.validateEntry('rarity', item, model),
-      min: 4,
-    ),
-    DataField.singleSelect(
-      'Version',
-      (item) => item.version,
-      (item) => GsItemFilter.versions().filters,
-      (item, value) => item.copyWith(version: value),
-      validate: (item) => validator.validateEntry('version', item, model),
-    ),
-    DataField.textImage(
-      'Image',
-      (item) => item.image,
-      (item, value) => item.copyWith(image: value),
-      validate: (item) => validator.validateEntry('image', item, model),
-    ),
-    DataField.textImage(
-      'Background',
-      (item) => item.fullImage,
-      (item, value) => item.copyWith(fullImage: value),
-      validate: (item) => validator.validateEntry('full_image', item, model),
-    ),
-    DataField.textField(
-      'Desc',
-      (item) => item.desc,
-      (item, value) => item.copyWith(desc: value),
-      validate: (item) => validator.validateEntry('desc', item, model),
-    ),
-    DataField.textField(
-      'Obtain',
-      (item) => item.obtain,
-      (item, value) => item.copyWith(obtain: value),
-      validate: (item) => validator.validateEntry('obtain', item, model),
-    ),
-  ];
+      DataField.textField(
+        'Name',
+        (item) => item.name,
+        (item, value) => item.copyWith(name: value),
+        validator: (item) => vdText(item.name),
+      ),
+      DataField.singleEnum(
+        'Type',
+        GeNamecardType.values.toChips(),
+        (item) => item.type,
+        (item, value) => item.copyWith(type: value),
+        validator: (item) => vdContains(item.type, GeNamecardType.values),
+      ),
+      DataField.selectRarity(
+        'Rarity',
+        (item) => item.rarity,
+        (item, value) => item.copyWith(rarity: value),
+        validator: (item) => vdRarity(item.rarity),
+        min: 4,
+      ),
+      DataField.singleSelect(
+        'Version',
+        (item) => item.version,
+        (item) => GsItemFilter.versions().filters,
+        (item, value) => item.copyWith(version: value),
+        validator: (item) => vdContains(item.version, versions),
+      ),
+      DataField.textImage(
+        'Image',
+        (item) => item.image,
+        (item, value) => item.copyWith(image: value),
+        validator: (item) => vdImage(item.image),
+      ),
+      DataField.textImage(
+        'Background',
+        (item) => item.fullImage,
+        (item, value) => item.copyWith(fullImage: value),
+        validator: (item) => vdImage(item.fullImage),
+      ),
+      DataField.textField(
+        'Desc',
+        (item) => item.desc,
+        (item, value) => item.copyWith(desc: value),
+        validator: (item) => vdText(item.desc),
+      ),
+      DataField.textField(
+        'Obtain',
+        (item) => item.obtain,
+        (item, value) => item.copyWith(obtain: value),
+        validator: (item) => vdText(item.obtain),
+      ),
+    ];
+  }
 }

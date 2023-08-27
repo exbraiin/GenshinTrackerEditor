@@ -59,6 +59,11 @@ extension StringExt on String {
   }
 }
 
+extension IterableExt<E> on Iterable<E> {
+  Map<K, V> mapToMap<K, V>(K Function(E i) k, V Function(E i) v) =>
+      Map.fromEntries(map((e) => MapEntry(k(e), v(e))));
+}
+
 extension IterableMapExt<K, V> on Iterable<MapEntry<K, V>> {
   Map<K, V> toMap() => Map.fromEntries(this);
 }

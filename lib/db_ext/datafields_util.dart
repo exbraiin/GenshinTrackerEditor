@@ -42,6 +42,12 @@ class GsItemFilter {
 
   // ----- DATABASE ------------------------------------------------------------
 
+  factory GsItemFilter.rarities([int min = 1]) => GsItemFilter._from(
+        List.generate(6 - min, (index) => min + index),
+        (i) => i.toString(),
+        color: GsStyle.getRarityColor,
+      );
+
   factory GsItemFilter.versions() => GsItemFilter._from(
         Database.i.versions.data,
         (i) => i.id,

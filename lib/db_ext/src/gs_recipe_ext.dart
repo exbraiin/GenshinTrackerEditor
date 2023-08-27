@@ -1,106 +1,114 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
-import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
+import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
 
-List<DataField<GsRecipe>> getRecipeDfs(GsRecipe? model) {
-  final validator = DataValidator.i.getValidator<GsRecipe>();
-  final amounts = DataValidator.i.getValidator<GsAmount>();
+class GsRecipeExt extends GsModelExt<GsRecipe> {
+  const GsRecipeExt();
 
-  return [
-    DataField.textField(
-      'ID',
-      (item) => item.id,
-      (item, value) => item.copyWith(id: value),
-      validate: (item) => validator.validateEntry('id', item, model),
-      refresh: DataButton(
-        'Generate Id',
-        (ctx, item) => item.copyWith(id: generateId(item)),
+  @override
+  List<DataField<GsRecipe>> getFields(GsRecipe? model) {
+    final ids = Database.i.recipes.data.map((e) => e.id);
+    final baseRecipes = GsItemFilter.nonBaseRecipes().ids;
+    final versions = GsItemFilter.versions().ids;
+
+    return [
+      DataField.textField(
+        'ID',
+        (item) => item.id,
+        (item, value) => item.copyWith(id: value),
+        validator: (item) => vdId(item, model, ids),
+        refresh: DataButton(
+          'Generate Id',
+          (ctx, item) => item.copyWith(id: generateId(item)),
+        ),
       ),
-    ),
-    DataField.textField(
-      'Name',
-      (item) => item.name,
-      (item, value) => item.copyWith(name: value),
-      validate: (item) => validator.validateEntry('name', item, model),
-    ),
-    DataField.singleEnum(
-      'Type',
-      GeRecipeType.values.toChips(),
-      (item) => item.type,
-      (item, value) => item.copyWith(type: value),
-      validate: (item) => validator.validateEntry('type', item, model),
-    ),
-    DataField.selectRarity(
-      'Rarity',
-      (item) => item.rarity,
-      (item, value) => item.copyWith(rarity: value),
-      validate: (item) => validator.validateEntry('rarity', item, model),
-    ),
-    DataField.singleSelect(
-      'Version',
-      (item) => item.version,
-      (item) => GsItemFilter.versions().filters,
-      (item, value) => item.copyWith(version: value),
-      validate: (item) => validator.validateEntry('version', item, model),
-    ),
-    DataField.textImage(
-      'Image',
-      (item) => item.image,
-      (item, value) => item.copyWith(image: value),
-      validate: (item) => validator.validateEntry('image', item, model),
-    ),
-    DataField.singleEnum(
-      'Effect',
-      GeRecipeEffectType.values.toChips(),
-      (item) => item.effect,
-      (item, value) => item.copyWith(effect: value),
-      validate: (item) => validator.validateEntry('effect', item, model),
-    ),
-    DataField.textField(
-      'Desc',
-      (item) => item.desc,
-      (item, value) => item.copyWith(desc: value),
-      validate: (item) => validator.validateEntry('desc', item, model),
-    ),
-    DataField.textField(
-      'Effect Desc',
-      (item) => item.effectDesc.replaceAll('\n', '\\n'),
-      (item, value) => item.copyWith(effectDesc: value.replaceAll('\\n', '\n')),
-      validate: (item) => validator.validateEntry('effect_desc', item, model),
-    ),
-    DataField.singleSelect(
-      'Base Recipe',
-      (item) => item.baseRecipe,
-      (item) => GsItemFilter.nonBaseRecipes().filters,
-      (item, value) => item.copyWith(baseRecipe: value),
-      validate: (item) => validator.validateEntry('base_recipe', item, model),
-    ),
-    DataField.build<GsRecipe, GsAmount>(
-      'Ingredients',
-      (item) => item.ingredients,
-      (item) => GsItemFilter.ingredients().filters,
-      (item, child) => DataField.textField(
-        Database.i.materials.getItem(child.id)?.name ?? child.id,
-        (item) => item.amount.toString(),
-        (item, value) => item.copyWith(amount: int.tryParse(value) ?? 0),
-        validate: (item) => amounts.validateEntry('id', item, null),
+      DataField.textField(
+        'Name',
+        (item) => item.name,
+        (item, value) => item.copyWith(name: value),
+        validator: (item) => vdText(item.name),
       ),
-      (item, value) {
-        final list = value.map((e) {
-          final old = item.ingredients.firstOrNullWhere((i) => i.id == e);
-          return old ?? GsAmount(id: e);
-        }).sortedBy((element) => element.id);
-        return item.copyWith(ingredients: list);
-      },
-      (item, field) {
-        final list = item.ingredients.toList();
-        final idx = list.indexWhere((e) => e.id == field.id);
-        if (idx != -1) list[idx] = field;
-        return item.copyWith(ingredients: list);
-      },
-    ),
-  ];
+      DataField.singleEnum(
+        'Type',
+        GeRecipeType.values.toChips(),
+        (item) => item.type,
+        (item, value) => item.copyWith(type: value),
+        validator: (item) => vdContains(item.type, GeRecipeType.values),
+      ),
+      DataField.selectRarity(
+        'Rarity',
+        (item) => item.rarity,
+        (item, value) => item.copyWith(rarity: value),
+        validator: (item) => vdRarity(item.rarity),
+      ),
+      DataField.singleSelect(
+        'Version',
+        (item) => item.version,
+        (item) => GsItemFilter.versions().filters,
+        (item, value) => item.copyWith(version: value),
+        validator: (item) => vdContains(item.version, versions),
+      ),
+      DataField.textImage(
+        'Image',
+        (item) => item.image,
+        (item, value) => item.copyWith(image: value),
+        validator: (item) => vdImage(item.image),
+      ),
+      DataField.singleEnum(
+        'Effect',
+        GeRecipeEffectType.values.toChips(),
+        (item) => item.effect,
+        (item, value) => item.copyWith(effect: value),
+        validator: (item) =>
+            vdContains(item.effect, GeRecipeEffectType.values),
+      ),
+      DataField.textField(
+        'Desc',
+        (item) => item.desc,
+        (item, value) => item.copyWith(desc: value),
+        validator: (item) => vdText(item.desc),
+      ),
+      DataField.textField(
+        'Effect Desc',
+        (item) => item.effectDesc.replaceAll('\n', '\\n'),
+        (item, value) =>
+            item.copyWith(effectDesc: value.replaceAll('\\n', '\n')),
+        validator: (item) => vdText(item.effectDesc),
+      ),
+      DataField.singleSelect(
+        'Base Recipe',
+        (item) => item.baseRecipe,
+        (item) => GsItemFilter.nonBaseRecipes().filters,
+        (item, value) => item.copyWith(baseRecipe: value),
+        validator: (item) => vdContains(item.baseRecipe, baseRecipes),
+      ),
+      DataField.build<GsRecipe, GsAmount>(
+        'Ingredients',
+        (item) => item.ingredients,
+        (item) => GsItemFilter.ingredients().filters,
+        (item, child) => DataField.textField(
+          Database.i.materials.getItem(child.id)?.name ?? child.id,
+          (item) => item.amount.toString(),
+          (item, value) => item.copyWith(amount: int.tryParse(value) ?? 0),
+          validator: (item) => vdNum(item.amount, 1),
+        ),
+        (item, value) {
+          final list = value.map((e) {
+            final old = item.ingredients.firstOrNullWhere((i) => i.id == e);
+            return old ?? GsAmount(id: e);
+          }).sortedBy((element) => element.id);
+          return item.copyWith(ingredients: list);
+        },
+        (item, field) {
+          final list = item.ingredients.toList();
+          final idx = list.indexWhere((e) => e.id == field.id);
+          if (idx != -1) list[idx] = field;
+          return item.copyWith(ingredients: list);
+        },
+      ),
+    ];
+  }
 }

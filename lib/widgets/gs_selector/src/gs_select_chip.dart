@@ -8,7 +8,7 @@ class GsSelectItem<T> {
   final String asset;
   final String? image;
 
-  GsSelectItem(
+  const GsSelectItem(
     this.value,
     this.label, {
     this.asset = '',
