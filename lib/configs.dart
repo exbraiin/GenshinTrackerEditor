@@ -549,25 +549,25 @@ class GsConfigs<T extends GsModel<T>> {
   }
 
   void openListScreen(BuildContext context) {
-    context.pushWidget(() {
-      return ItemsListScreen<T>(
+    context.pushWidget(
+      ItemsListScreen<T>(
         title: title,
         list: () => collection.data,
         getDecor: getDecor,
         onTap: openEditScreen,
         filters: filters,
-      );
-    });
+      ),
+    );
   }
 
   void openEditScreen(BuildContext context, T? item) {
-    context.pushWidget(() {
-      return ItemEditScreen<T>(
+    context.pushWidget(
+      ItemEditScreen<T>(
         item: item,
         title: title,
         collection: collection,
         modelExt: modelExt,
-      );
-    });
+      ),
+    );
   }
 }

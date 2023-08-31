@@ -59,7 +59,7 @@ class _ItemEditScreenState<T extends GsModel<T>>
           if (widget.duplicated == null)
             IconButton(
               onPressed: () => context.pushWidgetReplacement(
-                () => ItemEditScreen<T>(
+                ItemEditScreen<T>(
                   item: null,
                   duplicated: _notifier.value.copyWith(),
                   title: widget.title,

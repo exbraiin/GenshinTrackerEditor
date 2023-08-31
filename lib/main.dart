@@ -49,7 +49,7 @@ class Home extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline_rounded),
-            onPressed: () => context.pushWidget(() => const InfoScreen()),
+            onPressed: () => context.pushWidget(const InfoScreen()),
           ),
           const SizedBox(width: 8),
           StreamBuilder(

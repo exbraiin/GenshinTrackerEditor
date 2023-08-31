@@ -2,14 +2,14 @@ import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 
 extension BuildContextExt on BuildContext {
-  Future<T?> pushWidget<T>(Widget Function() widget) {
+  Future<T?> pushWidget<T>(Widget widget) {
     return Navigator.of(this)
-        .push<T>(MaterialPageRoute(builder: (context) => widget()));
+        .push<T>(MaterialPageRoute(builder: (context) => widget));
   }
 
-  Future pushWidgetReplacement(Widget Function() widget) {
+  Future pushWidgetReplacement(Widget widget) {
     return Navigator.of(this)
-        .pushReplacement(MaterialPageRoute(builder: (context) => widget()));
+        .pushReplacement(MaterialPageRoute(builder: (context) => widget));
   }
 }
 
