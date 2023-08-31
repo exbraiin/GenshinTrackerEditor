@@ -47,24 +47,28 @@ class _ItemEditScreenState<T extends GsModel<T>>
 
   @override
   Widget build(BuildContext context) {
+    // Used when duplicating an item, so the id is not matched against db.
+    late final newItem = widget.collection.create({});
+    final item = widget.duplicated != null ? newItem : widget.item;
+    final fields = widget.modelExt.getFields(item);
     void edit(T value) => _notifier.value = value;
-    final fields = widget.modelExt.getFields(widget.item);
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit ${widget.title}'),
         actions: [
-          IconButton(
-            onPressed: () => context.pushWidgetReplacement(
-              () => ItemEditScreen<T>(
-                item: null,
-                duplicated: _notifier.value.copyWith(),
-                title: widget.title,
-                collection: widget.collection,
-                modelExt: widget.modelExt,
+          if (widget.duplicated == null)
+            IconButton(
+              onPressed: () => context.pushWidgetReplacement(
+                () => ItemEditScreen<T>(
+                  item: null,
+                  duplicated: _notifier.value.copyWith(),
+                  title: widget.title,
+                  collection: widget.collection,
+                  modelExt: widget.modelExt,
+                ),
               ),
+              icon: const Icon(Icons.control_point_duplicate_rounded),
             ),
-            icon: const Icon(Icons.control_point_duplicate_rounded),
-          ),
         ],
       ),
       backgroundColor: Colors.black,
