@@ -41,7 +41,7 @@ class GsMaterialExt extends GsModelExt<GsMaterial> {
         'Desc',
         (item) => item.desc,
         (item, value) => item.copyWith(desc: value),
-        validator: (item) => vdText(item.desc),
+        validator: (item) => vdText(item.desc, GsValidLevel.warn2),
       ),
       DataField.selectRarity(
         'Rarity',

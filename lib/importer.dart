@@ -73,17 +73,30 @@ class Importer {
         continue;
       }
 
-      final item = GsAchievement.fromMap({
-        'id': '${category.id} $name $reward'.toDbId(),
-        'name': name,
-        'desc': desc,
-        'type': type,
-        'group': category.id,
-        'hidden': hidden,
-        'reward': reward,
-        'version': version,
-      });
-      achvs.add(item);
+      final id = '${category.id} $name'.toDbId();
+      final idx = achvs.indexWhere((e) => e.id == id);
+      if (idx != -1) {
+        achvs[idx].phases
+          ..add(GsAchievementPhase.fromMap({'desc': desc, 'reward': reward}))
+          ..sortedBy((element) => element.reward);
+      } else {
+        achvs.add(
+          GsAchievement.fromMap({
+            'id': id,
+            'name': name,
+            'type': type,
+            'group': category.id,
+            'hidden': hidden,
+            'version': version,
+            'phases': [
+              {
+                'desc': desc,
+                'reward': reward,
+              }
+            ],
+          }),
+        );
+      }
     }
 
     return achvs;
