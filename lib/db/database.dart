@@ -282,17 +282,17 @@ class Database {
 class GsCollection<T extends GsModel<T>> {
   final String src;
   final T Function(JsonMap m) create;
-  final List<T> Function(List<T> list)? sorted;
+  final List<T> Function(List<T> list)? _sorted;
   final _data = <T>[];
-  List<T> get data => sorted?.call(_data) ?? _data.toList();
+  List<T> get data => _sorted?.call(_data) ?? _data.toList();
 
   String get type => (T == GsArtifact).toString();
 
   GsCollection(
     this.src,
     this.create, {
-    this.sorted,
-  });
+    List<T> Function(List<T> list)? sorted,
+  }) : _sorted = sorted;
 
   T? getItem(String id) => _data.firstOrNullWhere((e) => e.id == id);
 

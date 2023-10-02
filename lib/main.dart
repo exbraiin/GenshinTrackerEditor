@@ -1,5 +1,6 @@
 import 'package:data_editor/configs.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/exporter.dart';
 import 'package:data_editor/screens/info_screen.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
@@ -47,6 +48,14 @@ class Home extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Data Editor'),
         actions: [
+          const Tooltip(
+            message: 'Export as CSV',
+            child: IconButton(
+              icon: Icon(Icons.download_rounded),
+              onPressed: GsExporter.exportAll,
+            ),
+          ),
+          const SizedBox(width: 8),
           IconButton(
             icon: const Icon(Icons.info_outline_rounded),
             onPressed: () => context.pushWidget(const InfoScreen()),

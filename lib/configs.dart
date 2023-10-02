@@ -302,8 +302,8 @@ class GsConfigs<T extends GsModel<T>> {
         ),
         GsFieldFilter.fromEnum(
           'Type',
-          GeAchievementType.values,
-          (i) => i.type.toString(),
+          GeNamecardType.values,
+          (i) => i.type.id,
         ),
       ],
     ),
