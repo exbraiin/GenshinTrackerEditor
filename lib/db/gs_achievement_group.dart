@@ -37,14 +37,13 @@ class GsAchievementGroup extends GsModel<GsAchievementGroup> {
     String? icon,
     String? version,
     String? namecard,
-    int? rewards,
-    int? achievements,
   }) {
-    final items = Database.i.achievements.data.where((e) => e.group == id);
+    final nId = id ?? this.id;
+    final items = Database.i.achievements.data.where((e) => e.group == nId);
     final rewards = items.sumBy((e) => e.reward);
     final achievements = items.sumBy((e) => e.phases.length);
     return GsAchievementGroup._(
-      id: id ?? this.id,
+      id: nId,
       name: name ?? this.name,
       icon: icon ?? this.icon,
       version: version ?? this.version,

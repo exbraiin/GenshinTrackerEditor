@@ -30,7 +30,7 @@ class GsAchievementGroupExt extends GsModelExt<GsAchievementGroup> {
             for (final entry in achv) {
               Database.i.achievements.updateItem(entry.id, entry);
             }
-            return item;
+            return item.copyWith();
           },
         ),
       ),

@@ -325,6 +325,24 @@ class GsCollection<T extends GsModel<T>> {
     Database.i.modified.add(null);
   }
 
+  void updateAll(Iterable<T> items, {bool clear = false, bool check = false}) {
+    if (clear) _data.clear();
+    for (final item in items) {
+      final idx = _data.indexWhere((e) => e.id == item.id);
+      if (idx == -1) {
+        _data.add(item);
+      } else {
+        _data[idx] = item;
+      }
+    }
+    if (check) {
+      for (final model in _data) {
+        DataValidator.i.checkLevel<T>(model.id, model);
+      }
+    }
+    Database.i.modified.add(null);
+  }
+
   void delete(String? id) {
     if (id == null) return;
     _data.removeWhere((element) => element.id == id);

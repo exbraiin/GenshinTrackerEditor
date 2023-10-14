@@ -1,10 +1,14 @@
+import 'package:dartx/dartx.dart';
 import 'package:data_editor/configs.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/exporter.dart';
+import 'package:data_editor/importer.dart';
 import 'package:data_editor/screens/info_screen.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_grid_view.dart';
+import 'package:desktop_drop/desktop_drop.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -44,88 +48,169 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Data Editor'),
-        actions: [
-          const Tooltip(
-            message: 'Export as CSV',
-            child: IconButton(
-              icon: Icon(Icons.download_rounded),
+    return DropTarget(
+      onDragDone: (details) async {
+        final file = details.files.firstOrNull;
+        if (file == null) return;
+        final messenger = ScaffoldMessenger.of(context);
+        final bgColor = Theme.of(context).scaffoldBackgroundColor;
+        try {
+          await Importer.importAchievementsFromAmbrJson(file.path);
+          final data = Database.i.achievements.data;
+          final achievements = data.sumBy((e) => e.phases.length);
+          final groups = Database.i.achievementGroups.data.length;
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(
+                'Database now has $achievements achievements and $groups groups!',
+                style: const TextStyle(color: Colors.white),
+              ),
+              backgroundColor: bgColor,
+            ),
+          );
+        } catch (error) {
+          messenger.showSnackBar(
+            SnackBar(
+              content: const Text(
+                'Could not import!',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: bgColor,
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Data Editor'),
+          actions: [
+            const _BusyWidget(
+              message: 'Export as CSV',
+              icon: Icons.upload_rounded,
               onPressed: GsExporter.exportAll,
             ),
-          ),
-          const SizedBox(width: 8),
-          IconButton(
-            icon: const Icon(Icons.info_outline_rounded),
-            onPressed: () => context.pushWidget(const InfoScreen()),
-          ),
-          const SizedBox(width: 8),
-          StreamBuilder(
-            initialData: Database.i.saving.value,
-            stream: Database.i.saving,
-            builder: (context, snapshot) {
-              return IconButton(
-                icon: snapshot.data!
-                    ? const AspectRatio(
-                        aspectRatio: 1,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : const Icon(Icons.save),
-                onPressed: snapshot.data! ? null : Database.i.save,
+            const SizedBox(width: 8),
+            IconButton(
+              icon: const Icon(Icons.info_outline_rounded),
+              onPressed: () => context.pushWidget(const InfoScreen()),
+            ),
+            const SizedBox(width: 8),
+            _BusyWidget(
+              icon: Icons.save_rounded,
+              onPressed: Database.i.save,
+            ),
+          ],
+        ),
+        body: FutureBuilder(
+          future: Database.i.load(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Container(
+                padding: const EdgeInsets.all(8),
+                alignment: Alignment.center,
+                child: Text(snapshot.error.toString()),
               );
-            },
-          ),
-        ],
-      ),
-      body: FutureBuilder(
-        future: Database.i.load(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Container(
-              padding: const EdgeInsets.all(8),
-              alignment: Alignment.center,
-              child: Text(snapshot.error.toString()),
-            );
-          }
+            }
 
-          if (!snapshot.hasData) {
-            return Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                    Colors.black.withOpacity(0.6),
-                    BlendMode.multiply,
+            if (!snapshot.hasData) {
+              return Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withOpacity(0.6),
+                      BlendMode.multiply,
+                    ),
+                    image: const AssetImage(GsGraphics.bgImg),
                   ),
-                  image: const AssetImage(GsGraphics.bgImg),
                 ),
-              ),
-              child: const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
                 ),
-              ),
-            );
-          }
-
-          return StreamBuilder(
-            stream: Database.i.modified,
-            initialData: Database.i.modified,
-            builder: (context, snapshot) {
-              return GsGridView(
-                children: GsConfigs.getAllConfigs()
-                    .map((e) => e.toGridItem(context))
-                    .toList(),
               );
-            },
-          );
-        },
+            }
+
+            return StreamBuilder(
+              stream: Database.i.modified,
+              initialData: Database.i.modified,
+              builder: (context, snapshot) {
+                return GsGridView(
+                  children: GsConfigs.getAllConfigs()
+                      .map((e) => e.toGridItem(context))
+                      .toList(),
+                );
+              },
+            );
+          },
+        ),
       ),
+    );
+  }
+}
+
+class _BusyWidget extends StatefulWidget {
+  final IconData icon;
+  final String? message;
+  final AsyncCallback onPressed;
+
+  const _BusyWidget({
+    this.message,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  @override
+  State<_BusyWidget> createState() => _BusyWidgetState();
+}
+
+class _BusyWidgetState extends State<_BusyWidget> {
+  final notifier = ValueNotifier(false);
+
+  @override
+  void dispose() {
+    notifier.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: notifier,
+      builder: (context, value, child) {
+        if (value) {
+          return const Center(
+            child: IconButton(
+              icon: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+              onPressed: null,
+            ),
+          );
+        }
+
+        final button = IconButton(
+          icon: Icon(widget.icon),
+          onPressed: () async {
+            notifier.value = true;
+            await widget.onPressed();
+            if (!mounted) return;
+            notifier.value = false;
+          },
+        );
+
+        if (widget.message != null) {
+          return Tooltip(
+            message: widget.message,
+            child: button,
+          );
+        }
+
+        return button;
+      },
     );
   }
 }

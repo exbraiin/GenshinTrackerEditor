@@ -4,12 +4,80 @@ import 'dart:io';
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:flutter/services.dart';
 import 'package:html/parser.dart' as html;
 
-class Importer {
-  Importer._();
+abstract final class Importer {
+  static Future<void> importAchievementsFromAmbrJson(String path) async {
+    final file = File(path);
+    if (!await file.exists()) return;
+    final data = jsonDecode(await file.readAsString()) as Map;
+
+    final categories = <Map<String, dynamic>>[];
+    final achievements = <Map<String, dynamic>>[];
+
+    for (final cat in data.values.cast<Map>()) {
+      final order = cat['order'] as int? ?? 0;
+      final catName = cat['name'] as String? ?? '';
+      final categoryMap = {
+        'id': catName.toDbId(),
+        'name': catName,
+        'order': order,
+      };
+      categories.add(categoryMap);
+
+      Map<String, dynamic> parseAchievement(List<Map<String, dynamic>> list) {
+        final first = list.first;
+        final name = first['name'] as String? ?? '';
+        return {
+          'id': '$catName $name'.toDbId(),
+          'name': name,
+          'type': first.containsKey('commissions') ? 'commission' : '',
+          'group': catName.toDbId(),
+          'hidden': first['hidden'],
+          'version': first['ver'] as String? ?? '1.0',
+          'phases': list.map((e) {
+            return {
+              'desc': e['desc'],
+              'reward': e['reward'],
+            };
+          }).toList(),
+        };
+      }
+
+      achievements.addAll(
+        (cat['achievements'] as List? ?? []).map(
+          (ach) => ach is List
+              ? parseAchievement(ach.cast<Map<String, dynamic>>())
+              : parseAchievement([ach]),
+        ),
+      );
+    }
+
+    final dataAchievements = achievements.map(GsAchievement.fromMap);
+    Database.i.achievements.updateAll(dataAchievements);
+
+    final temp = categories
+        .sortedBy((element) => element['order'])
+        .map(GsAchievementGroup.fromMap)
+        .map((e) {
+      final existant = Database.i.achievementGroups.getItem(e.id);
+      final version = dataAchievements
+          .where((element) => element.group == e.id)
+          .maxBy((element) => element.version)
+          ?.version;
+      return e.copyWith(
+        icon: existant?.icon,
+        namecard: existant?.namecard,
+        version: version,
+      );
+    }).toList();
+    Database.i.achievementGroups.updateAll(temp);
+    await DataValidator.i.checkAll();
+    Database.i.modified.add(null);
+  }
 
   static Future<List<GsAchievement>> importAchievementsFromFandom(
     GsAchievementGroup category, {
