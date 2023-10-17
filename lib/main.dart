@@ -7,6 +7,7 @@ import 'package:data_editor/screens/info_screen.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_grid_view.dart';
+import 'package:data_editor/widgets/text_style_parser.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -55,14 +56,14 @@ class Home extends StatelessWidget {
         final messenger = ScaffoldMessenger.of(context);
         final bgColor = Theme.of(context).scaffoldBackgroundColor;
         try {
-          await Importer.importAchievementsFromAmbrJson(file.path);
-          final data = Database.i.achievements.data;
-          final achievements = data.sumBy((e) => e.phases.length);
-          final groups = Database.i.achievementGroups.data.length;
+          final c = await Importer.importAchievementsFromAmbrJson(file.path);
+          if (c == null) return;
+
           messenger.showSnackBar(
             SnackBar(
-              content: Text(
-                'Database now has $achievements achievements and $groups groups!',
+              content: TextParserWidget(
+                'Groups: (<color=pyro>${c.$2.removed}</color> | <color=geo>${c.$2.modified}</color> | <color=dendro>${c.$2.added}</color>)\n'
+                'Achievements: (<color=pyro>${c.$1.removed}</color> | <color=geo>${c.$1.modified}</color> | <color=dendro>${c.$1.added}</color>)',
                 style: const TextStyle(color: Colors.white),
               ),
               backgroundColor: bgColor,

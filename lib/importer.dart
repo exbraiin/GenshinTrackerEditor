@@ -9,57 +9,136 @@ import 'package:data_editor/style/utils.dart';
 import 'package:flutter/services.dart';
 import 'package:html/parser.dart' as html;
 
+class Changes {
+  final int removed;
+  final int modified;
+  final int added;
+
+  Changes({
+    this.removed = 0,
+    this.modified = 0,
+    this.added = 0,
+  });
+
+  static Changes fromIterables<T>(Iterable<T> oldIt, Iterable<T> newIt) {
+    return Changes(
+      removed: oldIt.count((e) => !newIt.contains(e)),
+      modified: newIt.count((e) => oldIt.contains(e)),
+      added: newIt.count((e) => !oldIt.contains(e)),
+    );
+  }
+
+  @override
+  String toString() => '$removed | $modified | $added';
+}
+
+class _CpGroup {
+  final GsAchievementGroup data;
+  _CpGroup(this.data);
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! _CpGroup) return false;
+    return data.id == other.data.id &&
+        data.name == other.data.name &&
+        data.icon == other.data.icon &&
+        data.version == other.data.version &&
+        data.namecard == other.data.namecard &&
+        data.rewards == other.data.rewards &&
+        data.achievements == other.data.achievements;
+  }
+
+  @override
+  int get hashCode => data.hashCode;
+}
+
+class _CpAchievement {
+  final GsAchievement data;
+  _CpAchievement(this.data);
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! _CpAchievement) return false;
+    return data.id == other.data.id &&
+        data.name == other.data.name &&
+        data.group == other.data.group &&
+        data.hidden == other.data.hidden &&
+        data.version == other.data.version &&
+        data.type == other.data.type &&
+        data.phases.length == other.data.phases.length &&
+        data.phases
+            .zip(
+              other.data.phases,
+              (a, b) =>
+                  a.id == b.id && a.desc == b.desc && a.reward == b.reward,
+            )
+            .all((e) => e);
+  }
+
+  @override
+  int get hashCode => data.hashCode;
+}
+
 abstract final class Importer {
-  static Future<void> importAchievementsFromAmbrJson(String path) async {
+  static Future<(Changes, Changes)?> importAchievementsFromAmbrJson(
+    String path,
+  ) async {
     final file = File(path);
-    if (!await file.exists()) return;
+    if (!await file.exists()) return null;
     final data = jsonDecode(await file.readAsString()) as Map;
 
-    final categories = <Map<String, dynamic>>[];
+    final groups = <Map<String, dynamic>>[];
     final achievements = <Map<String, dynamic>>[];
 
-    for (final cat in data.values.cast<Map>()) {
-      final order = cat['order'] as int? ?? 0;
-      final catName = cat['name'] as String? ?? '';
-      final categoryMap = {
-        'id': catName.toDbId(),
-        'name': catName,
-        'order': order,
+    Map<String, dynamic> parseAchievement(
+      String groupName,
+      List<Map<String, dynamic>> list,
+    ) {
+      final first = list.first;
+      final name = first['name'] as String? ?? '';
+      return {
+        'id': '$groupName $name'.toDbId(),
+        'name': name,
+        'type': first.containsKey('commissions') ? 'commission' : '',
+        'group': groupName.toDbId(),
+        'hidden': first['hidden'],
+        'version': first['ver'] as String? ?? '1.0',
+        'phases': list.map((e) {
+          return {
+            'desc': e['desc'],
+            'reward': e['reward'],
+          };
+        }).toList(),
       };
-      categories.add(categoryMap);
+    }
 
-      Map<String, dynamic> parseAchievement(List<Map<String, dynamic>> list) {
-        final first = list.first;
-        final name = first['name'] as String? ?? '';
-        return {
-          'id': '$catName $name'.toDbId(),
-          'name': name,
-          'type': first.containsKey('commissions') ? 'commission' : '',
-          'group': catName.toDbId(),
-          'hidden': first['hidden'],
-          'version': first['ver'] as String? ?? '1.0',
-          'phases': list.map((e) {
-            return {
-              'desc': e['desc'],
-              'reward': e['reward'],
-            };
-          }).toList(),
-        };
-      }
+    for (final group in data.values.cast<Map>()) {
+      final groupOrder = group['order'] as int? ?? 0;
+      final groupName = group['name'] as String? ?? '';
+
+      groups.add({
+        'id': groupName.toDbId(),
+        'name': groupName,
+        'order': groupOrder,
+      });
 
       achievements.addAll(
-        (cat['achievements'] as List? ?? []).map(
+        (group['achievements'] as List? ?? []).map(
           (ach) => ach is List
-              ? parseAchievement(ach.cast<Map<String, dynamic>>())
-              : parseAchievement([ach]),
+              ? parseAchievement(groupName, ach.cast<Map<String, dynamic>>())
+              : parseAchievement(groupName, [ach]),
         ),
       );
     }
 
+    final inDbAch = Database.i.achievements.data.map(_CpAchievement.new);
+    final inDbGrp = Database.i.achievementGroups.data.map(_CpGroup.new);
+
     final dataAchievements = achievements.map(GsAchievement.fromMap);
+
     Database.i.achievements.updateAll(dataAchievements);
 
-    final temp = categories
+    final temp = groups
         .sortedBy((element) => element['order'])
         .map(GsAchievementGroup.fromMap)
         .map((e) {
@@ -77,6 +156,17 @@ abstract final class Importer {
     Database.i.achievementGroups.updateAll(temp);
     await DataValidator.i.checkAll();
     Database.i.modified.add(null);
+
+    final changesAch = Changes.fromIterables<_CpAchievement>(
+      inDbAch,
+      dataAchievements.map(_CpAchievement.new),
+    );
+    final changesGrp = Changes.fromIterables<_CpGroup>(
+      inDbGrp,
+      temp.map(_CpGroup.new),
+    );
+
+    return (changesAch, changesGrp);
   }
 
   static Future<List<GsAchievement>> importAchievementsFromFandom(
