@@ -46,6 +46,12 @@ class GsAchievementGroupExt extends GsModelExt<GsAchievementGroup> {
         (item, value) => item.copyWith(icon: value),
         validator: (item) => vdImage(item.icon),
       ),
+      DataField.textField(
+        'Order',
+        (item) => item.order.toString(),
+        (item, value) => item.copyWith(order: int.tryParse(value) ?? -1),
+        validator: (item) => vdNum(item.order),
+      ),
       DataField.singleSelect(
         'Namecard',
         (item) => item.namecard,

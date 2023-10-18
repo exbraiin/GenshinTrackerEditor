@@ -63,6 +63,9 @@ class Database {
   final achievementGroups = GsCollection(
     'src/achievement_categories.json',
     GsAchievementGroup.fromMap,
+    sorted: (list) => list
+        .sortedBy((element) => element.order)
+        .thenBy((element) => element.name),
   );
   final achievements = GsCollection(
     'src/achievements.json',

@@ -22,10 +22,10 @@ class TextParserWidget extends StatelessWidget {
   }
 
   Iterable<TextSpan> getChildren() sync* {
-    final bold = <FontWeight>[];
-    final italic = <FontStyle>[];
-    final underline = <TextDecoration>[];
-    final colorQueue = <Color>[];
+    final bold = Queue<FontWeight>();
+    final italic = Queue<FontStyle>();
+    final underline = Queue<TextDecoration>();
+    final colorQueue = Queue<Color>();
 
     final tags = {
       '<b>': () => bold.add(FontWeight.bold),
@@ -70,6 +70,12 @@ class TextParserWidget extends StatelessWidget {
   }
 }
 
-extension<E> on List<E> {
-  E? pop() => isEmpty ? null : removeLast();
+class Queue<E> extends Iterable<E> {
+  final _list = <E>[];
+
+  void add(E element) => _list.add(element);
+  E? pop() => _list.isEmpty ? null : _list.removeLast();
+
+  @override
+  Iterator<E> get iterator => _list.iterator;
 }

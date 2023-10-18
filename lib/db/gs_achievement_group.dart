@@ -8,6 +8,7 @@ class GsAchievementGroup extends GsModel<GsAchievementGroup> {
   final String icon;
   final String version;
   final String namecard;
+  final int order;
   final int rewards;
   final int achievements;
 
@@ -17,6 +18,7 @@ class GsAchievementGroup extends GsModel<GsAchievementGroup> {
     this.icon = '',
     this.version = '',
     this.namecard = '',
+    this.order = 0,
     this.rewards = 0,
     this.achievements = 0,
   });
@@ -27,6 +29,7 @@ class GsAchievementGroup extends GsModel<GsAchievementGroup> {
         icon = m.getString('icon'),
         version = m.getString('version'),
         namecard = m.getString('namecard'),
+        order = m.getInt('order'),
         rewards = m.getInt('rewards'),
         achievements = m.getInt('achievements');
 
@@ -37,6 +40,7 @@ class GsAchievementGroup extends GsModel<GsAchievementGroup> {
     String? icon,
     String? version,
     String? namecard,
+    int? order,
   }) {
     final nId = id ?? this.id;
     final items = Database.i.achievements.data.where((e) => e.group == nId);
@@ -48,6 +52,7 @@ class GsAchievementGroup extends GsModel<GsAchievementGroup> {
       icon: icon ?? this.icon,
       version: version ?? this.version,
       namecard: namecard ?? this.namecard,
+      order: order ?? this.order,
       rewards: rewards,
       achievements: achievements,
     );
@@ -63,6 +68,7 @@ class GsAchievementGroup extends GsModel<GsAchievementGroup> {
       'icon': icon,
       'version': version,
       'namecard': namecard,
+      'order': order,
       'rewards': rewards,
       'achievements': achievements,
     };
