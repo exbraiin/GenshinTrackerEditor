@@ -41,11 +41,12 @@ class GsAchievementGroup extends GsModel<GsAchievementGroup> {
     String? version,
     String? namecard,
     int? order,
+    int? rewards,
+    int? achievements,
   }) {
     final nId = id ?? this.id;
-    final items = Database.i.achievements.data.where((e) => e.group == nId);
-    final rewards = items.sumBy((e) => e.reward);
-    final achievements = items.sumBy((e) => e.phases.length);
+    late final data = Database.i.achievements.data;
+    late final items = data.where((e) => e.group == nId);
     return GsAchievementGroup._(
       id: nId,
       name: name ?? this.name,
@@ -53,16 +54,13 @@ class GsAchievementGroup extends GsModel<GsAchievementGroup> {
       version: version ?? this.version,
       namecard: namecard ?? this.namecard,
       order: order ?? this.order,
-      rewards: rewards,
-      achievements: achievements,
+      rewards: rewards ?? items.sumBy((e) => e.reward),
+      achievements: achievements ?? items.sumBy((e) => e.phases.length),
     );
   }
 
   @override
   JsonMap toJsonMap() {
-    final items = Database.i.achievements.data.where((e) => e.group == id);
-    final rewards = items.sumBy((e) => e.reward);
-    final achievements = items.sumBy((e) => e.phases.length);
     return {
       'name': name,
       'icon': icon,

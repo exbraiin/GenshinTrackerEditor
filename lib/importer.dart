@@ -6,6 +6,7 @@ import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/style/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:html/parser.dart' as html;
 
@@ -135,24 +136,32 @@ abstract final class Importer {
     final inDbGrp = Database.i.achievementGroups.data.map(_CpGroup.new);
 
     final dataAchievements = achievements.map(GsAchievement.fromMap);
-
     Database.i.achievements.updateAll(dataAchievements);
 
-    final temp = groups
+    final tempGroups = groups
         .sortedBy((element) => element['order'])
         .map(GsAchievementGroup.fromMap)
-        .map((e) {
-      final existant = Database.i.achievementGroups.getItem(e.id);
-      final version = dataAchievements
-          .where((element) => element.group == e.id)
-          .maxBy((element) => element.version)
-          ?.version;
-      return e.copyWith(
-        icon: existant?.icon,
-        namecard: existant?.namecard,
-        version: version,
-      );
-    }).toList();
+        .toList();
+
+    final temp = await compute(
+      (tuple) => tuple.groups.map((e) {
+        final exist = tuple.dbGroups.firstOrNullWhere((t) => t.id == e.id);
+        final items = tuple.dbAchievements.where((t) => t.group == e.id);
+        return e.copyWith(
+          icon: exist?.icon,
+          namecard: exist?.namecard,
+          version: items.maxBy((t) => t.version)?.version,
+          rewards: items.sumBy((t) => t.reward),
+          achievements: items.sumBy((t) => t.phases.length),
+        );
+      }),
+      (
+        groups: tempGroups,
+        dbGroups: Database.i.achievementGroups.data,
+        dbAchievements: Database.i.achievements.data,
+      ),
+    );
+
     Database.i.achievementGroups.updateAll(temp);
     await DataValidator.i.checkAll();
     Database.i.modified.add(null);

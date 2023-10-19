@@ -24,6 +24,7 @@ import 'package:data_editor/db/gs_weapon_info.dart';
 import 'package:data_editor/db/gs_wish.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/style/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -261,6 +262,24 @@ class Database {
     if (!_loaded) return;
     if (saving.value) return;
     saving.add(true);
+
+    /// Pre-updates all achievement groups before saving...
+    final data = await compute(
+      (tuple) {
+        return tuple.groups.map((group) {
+          final items = tuple.achievements.where((e) => e.group == group.id);
+          final rewards = items.sumBy((e) => e.reward);
+          final achievements = items.sumBy((e) => e.phases.length);
+          return group.copyWith(rewards: rewards, achievements: achievements);
+        });
+      },
+      (
+        groups: Database.i.achievementGroups.data,
+        achievements: Database.i.achievements.data,
+      ),
+    );
+
+    Database.i.achievementGroups.updateAll(data);
     await Future.wait(collections.map((e) => e.save()));
     await _combine('src', 'data.json');
     saving.add(false);
