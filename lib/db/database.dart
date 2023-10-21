@@ -54,6 +54,23 @@ int _getCityIndex(String id) =>
 int _getCategoryIndex(String id) =>
     Database.i.achievementGroups.data.indexWhere((e) => e.id == id);
 
+Future<Iterable<GsAchievementGroup>> _processAchGroups() {
+  return compute(
+    (tuple) {
+      return tuple.groups.map((group) {
+        final items = tuple.achievements.where((e) => e.group == group.id);
+        final rewards = items.sumBy((e) => e.reward);
+        final achievements = items.sumBy((e) => e.phases.length);
+        return group.copyWith(rewards: rewards, achievements: achievements);
+      });
+    },
+    (
+      groups: Database.i.achievementGroups.data,
+      achievements: Database.i.achievements.data,
+    ),
+  );
+}
+
 class Database {
   static final i = Database._();
 
@@ -67,6 +84,7 @@ class Database {
     sorted: (list) => list
         .sortedBy((element) => element.order)
         .thenBy((element) => element.name),
+    dataToSave: _processAchGroups,
   );
   final achievements = GsCollection(
     'src/achievements.json',
@@ -262,24 +280,6 @@ class Database {
     if (!_loaded) return;
     if (saving.value) return;
     saving.add(true);
-
-    /// Pre-updates all achievement groups before saving...
-    final data = await compute(
-      (tuple) {
-        return tuple.groups.map((group) {
-          final items = tuple.achievements.where((e) => e.group == group.id);
-          final rewards = items.sumBy((e) => e.reward);
-          final achievements = items.sumBy((e) => e.phases.length);
-          return group.copyWith(rewards: rewards, achievements: achievements);
-        });
-      },
-      (
-        groups: Database.i.achievementGroups.data,
-        achievements: Database.i.achievements.data,
-      ),
-    );
-
-    Database.i.achievementGroups.updateAll(data);
     await Future.wait(collections.map((e) => e.save()));
     await _combine('src', 'data.json');
     saving.add(false);
@@ -306,6 +306,7 @@ class GsCollection<T extends GsModel<T>> {
   final T Function(JsonMap m) create;
   final List<T> Function(List<T> list)? _sorted;
   final _data = <T>[];
+  final Future<Iterable<T>> Function()? dataToSave;
   List<T> get data => _sorted?.call(_data) ?? _data.toList();
 
   String get type => (T == GsArtifact).toString();
@@ -313,6 +314,7 @@ class GsCollection<T extends GsModel<T>> {
   GsCollection(
     this.src,
     this.create, {
+    this.dataToSave,
     List<T> Function(List<T> list)? sorted,
   }) : _sorted = sorted;
 
@@ -330,6 +332,7 @@ class GsCollection<T extends GsModel<T>> {
 
   Future<void> save() async {
     final file = File(src);
+    final data = await dataToSave?.call() ?? this.data;
     final map = data.map((e) => MapEntry(e.id, e.toJsonMap())).toMap();
     final encoded = jsonEncode(map);
     await file.writeAsString(encoded);
