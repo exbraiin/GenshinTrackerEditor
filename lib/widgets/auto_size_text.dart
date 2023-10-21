@@ -10,20 +10,18 @@ class AutoSizeText extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        for (var size = style?.fontSize ?? 14; size > 0; size--) {
-          final span = TextSpan(
-            text: data,
-            style: style?.copyWith(fontSize: size) ?? TextStyle(fontSize: size),
-          );
+        final style = this.style ?? const TextStyle(fontSize: 14);
+        for (var fs = style.fontSize ?? 14; fs > 0; --fs) {
           final text = TextPainter(
-            textDirection: TextDirection.ltr,
+            text: TextSpan(text: data, style: style.copyWith(fontSize: fs)),
             textAlign: TextAlign.center,
-            text: span,
+            textDirection: TextDirection.ltr,
           );
+
           text.layout(maxWidth: constraints.maxWidth);
           if (text.size.height <= constraints.maxHeight) {
             return Text.rich(
-              span,
+              text.text!,
               textAlign: TextAlign.center,
               textDirection: TextDirection.ltr,
             );
