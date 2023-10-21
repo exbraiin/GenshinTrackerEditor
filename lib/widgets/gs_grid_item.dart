@@ -1,6 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/style/utils.dart';
+import 'package:data_editor/widgets/auto_size_text.dart';
 import 'package:data_editor/widgets/mouse_button.dart';
 import 'package:flutter/material.dart';
 
@@ -74,9 +75,8 @@ class GsGridItem extends StatelessWidget {
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
+                child: AutoSizeText(
                   label,
-                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -84,7 +84,7 @@ class GsGridItem extends StatelessWidget {
                       BoxShadow(
                         offset: Offset(1, 1),
                         color: Colors.black26,
-                      )
+                      ),
                     ],
                   ),
                 ),
