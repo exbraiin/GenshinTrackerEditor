@@ -49,7 +49,7 @@ export 'package:data_editor/db/gs_weapon_info.dart';
 export 'package:data_editor/db/gs_wish.dart';
 
 int _getCityIndex(String id) =>
-    Database.i.cities._data.indexWhere((e) => e.id == id);
+    Database.i.cities.data.indexWhere((e) => e.id == id);
 
 int _getCategoryIndex(String id) =>
     Database.i.achievementGroups.data.indexWhere((e) => e.id == id);
