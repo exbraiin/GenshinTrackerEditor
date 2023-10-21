@@ -11,85 +11,81 @@ import 'package:flutter/services.dart';
 import 'package:html/parser.dart' as html;
 
 class Changes {
-  final int removed;
-  final int modified;
-  final int added;
+  final int achRmv, achMdf, achAdd;
+  final int grpRmv, grpMdf, grpAdd;
 
-  Changes({
-    this.removed = 0,
-    this.modified = 0,
-    this.added = 0,
-  });
+  Changes(
+    this.achRmv,
+    this.achMdf,
+    this.achAdd,
+    this.grpRmv,
+    this.grpMdf,
+    this.grpAdd,
+  );
 
-  static Changes fromIterables<T>(Iterable<T> oldIt, Iterable<T> newIt) {
-    return Changes(
-      removed: oldIt.count((e) => !newIt.contains(e)),
-      modified: newIt.count((e) => oldIt.contains(e)),
-      added: newIt.count((e) => !oldIt.contains(e)),
-    );
+  factory Changes.fromData(
+    Iterable<GsAchievementGroup> oldGrps,
+    Iterable<GsAchievementGroup> newGrps,
+    Iterable<GsAchievement> oldAchs,
+    Iterable<GsAchievement> newAchs,
+  ) {
+    final achRmv = oldAchs.count((a) => !newAchs.any((b) => b.id == a.id));
+    final achAdd = newAchs.count((a) => !oldAchs.any((b) => b.id == a.id));
+    final achMdf = newAchs.count((a) {
+      final b = oldAchs.firstOrNullWhere((b) => b.id == a.id);
+      return b != null && !_isSameAch(a, b);
+    });
+
+    final grpRmv = oldGrps.count((a) => !newGrps.any((b) => b.id == a.id));
+    final grpAdd = newGrps.count((a) => !oldGrps.any((b) => b.id == a.id));
+    final grpMdf = newGrps.count((a) {
+      final b = oldGrps.firstOrNullWhere((b) => b.id == a.id);
+      return b != null && !_isSameGrp(a, b);
+    });
+
+    return Changes(achRmv, achMdf, achAdd, grpRmv, grpMdf, grpAdd);
   }
 
-  @override
-  String toString() => '$removed | $modified | $added';
-}
-
-class _CpGroup {
-  final GsAchievementGroup data;
-  _CpGroup(this.data);
-
-  @override
-  bool operator ==(Object other) {
-    if (other is! _CpGroup) return false;
-    return data.id == other.data.id &&
-        data.name == other.data.name &&
-        data.icon == other.data.icon &&
-        data.version == other.data.version &&
-        data.namecard == other.data.namecard &&
-        data.rewards == other.data.rewards &&
-        data.achievements == other.data.achievements;
-  }
-
-  @override
-  int get hashCode => data.hashCode;
-}
-
-class _CpAchievement {
-  final GsAchievement data;
-  _CpAchievement(this.data);
-
-  @override
-  bool operator ==(Object other) {
-    if (other is! _CpAchievement) return false;
-    return data.id == other.data.id &&
-        data.name == other.data.name &&
-        data.group == other.data.group &&
-        data.hidden == other.data.hidden &&
-        data.version == other.data.version &&
-        data.type == other.data.type &&
-        data.phases.length == other.data.phases.length &&
-        data.phases
+  static bool _isSameAch(GsAchievement a, GsAchievement b) {
+    if (a == b) return true;
+    return a.id == b.id &&
+        a.group == b.group &&
+        a.hidden == b.hidden &&
+        a.name == b.name &&
+        a.type == b.type &&
+        a.version == b.version &&
+        a.phases.length == b.phases.length &&
+        a.phases
             .zip(
-              other.data.phases,
-              (a, b) =>
-                  a.id == b.id && a.desc == b.desc && a.reward == b.reward,
+              b.phases,
+              (itemA, itemB) =>
+                  itemA.id == itemB.id &&
+                  itemA.desc == itemB.desc &&
+                  itemA.reward == itemB.reward,
             )
             .all((e) => e);
   }
 
-  @override
-  int get hashCode => data.hashCode;
+  static bool _isSameGrp(GsAchievementGroup a, GsAchievementGroup b) {
+    if (a == b) return true;
+    return a.id == b.id &&
+        a.name == b.name &&
+        a.icon == b.icon &&
+        a.version == b.version &&
+        a.namecard == b.namecard &&
+        a.order == b.order &&
+        a.rewards == b.rewards &&
+        a.achievements == b.achievements;
+  }
 }
 
 abstract final class Importer {
-  static Future<(Changes, Changes)?> importAchievementsFromAmbrJson(
+  static Future<Changes?> importAchievementsFromAmbrJson(
     String path,
   ) async {
     final file = File(path);
     if (!await file.exists()) return null;
     final data = jsonDecode(await file.readAsString()) as Map;
-
-    final groups = <Map<String, dynamic>>[];
-    final achievements = <Map<String, dynamic>>[];
 
     Map<String, dynamic> parseAchievement(
       String groupName,
@@ -104,26 +100,25 @@ abstract final class Importer {
         'group': groupName.toDbId(),
         'hidden': first['hidden'],
         'version': first['ver'] as String? ?? '1.0',
-        'phases': list.map((e) {
-          return {
-            'desc': e['desc'],
-            'reward': e['reward'],
-          };
-        }).toList(),
+        'phases': list
+            .map((e) => {'desc': e['desc'], 'reward': e['reward']})
+            .toList(),
       };
     }
 
+    final grps = <Map<String, dynamic>>[];
+    final achs = <Map<String, dynamic>>[];
     for (final group in data.values.cast<Map>()) {
       final groupOrder = group['order'] as int? ?? 0;
       final groupName = group['name'] as String? ?? '';
 
-      groups.add({
+      grps.add({
         'id': groupName.toDbId(),
         'name': groupName,
         'order': groupOrder,
       });
 
-      achievements.addAll(
+      achs.addAll(
         (group['achievements'] as List? ?? []).map(
           (ach) => ach is List
               ? parseAchievement(groupName, ach.cast<Map<String, dynamic>>())
@@ -132,21 +127,17 @@ abstract final class Importer {
       );
     }
 
-    final inDbAch = Database.i.achievements.data.map(_CpAchievement.new);
-    final inDbGrp = Database.i.achievementGroups.data.map(_CpGroup.new);
+    final inDbAchs = Database.i.achievements.data.toList();
+    final inDbGrps = Database.i.achievementGroups.data.toList();
 
-    final dataAchievements = achievements.map(GsAchievement.fromMap);
-    Database.i.achievements.updateAll(dataAchievements);
+    final impAchs = achs.map(GsAchievement.fromMap);
+    Database.i.achievements.updateAll(impAchs);
 
-    final tempGroups = groups
-        .sortedBy((element) => element['order'])
-        .map(GsAchievementGroup.fromMap)
-        .toList();
-
-    final temp = await compute(
-      (tuple) => tuple.groups.map((e) {
-        final exist = tuple.dbGroups.firstOrNullWhere((t) => t.id == e.id);
-        final items = tuple.dbAchievements.where((t) => t.group == e.id);
+    final tmpGrps = grps.map(GsAchievementGroup.fromMap).toList();
+    final impGrps = await compute(
+      (tuple) => tuple.grps.map((e) {
+        final exist = tuple.dbGrps.firstOrNullWhere((t) => t.id == e.id);
+        final items = tuple.dbAchs.where((t) => t.group == e.id);
         return e.copyWith(
           icon: exist?.icon,
           namecard: exist?.namecard,
@@ -155,27 +146,14 @@ abstract final class Importer {
           achievements: items.sumBy((t) => t.phases.length),
         );
       }),
-      (
-        groups: tempGroups,
-        dbGroups: Database.i.achievementGroups.data,
-        dbAchievements: Database.i.achievements.data,
-      ),
+      (grps: tmpGrps, dbGrps: inDbGrps, dbAchs: inDbAchs),
     );
+    Database.i.achievementGroups.updateAll(impGrps);
 
-    Database.i.achievementGroups.updateAll(temp);
     await DataValidator.i.checkAll();
     Database.i.modified.add(null);
 
-    final changesAch = Changes.fromIterables<_CpAchievement>(
-      inDbAch,
-      dataAchievements.map(_CpAchievement.new),
-    );
-    final changesGrp = Changes.fromIterables<_CpGroup>(
-      inDbGrp,
-      temp.map(_CpGroup.new),
-    );
-
-    return (changesAch, changesGrp);
+    return Changes.fromData(inDbGrps, impGrps, inDbAchs, impAchs);
   }
 
   static Future<List<GsAchievement>> importAchievementsFromFandom(

@@ -62,9 +62,18 @@ class Home extends StatelessWidget {
           messenger.showSnackBar(
             SnackBar(
               content: TextParserWidget(
-                'Groups: (<color=pyro>${c.$2.removed}</color> | <color=geo>${c.$2.modified}</color> | <color=dendro>${c.$2.added}</color>)\n'
-                'Achievements: (<color=pyro>${c.$1.removed}</color> | <color=geo>${c.$1.modified}</color> | <color=dendro>${c.$1.added}</color>)',
-                style: const TextStyle(color: Colors.white),
+                'Groups: ('
+                '<color=pyro>${c.grpRmv}</color> | '
+                '<color=geo>${c.grpMdf}</color> | '
+                '<color=dendro>${c.grpAdd}</color>)\n'
+                'Achievements: ('
+                '<color=pyro>${c.achRmv}</color> | '
+                '<color=geo>${c.achMdf}</color> | '
+                '<color=dendro>${c.achAdd}</color>)',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               backgroundColor: bgColor,
             ),
@@ -74,7 +83,10 @@ class Home extends StatelessWidget {
             SnackBar(
               content: const Text(
                 'Could not import!',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               backgroundColor: bgColor,
             ),
