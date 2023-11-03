@@ -71,4 +71,16 @@ class GsAchievementGroup extends GsModel<GsAchievementGroup> {
       'achievements': achievements,
     };
   }
+
+  bool equalsTo(GsAchievementGroup other) {
+    if (this == other) return true;
+    return id == other.id &&
+        name == other.name &&
+        icon == other.icon &&
+        version == other.version &&
+        namecard == other.namecard &&
+        order == other.order &&
+        rewards == other.rewards &&
+        achievements == other.achievements;
+  }
 }

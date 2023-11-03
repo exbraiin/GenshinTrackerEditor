@@ -1,6 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
+import 'package:data_editor/style/utils.dart';
 
 class GsAchievement extends GsModel<GsAchievement> {
   @override
@@ -63,6 +64,18 @@ class GsAchievement extends GsModel<GsAchievement> {
         'version': version,
         'phases': phases.map((e) => e.toJsonMap()).toList(),
       };
+
+  bool equalsTo(GsAchievement other) {
+    if (this == other) return true;
+    return id == other.id &&
+        group == other.group &&
+        hidden == other.hidden &&
+        name == other.name &&
+        type == other.type &&
+        version == other.version &&
+        phases.length == other.phases.length &&
+        phases.compareWith(other.phases, (a, b) => a.equalsTo(b));
+  }
 }
 
 class GsAchievementPhase extends GsModel<GsAchievementPhase> {
@@ -96,4 +109,9 @@ class GsAchievementPhase extends GsModel<GsAchievementPhase> {
         'desc': desc,
         'reward': reward,
       };
+
+  bool equalsTo(GsAchievementPhase other) {
+    if (this == other) return true;
+    return id == other.id && desc == other.desc && reward == other.reward;
+  }
 }

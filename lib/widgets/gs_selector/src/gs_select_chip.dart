@@ -137,7 +137,7 @@ class GsSelectChip<T> extends StatelessWidget {
                 BoxShadow(
                   color: Colors.black38,
                   offset: Offset(1, 1),
-                )
+                ),
               ],
             ),
           ),

@@ -176,7 +176,7 @@ class _SelectDialogState<T> extends State<_SelectDialog<T>> {
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),

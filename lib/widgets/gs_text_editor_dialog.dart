@@ -125,7 +125,7 @@ class _GsTextEditorDialogState<T> extends State<GsTextEditorDialog> {
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),

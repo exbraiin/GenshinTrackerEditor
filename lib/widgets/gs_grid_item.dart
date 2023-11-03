@@ -38,7 +38,7 @@ class GsGridItem extends StatelessWidget {
           transform: Matrix4.diagonal3Values(scale, scale, 1),
           transformAlignment: Alignment.center,
           decoration: BoxDecoration(
-            color: color.withOpacity(hover ? 1 : 0.6),
+            color: color.withOpacity(hover ? 1 : 0.8),
             border: Border.all(color: Colors.black54, width: 2),
             borderRadius: BorderRadius.circular(8),
             boxShadow: hover
@@ -47,7 +47,7 @@ class GsGridItem extends StatelessWidget {
                       blurRadius: 8,
                       color: Colors.black54,
                       offset: Offset(2, 2),
-                    )
+                    ),
                   ]
                 : null,
           ),

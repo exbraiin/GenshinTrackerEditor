@@ -1,14 +1,11 @@
-import 'package:dartx/dartx.dart';
 import 'package:data_editor/configs.dart';
 import 'package:data_editor/db/database.dart';
-import 'package:data_editor/exporter.dart';
 import 'package:data_editor/importer.dart';
 import 'package:data_editor/screens/info_screen.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_grid_view.dart';
 import 'package:data_editor/widgets/text_style_parser.dart';
-import 'package:desktop_drop/desktop_drop.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -49,118 +46,116 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropTarget(
-      onDragDone: (details) async {
-        final file = details.files.firstOrNull;
-        if (file == null) return;
-        final messenger = ScaffoldMessenger.of(context);
-        final bgColor = Theme.of(context).scaffoldBackgroundColor;
-        try {
-          final c = await Importer.importAchievementsFromAmbrJson(file.path);
-          if (c == null) return;
-
-          messenger.showSnackBar(
-            SnackBar(
-              content: TextParserWidget(
-                'Groups: ('
-                '<color=pyro>${c.grpRmv}</color> | '
-                '<color=geo>${c.grpMdf}</color> | '
-                '<color=dendro>${c.grpAdd}</color>)\n'
-                'Achievements: ('
-                '<color=pyro>${c.achRmv}</color> | '
-                '<color=geo>${c.achMdf}</color> | '
-                '<color=dendro>${c.achAdd}</color>)',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              backgroundColor: bgColor,
-            ),
-          );
-        } catch (error) {
-          messenger.showSnackBar(
-            SnackBar(
-              content: const Text(
-                'Could not import!',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              backgroundColor: bgColor,
-            ),
-          );
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Data Editor'),
-          actions: [
-            const _BusyWidget(
-              message: 'Export as CSV',
-              icon: Icons.upload_rounded,
-              onPressed: GsExporter.exportAll,
-            ),
-            const SizedBox(width: 8),
-            IconButton(
-              icon: const Icon(Icons.info_outline_rounded),
-              onPressed: () => context.pushWidget(const InfoScreen()),
-            ),
-            const SizedBox(width: 8),
-            _BusyWidget(
-              icon: Icons.save_rounded,
-              onPressed: Database.i.save,
-            ),
-          ],
-        ),
-        body: FutureBuilder(
-          future: Database.i.load(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Container(
-                padding: const EdgeInsets.all(8),
-                alignment: Alignment.center,
-                child: Text(snapshot.error.toString()),
-              );
-            }
-
-            if (!snapshot.hasData) {
-              return Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.6),
-                      BlendMode.multiply,
-                    ),
-                    image: const AssetImage(GsGraphics.bgImg),
-                  ),
-                ),
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  ),
-                ),
-              );
-            }
-
-            return StreamBuilder(
-              stream: Database.i.modified,
-              initialData: Database.i.modified,
-              builder: (context, snapshot) {
-                return GsGridView(
-                  children: GsConfigs.getAllConfigs()
-                      .map((e) => e.toGridItem(context))
-                      .toList(),
-                );
-              },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Data Editor'),
+        actions: [
+          _BusyWidget(
+            message: 'Import Achievements from Paimon.moe',
+            icon: Icons.download_rounded,
+            onPressed: () => _onImportAchievements(context),
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: const Icon(Icons.info_outline_rounded),
+            onPressed: () => context.pushWidget(const InfoScreen()),
+          ),
+          const SizedBox(width: 8),
+          _BusyWidget(
+            message: 'Save',
+            icon: Icons.save_rounded,
+            onPressed: Database.i.save,
+          ),
+        ],
+      ),
+      body: FutureBuilder(
+        future: Database.i.load(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Container(
+              padding: const EdgeInsets.all(8),
+              alignment: Alignment.center,
+              child: Text(snapshot.error.toString()),
             );
-          },
-        ),
+          }
+
+          if (!snapshot.hasData) {
+            return Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.6),
+                    BlendMode.multiply,
+                  ),
+                  image: const AssetImage(GsGraphics.bgImg),
+                ),
+              ),
+              child: const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              ),
+            );
+          }
+
+          return StreamBuilder(
+            stream: Database.i.modified,
+            initialData: Database.i.modified,
+            builder: (context, snapshot) {
+              return GsGridView(
+                children: GsConfigs.getAllConfigs()
+                    .map((e) => e.toGridItem(context))
+                    .toList(),
+              );
+            },
+          );
+        },
       ),
     );
+  }
+
+  Future<void> _onImportAchievements(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final bgColor = Theme.of(context).scaffoldBackgroundColor;
+    try {
+      final c = await Importer.importAchievementsFromAmbrJson();
+      if (c == null) return;
+
+      messenger.showSnackBar(
+        SnackBar(
+          content: TextParserWidget(
+            'Groups: ('
+            '<color=pyro>${c.grpRmv}</color> | '
+            '<color=geo>${c.grpMdf}</color> | '
+            '<color=dendro>${c.grpAdd}</color>)\n'
+            'Achievements: ('
+            '<color=pyro>${c.achRmv}</color> | '
+            '<color=geo>${c.achMdf}</color> | '
+            '<color=dendro>${c.achAdd}</color>)',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: bgColor,
+        ),
+      );
+    } catch (error) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: const Text(
+            'Could not import!',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: bgColor,
+        ),
+      );
+    }
   }
 }
 

@@ -33,59 +33,26 @@ class Changes {
     final achAdd = newAchs.count((a) => !oldAchs.any((b) => b.id == a.id));
     final achMdf = newAchs.count((a) {
       final b = oldAchs.firstOrNullWhere((b) => b.id == a.id);
-      return b != null && !_isSameAch(a, b);
+      return b != null && !a.equalsTo(b);
     });
 
     final grpRmv = oldGrps.count((a) => !newGrps.any((b) => b.id == a.id));
     final grpAdd = newGrps.count((a) => !oldGrps.any((b) => b.id == a.id));
     final grpMdf = newGrps.count((a) {
       final b = oldGrps.firstOrNullWhere((b) => b.id == a.id);
-      return b != null && !_isSameGrp(a, b);
+      return b != null && !a.equalsTo(b);
     });
 
     return Changes(achRmv, achMdf, achAdd, grpRmv, grpMdf, grpAdd);
   }
-
-  static bool _isSameAch(GsAchievement a, GsAchievement b) {
-    if (a == b) return true;
-    return a.id == b.id &&
-        a.group == b.group &&
-        a.hidden == b.hidden &&
-        a.name == b.name &&
-        a.type == b.type &&
-        a.version == b.version &&
-        a.phases.length == b.phases.length &&
-        a.phases
-            .zip(
-              b.phases,
-              (itemA, itemB) =>
-                  itemA.id == itemB.id &&
-                  itemA.desc == itemB.desc &&
-                  itemA.reward == itemB.reward,
-            )
-            .all((e) => e);
-  }
-
-  static bool _isSameGrp(GsAchievementGroup a, GsAchievementGroup b) {
-    if (a == b) return true;
-    return a.id == b.id &&
-        a.name == b.name &&
-        a.icon == b.icon &&
-        a.version == b.version &&
-        a.namecard == b.namecard &&
-        a.order == b.order &&
-        a.rewards == b.rewards &&
-        a.achievements == b.achievements;
-  }
 }
 
 abstract final class Importer {
-  static Future<Changes?> importAchievementsFromAmbrJson(
-    String path,
-  ) async {
-    final file = File(path);
-    if (!await file.exists()) return null;
-    final data = jsonDecode(await file.readAsString()) as Map;
+  static Future<Changes?> importAchievementsFromAmbrJson() async {
+    const url = 'https://raw.githubusercontent.com/MadeBaruna/'
+        'paimon-moe/main/src/data/achievement/en.json';
+    final responseJson = await _getUrl(url);
+    final data = jsonDecode(responseJson) as Map;
 
     Map<String, dynamic> parseAchievement(
       String groupName,
@@ -356,7 +323,7 @@ abstract final class Importer {
 
     const levels = [
       ...['1', '20', '20+', '40', '40+', '50', '50+'],
-      ...['60', '60+', '70', '70+', '80', '80+', '90']
+      ...['60', '60+', '70', '70+', '80', '80+', '90'],
     ];
 
     for (final line in data.split('\n')) {
