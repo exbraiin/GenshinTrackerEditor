@@ -48,7 +48,8 @@ class Changes {
 }
 
 abstract final class Importer {
-  static Future<Changes?> importAchievementsFromAmbrJson() async {
+  static const _asc = [20, 40, 50, 60, 70, 80];
+  static Future<Changes?> importAchievementsFromPaimonMoe() async {
     const url = 'https://raw.githubusercontent.com/MadeBaruna/'
         'paimon-moe/main/src/data/achievement/en.json';
     final responseJson = await _getUrl(url);
@@ -123,95 +124,89 @@ abstract final class Importer {
     return Changes.fromData(inDbGrps, impGrps, inDbAchs, impAchs);
   }
 
-  static Future<List<GsAchievement>> importAchievementsFromFandom(
-    GsAchievementGroup category, {
-    String? url,
-    bool useFile = false,
-  }) async {
-    const format = Clipboard.kTextPlain;
-    url ??= (await Clipboard.getData(format))?.text ?? '';
-
-    late final String raw;
-    if (useFile) {
-      final file = File('temp.html');
-      if (!await file.exists()) {
-        raw = await _getUrl(url);
-        await file.writeAsString(raw);
-      } else {
-        raw = await file.readAsString();
-      }
-    } else {
-      raw = await _getUrl(url);
+  static String? _processPaimonMoeStat(
+    List<num?> values,
+    int level, {
+    bool isPercent = false,
+  }) {
+    String? format(num? v) {
+      if (v == null) return null;
+      if (!isPercent) return v.round().toString();
+      var percent = (v * 100).toStringAsFixed(1);
+      if (percent.endsWith('.0')) percent = (v * 100).toStringAsFixed(0);
+      return '$percent%';
     }
 
-    final document = html.parse(raw);
+    if (level == 1) return format(values.elementAtOrNull(level));
+    late final i = _asc.count((v) => v < level);
+    late final b = values.elementAtOrNull(level + i);
+    late final a = values.elementAtOrNull(level + i + 1);
+    if (b == null) return null;
+    if (a == null) return format(b);
+    if (b == a) return format(b);
+    return '${format(b)} → ${format(a)}';
+  }
 
-    final table = document.querySelector('table.article-table');
-    final entries = table?.querySelectorAll('tr') ?? [];
+  static Future<GsWeaponInfo> importWeaponStatsFromPaimonMoe(
+    GsWeaponInfo info,
+  ) async {
+    const url = 'https://raw.githubusercontent.com/MadeBaruna/'
+        '/paimon-moe/main/src/data/weapons/en.json';
+    final responseJson = await _getUrl(url);
+    final data = jsonDecode(responseJson) as Map;
 
-    final type = entries.skip(1).firstOrNull?.querySelectorAll('td') ?? [];
-    if (type.length != 7 && type.length != 6 && type.length != 4) return [];
+    final json = data[info.id] as JsonMap?;
+    if (json == null) return info;
 
-    final achvs = <GsAchievement>[];
-    for (var entry in entries.skip(1)) {
-      final tds = entry.querySelectorAll('td');
+    final listAtk = (json['atk'] as List? ?? []).cast<num?>();
+    final listStat = (json['secondary']?['stats'] as List? ?? []).cast<num?>();
 
-      final sz = tds.length;
-      late final int reward;
-      late final String name;
-      late final String desc;
-      late final String type;
-      late final bool hidden;
-      late final String version;
+    const levels = [1, ..._asc, 90];
+    final isPercent = json['seconday']?['name'] != 'em';
+    final atkList = levels.map((e) => _processPaimonMoeStat(listAtk, e));
+    final statsList = levels
+        .map((e) => _processPaimonMoeStat(listStat, e, isPercent: isPercent));
 
-      name = tds[0].text.trim();
-      desc = tds[1].text.split('\n').map((e) => e.trim()).join(' ').trim();
-      if (sz == 4) {
-        hidden = false;
-        type = '';
-        version = category.version;
-        reward = int.tryParse(tds[3].text.trim()) ?? 0;
-      } else if (sz == 6) {
-        hidden = tds[3].text.trim().toLowerCase() == 'yes';
-        type = '';
-        version = tds[4].text.trim();
-        reward = int.tryParse(tds[5].text.trim()) ?? 0;
-      } else if (sz == 7) {
-        hidden = tds[3].text.trim().toLowerCase() == 'yes';
-        type = tds[4].text.trim().toLowerCase().toDbId();
-        version = tds[5].text.trim();
-        reward = int.tryParse(tds[6].text.trim()) ?? 0;
-      } else {
-        continue;
-      }
+    return info.copyWith(
+      ascAtkValues: atkList.whereType<String>().join(', '),
+      ascStatValues: statsList.whereType<String>().join(', '),
+    );
+  }
 
-      final id = '${category.id} $name'.toDbId();
-      final idx = achvs.indexWhere((e) => e.id == id);
-      if (idx != -1) {
-        achvs[idx].phases
-          ..add(GsAchievementPhase.fromMap({'desc': desc, 'reward': reward}))
-          ..sortedBy((element) => element.reward);
-      } else {
-        achvs.add(
-          GsAchievement.fromMap({
-            'id': id,
-            'name': name,
-            'type': type,
-            'group': category.id,
-            'hidden': hidden,
-            'version': version,
-            'phases': [
-              {
-                'desc': desc,
-                'reward': reward,
-              }
-            ],
-          }),
-        );
-      }
-    }
+  static Future<GsCharacterInfo> importCharacterStatsFromPaimonMoe(
+    GsCharacterInfo info,
+  ) async {
+    final url = 'https://raw.githubusercontent.com/MadeBaruna/'
+        '/paimon-moe/main/src/data/characterData/${info.id}.json';
+    final responseJson = await _getUrl(url);
+    final json = jsonDecode(responseJson) as Map;
 
-    return achvs;
+    final stat = json['statGrow'];
+    final listHp = (json['hp'] as List? ?? []).cast<num?>();
+    final listAtk = (json['atk'] as List? ?? []).cast<num?>();
+    final listDef = (json['def'] as List? ?? []).cast<num?>();
+    final listStat = (json[stat] as List? ?? []).cast<num?>();
+
+    const levels = [1, ..._asc, 90];
+    final isPercent = stat != 'em';
+    return info.copyWith(
+      ascHpValues: levels
+          .map((e) => _processPaimonMoeStat(listHp, e))
+          .whereType<String>()
+          .join(', '),
+      ascAtkValues: levels
+          .map((e) => _processPaimonMoeStat(listAtk, e))
+          .whereType<String>()
+          .join(', '),
+      ascDefValues: levels
+          .map((e) => _processPaimonMoeStat(listDef, e))
+          .whereType<String>()
+          .join(', '),
+      ascStatValues: levels
+          .map((e) => _processPaimonMoeStat(listStat, e, isPercent: isPercent))
+          .whereType<String>()
+          .join(', '),
+    );
   }
 
   static Future<GsCharacter> importCharacterFromFandom(
@@ -355,7 +350,7 @@ abstract final class Importer {
     }
   }
 
-  static Future<GsCharacterInfo> importCharacterAscensionStatsFromAmbr(
+  static Future<GsCharacterInfo> importCharacterStatsFromAmbr(
     GsCharacterInfo info, {
     String? data,
   }) async {
@@ -382,12 +377,14 @@ abstract final class Importer {
   }
 }
 
+final _cache = <String, String>{};
 Future<String> _getUrl(String url) async {
+  if (_cache.containsKey(url)) return _cache[url]!;
   final client = HttpClient();
   final request = await client.getUrl(Uri.parse(url));
   final response = await request.close();
   client.close();
-  return await response.transform(utf8.decoder).join();
+  return _cache[url] = await response.transform(utf8.decoder).join();
 }
 
 String _processImage(String value) {

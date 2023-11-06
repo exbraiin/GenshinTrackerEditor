@@ -2,8 +2,10 @@ import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
+import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:data_editor/importer.dart';
 import 'package:data_editor/screens/item_edit_screen.dart';
 import 'package:data_editor/screens/items_list_screen.dart';
 import 'package:data_editor/style/style.dart';
@@ -12,10 +14,17 @@ import 'package:data_editor/widgets/gs_grid_item.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:flutter/material.dart';
 
+const _fandomUrl =
+    'https://static.wikia.nocookie.net/gensin-impact/images/4/4a/Site-favicon.ico';
+final _ambrIcon = Image.network('https://ambr.top/favicon.ico');
+final _fandomIcon = Image.network(_fandomUrl);
+final _paimonMoeIcon = Image.network('https://paimon.moe/favicon.png');
+
 class GsConfigs<T extends GsModel<T>> {
   final String title;
   final GsItemDecor Function(T item) getDecor;
   final List<GsFieldFilter<T>> filters;
+  final Iterable<DataButton<T>> import;
 
   GsCollection<T> get collection => Database.i.collectionOf<T>()!;
   GsModelExt<T> get modelExt => GsModelExt.of<T>()!;
@@ -23,6 +32,7 @@ class GsConfigs<T extends GsModel<T>> {
   GsConfigs._({
     required this.title,
     required this.getDecor,
+    this.import = const [],
     this.filters = const [],
   });
 
@@ -138,6 +148,13 @@ class GsConfigs<T extends GsModel<T>> {
         color: GsStyle.getRarityColor(item.rarity),
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
+      import: [
+        DataButton(
+          'Import from fandom URL',
+          icon: _fandomIcon,
+          (ctx, item) => Importer.importCharacterFromFandom(item),
+        ),
+      ],
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -178,6 +195,18 @@ class GsConfigs<T extends GsModel<T>> {
           regionColor: GsStyle.getRegionElementColor(char?.region ?? ''),
         );
       },
+      import: [
+        DataButton(
+          'Import stats from Ambr table',
+          icon: _ambrIcon,
+          (ctx, item) => Importer.importCharacterStatsFromAmbr(item),
+        ),
+        DataButton(
+          'Import stats from Paimon.moe',
+          icon: _paimonMoeIcon,
+          (ctx, item) => Importer.importCharacterStatsFromPaimonMoe(item),
+        ),
+      ],
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -484,6 +513,18 @@ class GsConfigs<T extends GsModel<T>> {
           color: GsStyle.getRarityColor(weapon?.rarity ?? 0),
         );
       },
+      import: [
+        DataButton(
+          'Import stats from Ambr table',
+          icon: _ambrIcon,
+          (ctx, item) => Importer.importWeaponAscensionStatsFromAmbr(item),
+        ),
+        DataButton(
+          'Import stats from Paimon.moe',
+          icon: _paimonMoeIcon,
+          (context, item) => Importer.importWeaponStatsFromPaimonMoe(item),
+        ),
+      ],
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -567,6 +608,7 @@ class GsConfigs<T extends GsModel<T>> {
         title: title,
         collection: collection,
         modelExt: modelExt,
+        import: import,
       ),
     );
   }

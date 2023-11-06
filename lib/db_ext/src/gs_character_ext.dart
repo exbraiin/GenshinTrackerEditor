@@ -7,7 +7,6 @@ import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
-import 'package:data_editor/importer.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
@@ -32,10 +31,6 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),
-        ),
-        import: DataButton(
-          'Import from fandom URL',
-          (ctx, item) => Importer.importCharacterFromFandom(item),
         ),
       ),
       DataField.textField(

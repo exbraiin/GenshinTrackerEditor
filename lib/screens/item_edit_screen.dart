@@ -13,6 +13,7 @@ class ItemEditScreen<T extends GsModel<T>> extends StatefulWidget {
   final T? duplicated;
   final GsCollection<T> collection;
   final GsModelExt<T> modelExt;
+  final Iterable<DataButton<T>> import;
 
   const ItemEditScreen({
     super.key,
@@ -21,6 +22,7 @@ class ItemEditScreen<T extends GsModel<T>> extends StatefulWidget {
     required this.title,
     required this.modelExt,
     required this.collection,
+    this.import = const [],
   });
 
   @override
@@ -56,6 +58,26 @@ class _ItemEditScreenState<T extends GsModel<T>>
       appBar: AppBar(
         title: Text('Edit ${widget.title}'),
         actions: [
+          ValueListenableBuilder(
+            valueListenable: _notifier,
+            builder: (context, value, child) {
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: widget.import
+                    .map(
+                      (e) => IconButton(
+                        tooltip: e.tooltip,
+                        icon: e.icon ?? const Icon(Icons.bolt_outlined),
+                        onPressed: () async =>
+                            edit(await e.callback(context, value)),
+                      ),
+                    )
+                    .toList(),
+              );
+              // return getTableForFields(context, value, fields, edit);
+            },
+          ),
           if (widget.duplicated == null)
             IconButton(
               onPressed: () => context.pushWidgetReplacement(

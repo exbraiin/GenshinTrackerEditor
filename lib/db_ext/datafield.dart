@@ -177,7 +177,6 @@ class DataField<T extends GsModel<T>> {
     T Function(T item, String value) update, {
     required DValidator<T> validator,
     DataButton<T>? import,
-    String? importTooltip,
   }) {
     return DataField.textField(
       label,

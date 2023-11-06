@@ -4,7 +4,6 @@ import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
-import 'package:data_editor/importer.dart';
 
 class GsWeaponInfoExt extends GsModelExt<GsWeaponInfo> {
   const GsWeaponInfoExt();
@@ -82,10 +81,6 @@ class GsWeaponInfoExt extends GsModelExt<GsWeaponInfo> {
         (item, value) => item.copyWith(ascAtkValues: value),
         validator: (item) =>
             _vdWeaponAsc(item.ascAtkValues, item.ascStatValues),
-        import: DataButton(
-          'Import from Ambr table',
-          (ctx, item) => Importer.importWeaponAscensionStatsFromAmbr(item),
-        ),
       ),
       DataField.textList(
         'Ascension Stat Values',

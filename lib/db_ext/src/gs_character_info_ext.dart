@@ -5,7 +5,6 @@ import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
-import 'package:data_editor/importer.dart';
 import 'package:data_editor/style/utils.dart';
 
 class GsCharacterInfoExt extends GsModelExt<GsCharacterInfo> {
@@ -121,10 +120,6 @@ class GsCharacterInfoExt extends GsModelExt<GsCharacterInfo> {
         (item) => item.ascHpValues,
         (item, value) => item.copyWith(ascHpValues: value),
         validator: (item) => _vdCharAsc(item.ascHpValues),
-        import: DataButton(
-          'Import from Ambr table',
-          (ctx, item) => Importer.importCharacterAscensionStatsFromAmbr(item),
-        ),
       ),
       DataField.textList(
         'Ascension Atk Values',

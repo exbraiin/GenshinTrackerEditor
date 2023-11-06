@@ -23,8 +23,10 @@ class MyApp extends StatelessWidget {
       title: 'Data Editor',
       theme: ThemeData(
         fontFamily: 'Comfortaa',
-        primarySwatch: Colors.blue,
-        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.teal,
+          brightness: Brightness.dark,
+        ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: Colors.teal,
           foregroundColor: Colors.black,
@@ -120,7 +122,7 @@ class Home extends StatelessWidget {
     final messenger = ScaffoldMessenger.of(context);
     final bgColor = Theme.of(context).scaffoldBackgroundColor;
     try {
-      final c = await Importer.importAchievementsFromAmbrJson();
+      final c = await Importer.importAchievementsFromPaimonMoe();
       if (c == null) return;
 
       messenger.showSnackBar(

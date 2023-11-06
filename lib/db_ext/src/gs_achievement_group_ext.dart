@@ -2,7 +2,6 @@ import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
-import 'package:data_editor/importer.dart';
 
 class GsAchievementGroupExt extends GsModelExt<GsAchievementGroup> {
   const GsAchievementGroupExt();
@@ -22,16 +21,6 @@ class GsAchievementGroupExt extends GsModelExt<GsAchievementGroup> {
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),
-        ),
-        import: DataButton(
-          'Import from fandom URL',
-          (ctx, item) async {
-            final achv = await Importer.importAchievementsFromFandom(item);
-            for (final entry in achv) {
-              Database.i.achievements.updateItem(entry.id, entry);
-            }
-            return item.copyWith();
-          },
         ),
       ),
       DataField.textField(
