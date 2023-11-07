@@ -20,7 +20,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
     final ids = Database.i.characters.data.map((e) => e.id);
     final regions = GsItemFilter.regions().ids;
     final versions = GsItemFilter.versions().ids;
-    final recipes = GsItemFilter.baseRecipes().ids;
+    final recipes = GsItemFilter.specialDishes().ids;
 
     return [
       DataField.textField(
@@ -148,7 +148,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
       DataField.singleSelect(
         'Special Dish',
         (item) => item.specialDish,
-        (item) => GsItemFilter.baseRecipes().filters,
+        (item) => GsItemFilter.specialDishes(character: item).filters,
         (item, value) => item.copyWith(specialDish: value),
         validator: (item) => vdContains(item.specialDish, recipes),
       ),

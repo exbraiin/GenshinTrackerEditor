@@ -124,9 +124,8 @@ abstract final class Importer {
     return Changes.fromData(inDbGrps, impGrps, inDbAchs, impAchs);
   }
 
-  static String? _processPaimonMoeStat(
-    List<num?> values,
-    int level, {
+  static String? _processPaimonMoeStats(
+    List<num?> values, {
     bool isPercent = false,
   }) {
     String? format(num? v) {
@@ -137,14 +136,19 @@ abstract final class Importer {
       return '$percent%';
     }
 
-    if (level == 1) return format(values.elementAtOrNull(level));
-    late final i = _asc.count((v) => v < level);
-    late final b = values.elementAtOrNull(level + i);
-    late final a = values.elementAtOrNull(level + i + 1);
-    if (b == null) return null;
-    if (a == null) return format(b);
-    if (b == a) return format(b);
-    return '${format(b)} → ${format(a)}';
+    return [1, ..._asc, 90]
+        .map((level) {
+          if (level == 1) return format(values.elementAtOrNull(level));
+          late final i = _asc.count((v) => v < level);
+          late final b = values.elementAtOrNull(level + i);
+          late final a = values.elementAtOrNull(level + i + 1);
+          if (b == null) return null;
+          if (a == null) return format(b);
+          if (b == a) return format(b);
+          return '${format(b)} → ${format(a)}';
+        })
+        .whereType<String>()
+        .join(', ');
   }
 
   static Future<GsWeaponInfo> importWeaponStatsFromPaimonMoe(
@@ -161,15 +165,10 @@ abstract final class Importer {
     final listAtk = (json['atk'] as List? ?? []).cast<num?>();
     final listStat = (json['secondary']?['stats'] as List? ?? []).cast<num?>();
 
-    const levels = [1, ..._asc, 90];
     final isPercent = json['seconday']?['name'] != 'em';
-    final atkList = levels.map((e) => _processPaimonMoeStat(listAtk, e));
-    final statsList = levels
-        .map((e) => _processPaimonMoeStat(listStat, e, isPercent: isPercent));
-
     return info.copyWith(
-      ascAtkValues: atkList.whereType<String>().join(', '),
-      ascStatValues: statsList.whereType<String>().join(', '),
+      ascAtkValues: _processPaimonMoeStats(listAtk),
+      ascStatValues: _processPaimonMoeStats(listStat, isPercent: isPercent),
     );
   }
 
@@ -187,25 +186,12 @@ abstract final class Importer {
     final listDef = (json['def'] as List? ?? []).cast<num?>();
     final listStat = (json[stat] as List? ?? []).cast<num?>();
 
-    const levels = [1, ..._asc, 90];
     final isPercent = stat != 'em';
     return info.copyWith(
-      ascHpValues: levels
-          .map((e) => _processPaimonMoeStat(listHp, e))
-          .whereType<String>()
-          .join(', '),
-      ascAtkValues: levels
-          .map((e) => _processPaimonMoeStat(listAtk, e))
-          .whereType<String>()
-          .join(', '),
-      ascDefValues: levels
-          .map((e) => _processPaimonMoeStat(listDef, e))
-          .whereType<String>()
-          .join(', '),
-      ascStatValues: levels
-          .map((e) => _processPaimonMoeStat(listStat, e, isPercent: isPercent))
-          .whereType<String>()
-          .join(', '),
+      ascHpValues: _processPaimonMoeStats(listHp),
+      ascAtkValues: _processPaimonMoeStats(listAtk),
+      ascDefValues: _processPaimonMoeStats(listDef),
+      ascStatValues: _processPaimonMoeStats(listStat, isPercent: isPercent),
     );
   }
 

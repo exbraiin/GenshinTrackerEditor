@@ -70,13 +70,22 @@ class GsItemFilter {
         color: (i) => GsStyle.getRarityColor(i.rarity),
         image: (i) => i.image,
       );
-  factory GsItemFilter.baseRecipes() => GsItemFilter._from(
-        Database.i.recipes.data.where((e) => e.baseRecipe.isNotEmpty),
-        (i) => i.id,
-        noneId: 'none',
-        title: (i) => i.name,
-        color: (i) => GsStyle.getRarityColor(i.rarity),
-      );
+  factory GsItemFilter.specialDishes({GsCharacter? character}) {
+    final allRecipes = Database.i.recipes.data;
+    var recipes = allRecipes.where((e) => e.baseRecipe.isNotEmpty);
+    if (character != null) {
+      final allChars = Database.i.characters.data;
+      final chars = allChars.where((e) => e.id != character.id);
+      recipes = recipes.where((e) => chars.all((c) => c.specialDish != e.id));
+    }
+    return GsItemFilter._from(
+      recipes,
+      (i) => i.id,
+      noneId: 'none',
+      title: (i) => i.name,
+      color: (i) => GsStyle.getRarityColor(i.rarity),
+    );
+  }
   factory GsItemFilter.nonBaseRecipes() => GsItemFilter._from(
         Database.i.recipes.data.where((e) => e.baseRecipe.isEmpty),
         (i) => i.id,

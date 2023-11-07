@@ -5,7 +5,6 @@ import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
-import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 
 class GsMaterialExt extends GsModelExt<GsMaterial> {
   const GsMaterialExt();
@@ -61,8 +60,7 @@ class GsMaterialExt extends GsModelExt<GsMaterial> {
         GeMaterialCategory.values.toChips(),
         (item) => item.group,
         (item, value) => item.copyWith(group: value),
-        validator: (item) =>
-            vdContains(item.group, GeMaterialCategory.values),
+        validator: (item) => vdContains(item.group, GeMaterialCategory.values),
       ),
       DataField.textField(
         'Subgroup',
@@ -82,27 +80,6 @@ class GsMaterialExt extends GsModelExt<GsMaterial> {
         (item) => item.image,
         (item, value) => item.copyWith(image: value),
         validator: (item) => vdImage(item.image),
-      ),
-      DataField.singleSelectOf<GsMaterial, List<GeWeekdays>>(
-        'Weekdays',
-        [
-          const GsSelectItem([], 'None'),
-          GsSelectItem(
-            [GeWeekdays.sunday, GeWeekdays.monday, GeWeekdays.thursday],
-            GeWeekdays.monday.id,
-          ),
-          GsSelectItem(
-            [GeWeekdays.sunday, GeWeekdays.tuesday, GeWeekdays.friday],
-            GeWeekdays.tuesday.id,
-          ),
-          GsSelectItem(
-            [GeWeekdays.sunday, GeWeekdays.wednesday, GeWeekdays.saturday],
-            GeWeekdays.wednesday.id,
-          ),
-        ],
-        (item) => item.weekdays,
-        (item, value) => item.copyWith(weekdays: value),
-        validator: (item) => _validateWeekdayGroup(item.weekdays),
       ),
       DataField.multiEnum<GsMaterial, GeWeekdays>(
         'Weekdays',
