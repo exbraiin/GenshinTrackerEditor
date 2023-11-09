@@ -204,7 +204,7 @@ class GsConfigs<T extends GsModel<T>> {
         DataButton(
           'Import stats from Paimon.moe',
           icon: _paimonMoeIcon,
-          (ctx, item) => Importer.importCharacterStatsFromPaimonMoe(item),
+          (ctx, item) => Importer.importCharacterInfoFromPaimonMoe(item),
         ),
       ],
       filters: [
@@ -522,7 +522,7 @@ class GsConfigs<T extends GsModel<T>> {
         DataButton(
           'Import stats from Paimon.moe',
           icon: _paimonMoeIcon,
-          (context, item) => Importer.importWeaponStatsFromPaimonMoe(item),
+          (context, item) => Importer.importWeaponInfoFromPaimonMoe(item),
         ),
       ],
       filters: [

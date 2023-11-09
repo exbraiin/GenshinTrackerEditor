@@ -151,7 +151,7 @@ abstract final class Importer {
         .join(', ');
   }
 
-  static Future<GsWeaponInfo> importWeaponStatsFromPaimonMoe(
+  static Future<GsWeaponInfo> importWeaponInfoFromPaimonMoe(
     GsWeaponInfo info,
   ) async {
     const url = 'https://raw.githubusercontent.com/MadeBaruna/'
@@ -164,15 +164,24 @@ abstract final class Importer {
 
     final listAtk = (json['atk'] as List? ?? []).cast<num?>();
     final listStat = (json['secondary']?['stats'] as List? ?? []).cast<num?>();
+    final stat = json['secondary']?['name'] as String? ?? '';
+    final isPercent = stat != 'em';
 
-    final isPercent = json['seconday']?['name'] != 'em';
+    final weaponStat = GeWeaponAscensionStatType.values.fromId(stat);
+    final skillName = json['skill']?['name'];
+    final skillDesc =
+        _getHtmlText(json['skill']?['description'] as String? ?? '');
+
     return info.copyWith(
+      effectName: skillName,
+      effectDesc: skillDesc,
+      ascStatType: weaponStat,
       ascAtkValues: _processPaimonMoeStats(listAtk),
       ascStatValues: _processPaimonMoeStats(listStat, isPercent: isPercent),
     );
   }
 
-  static Future<GsCharacterInfo> importCharacterStatsFromPaimonMoe(
+  static Future<GsCharacterInfo> importCharacterInfoFromPaimonMoe(
     GsCharacterInfo info,
   ) async {
     final url = 'https://raw.githubusercontent.com/MadeBaruna/'
@@ -180,14 +189,46 @@ abstract final class Importer {
     final responseJson = await _getUrl(url);
     final json = jsonDecode(responseJson) as Map;
 
-    final stat = json['statGrow'];
+    final stat = json['statGrow'] as String? ?? '';
     final listHp = (json['hp'] as List? ?? []).cast<num?>();
     final listAtk = (json['atk'] as List? ?? []).cast<num?>();
     final listDef = (json['def'] as List? ?? []).cast<num?>();
     final listStat = (json[stat] as List? ?? []).cast<num?>();
 
+    final iPassives = (json['passives'] as List).cast<JsonMap>();
+    final iTalents = {
+      GeCharacterTalentType.normalAttack: json['attack'] as JsonMap?,
+      GeCharacterTalentType.elementalSkill: json['elementalSkill'] as JsonMap?,
+      GeCharacterTalentType.alternateSprint: json['dashSkill'] as JsonMap?,
+      GeCharacterTalentType.elementalBurst: json['burst'] as JsonMap?,
+      GeCharacterTalentType.ascension1stPassive: iPassives.elementAtOrNull(0),
+      GeCharacterTalentType.ascension4thPassive: iPassives.elementAtOrNull(1),
+      GeCharacterTalentType.utilityPassive: iPassives.elementAtOrNull(2),
+    };
+
+    final talents = iTalents.entries.map((e) {
+      return GsCharTalent(
+        name: e.value?['name'] as String? ?? '',
+        desc: _getHtmlText(e.value?['description'] as String? ?? ''),
+        type: e.key.id,
+      );
+    }).toList();
+
+    final iConstellations = (json['constellations'] as List).cast<JsonMap>();
+    final constellations = List.generate(6, (idx) {
+      final cons = iConstellations[idx];
+      return GsCharConstellation(
+        name: cons['name'] as String? ?? '',
+        desc: _getHtmlText(cons['description'] as String? ?? ''),
+      );
+    }).toList();
+
+    final charStat = GeCharacterAscensionStatType.values.fromId(stat);
     final isPercent = stat != 'em';
     return info.copyWith(
+      ascStatType: charStat,
+      talents: talents,
+      constellations: constellations,
       ascHpValues: _processPaimonMoeStats(listHp),
       ascAtkValues: _processPaimonMoeStats(listAtk),
       ascDefValues: _processPaimonMoeStats(listDef),
@@ -377,4 +418,8 @@ String _processImage(String value) {
   final idx = value.indexOf('/revision');
   if (idx != -1) return value.substring(0, idx);
   return value;
+}
+
+String _getHtmlText(String value) {
+  return html.parse(value).body?.text ?? '';
 }
