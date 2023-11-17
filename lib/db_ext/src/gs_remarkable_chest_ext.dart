@@ -34,8 +34,7 @@ class GsRemarkableChestExt extends GsModelExt<GsRemarkableChest> {
         GeSereniteaSets.values.toChips(),
         (item) => item.type,
         (item, value) => item.copyWith(type: value),
-        validator: (item) =>
-            vdContains(item.type, GeSereniteaSets.values),
+        validator: (item) => vdContains(item.type, GeSereniteaSets.values),
       ),
       DataField.textImage(
         'Image',
@@ -61,12 +60,6 @@ class GsRemarkableChestExt extends GsModelExt<GsRemarkableChest> {
         (item) => GsItemFilter.regions().filters,
         (item, value) => item.copyWith(region: value),
         validator: (item) => vdContains(item.region, regions),
-      ),
-      DataField.textField(
-        'Source',
-        (item) => item.source,
-        (item, value) => item.copyWith(source: value),
-        validator: (item) => vdText(item.source),
       ),
       DataField.singleSelect(
         'Version',

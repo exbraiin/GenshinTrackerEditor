@@ -420,6 +420,5 @@ String _processImage(String value) {
   return value;
 }
 
-String _getHtmlText(String value) {
-  return html.parse(value).body?.text ?? '';
-}
+String _getHtmlText(String value) =>
+    (html.parse(value).body?.text ?? '').replaceAll('\\n', '\n');

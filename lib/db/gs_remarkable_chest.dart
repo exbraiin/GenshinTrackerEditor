@@ -10,7 +10,6 @@ class GsRemarkableChest extends GsModel<GsRemarkableChest> {
   final int rarity;
   final int energy;
   final String region;
-  final String source;
   final String version;
   final GeRmChestCategory category;
 
@@ -21,7 +20,6 @@ class GsRemarkableChest extends GsModel<GsRemarkableChest> {
     this.image = '',
     this.version = '',
     this.region = '',
-    this.source = '',
     this.category = GeRmChestCategory.animal,
     this.rarity = 1,
     this.energy = 0,
@@ -35,7 +33,6 @@ class GsRemarkableChest extends GsModel<GsRemarkableChest> {
         rarity = m.getInt('rarity', 1),
         energy = m.getInt('energy'),
         region = m.getString('region'),
-        source = m.getString('source'),
         version = m.getString('version'),
         category = GeRmChestCategory.values.fromId(m.getString('category'));
 
@@ -48,7 +45,6 @@ class GsRemarkableChest extends GsModel<GsRemarkableChest> {
     int? rarity,
     int? energy,
     String? region,
-    String? source,
     String? version,
     GeRmChestCategory? category,
   }) {
@@ -60,7 +56,6 @@ class GsRemarkableChest extends GsModel<GsRemarkableChest> {
       rarity: rarity ?? this.rarity,
       energy: energy ?? this.energy,
       region: region ?? this.region,
-      source: source ?? this.source,
       version: version ?? this.version,
       category: category ?? this.category,
     );
@@ -74,7 +69,6 @@ class GsRemarkableChest extends GsModel<GsRemarkableChest> {
         'rarity': rarity,
         'energy': energy,
         'region': region,
-        'source': source,
         'version': version,
         'category': category.id,
       };
