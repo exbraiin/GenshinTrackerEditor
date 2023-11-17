@@ -176,21 +176,25 @@ class GsItemFilter {
   factory GsItemFilter.drops(int? rarity, GeEnemyType? type) {
     bool isValidMat(GsMaterial mat) {
       late final matType = switch (mat.group) {
-        GeMaterialCategory.normalDrops => GeEnemyType.common,
-        GeMaterialCategory.eliteDrops => GeEnemyType.elite,
-        GeMaterialCategory.normalBossDrops => GeEnemyType.normalBoss,
-        GeMaterialCategory.weeklyBossDrops => GeEnemyType.weeklyBoss,
-        _ => null,
+        GeMaterialCategory.normalDrops => [GeEnemyType.common],
+        GeMaterialCategory.eliteDrops => [
+            GeEnemyType.common,
+            GeEnemyType.elite,
+          ],
+        GeMaterialCategory.normalBossDrops => [GeEnemyType.normalBoss],
+        GeMaterialCategory.weeklyBossDrops => [GeEnemyType.weeklyBoss],
+        _ => [],
       };
 
       return (rarity == null || mat.rarity == rarity) &&
-          (type == null || type == matType);
+          (type == null || matType.contains(type));
     }
 
     return GsItemFilter._from(
       Database.i.materials.data.where(isValidMat),
       (i) => i.id,
       title: (i) => i.name,
+      image: (i) => i.image,
       color: (i) => GsStyle.getRarityColor(i.rarity),
     );
   }

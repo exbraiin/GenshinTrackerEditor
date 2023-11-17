@@ -270,6 +270,32 @@ class GsConfigs<T extends GsModel<T>> {
         regionColor: GsStyle.getRegionElementColor(item.id),
       ),
     ),
+    GsEnemy: GsConfigs<GsEnemy>._(
+      title: 'Enemies',
+      getDecor: (item) => GsItemDecor(
+        label: item.name,
+        version: item.version,
+        color: GsStyle.getRarityColor(1),
+        image: item.image,
+      ),
+      filters: [
+        GsFieldFilter.fromFilter(
+          'Version',
+          GsItemFilter.versions(),
+          (i) => i.version,
+        ),
+        GsFieldFilter.fromEnum(
+          'Type',
+          GeEnemyType.values,
+          (i) => i.type.id,
+        ),
+        GsFieldFilter.fromEnum(
+          'Family',
+          GeEnemyFamily.values,
+          (i) => i.family.id,
+        ),
+      ],
+    ),
     GsMaterial: GsConfigs<GsMaterial>._(
       title: 'Materials',
       getDecor: (item) => GsItemDecor(
@@ -465,14 +491,6 @@ class GsConfigs<T extends GsModel<T>> {
           (i) => i.region,
         ),
       ],
-    ),
-    GsEnemy: GsConfigs<GsEnemy>._(
-      title: 'Enemies',
-      getDecor: (item) => GsItemDecor(
-        label: item.name,
-        version: item.version,
-        color: GsStyle.getRarityColor(1),
-      ),
     ),
     GsWeapon: GsConfigs<GsWeapon>._(
       title: 'Weapons',
