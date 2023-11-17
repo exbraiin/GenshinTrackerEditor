@@ -226,52 +226,30 @@ class Database {
     },
   );
 
-  GsCollection<R>? collectionOf<R extends GsModel<R>>() {
-    return switch (R) {
-      GsAchievementGroup => achievementGroups,
-      GsAchievement => achievements,
-      GsArtifact => artifacts,
-      GsBanner => banners,
-      GsCharacter => characters,
-      GsCharacterInfo => characterInfo,
-      GsCharacterOutfit => characterOutfit,
-      GsCity => cities,
-      GsEnemy => enemies,
-      GsMaterial => materials,
-      GsNamecard => namecards,
-      GsRecipe => recipes,
-      GsRemarkableChest => remarkableChests,
-      GsSerenitea => sereniteas,
-      GsSpincrystal => spincrystal,
-      GsVersion => versions,
-      GsViewpoint => viewpoints,
-      GsWeapon => weapons,
-      GsWeaponInfo => weaponInfo,
-      _ => null,
-    } as GsCollection<R>?;
-  }
+  GsCollection<R>? collectionOf<R extends GsModel<R>>() =>
+      _collections[R] as GsCollection<R>?;
 
-  List<GsCollection> get collections => [
-        achievementGroups,
-        achievements,
-        artifacts,
-        banners,
-        characters,
-        characterInfo,
-        characterOutfit,
-        cities,
-        enemies,
-        materials,
-        namecards,
-        recipes,
-        remarkableChests,
-        sereniteas,
-        spincrystal,
-        versions,
-        viewpoints,
-        weapons,
-        weaponInfo,
-      ];
+  Map<Type, GsCollection> get _collections => {
+        GsAchievementGroup: achievementGroups,
+        GsAchievement: achievements,
+        GsArtifact: artifacts,
+        GsBanner: banners,
+        GsCharacter: characters,
+        GsCharacterInfo: characterInfo,
+        GsCharacterOutfit: characterOutfit,
+        GsCity: cities,
+        GsEnemy: enemies,
+        GsMaterial: materials,
+        GsNamecard: namecards,
+        GsRecipe: recipes,
+        GsRemarkableChest: remarkableChests,
+        GsSerenitea: sereniteas,
+        GsSpincrystal: spincrystal,
+        GsVersion: versions,
+        GsViewpoint: viewpoints,
+        GsWeapon: weapons,
+        GsWeaponInfo: weaponInfo,
+      };
 
   Database._();
 
@@ -282,7 +260,7 @@ class Database {
   Future<bool> load() async {
     if (_loaded) return _loaded;
     _loaded = true;
-    await Future.wait(collections.map((e) => e.load()));
+    await Future.wait(_collections.values.map((e) => e.load()));
     await _updateAllDataValidators();
     modified.add(null);
     return _loaded;
@@ -292,7 +270,7 @@ class Database {
     if (!_loaded) return;
     if (saving.value) return;
     saving.add(true);
-    await Future.wait(collections.map((e) => e.save()));
+    await Future.wait(_collections.values.map((e) => e.save()));
     await _combine('src', 'data.json');
     saving.add(false);
   }
