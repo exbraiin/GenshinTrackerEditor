@@ -260,6 +260,7 @@ class Database {
         characterInfo,
         characterOutfit,
         cities,
+        enemies,
         materials,
         namecards,
         recipes,
