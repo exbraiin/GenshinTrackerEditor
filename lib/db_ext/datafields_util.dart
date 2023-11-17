@@ -172,4 +172,26 @@ class GsItemFilter {
         title: (i) => i.name,
         color: (i) => GsStyle.getRarityColor(i.rarity),
       );
+
+  factory GsItemFilter.drops(int? rarity, GeEnemyType? type) {
+    bool isValidMat(GsMaterial mat) {
+      late final matType = switch (mat.group) {
+        GeMaterialCategory.normalDrops => GeEnemyType.common,
+        GeMaterialCategory.eliteDrops => GeEnemyType.elite,
+        GeMaterialCategory.normalBossDrops => GeEnemyType.normalBoss,
+        GeMaterialCategory.weeklyBossDrops => GeEnemyType.weeklyBoss,
+        _ => null,
+      };
+
+      return (rarity == null || mat.rarity == rarity) &&
+          (type == null || type == matType);
+    }
+
+    return GsItemFilter._from(
+      Database.i.materials.data.where(isValidMat),
+      (i) => i.id,
+      title: (i) => i.name,
+      color: (i) => GsStyle.getRarityColor(i.rarity),
+    );
+  }
 }

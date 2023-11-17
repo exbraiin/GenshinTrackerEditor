@@ -12,6 +12,7 @@ export 'src/gs_character_ext.dart';
 export 'src/gs_character_info_ext.dart';
 export 'src/gs_character_outfit_ext.dart';
 export 'src/gs_city_ext.dart';
+export 'src/gs_enemy_ext.dart';
 export 'src/gs_material_ext.dart';
 export 'src/gs_namecard_ext.dart';
 export 'src/gs_recipe_ext.dart';

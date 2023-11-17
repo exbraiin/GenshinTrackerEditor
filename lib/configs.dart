@@ -466,6 +466,14 @@ class GsConfigs<T extends GsModel<T>> {
         ),
       ],
     ),
+    GsEnemy: GsConfigs<GsEnemy>._(
+      title: 'Enemies',
+      getDecor: (item) => GsItemDecor(
+        label: item.name,
+        version: item.version,
+        color: GsStyle.getRarityColor(1),
+      ),
+    ),
     GsWeapon: GsConfigs<GsWeapon>._(
       title: 'Weapons',
       getDecor: (item) => GsItemDecor(

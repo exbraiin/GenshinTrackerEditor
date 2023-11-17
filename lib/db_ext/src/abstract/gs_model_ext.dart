@@ -15,6 +15,7 @@ abstract class GsModelExt<T extends GsModel<T>> {
       GsCharacterInfo => const GsCharacterInfoExt(),
       GsCharacterOutfit => const GsCharacterOutfitExt(),
       GsCity => const GsCityExt(),
+      GsEnemy => const GsEnemyExt(),
       GsMaterial => const GsMaterialExt(),
       GsNamecard => const GsNamecardExt(),
       GsRecipe => const GsRecipeExt(),

@@ -274,6 +274,34 @@ enum GeCharacterModelType implements GeEnum {
   const GeCharacterModelType(this.id);
 }
 
+enum GeEnemyType implements GeEnum {
+  none('none'),
+  common('common'),
+  elite('elite'),
+  normalBoss('normal_boss'),
+  weeklyBoss('weekly_boss');
+
+  @override
+  final String id;
+  const GeEnemyType(this.id);
+}
+
+enum GeEnemyFamily implements GeEnum {
+  none('none'),
+  elemetalLifeform('elemental_lifeform'),
+  hilichurl('hilichurl'),
+  abyss('abyss'),
+  fatui('fatui'),
+  automaton('automaton'),
+  humanFaction('human_faction'),
+  mysticalBeast('mystical_beast'),
+  weeklyBoss('weekly_boss');
+
+  @override
+  final String id;
+  const GeEnemyFamily(this.id);
+}
+
 extension GeEnumListExt<T extends GeEnum> on List<T> {
   T fromId(String id) => firstOrNullWhere((e) => e.id == id) ?? first;
 

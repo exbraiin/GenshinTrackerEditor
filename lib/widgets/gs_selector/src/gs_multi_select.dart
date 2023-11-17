@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:flutter/material.dart';
 
@@ -36,8 +37,13 @@ class GsMultiSelect<T> extends StatelessWidget {
                 spacing: 6,
                 runSpacing: 6,
                 children: selected
-                    .map((item) => items.firstWhere((e) => e.value == item))
-                    .map((e) => GsSelectChip(e, disableImage: true))
+                    .map((i) => items.firstOrNullWhere((e) => e.value == i))
+                    .map(
+                      (e) => e != null
+                          ? GsSelectChip(e, disableImage: true)
+                          : null,
+                    )
+                    .whereType<GsSelectChip>()
                     .toList(),
               ),
       ),
