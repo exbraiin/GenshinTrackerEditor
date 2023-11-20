@@ -47,12 +47,24 @@ class GsEnemyExt extends GsModelExt<GsEnemy> {
         (item, value) => item.copyWith(fullImage: value),
         validator: (item) => vdImage(item.fullImage),
       ),
+      DataField.textImage(
+        'Splash Image',
+        (item) => item.splashImage,
+        (item, value) => item.copyWith(splashImage: value),
+        validator: (item) => vdImage(item.splashImage, GsValidLevel.warn1),
+      ),
       DataField.singleSelect(
         'Version',
         (item) => item.version,
         (item) => GsItemFilter.versions().filters,
         (item, value) => item.copyWith(version: value),
         validator: (item) => vdContains(item.version, versions),
+      ),
+      DataField.textField(
+        'Order',
+        (item) => item.order.toString(),
+        (item, value) => item.copyWith(order: int.tryParse(value) ?? -1),
+        validator: (item) => vdNum(item.order, 1),
       ),
       DataField.singleEnum(
         'Type',

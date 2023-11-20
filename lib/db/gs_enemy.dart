@@ -8,7 +8,9 @@ class GsEnemy extends GsModel<GsEnemy> {
   final String title;
   final String image;
   final String fullImage;
+  final String splashImage;
   final String version;
+  final int order;
   final GeEnemyType type;
   final GeEnemyFamily family;
   final List<String> drops;
@@ -19,7 +21,9 @@ class GsEnemy extends GsModel<GsEnemy> {
     this.title = '',
     this.image = '',
     this.fullImage = '',
+    this.splashImage = '',
     this.version = '',
+    this.order = 0,
     this.drops = const [],
     this.type = GeEnemyType.none,
     this.family = GeEnemyFamily.none,
@@ -31,7 +35,9 @@ class GsEnemy extends GsModel<GsEnemy> {
         title = m.getString('title'),
         image = m.getString('image'),
         fullImage = m.getString('full_image'),
+        splashImage = m.getString('splash_image'),
         version = m.getString('version'),
+        order = m.getInt('order'),
         drops = m.getStringList('drops'),
         type = GeEnemyType.values.fromId(m.getString('type')),
         family = GeEnemyFamily.values.fromId(m.getString('family'));
@@ -43,7 +49,9 @@ class GsEnemy extends GsModel<GsEnemy> {
     String? title,
     String? image,
     String? fullImage,
+    String? splashImage,
     String? version,
+    int? order,
     List<String>? drops,
     GeEnemyType? type,
     GeEnemyFamily? family,
@@ -54,7 +62,9 @@ class GsEnemy extends GsModel<GsEnemy> {
       title: title ?? this.title,
       image: image ?? this.image,
       fullImage: fullImage ?? this.fullImage,
+      splashImage: splashImage ?? this.splashImage,
       version: version ?? this.version,
+      order: order ?? this.order,
       type: type ?? this.type,
       drops: drops ?? this.drops,
       family: family ?? this.family,
@@ -68,7 +78,9 @@ class GsEnemy extends GsModel<GsEnemy> {
         'title': title,
         'image': image,
         'full_image': fullImage,
+        'splash_image': splashImage,
         'version': version,
+        'order': order,
         'drops': drops,
         'type': type.id,
         'family': family.id,

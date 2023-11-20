@@ -45,6 +45,7 @@ class GsConfigs<T extends GsModel<T>> {
           version: item.version,
           image: item.icon,
           color: GsStyle.getRarityColor(4),
+          child: _orderItem(item.order),
         );
       },
       filters: [
@@ -277,6 +278,7 @@ class GsConfigs<T extends GsModel<T>> {
         version: item.version,
         color: GsStyle.getRarityColor(1),
         image: item.image,
+        child: _orderItem(item.order),
       ),
       filters: [
         GsFieldFilter.fromFilter(
@@ -638,4 +640,39 @@ class GsConfigs<T extends GsModel<T>> {
       ),
     );
   }
+}
+
+Widget _orderItem(int order) {
+  return Positioned(
+    right: 2,
+    bottom: 2,
+    child: Container(
+      width: 24,
+      height: 24,
+      alignment: Alignment.center,
+      padding: const EdgeInsets.fromLTRB(2, 1, 2, 0),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black),
+        borderRadius: BorderRadius.circular(20),
+        gradient: LinearGradient(
+          colors: [
+            Color.lerp(Colors.black, Colors.white, 0.4)!,
+            Color.lerp(Colors.black, Colors.black, 0.4)!,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(
+          order.toString(),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    ),
+  );
 }

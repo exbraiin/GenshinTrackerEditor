@@ -67,6 +67,7 @@ class DataValidator {
       process(db.characterInfo.data),
       process(db.characterOutfit.data),
       process(db.cities.data),
+      process(db.enemies.data),
       process(db.materials.data),
       process(db.namecards.data),
       process(db.recipes.data),

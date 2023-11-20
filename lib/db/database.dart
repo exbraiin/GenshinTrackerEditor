@@ -148,6 +148,7 @@ class Database {
     GsEnemy.fromMap,
     sorted: (list) => list
         .sortedBy((element) => element.family.index)
+        .thenBy((element) => element.order)
         .thenBy((element) => element.type.index)
         .thenBy((element) => element.name),
   );
