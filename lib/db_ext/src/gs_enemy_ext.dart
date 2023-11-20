@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
@@ -65,6 +66,17 @@ class GsEnemyExt extends GsModelExt<GsEnemy> {
         (item) => item.order.toString(),
         (item, value) => item.copyWith(order: int.tryParse(value) ?? -1),
         validator: (item) => vdNum(item.order, 1),
+        refresh: DataButton(
+          'Next Order in Family',
+          (context, item) {
+            final lastOrder = Database.i.enemies.data
+                .where((element) => element.family == item.family)
+                .sortedBy((element) => element.order)
+                .lastOrNull
+                ?.order;
+            return item.copyWith(order: (lastOrder ?? 0) + 1);
+          },
+        ),
       ),
       DataField.singleEnum(
         'Type',
