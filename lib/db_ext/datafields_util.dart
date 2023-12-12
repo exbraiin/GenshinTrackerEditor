@@ -40,6 +40,9 @@ class GsItemFilter {
   factory GsItemFilter.artifactPieces() =>
       GsItemFilter._from(GeArtifactPieces.values, (i) => i.id);
 
+  factory GsItemFilter.eventType() =>
+      GsItemFilter._from(GeEventType.values, (i) => i.id);
+
   // ----- DATABASE ------------------------------------------------------------
 
   factory GsItemFilter.rarities([int min = 1]) => GsItemFilter._from(

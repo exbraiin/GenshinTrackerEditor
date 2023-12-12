@@ -13,6 +13,7 @@ export 'src/gs_character_info_ext.dart';
 export 'src/gs_character_outfit_ext.dart';
 export 'src/gs_city_ext.dart';
 export 'src/gs_enemy_ext.dart';
+export 'src/gs_event_ext.dart';
 export 'src/gs_material_ext.dart';
 export 'src/gs_namecard_ext.dart';
 export 'src/gs_recipe_ext.dart';
@@ -76,6 +77,7 @@ class DataValidator {
       process(db.spincrystal.data),
       process(db.versions.data),
       process(db.viewpoints.data),
+      process(db.events.data),
       process(db.weapons.data),
       process(db.weaponInfo.data),
     ]);

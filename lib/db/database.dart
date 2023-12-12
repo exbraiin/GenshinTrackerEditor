@@ -12,6 +12,7 @@ import 'package:data_editor/db/gs_character_info.dart';
 import 'package:data_editor/db/gs_character_outfit.dart';
 import 'package:data_editor/db/gs_city.dart';
 import 'package:data_editor/db/gs_enemy.dart';
+import 'package:data_editor/db/gs_event.dart';
 import 'package:data_editor/db/gs_material.dart';
 import 'package:data_editor/db/gs_namecard.dart';
 import 'package:data_editor/db/gs_recipe.dart';
@@ -38,6 +39,7 @@ export 'package:data_editor/db/gs_character_info.dart';
 export 'package:data_editor/db/gs_character_outfit.dart';
 export 'package:data_editor/db/gs_city.dart';
 export 'package:data_editor/db/gs_enemy.dart';
+export 'package:data_editor/db/gs_event.dart';
 export 'package:data_editor/db/gs_material.dart';
 export 'package:data_editor/db/gs_namecard.dart';
 export 'package:data_editor/db/gs_recipe.dart';
@@ -211,6 +213,12 @@ class Database {
         .thenBy((element) => element.version)
         .thenBy((element) => element.name),
   );
+  final events = GsCollection(
+    'src/events.json',
+    GsEvent.fromMap,
+    sorted: (list) =>
+        list.sortedBy((e) => DateTime.tryParse(e.dateStart) ?? DateTime(0)),
+  );
   final weapons = GsCollection(
     'src/weapons.json',
     GsWeapon.fromMap,
@@ -248,6 +256,7 @@ class Database {
         GsSpincrystal: spincrystal,
         GsVersion: versions,
         GsViewpoint: viewpoints,
+        GsEvent: events,
         GsWeapon: weapons,
         GsWeaponInfo: weaponInfo,
       };

@@ -24,6 +24,7 @@ abstract class GsModelExt<T extends GsModel<T>> {
       GsSpincrystal => const GsSpincrystalExt(),
       GsVersion => const GsVersionExt(),
       GsViewpoint => const GsViewpointExt(),
+      GsEvent => const GsEventExt(),
       GsWeapon => const GsWeaponExt(),
       GsWeaponInfo => const GsWeaponInfoExt(),
       _ => null,
