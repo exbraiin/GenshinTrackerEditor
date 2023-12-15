@@ -150,7 +150,10 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         (item) => item.specialDish,
         (item) => GsItemFilter.specialDishes(character: item).filters,
         (item, value) => item.copyWith(specialDish: value),
-        validator: (item) => vdContains(item.specialDish, recipes),
+        validator: (item) {
+          if (item.specialDish == '') return GsValidLevel.warn2;
+          return vdContains(item.specialDish, recipes);
+        },
       ),
       DataField.textField(
         'Birthday',
