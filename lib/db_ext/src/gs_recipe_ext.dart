@@ -11,7 +11,7 @@ class GsRecipeExt extends GsModelExt<GsRecipe> {
   @override
   List<DataField<GsRecipe>> getFields(GsRecipe? model) {
     final ids = Database.i.recipes.data.map((e) => e.id);
-    final baseRecipes = GsItemFilter.nonBaseRecipes().ids;
+    final baseRecipes = GsItemFilter.nonBaseRecipes(model).ids;
     final versions = GsItemFilter.versions().ids;
 
     return [
@@ -81,7 +81,7 @@ class GsRecipeExt extends GsModelExt<GsRecipe> {
       DataField.singleSelect(
         'Base Recipe',
         (item) => item.baseRecipe,
-        (item) => GsItemFilter.nonBaseRecipes().filters,
+        (item) => GsItemFilter.nonBaseRecipes(model).filters,
         (item, value) => item.copyWith(baseRecipe: value),
         validator: (item) => vdContains(item.baseRecipe, baseRecipes),
       ),

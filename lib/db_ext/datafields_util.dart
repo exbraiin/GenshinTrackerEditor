@@ -89,13 +89,20 @@ class GsItemFilter {
       color: (i) => GsStyle.getRarityColor(i.rarity),
     );
   }
-  factory GsItemFilter.nonBaseRecipes() => GsItemFilter._from(
-        Database.i.recipes.data.where((e) => e.baseRecipe.isEmpty),
-        (i) => i.id,
-        noneId: '',
-        title: (i) => i.name,
-        color: (i) => GsStyle.getRarityColor(i.rarity),
-      );
+  factory GsItemFilter.nonBaseRecipes([GsRecipe? recipe]) {
+    final items = Database.i.recipes.data;
+    return GsItemFilter._from(
+      items.where((e) => e.baseRecipe.isEmpty).where(
+            (e) =>
+                recipe?.baseRecipe == e.id ||
+                !items.any((t) => t.baseRecipe == e.id),
+          ),
+      (i) => i.id,
+      noneId: '',
+      title: (i) => i.name,
+      color: (i) => GsStyle.getRarityColor(i.rarity),
+    );
+  }
   factory GsItemFilter.achievementGroups() => GsItemFilter._from(
         Database.i.achievementGroups.data,
         (i) => i.id,
