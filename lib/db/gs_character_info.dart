@@ -49,29 +49,9 @@ class GsCharacterInfo extends GsModel<GsCharacterInfo> {
         ascAtkValues = m.getString('asc_atk_values'),
         ascDefValues = m.getString('asc_def_values'),
         ascStatValues = m.getString('asc_stat_values'),
-        talents = _decodeTalents(m),
-        constellations = _decodeConstellations(m);
-
-  static List<GsCharTalent> _decodeTalents(JsonMap map) {
-    final list = (map['talents'] as List? ?? [])
-        .cast<JsonMap>()
-        .map(GsCharTalent.fromMap)
-        .toList();
-    return GeCharacterTalentType.values.map((e) {
-      return list.firstWhere(
-        (element) => element.type == e.id,
-        orElse: () => GsCharTalent(type: e.id),
-      );
-    }).toList();
-  }
-
-  static List<GsCharConstellation> _decodeConstellations(JsonMap map) {
-    final list = map['constellations'] as List?;
-    if (list == null) {
-      return List.generate(6, (idx) => GsCharConstellation());
-    }
-    return list.cast<JsonMap>().map(GsCharConstellation.fromMap).toList();
-  }
+        talents = m.getListOf('talents', GsCharTalent.fromMap),
+        constellations =
+            m.getListOf('constellations', GsCharConstellation.fromMap);
 
   @override
   GsCharacterInfo copyWith({
@@ -131,29 +111,29 @@ class GsCharacterInfo extends GsModel<GsCharacterInfo> {
 
 class GsCharTalent extends GsModel<GsCharTalent> {
   @override
-  String get id => type;
+  String get id => type.id;
   final String name;
-  final String type;
+  final GeCharacterTalentType type;
   final String icon;
   final String desc;
 
   GsCharTalent({
     this.name = '',
-    this.type = '',
+    this.type = GeCharacterTalentType.normalAttack,
     this.icon = '',
     this.desc = '',
   });
 
   GsCharTalent.fromMap(JsonMap m)
-      : name = m['name'] ?? '',
-        type = m['type'] ?? '',
-        icon = m['icon'] ?? '',
-        desc = m['desc'] ?? '';
+      : name = m.getString('name'),
+        type = GeCharacterTalentType.values.fromId(m.getString('type')),
+        icon = m.getString('icon'),
+        desc = m.getString('desc');
 
   @override
   JsonMap toJsonMap() => {
         'name': name,
-        'type': type,
+        'type': type.id,
         'icon': icon,
         'desc': desc,
       };
@@ -161,7 +141,7 @@ class GsCharTalent extends GsModel<GsCharTalent> {
   @override
   GsCharTalent copyWith({
     String? name,
-    String? type,
+    GeCharacterTalentType? type,
     String? icon,
     String? desc,
   }) {
@@ -176,43 +156,45 @@ class GsCharTalent extends GsModel<GsCharTalent> {
 
 class GsCharConstellation extends GsModel<GsCharConstellation> {
   @override
-  final String id;
+  String get id => type.id;
   final String name;
   final String icon;
   final String desc;
+  final GeCharacterConstellationType type;
 
   GsCharConstellation({
-    this.id = '',
     this.name = '',
     this.icon = '',
     this.desc = '',
+    this.type = GeCharacterConstellationType.c1,
   });
 
   @override
   GsCharConstellation copyWith({
-    String? id,
     String? name,
     String? icon,
     String? desc,
+    GeCharacterConstellationType? type,
   }) {
     return GsCharConstellation(
-      id: id ?? this.id,
       name: name ?? this.name,
       icon: icon ?? this.icon,
       desc: desc ?? this.desc,
+      type: type ?? this.type,
     );
   }
 
   GsCharConstellation.fromMap(JsonMap m)
-      : id = m.getString('id'),
-        name = m.getString('name'),
+      : name = m.getString('name'),
         icon = m.getString('icon'),
-        desc = m.getString('desc');
+        desc = m.getString('desc'),
+        type = GeCharacterConstellationType.values.fromId(m.getString('type'));
 
   @override
   JsonMap toJsonMap() => {
         'name': name,
         'icon': icon,
         'desc': desc,
+        'type': type.id,
       };
 }

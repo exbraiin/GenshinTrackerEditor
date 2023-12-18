@@ -43,6 +43,12 @@ class GsItemFilter {
   factory GsItemFilter.eventType() =>
       GsItemFilter._from(GeEventType.values, (i) => i.id);
 
+  factory GsItemFilter.talents() =>
+      GsItemFilter._from(GeCharacterTalentType.values, (i) => i.id);
+
+  factory GsItemFilter.constellations() =>
+      GsItemFilter._from(GeCharacterConstellationType.values, (i) => i.id);
+
   // ----- DATABASE ------------------------------------------------------------
 
   factory GsItemFilter.rarities([int min = 1]) => GsItemFilter._from(

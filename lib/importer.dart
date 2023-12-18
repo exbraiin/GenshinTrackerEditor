@@ -210,7 +210,7 @@ abstract final class Importer {
       return GsCharTalent(
         name: e.value?['name'] as String? ?? '',
         desc: _getHtmlText(e.value?['description'] as String? ?? ''),
-        type: e.key.id,
+        type: e.key,
       );
     }).toList();
 
@@ -219,6 +219,7 @@ abstract final class Importer {
       final cons = iConstellations[idx];
       return GsCharConstellation(
         name: cons['name'] as String? ?? '',
+        type: GeCharacterConstellationType.values[idx],
         desc: _getHtmlText(cons['description'] as String? ?? ''),
       );
     }).toList();
