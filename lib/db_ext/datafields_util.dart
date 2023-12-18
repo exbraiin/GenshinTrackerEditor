@@ -89,13 +89,9 @@ class GsItemFilter {
       color: (i) => GsStyle.getRarityColor(i.rarity),
     );
   }
-  factory GsItemFilter.nonBaseRecipes([GsRecipe? recipe]) {
+  factory GsItemFilter.nonBaseRecipes() {
     final allRecipes = Database.i.recipes.data;
-    var recipes = allRecipes.where((e) => e.baseRecipe.isEmpty);
-    if (recipe != null) {
-      final rc = allRecipes.where((e) => e.id != recipe.id);
-      recipes = recipes.where((e) => rc.all((t) => t.baseRecipe != e.id));
-    }
+    final recipes = allRecipes.where((e) => e.baseRecipe.isEmpty);
     return GsItemFilter._from(
       recipes,
       (i) => i.id,

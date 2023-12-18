@@ -62,8 +62,7 @@ class GsRecipeExt extends GsModelExt<GsRecipe> {
         GeRecipeEffectType.values.toChips(),
         (item) => item.effect,
         (item, value) => item.copyWith(effect: value),
-        validator: (item) =>
-            vdContains(item.effect, GeRecipeEffectType.values),
+        validator: (item) => vdContains(item.effect, GeRecipeEffectType.values),
       ),
       DataField.textField(
         'Desc',
@@ -81,7 +80,7 @@ class GsRecipeExt extends GsModelExt<GsRecipe> {
       DataField.singleSelect(
         'Base Recipe',
         (item) => item.baseRecipe,
-        (item) => GsItemFilter.nonBaseRecipes(model).filters,
+        (item) => GsItemFilter.nonBaseRecipes().filters,
         (item, value) => item.copyWith(baseRecipe: value),
         validator: (item) => vdContains(item.baseRecipe, baseRecipes),
       ),
