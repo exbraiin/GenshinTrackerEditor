@@ -11,7 +11,7 @@ class GsRecipeExt extends GsModelExt<GsRecipe> {
   @override
   List<DataField<GsRecipe>> getFields(GsRecipe? model) {
     final ids = Database.i.recipes.data.map((e) => e.id);
-    final baseRecipes = GsItemFilter.nonBaseRecipes(model).ids;
+    final baseRecipes = GsItemFilter.nonBaseRecipes().ids;
     final versions = GsItemFilter.versions().ids;
 
     return [

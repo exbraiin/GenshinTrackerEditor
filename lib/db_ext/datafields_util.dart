@@ -90,13 +90,14 @@ class GsItemFilter {
     );
   }
   factory GsItemFilter.nonBaseRecipes([GsRecipe? recipe]) {
-    final items = Database.i.recipes.data;
+    final allRecipes = Database.i.recipes.data;
+    var recipes = allRecipes.where((e) => e.baseRecipe.isEmpty);
+    if (recipe != null) {
+      final rc = allRecipes.where((e) => e.id != recipe.id);
+      recipes = recipes.where((e) => rc.all((t) => t.baseRecipe != e.id));
+    }
     return GsItemFilter._from(
-      items.where((e) => e.baseRecipe.isEmpty).where(
-            (e) =>
-                recipe?.baseRecipe == e.id ||
-                !items.any((t) => t.baseRecipe == e.id),
-          ),
+      recipes,
       (i) => i.id,
       noneId: '',
       title: (i) => i.name,
