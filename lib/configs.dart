@@ -118,7 +118,7 @@ class GsConfigs<T extends GsModel<T>> {
         GsFieldFilter.fromFilter(
           'Region',
           GsItemFilter.regions(),
-          (i) => i.region,
+          (i) => i.region.id,
         ),
       ],
     ),
@@ -131,7 +131,7 @@ class GsConfigs<T extends GsModel<T>> {
                 Database.i.of<GsWeapon>().getItem(data)?.image
             : null;
         return GsItemDecor(
-          label: '${item.name}\n${item.dateStart}',
+          label: '${item.name}\n${item.dateStart.toString().split(' ').first}',
           image: image,
           version: item.version,
           color: item.type.color,
@@ -175,7 +175,7 @@ class GsConfigs<T extends GsModel<T>> {
         GsFieldFilter.fromFilter(
           'Region',
           GsItemFilter.regions(),
-          (i) => i.region,
+          (i) => i.region.id,
         ),
         GsFieldFilter.fromFilter(
           'Rarity',
@@ -203,7 +203,8 @@ class GsConfigs<T extends GsModel<T>> {
           image: char?.image,
           version: char?.version ?? '',
           color: GsStyle.getRarityColor(char?.rarity ?? 0),
-          regionColor: GsStyle.getRegionElementColor(char?.region ?? ''),
+          regionColor:
+              GsStyle.getRegionElementColor(char?.region ?? GeRegionType.none),
         );
       },
       import: [
@@ -227,13 +228,14 @@ class GsConfigs<T extends GsModel<T>> {
         GsFieldFilter.fromFilter(
           'Region',
           GsItemFilter.regions(),
-          (i) => Database.i.of<GsCharacter>().getItem(i.id)?.region ?? '',
+          (i) => Database.i.of<GsCharacter>().getItem(i.id)?.region.id ?? '',
         ),
         GsFieldFilter.fromFilter(
           'Rarity',
           GsItemFilter.rarities(4),
           (i) =>
-              Database.i.of<GsCharacter>().getItem(i.id)?.rarity.toString() ?? '',
+              Database.i.of<GsCharacter>().getItem(i.id)?.rarity.toString() ??
+              '',
         ),
         GsFieldFilter.fromEnum(
           'Element',
@@ -256,7 +258,8 @@ class GsConfigs<T extends GsModel<T>> {
           image: char?.image,
           version: item.version,
           color: GsStyle.getRarityColor(item.rarity),
-          regionColor: GsStyle.getRegionElementColor(char?.region ?? ''),
+          regionColor:
+              GsStyle.getRegionElementColor(char?.region ?? GeRegionType.none),
         );
       },
       filters: [
@@ -279,7 +282,8 @@ class GsConfigs<T extends GsModel<T>> {
         image: item.image,
         version: '',
         color: item.element.color,
-        regionColor: GsStyle.getRegionElementColor(item.id),
+        regionColor:
+            GsStyle.getRegionElementColor(GeRegionType.values.fromId(item.id)),
       ),
     ),
     GsEnemy: GsConfigs<GsEnemy>._(
@@ -332,7 +336,7 @@ class GsConfigs<T extends GsModel<T>> {
         GsFieldFilter.fromFilter(
           'Region',
           GsItemFilter.regions(),
-          (i) => i.region,
+          (i) => i.region.id,
         ),
         GsFieldFilter.fromEnum(
           'Group',
@@ -429,7 +433,7 @@ class GsConfigs<T extends GsModel<T>> {
         GsFieldFilter.fromFilter(
           'Region',
           GsItemFilter.regions(),
-          (i) => i.region,
+          (i) => i.region.id,
         ),
         GsFieldFilter.fromEnum(
           'Type',
@@ -475,7 +479,7 @@ class GsConfigs<T extends GsModel<T>> {
         GsFieldFilter.fromFilter(
           'Region',
           GsItemFilter.regions(),
-          (i) => i.region,
+          (i) => i.region.id,
         ),
       ],
     ),
@@ -496,7 +500,7 @@ class GsConfigs<T extends GsModel<T>> {
         GsFieldFilter.fromFilter(
           'Region',
           GsItemFilter.regions(),
-          (i) => i.region,
+          (i) => i.region.id,
         ),
       ],
     ),
@@ -576,7 +580,8 @@ class GsConfigs<T extends GsModel<T>> {
         GsFieldFilter.fromFilter(
           'Rarity',
           GsItemFilter.rarities(),
-          (i) => Database.i.of<GsWeapon>().getItem(i.id)?.rarity.toString() ?? '',
+          (i) =>
+              Database.i.of<GsWeapon>().getItem(i.id)?.rarity.toString() ?? '',
         ),
         GsFieldFilter.fromEnum(
           'Type',

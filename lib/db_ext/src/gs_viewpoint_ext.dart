@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
@@ -35,12 +36,12 @@ class GsViewpointExt extends GsModelExt<GsViewpoint> {
         (item, value) => item.copyWith(desc: value),
         validator: (item) => vdText(item.desc),
       ),
-      DataField.singleSelect(
+      DataField.singleEnum(
         'Region',
+        GeRegionType.values.toChips(),
         (item) => item.region,
-        (item) => GsItemFilter.regions().filters,
         (item, value) => item.copyWith(region: value),
-        validator: (item) => vdContains(item.region, regions),
+        validator: (item) => vdContains(item.region.id, regions),
       ),
       DataField.singleSelect(
         'Version',

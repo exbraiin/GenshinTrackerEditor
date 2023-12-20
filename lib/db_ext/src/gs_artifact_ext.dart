@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
@@ -44,12 +45,12 @@ class GsArtifactExt extends GsModelExt<GsArtifact> {
         (item, value) => item.copyWith(rarity: value),
         validator: (item) => vdRarity(item.rarity),
       ),
-      DataField.singleSelect(
+      DataField.singleEnum(
         'Region',
+        GeRegionType.values.toChips(),
         (item) => item.region,
-        (item) => GsItemFilter.regions().filters,
         (item, value) => item.copyWith(region: value),
-        validator: (item) => vdContains(item.region, regions),
+        validator: (item) => vdContains(item.region.id, regions),
       ),
       DataField.textField(
         'Piece 1',

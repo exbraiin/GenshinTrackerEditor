@@ -170,6 +170,20 @@ class DataField<T extends GsModel<T>> {
               ),
             ));
 
+  static DataField<T> dateTime<T extends GsModel<T>>(
+    String label,
+    DateTime Function(T item) content,
+    T Function(T item, DateTime value) update, {
+    required DValidator<T> validator,
+  }) {
+    return DataField.textField(
+      label,
+      (item) => content(item).toString().split(' ').firstOrNull ?? '',
+      (item, value) => update(item, DateTime.tryParse(value) ?? DateTime(0)),
+      validator: validator,
+    );
+  }
+
   static DataField<T> textList<T extends GsModel<T>>(
     String label,
     String Function(T item) content,

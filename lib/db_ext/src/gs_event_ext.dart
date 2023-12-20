@@ -49,13 +49,13 @@ class GsEventExt extends GsModelExt<GsEvent> {
         (item, value) => item.copyWith(version: value),
         validator: (item) => vdContains(item.version, versions),
       ),
-      DataField.textField(
+      DataField.dateTime(
         'Date Start',
         (item) => item.dateStart,
         (item, value) => item.copyWith(dateStart: value),
         validator: (item) => vdDates(item.dateStart, item.dateEnd),
       ),
-      DataField.textField(
+      DataField.dateTime(
         'Date End',
         (item) => item.dateEnd,
         (item, value) => item.copyWith(dateEnd: value),

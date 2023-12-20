@@ -305,7 +305,7 @@ abstract final class Importer {
     const releaseSel = 'div[data-source="releaseDate"] div';
     final release = document.querySelector(releaseSel)?.text;
 
-    String parseDate(String value) {
+    DateTime parseDate(String value) {
       const months = [
         ...['january', 'february', 'march', 'april', 'may', 'june'],
         ...['july', 'august', 'september', 'october', 'november', 'december'],
@@ -322,7 +322,7 @@ abstract final class Importer {
       year = year?.characters.takeWhile((e) => e.isInt).take(4).join();
       year = year?.padLeft(4, '0') ?? '0000';
 
-      return '$year-$month-$day';
+      return DateTime.tryParse('$year-$month-$day') ?? DateTime(0);
     }
 
     return item.copyWith(
@@ -330,8 +330,8 @@ abstract final class Importer {
       name: name,
       rarity: rarityInt,
       title: title,
-      region: region?.toDbId(),
-      weapon: GeWeaponType.values.fromId(weapon?.toDbId() ?? ''),
+      region: GeRegionType.values.fromId(region?.toDbId()),
+      weapon: GeWeaponType.values.fromId(weapon?.toDbId()),
       element: GeElementType.values.fromId(element.toDbId()),
       releaseDate: release != null ? parseDate(release) : null,
       constellation: constellation,

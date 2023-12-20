@@ -2,7 +2,7 @@ import 'package:dartx/dartx.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/style/utils.dart';
-import 'package:gsdatabase/gsdatabase.dart';
+import 'package:gsdatabase/gsdatabase.dart' hide GsRecipeExt, GsSpincrystalExt;
 
 abstract class GsModelExt<T extends GsModel<T>> {
   static GsModelExt<R>? of<R extends GsModel<R>>() {
@@ -24,7 +24,7 @@ abstract class GsModelExt<T extends GsModel<T>> {
       GsSpincrystal => const GsSpincrystalExt(),
       GsVersion => const GsVersionExt(),
       GsViewpoint => const GsViewpointExt(),
-      // GsEvent => const GsEventExt(),
+      GsEvent => const GsEventExt(),
       GsWeapon => const GsWeaponExt(),
       GsWeaponInfo => const GsWeaponInfoExt(),
       _ => null,
@@ -74,23 +74,17 @@ abstract class GsModelExt<T extends GsModel<T>> {
     return GsValidLevel.good;
   }
 
-  GsValidLevel vdBirthday(String birthday) {
-    final date = DateTime.tryParse(birthday);
-    return date != null && date.year == 0
-        ? GsValidLevel.good
-        : GsValidLevel.error;
+  GsValidLevel vdBirthday(DateTime birthday) {
+    return birthday.year == 0 ? GsValidLevel.good : GsValidLevel.error;
   }
 
-  GsValidLevel vdDate(String date) {
-    if (date.isEmpty) return GsValidLevel.warn2;
-    return DateTime.tryParse(date) == null
-        ? GsValidLevel.error
-        : GsValidLevel.none;
+  GsValidLevel vdDate(DateTime date) {
+    final fallback = DateTime(0);
+    if (date == fallback) return GsValidLevel.warn2;
+    return GsValidLevel.none;
   }
 
-  GsValidLevel vdDates(String start, String end) {
-    final src = DateTime.tryParse(start);
-    final dst = DateTime.tryParse(end);
+  GsValidLevel vdDates(DateTime? src, DateTime? dst) {
     return src != null && dst != null && dst.isAfter(src)
         ? GsValidLevel.good
         : GsValidLevel.error;
@@ -103,7 +97,8 @@ abstract class GsModelExt<T extends GsModel<T>> {
 
 String generateId(GsModel item) {
   if (item is GsBanner) {
-    return '${item.name}_${item.dateStart.replaceAll('-', '_')}'.toDbId();
+    final date = item.dateStart.toString().split(' ').firstOrNull ?? '';
+    return '${item.name}_$date'.toDbId();
   }
   if (item is GsAchievement) {
     return '${item.group}_${item.name}'.toDbId();

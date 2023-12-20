@@ -49,12 +49,12 @@ class GsMaterialExt extends GsModelExt<GsMaterial> {
         (item, value) => item.copyWith(rarity: value),
         validator: (item) => vdRarity(item.rarity),
       ),
-      DataField.singleSelect(
+      DataField.singleEnum(
         'Region',
+        GeRegionType.values.toChips(),
         (item) => item.region,
-        (item) => GsItemFilter.regions().filters,
         (item, value) => item.copyWith(region: value),
-        validator: (item) => vdContains(item.region, regions),
+        validator: (item) => vdContains(item.region.id, regions),
       ),
       DataField.singleEnum(
         'Group',

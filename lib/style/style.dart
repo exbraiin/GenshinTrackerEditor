@@ -36,8 +36,8 @@ class GsStyle {
     };
   }
 
-  static Color? getRegionElementColor(String region) {
-    return Database.i.of<GsRegion>().getItem(region)?.element.color;
+  static Color? getRegionElementColor(GeRegionType region) {
+    return Database.i.of<GsRegion>().getItem(region.id)?.element.color;
   }
 
   static Color getNamecardColor(GeNamecardType type) {

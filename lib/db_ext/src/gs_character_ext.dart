@@ -85,12 +85,12 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         validator: (item) => vdRarity(item.rarity, 4),
         min: 4,
       ),
-      DataField.singleSelect(
+      DataField.singleEnum(
         'Region',
+        GeRegionType.values.toChips(),
         (item) => item.region,
-        (item) => GsItemFilter.regions().filters,
         (item, value) => item.copyWith(region: value),
-        validator: (item) => vdContains(item.region, regions),
+        validator: (item) => vdContains(item.region.id, regions),
       ),
       DataField.singleEnum(
         'Weapon',
@@ -148,13 +148,13 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
           return vdContains(item.specialDish, recipes);
         },
       ),
-      DataField.textField(
+      DataField.dateTime(
         'Birthday',
         (item) => item.birthday,
         (item, value) => item.copyWith(birthday: value),
         validator: (item) => vdBirthday(item.birthday),
       ),
-      DataField.textField(
+      DataField.dateTime(
         'Release Date',
         (item) => item.releaseDate,
         (item, value) => item.copyWith(releaseDate: value),

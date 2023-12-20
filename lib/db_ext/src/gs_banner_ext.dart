@@ -36,13 +36,13 @@ class GsBannerExt extends GsModelExt<GsBanner> {
         (item, value) => item.copyWith(image: value),
         validator: (item) => vdImage(item.image),
       ),
-      DataField.textField(
+      DataField.dateTime(
         'Date Start',
         (item) => item.dateStart,
         (item, value) => item.copyWith(dateStart: value),
         validator: (item) => vdDates(item.dateStart, item.dateEnd),
       ),
-      DataField.textField(
+      DataField.dateTime(
         'Date End',
         (item) => item.dateEnd,
         (item, value) => item.copyWith(dateEnd: value),

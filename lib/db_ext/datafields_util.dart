@@ -1,6 +1,5 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
-import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
@@ -50,6 +49,14 @@ class GsItemFilter {
   factory GsItemFilter.constellations() =>
       GsItemFilter._from(GeCharConstellationType.values, (i) => i.id);
 
+  factory GsItemFilter.regions() => GsItemFilter._from(
+        GeRegionType.values,
+        noneId: '',
+        (i) => i.id,
+        title: (i) => i.name,
+        color: (i) => GsStyle.getRegionElementColor(i) ?? Colors.grey,
+      );
+
   // ----- DATABASE ------------------------------------------------------------
 
   factory GsItemFilter.rarities([int min = 1]) => GsItemFilter._from(
@@ -62,13 +69,6 @@ class GsItemFilter {
         Database.i.of<GsVersion>().items,
         (i) => i.id,
         color: (i) => GsStyle.getVersionColor(i.id),
-      );
-  factory GsItemFilter.regions() => GsItemFilter._from(
-        Database.i.of<GsRegion>().items,
-        noneId: '',
-        (i) => i.id,
-        title: (i) => i.name,
-        color: (i) => i.element.color,
       );
   factory GsItemFilter.ingredients() => GsItemFilter._from(
         Database.i
@@ -157,8 +157,8 @@ class GsItemFilter {
           : GsStyle.getRarityColor(mat.rarity);
     }
 
-    int regionElementIndex(String region) {
-      return Database.i.of<GsRegion>().getItem(region)?.element.index ?? -1;
+    int regionElementIndex(GeRegionType region) {
+      return Database.i.of<GsRegion>().getItem(region.id)?.element.index ?? -1;
     }
 
     return GsItemFilter._from(

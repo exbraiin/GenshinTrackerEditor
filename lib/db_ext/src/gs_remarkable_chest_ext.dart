@@ -55,12 +55,12 @@ class GsFurnitureChestExt extends GsModelExt<GsFurnitureChest> {
         (item, value) => item.copyWith(energy: int.tryParse(value) ?? 0),
         validator: (item) => vdNum(item.energy, 1),
       ),
-      DataField.singleSelect(
+      DataField.singleEnum(
         'Region',
+        GeRegionType.values.toChips(),
         (item) => item.region,
-        (item) => GsItemFilter.regions().filters,
         (item, value) => item.copyWith(region: value),
-        validator: (item) => vdContains(item.region, regions),
+        validator: (item) => vdContains(item.region.id, regions),
       ),
       DataField.singleSelect(
         'Version',

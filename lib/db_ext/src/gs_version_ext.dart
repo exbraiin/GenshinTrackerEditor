@@ -28,17 +28,12 @@ class GsVersionExt extends GsModelExt<GsVersion> {
         (item, value) => item.copyWith(image: value),
         validator: (item) => vdImage(item.image),
       ),
-      DataField.textField(
+      DataField.dateTime(
         'Release Date',
-        (item) => item.releaseDate.toDate(),
-        (item, value) => item.copyWith(releaseDate: DateTime.tryParse(value)),
-        validator: (item) => vdDate(item.releaseDate.toDate()),
+        (item) => item.releaseDate,
+        (item, value) => item.copyWith(releaseDate: value),
+        validator: (item) => vdDate(item.releaseDate),
       ),
     ];
   }
-}
-
-extension on DateTime {
-  String _pad(int v, [int i = 2]) => v.toString().padLeft(i, '0');
-  String toDate() => '${_pad(year, 4)}-${_pad(month)}-${_pad(day)}';
 }
