@@ -142,7 +142,7 @@ packages:
   gsdatabase:
     dependency: "direct main"
     description:
-      path: "../gsdatabase"
+      path: "packages/gsdatabase"
       relative: true
     source: path
     version: "1.0.0"
