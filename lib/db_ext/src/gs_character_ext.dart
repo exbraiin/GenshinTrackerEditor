@@ -11,13 +11,14 @@ import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsCharacterExt extends GsModelExt<GsCharacter> {
   const GsCharacterExt();
 
   @override
   List<DataField<GsCharacter>> getFields(GsCharacter? model) {
-    final ids = Database.i.characters.data.map((e) => e.id);
+    final ids = Database.i.of<GsCharacter>().ids;
     final regions = GsItemFilter.regions().ids;
     final versions = GsItemFilter.versions().ids;
     final recipes = GsItemFilter.specialDishes().ids;
@@ -100,10 +101,10 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
       ),
       DataField.singleEnum(
         'Element',
-        GeElements.values.toChips(),
+        GeElementType.values.toChips(),
         (item) => item.element,
         (item, value) => item.copyWith(element: value),
-        validator: (item) => vdContains(item.element, GeElements.values),
+        validator: (item) => vdContains(item.element, GeElementType.values),
       ),
       DataField.singleSelect(
         'Version',
@@ -114,10 +115,10 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
       ),
       DataField.singleEnum(
         'Obtain',
-        GeItemSource.values.toChips(),
+        GeItemSourceType.values.toChips(),
         (item) => item.source,
         (item, value) => item.copyWith(source: value),
-        validator: (item) => vdContains(item.source, GeItemSource.values),
+        validator: (item) => vdContains(item.source, GeItemSourceType.values),
       ),
       DataField.textField(
         'Description',
@@ -136,14 +137,6 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         (item) => item.affiliation,
         (item, value) => item.copyWith(affiliation: value),
         validator: (item) => vdText(item.affiliation),
-      ),
-      DataField.singleEnum(
-        'Model Type',
-        GeCharacterModelType.values.toChips(),
-        (item) => item.modelType,
-        (item, value) => item.copyWith(modelType: value),
-        validator: (item) =>
-            vdContains(item.modelType, GeCharacterModelType.values),
       ),
       DataField.singleSelect(
         'Special Dish',

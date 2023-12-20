@@ -3,13 +3,14 @@ import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsArtifactExt extends GsModelExt<GsArtifact> {
   const GsArtifactExt();
 
   @override
   List<DataField<GsArtifact>> getFields(GsArtifact? model) {
-    final ids = Database.i.artifacts.data.map((e) => e.id);
+    final ids = Database.i.of<GsArtifact>().ids;
     final regions = GsItemFilter.regions().ids;
     final versions = GsItemFilter.versions().ids;
 
@@ -104,7 +105,7 @@ class GsArtifactExt extends GsModelExt<GsArtifact> {
         (item, value) {
           final list = value.map((id) {
             final old = item.pieces.firstOrNullWhere((i) => i.id == id);
-            return old ?? GsArtifactPiece(id: id);
+            return old ?? GsArtifactPiece.fromJson({'id': id});
           }).sortedBy((element) => element.id);
           return item.copyWith(pieces: list);
         },

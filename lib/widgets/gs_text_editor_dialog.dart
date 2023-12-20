@@ -1,9 +1,9 @@
-import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:data_editor/widgets/text_style_parser.dart';
 import 'package:flutter/material.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsTextEditorDialog extends StatefulWidget {
   final String title;
@@ -143,7 +143,7 @@ class _GsTextEditorDialogState<T> extends State<GsTextEditorDialog> {
           onTap: (item) => _insertText((s) => '<color=skill>$s</color>'),
         ),
       ),
-      ...GeElements.values.map((value) {
+      ...GeElementType.values.map((value) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 2),
           child: GsSelectChip(

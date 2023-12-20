@@ -62,19 +62,6 @@ extension StringExt on String {
 extension IterableExt<E> on Iterable<E> {
   Map<K, V> mapToMap<K, V>(K Function(E i) k, V Function(E i) v) =>
       Map.fromEntries(map((e) => MapEntry(k(e), v(e))));
-
-  bool compareWith(Iterable<E> other, bool Function(E a, E b) compare) {
-    if (length != other.length) return false;
-    final itA = iterator;
-    final itB = other.iterator;
-
-    while (true) {
-      final canMove = itA.moveNext() && itB.moveNext();
-      if (!canMove) break;
-      if (!compare(itA.current, itB.current)) return false;
-    }
-    return true;
-  }
 }
 
 extension IterableMapExt<K, V> on Iterable<MapEntry<K, V>> {

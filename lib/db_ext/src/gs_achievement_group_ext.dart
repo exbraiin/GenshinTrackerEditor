@@ -2,13 +2,14 @@ import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsAchievementGroupExt extends GsModelExt<GsAchievementGroup> {
   const GsAchievementGroupExt();
 
   @override
   List<DataField<GsAchievementGroup>> getFields(GsAchievementGroup? model) {
-    final ids = Database.i.achievementGroups.data.map((e) => e.id);
+    final ids = Database.i.of<GsAchievementGroup>().ids;
     final versions = GsItemFilter.versions().ids;
     final namecards = GsItemFilter.achievementNamecards().ids;
 

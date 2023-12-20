@@ -3,13 +3,14 @@ import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
-class GsRemarkableChestExt extends GsModelExt<GsRemarkableChest> {
-  const GsRemarkableChestExt();
+class GsFurnitureChestExt extends GsModelExt<GsFurnitureChest> {
+  const GsFurnitureChestExt();
 
   @override
-  List<DataField<GsRemarkableChest>> getFields(GsRemarkableChest? model) {
-    final ids = Database.i.remarkableChests.data.map((e) => e.id);
+  List<DataField<GsFurnitureChest>> getFields(GsFurnitureChest? model) {
+    final ids = Database.i.of<GsFurnitureChest>().ids;
     final regions = GsItemFilter.regions().ids;
     final versions = GsItemFilter.versions().ids;
     return [
@@ -29,12 +30,12 @@ class GsRemarkableChestExt extends GsModelExt<GsRemarkableChest> {
         (item, value) => item.copyWith(name: value),
         validator: (item) => vdText(item.name),
       ),
-      DataField.singleEnum<GsRemarkableChest, GeSereniteaSets>(
+      DataField.singleEnum<GsFurnitureChest, GeSereniteaSetType>(
         'Type',
-        GeSereniteaSets.values.toChips(),
+        GeSereniteaSetType.values.toChips(),
         (item) => item.type,
         (item, value) => item.copyWith(type: value),
-        validator: (item) => vdContains(item.type, GeSereniteaSets.values),
+        validator: (item) => vdContains(item.type, GeSereniteaSetType.values),
       ),
       DataField.textImage(
         'Image',
@@ -67,14 +68,6 @@ class GsRemarkableChestExt extends GsModelExt<GsRemarkableChest> {
         (item) => GsItemFilter.versions().filters,
         (item, value) => item.copyWith(version: value),
         validator: (item) => vdContains(item.version, versions),
-      ),
-      DataField.singleEnum<GsRemarkableChest, GeRmChestCategory>(
-        'Category',
-        GeRmChestCategory.values.toChips(),
-        (item) => item.category,
-        (item, value) => item.copyWith(category: value),
-        validator: (item) =>
-            vdContains(item.category, GeRmChestCategory.values),
       ),
     ];
   }

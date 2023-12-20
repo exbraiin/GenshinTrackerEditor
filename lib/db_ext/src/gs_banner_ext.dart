@@ -4,13 +4,14 @@ import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsBannerExt extends GsModelExt<GsBanner> {
   const GsBannerExt();
 
   @override
   List<DataField<GsBanner>> getFields(GsBanner? model) {
-    final ids = Database.i.banners.data.map((e) => e.id);
+    final ids = Database.i.of<GsBanner>().ids;
     final versions = GsItemFilter.versions().ids;
     return [
       DataField.textField(

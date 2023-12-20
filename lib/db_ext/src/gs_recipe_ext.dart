@@ -4,13 +4,14 @@ import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsRecipeExt extends GsModelExt<GsRecipe> {
   const GsRecipeExt();
 
   @override
   List<DataField<GsRecipe>> getFields(GsRecipe? model) {
-    final ids = Database.i.recipes.data.map((e) => e.id);
+    final ids = Database.i.of<GsRecipe>().ids;
     final baseRecipes = GsItemFilter.nonBaseRecipes().ids;
     final versions = GsItemFilter.versions().ids;
 
@@ -84,12 +85,12 @@ class GsRecipeExt extends GsModelExt<GsRecipe> {
         (item, value) => item.copyWith(baseRecipe: value),
         validator: (item) => vdContains(item.baseRecipe, baseRecipes),
       ),
-      DataField.build<GsRecipe, GsAmount>(
+      DataField.build<GsRecipe, GsIngredient>(
         'Ingredients',
         (item) => item.ingredients,
         (item) => GsItemFilter.ingredients().filters,
         (item, child) => DataField.textField(
-          Database.i.materials.getItem(child.id)?.name ?? child.id,
+          Database.i.of<GsMaterial>().getItem(child.id)?.name ?? child.id,
           (item) => item.amount.toString(),
           (item, value) => item.copyWith(amount: int.tryParse(value) ?? 0),
           validator: (item) => vdNum(item.amount, 1),
@@ -97,7 +98,7 @@ class GsRecipeExt extends GsModelExt<GsRecipe> {
         (item, value) {
           final list = value.map((e) {
             final old = item.ingredients.firstOrNullWhere((i) => i.id == e);
-            return old ?? GsAmount(id: e);
+            return old ?? GsIngredient.fromJson({'id': e});
           }).sortedBy((element) => element.id);
           return item.copyWith(ingredients: list);
         },

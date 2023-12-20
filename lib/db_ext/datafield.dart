@@ -1,14 +1,13 @@
 import 'dart:async';
 
 import 'package:dartx/dartx.dart';
-import 'package:data_editor/db/database.dart';
-import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:data_editor/widgets/gs_text_editor_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 typedef DEdit<T extends GsModel<T>> = void Function(T v);
 typedef DValidator<T extends GsModel<T>> = GsValidLevel Function(T item);

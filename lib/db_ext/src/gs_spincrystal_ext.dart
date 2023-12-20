@@ -2,13 +2,14 @@ import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsSpincrystalExt extends GsModelExt<GsSpincrystal> {
   const GsSpincrystalExt();
 
   @override
   List<DataField<GsSpincrystal>> getFields(GsSpincrystal? model) {
-    final ids = Database.i.spincrystal.data.map((e) => e.id);
+    final ids = Database.i.of<GsSpincrystal>().ids;
     final regions = GsItemFilter.regions().ids;
     final versions = GsItemFilter.versions().ids;
     return [

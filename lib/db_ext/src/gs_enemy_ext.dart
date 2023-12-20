@@ -5,13 +5,14 @@ import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsEnemyExt extends GsModelExt<GsEnemy> {
   const GsEnemyExt();
 
   @override
   List<DataField<GsEnemy>> getFields(GsEnemy? model) {
-    final ids = Database.i.enemies.data.map((e) => e.id);
+    final ids = Database.i.of<GsEnemy>().ids;
     final versions = GsItemFilter.versions().ids;
     return [
       DataField.textField(
@@ -69,7 +70,9 @@ class GsEnemyExt extends GsModelExt<GsEnemy> {
         refresh: DataButton(
           'Next Order in Family',
           (context, item) {
-            final lastOrder = Database.i.enemies.data
+            final lastOrder = Database.i
+                .of<GsEnemy>()
+                .items
                 .where((element) => element.family == item.family)
                 .sortedBy((element) => element.order)
                 .lastOrNull
@@ -87,10 +90,10 @@ class GsEnemyExt extends GsModelExt<GsEnemy> {
       ),
       DataField.singleEnum(
         'Family',
-        GeEnemyFamily.values.toChips(),
+        GeEnemyFamilyType.values.toChips(),
         (item) => item.family,
         (item, value) => item.copyWith(family: value),
-        validator: (item) => vdContains(item.family, GeEnemyFamily.values),
+        validator: (item) => vdContains(item.family, GeEnemyFamilyType.values),
       ),
       DataField.multiSelect<GsEnemy, String>(
         'Drops',

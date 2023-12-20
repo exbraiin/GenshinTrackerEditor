@@ -2,13 +2,14 @@ import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsEventExt extends GsModelExt<GsEvent> {
   const GsEventExt();
 
   @override
   List<DataField<GsEvent>> getFields(GsEvent? model) {
-    final ids = Database.i.events.data.map((e) => e.id);
+    final ids = Database.i.of<GsEvent>().ids;
     final types = GsItemFilter.eventType().ids;
     final versions = GsItemFilter.versions().ids;
     return [

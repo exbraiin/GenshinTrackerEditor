@@ -5,13 +5,14 @@ import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
-class GsSereniteaExt extends GsModelExt<GsSerenitea> {
-  const GsSereniteaExt();
+class GsSereniteaSetExt extends GsModelExt<GsSereniteaSet> {
+  const GsSereniteaSetExt();
 
   @override
-  List<DataField<GsSerenitea>> getFields(GsSerenitea? model) {
-    final ids = Database.i.sereniteas.data.map((e) => e.id);
+  List<DataField<GsSereniteaSet>> getFields(GsSereniteaSet? model) {
+    final ids = Database.i.of<GsSereniteaSet>().ids;
     final chars = GsItemFilter.wishes(null, GeBannerType.character).ids;
     final versions = GsItemFilter.versions().ids;
     return [
@@ -31,13 +32,13 @@ class GsSereniteaExt extends GsModelExt<GsSerenitea> {
         (item, value) => item.copyWith(name: value),
         validator: (item) => vdText(item.name),
       ),
-      DataField.singleEnum<GsSerenitea, GeSereniteaSets>(
+      DataField.singleEnum<GsSereniteaSet, GeSereniteaSetType>(
         'Category',
-        GeSereniteaSets.values.toChips(),
+        GeSereniteaSetType.values.toChips(),
         (item) => item.category,
         (item, value) => item.copyWith(category: value),
         validator: (item) =>
-            vdContains(item.category, GeSereniteaSets.values),
+            vdContains(item.category, GeSereniteaSetType.values),
       ),
       DataField.textImage(
         'Image',
@@ -51,7 +52,7 @@ class GsSereniteaExt extends GsModelExt<GsSerenitea> {
         (item, value) => item.copyWith(energy: int.tryParse(value) ?? -1),
         validator: (item) => vdNum(item.energy, 1),
       ),
-      DataField.multiSelect<GsSerenitea, String>(
+      DataField.multiSelect<GsSereniteaSet, String>(
         'Chars',
         (item) => item.chars,
         (item) => GsItemFilter.wishes(null, GeBannerType.character).filters,

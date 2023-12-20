@@ -1,6 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
+import 'package:data_editor/db/model_ext.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
@@ -13,6 +14,7 @@ import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_grid_item.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 const _fandomUrl =
     'https://static.wikia.nocookie.net/gensin-impact/images/4/4a/Site-favicon.ico';
@@ -26,7 +28,15 @@ class GsConfigs<T extends GsModel<T>> {
   final List<GsFieldFilter<T>> filters;
   final Iterable<DataButton<T>> import;
 
-  GsCollection<T> get collection => Database.i.collectionOf<T>()!;
+  Items<T> get collection {
+    try {
+      return Database.i.of<T>();
+    } catch (error) {
+      print('\x1b[31mNo such collection: $T');
+      rethrow;
+    }
+  }
+
   GsModelExt<T> get modelExt => GsModelExt.of<T>()!;
 
   GsConfigs._({
@@ -59,7 +69,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsAchievement: GsConfigs<GsAchievement>._(
       title: 'Achievement',
       getDecor: (item) {
-        final cat = Database.i.achievementGroups.getItem(item.group);
+        final cat = Database.i.of<GsAchievementGroup>().getItem(item.group);
         return GsItemDecor(
           label: '${item.name}\n(${item.reward}✦)',
           version: item.version,
@@ -117,8 +127,8 @@ class GsConfigs<T extends GsModel<T>> {
       getDecor: (item) {
         final data = item.feature5.firstOrNull;
         final image = data != null
-            ? Database.i.characters.getItem(data)?.image ??
-                Database.i.weapons.getItem(data)?.image
+            ? Database.i.of<GsCharacter>().getItem(data)?.image ??
+                Database.i.of<GsWeapon>().getItem(data)?.image
             : null;
         return GsItemDecor(
           label: '${item.name}\n${item.dateStart}',
@@ -174,7 +184,7 @@ class GsConfigs<T extends GsModel<T>> {
         ),
         GsFieldFilter.fromEnum(
           'Element',
-          GeElements.values,
+          GeElementType.values,
           (i) => i.element.id,
         ),
         GsFieldFilter.fromEnum(
@@ -187,7 +197,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsCharacterInfo: GsConfigs<GsCharacterInfo>._(
       title: 'Character Info',
       getDecor: (item) {
-        final char = Database.i.characters.getItem(item.id);
+        final char = Database.i.of<GsCharacter>().getItem(item.id);
         return GsItemDecor(
           label: char?.name ?? item.id,
           image: char?.image,
@@ -212,34 +222,35 @@ class GsConfigs<T extends GsModel<T>> {
         GsFieldFilter.fromFilter(
           'Version',
           GsItemFilter.versions(),
-          (i) => Database.i.characters.getItem(i.id)?.version ?? '',
+          (i) => Database.i.of<GsCharacter>().getItem(i.id)?.version ?? '',
         ),
         GsFieldFilter.fromFilter(
           'Region',
           GsItemFilter.regions(),
-          (i) => Database.i.characters.getItem(i.id)?.region ?? '',
+          (i) => Database.i.of<GsCharacter>().getItem(i.id)?.region ?? '',
         ),
         GsFieldFilter.fromFilter(
           'Rarity',
           GsItemFilter.rarities(4),
-          (i) => Database.i.characters.getItem(i.id)?.rarity.toString() ?? '',
+          (i) =>
+              Database.i.of<GsCharacter>().getItem(i.id)?.rarity.toString() ?? '',
         ),
         GsFieldFilter.fromEnum(
           'Element',
-          GeElements.values,
-          (i) => Database.i.characters.getItem(i.id)?.element.id ?? '',
+          GeElementType.values,
+          (i) => Database.i.of<GsCharacter>().getItem(i.id)?.element.id ?? '',
         ),
         GsFieldFilter.fromEnum(
           'Weapon',
           GeWeaponType.values,
-          (i) => Database.i.characters.getItem(i.id)?.weapon.id ?? '',
+          (i) => Database.i.of<GsCharacter>().getItem(i.id)?.weapon.id ?? '',
         ),
       ],
     ),
-    GsCharacterOutfit: GsConfigs<GsCharacterOutfit>._(
+    GsCharacterSkin: GsConfigs<GsCharacterSkin>._(
       title: 'Character Outfits',
       getDecor: (item) {
-        final char = Database.i.characters.getItem(item.character);
+        final char = Database.i.of<GsCharacter>().getItem(item.character);
         return GsItemDecor(
           label: item.name,
           image: char?.image,
@@ -261,7 +272,7 @@ class GsConfigs<T extends GsModel<T>> {
         ),
       ],
     ),
-    GsCity: GsConfigs<GsCity>._(
+    GsRegion: GsConfigs<GsRegion>._(
       title: 'Cities',
       getDecor: (item) => GsItemDecor(
         label: item.name,
@@ -293,7 +304,7 @@ class GsConfigs<T extends GsModel<T>> {
         ),
         GsFieldFilter.fromEnum(
           'Family',
-          GeEnemyFamily.values,
+          GeEnemyFamilyType.values,
           (i) => i.family.id,
         ),
       ],
@@ -325,7 +336,7 @@ class GsConfigs<T extends GsModel<T>> {
         ),
         GsFieldFilter.fromEnum(
           'Group',
-          GeMaterialCategory.values,
+          GeMaterialType.values,
           (i) => i.group.id,
         ),
         GsFieldFilter(
@@ -344,7 +355,7 @@ class GsConfigs<T extends GsModel<T>> {
         label: item.name,
         image: item.image,
         version: item.version,
-        color: item.type.color,
+        color: GsStyle.getNamecardColor(item.type),
       ),
       filters: [
         GsFieldFilter.fromFilter(
@@ -395,7 +406,7 @@ class GsConfigs<T extends GsModel<T>> {
         ),
       ],
     ),
-    GsRemarkableChest: GsConfigs<GsRemarkableChest>._(
+    GsFurnitureChest: GsConfigs<GsFurnitureChest>._(
       title: 'Remarkable Chests',
       getDecor: (item) => GsItemDecor(
         label: item.name,
@@ -421,18 +432,13 @@ class GsConfigs<T extends GsModel<T>> {
           (i) => i.region,
         ),
         GsFieldFilter.fromEnum(
-          'Category',
-          GeRmChestCategory.values,
-          (i) => i.category.id,
-        ),
-        GsFieldFilter.fromEnum(
           'Type',
-          GeSereniteaSets.values,
+          GeSereniteaSetType.values,
           (i) => i.type.id,
         ),
       ],
     ),
-    GsSerenitea: GsConfigs<GsSerenitea>._(
+    GsSereniteaSet: GsConfigs<GsSereniteaSet>._(
       title: 'Sereniteas',
       getDecor: (item) => GsItemDecor(
         label: item.name,
@@ -447,7 +453,7 @@ class GsConfigs<T extends GsModel<T>> {
         ),
         GsFieldFilter.fromEnum(
           'Category',
-          GeSereniteaSets.values,
+          GeSereniteaSetType.values,
           (i) => i.category.id,
         ),
       ],
@@ -528,12 +534,12 @@ class GsConfigs<T extends GsModel<T>> {
         ),
         GsFieldFilter.fromEnum(
           'Source',
-          GeItemSource.values,
+          GeItemSourceType.values,
           (i) => i.source.id,
         ),
         GsFieldFilter.fromEnum(
           'Stat Type',
-          GeWeaponAscensionStatType.values,
+          GeWeaponAscStatType.values,
           (i) => i.statType.id,
         ),
       ],
@@ -541,7 +547,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsWeaponInfo: GsConfigs<GsWeaponInfo>._(
       title: 'Weapon Info',
       getDecor: (item) {
-        final weapon = Database.i.weapons.getItem(item.id);
+        final weapon = Database.i.of<GsWeapon>().getItem(item.id);
         return GsItemDecor(
           label: weapon?.name ?? item.id,
           image: weapon?.image,
@@ -565,27 +571,27 @@ class GsConfigs<T extends GsModel<T>> {
         GsFieldFilter.fromFilter(
           'Version',
           GsItemFilter.versions(),
-          (i) => Database.i.weapons.getItem(i.id)?.version ?? '',
+          (i) => Database.i.of<GsWeapon>().getItem(i.id)?.version ?? '',
         ),
         GsFieldFilter.fromFilter(
           'Rarity',
           GsItemFilter.rarities(),
-          (i) => Database.i.weapons.getItem(i.id)?.rarity.toString() ?? '',
+          (i) => Database.i.of<GsWeapon>().getItem(i.id)?.rarity.toString() ?? '',
         ),
         GsFieldFilter.fromEnum(
           'Type',
           GeWeaponType.values,
-          (i) => Database.i.weapons.getItem(i.id)?.type.id ?? '',
+          (i) => Database.i.of<GsWeapon>().getItem(i.id)?.type.id ?? '',
         ),
         GsFieldFilter.fromEnum(
           'Source',
-          GeItemSource.values,
-          (i) => Database.i.weapons.getItem(i.id)?.source.id ?? '',
+          GeItemSourceType.values,
+          (i) => Database.i.of<GsWeapon>().getItem(i.id)?.source.id ?? '',
         ),
         GsFieldFilter.fromEnum(
           'Stat Type',
-          GeWeaponAscensionStatType.values,
-          (i) => Database.i.weapons.getItem(i.id)?.statType.id ?? '',
+          GeWeaponAscStatType.values,
+          (i) => Database.i.of<GsWeapon>().getItem(i.id)?.statType.id ?? '',
         ),
       ],
     ),
@@ -609,7 +615,7 @@ class GsConfigs<T extends GsModel<T>> {
 
   Widget toGridItem(BuildContext context) {
     final level = DataValidator.i.getMaxLevel<T>();
-    final version = collection.data
+    final version = collection.items
             .map((e) => getDecor(e).version)
             .toSet()
             .sortedBy((element) => element)
@@ -629,7 +635,7 @@ class GsConfigs<T extends GsModel<T>> {
     context.pushWidget(
       ItemsListScreen<T>(
         title: title,
-        list: () => collection.data,
+        list: () => collection.items.toList(),
         getDecor: getDecor,
         onTap: openEditScreen,
         filters: filters,

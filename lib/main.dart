@@ -81,7 +81,7 @@ class Home extends StatelessWidget {
             );
           }
 
-          if (!snapshot.hasData) {
+          if (snapshot.connectionState != ConnectionState.done) {
             return Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
@@ -104,7 +104,6 @@ class Home extends StatelessWidget {
 
           return StreamBuilder(
             stream: Database.i.modified,
-            initialData: Database.i.modified,
             builder: (context, snapshot) {
               return GsGridView(
                 children: GsConfigs.getAllConfigs()

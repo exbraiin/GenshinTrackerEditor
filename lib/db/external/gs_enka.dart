@@ -1,8 +1,7 @@
 import 'dart:convert';
 
 import 'package:dartx/dartx.dart';
-import 'package:data_editor/db/database.dart';
-import 'package:data_editor/db/ge_enums.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 import 'package:http/http.dart' as http;
 
 class GsEnka {
@@ -32,15 +31,15 @@ class GsEnkaChar {
   final String id;
   final String icon;
   final int rarity;
-  final GeElements element;
+  final GeElementType element;
 
-  GsEnkaChar.fromJson(JsonMap map)
-      : id = map.getString('id'),
-        icon = map.getString('SideIconName').isNotEmpty
-            ? 'https://enka.network/ui/${map.getString('SideIconName')}.png'
+  GsEnkaChar.fromJson(Map<String, dynamic> map)
+      : id = map['id'] as String? ?? '',
+        icon = map['SideIconName'].isNotEmpty
+            ? 'https://enka.network/ui/${map['SideIconName']}.png'
             : '',
-        rarity = _rarity[map.getString('QualityType')] ?? 1,
-        element = _elements[map.getString('Element')] ?? GeElements.anemo;
+        rarity = _rarity[map['QualityType']] ?? 1,
+        element = _elements[map['Element']] ?? GeElementType.anemo;
 }
 
 const _rarity = {
@@ -50,11 +49,11 @@ const _rarity = {
 };
 
 const _elements = {
-  'Wind': GeElements.anemo,
-  'Rock': GeElements.geo,
-  'Electric': GeElements.electro,
-  'Grass': GeElements.dendro,
-  'Water': GeElements.hydro,
-  'Fire': GeElements.pyro,
-  'Ice': GeElements.cryo,
+  'Wind': GeElementType.anemo,
+  'Rock': GeElementType.geo,
+  'Electric': GeElementType.electro,
+  'Grass': GeElementType.dendro,
+  'Water': GeElementType.hydro,
+  'Fire': GeElementType.pyro,
+  'Ice': GeElementType.cryo,
 };

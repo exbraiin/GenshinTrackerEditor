@@ -3,13 +3,14 @@ import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsAchievementExt extends GsModelExt<GsAchievement> {
   const GsAchievementExt();
 
   @override
   List<DataField<GsAchievement>> getFields(GsAchievement? model) {
-    final ids = Database.i.achievements.data.map((e) => e.id);
+    final ids = Database.i.of<GsAchievement>().ids;
     final groups = GsItemFilter.achievementGroups().ids;
     final versions = GsItemFilter.versions().ids;
     return [
@@ -41,8 +42,7 @@ class GsAchievementExt extends GsModelExt<GsAchievement> {
         GeAchievementType.values.toChips(),
         (item) => item.type,
         (item, value) => item.copyWith(type: value),
-        validator: (item) =>
-            vdContains(item.type, GeAchievementType.values),
+        validator: (item) => vdContains(item.type, GeAchievementType.values),
       ),
       DataField.text(
         'Hidden',
@@ -79,7 +79,7 @@ class GsAchievementExt extends GsModelExt<GsAchievement> {
             ];
           },
         ),
-        () => GsAchievementPhase.fromMap({}),
+        () => GsAchievementPhase.fromJson({}),
         (item, list) => item.copyWith(phases: list),
       ),
     ];

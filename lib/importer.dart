@@ -3,12 +3,15 @@ import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
-import 'package:data_editor/db/ge_enums.dart';
+import 'package:data_editor/db/model_ext.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 import 'package:html/parser.dart' as html;
+
+typedef JsonMap = Map<String, dynamic>;
 
 class Changes {
   final int achRmv, achMdf, achAdd;
@@ -95,13 +98,13 @@ abstract final class Importer {
       );
     }
 
-    final inDbAchs = Database.i.achievements.data.toList();
-    final inDbGrps = Database.i.achievementGroups.data.toList();
+    final inDbAchs = Database.i.of<GsAchievement>().items.toList();
+    final inDbGrps = Database.i.of<GsAchievementGroup>().items.toList();
 
-    final impAchs = achs.map(GsAchievement.fromMap);
-    Database.i.achievements.updateAll(impAchs);
+    final impAchs = achs.map(GsAchievement.fromJson);
+    Database.i.of<GsAchievement>().updateAll(impAchs);
 
-    final tmpGrps = grps.map(GsAchievementGroup.fromMap).toList();
+    final tmpGrps = grps.map(GsAchievementGroup.fromJson).toList();
     final impGrps = await compute(
       (tuple) => tuple.grps.map((e) {
         final exist = tuple.dbGrps.firstOrNullWhere((t) => t.id == e.id);
@@ -116,7 +119,7 @@ abstract final class Importer {
       }),
       (grps: tmpGrps, dbGrps: inDbGrps, dbAchs: inDbAchs),
     );
-    Database.i.achievementGroups.updateAll(impGrps);
+    Database.i.of<GsAchievementGroup>().updateAll(impGrps);
 
     await DataValidator.i.checkAll();
     Database.i.modified.add(null);
@@ -167,7 +170,7 @@ abstract final class Importer {
     final stat = json['secondary']?['name'] as String? ?? '';
     final isPercent = stat != 'em';
 
-    final weaponStat = GeWeaponAscensionStatType.values.fromId(stat);
+    final weaponStat = GeWeaponAscStatType.values.fromId(stat);
     final skillName = json['skill']?['name'];
     final skillDesc =
         _getHtmlText(json['skill']?['description'] as String? ?? '');
@@ -197,34 +200,36 @@ abstract final class Importer {
 
     final iPassives = (json['passives'] as List).cast<JsonMap>();
     final iTalents = {
-      GeCharacterTalentType.normalAttack: json['attack'] as JsonMap?,
-      GeCharacterTalentType.elementalSkill: json['elementalSkill'] as JsonMap?,
-      GeCharacterTalentType.alternateSprint: json['dashSkill'] as JsonMap?,
-      GeCharacterTalentType.elementalBurst: json['burst'] as JsonMap?,
-      GeCharacterTalentType.ascension1stPassive: iPassives.elementAtOrNull(0),
-      GeCharacterTalentType.ascension4thPassive: iPassives.elementAtOrNull(1),
-      GeCharacterTalentType.utilityPassive: iPassives.elementAtOrNull(2),
+      GeCharTalentType.normalAttack: json['attack'] as JsonMap?,
+      GeCharTalentType.elementalSkill: json['elementalSkill'] as JsonMap?,
+      GeCharTalentType.alternateSprint: json['dashSkill'] as JsonMap?,
+      GeCharTalentType.elementalBurst: json['burst'] as JsonMap?,
+      GeCharTalentType.ascension1stPassive: iPassives.elementAtOrNull(0),
+      GeCharTalentType.ascension4thPassive: iPassives.elementAtOrNull(1),
+      GeCharTalentType.utilityPassive: iPassives.elementAtOrNull(2),
     };
 
     final talents = iTalents.entries.map((e) {
-      return GsCharTalent(
-        name: e.value?['name'] as String? ?? '',
-        desc: _getHtmlText(e.value?['description'] as String? ?? ''),
-        type: e.key,
-      );
+      return GsCharTalent.fromJson({
+        'name': e.value?['name'] as String? ?? '',
+        'desc': _getHtmlText(e.value?['description'] as String? ?? ''),
+        'type': e.key,
+        'id': e.key,
+      });
     }).toList();
 
     final iConstellations = (json['constellations'] as List).cast<JsonMap>();
     final constellations = List.generate(6, (idx) {
       final cons = iConstellations[idx];
-      return GsCharConstellation(
-        name: cons['name'] as String? ?? '',
-        type: GeCharacterConstellationType.values[idx],
-        desc: _getHtmlText(cons['description'] as String? ?? ''),
-      );
+      return GsCharConstellation.fromJson({
+        'id': GeCharConstellationType.values[idx],
+        'name': cons['name'] as String? ?? '',
+        'type': GeCharConstellationType.values[idx],
+        'desc': _getHtmlText(cons['description'] as String? ?? ''),
+      });
     }).toList();
 
-    final charStat = GeCharacterAscensionStatType.values.fromId(stat);
+    final charStat = GeCharacterAscStatType.values.fromId(stat);
     final isPercent = stat != 'em';
     return info.copyWith(
       ascStatType: charStat,
@@ -327,7 +332,7 @@ abstract final class Importer {
       title: title,
       region: region?.toDbId(),
       weapon: GeWeaponType.values.fromId(weapon?.toDbId() ?? ''),
-      element: GeElements.values.fromId(element.toDbId()),
+      element: GeElementType.values.fromId(element.toDbId()),
       releaseDate: release != null ? parseDate(release) : null,
       constellation: constellation,
       affiliation: affiliation,

@@ -5,6 +5,7 @@ import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsItemFilter {
   final Iterable<GsSelectItem<String>> filters;
@@ -38,16 +39,16 @@ class GsItemFilter {
   }
 
   factory GsItemFilter.artifactPieces() =>
-      GsItemFilter._from(GeArtifactPieces.values, (i) => i.id);
+      GsItemFilter._from(GeArtifactPieceType.values, (i) => i.id);
 
   factory GsItemFilter.eventType() =>
       GsItemFilter._from(GeEventType.values, (i) => i.id);
 
   factory GsItemFilter.talents() =>
-      GsItemFilter._from(GeCharacterTalentType.values, (i) => i.id);
+      GsItemFilter._from(GeCharTalentType.values, (i) => i.id);
 
   factory GsItemFilter.constellations() =>
-      GsItemFilter._from(GeCharacterConstellationType.values, (i) => i.id);
+      GsItemFilter._from(GeCharConstellationType.values, (i) => i.id);
 
   // ----- DATABASE ------------------------------------------------------------
 
@@ -58,19 +59,21 @@ class GsItemFilter {
       );
 
   factory GsItemFilter.versions() => GsItemFilter._from(
-        Database.i.versions.data,
+        Database.i.of<GsVersion>().items,
         (i) => i.id,
         color: (i) => GsStyle.getVersionColor(i.id),
       );
   factory GsItemFilter.regions() => GsItemFilter._from(
-        Database.i.cities.data,
+        Database.i.of<GsRegion>().items,
         noneId: '',
         (i) => i.id,
         title: (i) => i.name,
         color: (i) => i.element.color,
       );
   factory GsItemFilter.ingredients() => GsItemFilter._from(
-        Database.i.materials.data
+        Database.i
+            .of<GsMaterial>()
+            .items
             .where((e) => e.ingredient)
             .sortedBy((e) => e.rarity)
             .thenBy((e) => e.id),
@@ -80,10 +83,10 @@ class GsItemFilter {
         image: (i) => i.image,
       );
   factory GsItemFilter.specialDishes({GsCharacter? character}) {
-    final allRecipes = Database.i.recipes.data;
+    final allRecipes = Database.i.of<GsRecipe>().items;
     var recipes = allRecipes.where((e) => e.baseRecipe.isNotEmpty);
     if (character != null) {
-      final allChars = Database.i.characters.data;
+      final allChars = Database.i.of<GsCharacter>().items;
       final chars = allChars.where((e) => e.id != character.id);
       recipes = recipes.where((e) => chars.all((c) => c.specialDish != e.id));
     }
@@ -96,7 +99,7 @@ class GsItemFilter {
     );
   }
   factory GsItemFilter.nonBaseRecipes() {
-    final allRecipes = Database.i.recipes.data;
+    final allRecipes = Database.i.of<GsRecipe>().items;
     final recipes = allRecipes.where((e) => e.baseRecipe.isEmpty);
     return GsItemFilter._from(
       recipes,
@@ -107,51 +110,55 @@ class GsItemFilter {
     );
   }
   factory GsItemFilter.achievementGroups() => GsItemFilter._from(
-        Database.i.achievementGroups.data,
+        Database.i.of<GsAchievementGroup>().items,
         (i) => i.id,
         title: (i) => i.name,
         color: (i) => GsStyle.getRarityColor(4),
       );
   factory GsItemFilter.chars() => GsItemFilter._from(
-        Database.i.characters.data,
+        Database.i.of<GsCharacter>().items,
         (i) => i.id,
         title: (i) => i.name,
         color: (i) => GsStyle.getRarityColor(i.rarity),
       );
   factory GsItemFilter.charsWithoutInfo() => GsItemFilter._from(
-        Database.i.characters.data
-            .where((e) => Database.i.characterInfo.getItem(e.id) == null),
+        Database.i.of<GsCharacter>().items.where(
+              (e) => Database.i.of<GsCharacterInfo>().getItem(e.id) == null,
+            ),
         (i) => i.id,
         title: (i) => i.name,
         color: (i) => GsStyle.getRarityColor(i.rarity),
       );
+
   factory GsItemFilter.weaponsWithoutInfo() => GsItemFilter._from(
-        Database.i.weapons.data
-            .where((e) => Database.i.weaponInfo.getItem(e.id) == null),
+        Database.i
+            .of<GsWeapon>()
+            .items
+            .where((e) => Database.i.of<GsWeaponInfo>().getItem(e.id) == null),
         (i) => i.id,
         title: (i) => i.name,
         color: (i) => GsStyle.getRarityColor(i.rarity),
       );
 
   factory GsItemFilter.matGroups(
-    GeMaterialCategory type, [
-    GeMaterialCategory? type1,
+    GeMaterialType type, [
+    GeMaterialType? type1,
   ]) {
     Color getColor(GsMaterial mat) {
       return [
-        GeMaterialCategory.ascensionGems,
-        GeMaterialCategory.normalBossDrops,
-        GeMaterialCategory.regionMaterials,
-        GeMaterialCategory.talentMaterials,
-        GeMaterialCategory.weaponMaterials,
-        GeMaterialCategory.weeklyBossDrops,
+        GeMaterialType.ascensionGems,
+        GeMaterialType.normalBossDrops,
+        GeMaterialType.regionMaterials,
+        GeMaterialType.talentMaterials,
+        GeMaterialType.weaponMaterials,
+        GeMaterialType.weeklyBossDrops,
       ].contains(type)
           ? GsStyle.getRegionElementColor(mat.region) ?? Colors.grey
           : GsStyle.getRarityColor(mat.rarity);
     }
 
     int regionElementIndex(String region) {
-      return Database.i.cities.getItem(region)?.element.index ?? -1;
+      return Database.i.of<GsRegion>().getItem(region)?.element.index ?? -1;
     }
 
     return GsItemFilter._from(
@@ -178,7 +185,9 @@ class GsItemFilter {
         image: (i) => i.image,
       );
   factory GsItemFilter.achievementNamecards() => GsItemFilter._from(
-        Database.i.namecards.data
+        Database.i
+            .of<GsNamecard>()
+            .items
             .where((e) => e.type == GeNamecardType.achievement),
         (i) => i.id,
         noneId: 'none',
@@ -189,13 +198,13 @@ class GsItemFilter {
   factory GsItemFilter.drops(int? rarity, GeEnemyType? type) {
     bool isValidMat(GsMaterial mat) {
       late final matType = switch (type) {
-        GeEnemyType.common => [GeMaterialCategory.normalDrops],
+        GeEnemyType.common => [GeMaterialType.normalDrops],
         GeEnemyType.elite => [
-            GeMaterialCategory.normalDrops,
-            GeMaterialCategory.eliteDrops,
+            GeMaterialType.normalDrops,
+            GeMaterialType.eliteDrops,
           ],
-        GeEnemyType.normalBoss => [GeMaterialCategory.normalBossDrops],
-        GeEnemyType.weeklyBoss => [GeMaterialCategory.weeklyBossDrops],
+        GeEnemyType.normalBoss => [GeMaterialType.normalBossDrops],
+        GeEnemyType.weeklyBoss => [GeMaterialType.weeklyBossDrops],
         _ => [],
       };
 
@@ -204,7 +213,7 @@ class GsItemFilter {
     }
 
     return GsItemFilter._from(
-      Database.i.materials.data.where(isValidMat),
+      Database.i.of<GsMaterial>().items.where(isValidMat),
       (i) => i.id,
       title: (i) => i.name,
       image: (i) => i.image,

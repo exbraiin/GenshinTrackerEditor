@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 import 'package:data_editor/configs.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
@@ -5,6 +6,7 @@ import 'package:data_editor/style/style.dart';
 import 'package:data_editor/widgets/gs_notifier_provider.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class InfoScreen extends StatefulWidget {
   const InfoScreen({super.key});
@@ -42,8 +44,12 @@ class _InfoScreenState extends State<InfoScreen> {
             builder: (context, value, child) {
               return ListView(
                 padding: const EdgeInsets.all(8).copyWith(bottom: 0),
-                children:
-                    Database.i.versions.data.reversed.map(_getChild).toList(),
+                children: Database.i
+                    .of<GsVersion>()
+                    .items
+                    .sortedByDescending((e) => e.releaseDate)
+                    .map(_getChild)
+                    .toList(),
               );
             },
           );
@@ -91,8 +97,8 @@ class _InfoScreenState extends State<InfoScreen> {
           _getByVersion<GsMaterial>(version.id),
           _getByVersion<GsNamecard>(version.id),
           _getByVersion<GsRecipe>(version.id),
-          _getByVersion<GsRemarkableChest>(version.id),
-          _getByVersion<GsSerenitea>(version.id),
+          _getByVersion<GsFurnitureChest>(version.id),
+          _getByVersion<GsSereniteaSet>(version.id),
           _getByVersion<GsSpincrystal>(version.id),
           _getByVersion<GsViewpoint>(version.id),
           _getByVersion<GsWeapon>(version.id),
@@ -105,7 +111,7 @@ class _InfoScreenState extends State<InfoScreen> {
     if (!_isExpanded(version)) return const SizedBox();
     final config = GsConfigs.getConfig<T>();
     if (config == null) return const SizedBox();
-    final versionItems = config.collection.data
+    final versionItems = config.collection.items
         .where((e) => config.getDecor(e).version == version);
     if (versionItems.isEmpty) return const SizedBox();
 

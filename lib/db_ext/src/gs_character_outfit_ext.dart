@@ -2,13 +2,14 @@ import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
-class GsCharacterOutfitExt extends GsModelExt<GsCharacterOutfit> {
-  const GsCharacterOutfitExt();
+class GsCharacterSkinExt extends GsModelExt<GsCharacterSkin> {
+  const GsCharacterSkinExt();
 
   @override
-  List<DataField<GsCharacterOutfit>> getFields(GsCharacterOutfit? model) {
-    final ids = Database.i.characterOutfit.data.map((e) => e.id);
+  List<DataField<GsCharacterSkin>> getFields(GsCharacterSkin? model) {
+    final ids = Database.i.of<GsCharacterSkin>().ids;
     final versions = GsItemFilter.versions().ids;
     final characters = GsItemFilter.chars().ids;
 

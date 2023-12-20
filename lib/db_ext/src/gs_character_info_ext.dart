@@ -6,26 +6,33 @@ import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
 import 'package:data_editor/style/utils.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsCharacterInfoExt extends GsModelExt<GsCharacterInfo> {
   const GsCharacterInfoExt();
 
   @override
   List<DataField<GsCharacterInfo>> getFields(GsCharacterInfo? model) {
-    const catGem = GeMaterialCategory.ascensionGems;
+    const catGem = GeMaterialType.ascensionGems;
     final matGem = GsItemFilter.matGroups(catGem).ids;
-    const catBss = GeMaterialCategory.normalBossDrops;
+    const catBss = GeMaterialType.normalBossDrops;
     final matBss = GsItemFilter.matGroups(catBss).ids;
     final matMob = GsItemFilter.matGroups(
-      GeMaterialCategory.normalDrops,
-      GeMaterialCategory.eliteDrops,
+      GeMaterialType.normalDrops,
+      GeMaterialType.eliteDrops,
     ).ids;
-    const catWeek = GeMaterialCategory.weeklyBossDrops;
+    const catWeek = GeMaterialType.weeklyBossDrops;
     final matWeek = GsItemFilter.matGroups(catWeek).ids;
-    final matWithRegion =
-        Database.i.materials.data.map((e) => MapEntry(e.id, e.region)).toMap();
-    final chrWithRegion =
-        Database.i.characters.data.map((e) => MapEntry(e.id, e.region)).toMap();
+    final matWithRegion = Database.i
+        .of<GsMaterial>()
+        .items
+        .map((e) => MapEntry(e.id, e.region))
+        .toMap();
+    final chrWithRegion = Database.i
+        .of<GsCharacter>()
+        .items
+        .map((e) => MapEntry(e.id, e.region))
+        .toMap();
 
     return [
       model != null
@@ -44,8 +51,7 @@ class GsCharacterInfoExt extends GsModelExt<GsCharacterInfo> {
       DataField.singleSelect(
         'Material Gem',
         (item) => item.gemMaterial,
-        (item) =>
-            GsItemFilter.matGroups(GeMaterialCategory.ascensionGems).filters,
+        (item) => GsItemFilter.matGroups(GeMaterialType.ascensionGems).filters,
         (item, value) => item.copyWith(gemMaterial: value),
         validator: (item) => vdContains(item.gemMaterial, matGem),
       ),
@@ -53,7 +59,7 @@ class GsCharacterInfoExt extends GsModelExt<GsCharacterInfo> {
         'Material Boss',
         (item) => item.bossMaterial,
         (item) =>
-            GsItemFilter.matGroups(GeMaterialCategory.normalBossDrops).filters,
+            GsItemFilter.matGroups(GeMaterialType.normalBossDrops).filters,
         (item, value) => item.copyWith(bossMaterial: value),
         validator: (item) => vdContains(item.bossMaterial, matBss),
       ),
@@ -61,8 +67,8 @@ class GsCharacterInfoExt extends GsModelExt<GsCharacterInfo> {
         'Material Common',
         (item) => item.commonMaterial,
         (item) => GsItemFilter.matGroups(
-          GeMaterialCategory.normalDrops,
-          GeMaterialCategory.eliteDrops,
+          GeMaterialType.normalDrops,
+          GeMaterialType.eliteDrops,
         ).filters,
         (item, value) => item.copyWith(commonMaterial: value),
         validator: (item) => vdContains(item.commonMaterial, matMob),
@@ -71,7 +77,7 @@ class GsCharacterInfoExt extends GsModelExt<GsCharacterInfo> {
         'Material Region',
         (item) => item.regionMaterial,
         (item) =>
-            GsItemFilter.matGroups(GeMaterialCategory.regionMaterials).filters,
+            GsItemFilter.matGroups(GeMaterialType.regionMaterials).filters,
         (item, value) => item.copyWith(regionMaterial: value),
         validator: (item) {
           if (item.regionMaterial.isEmpty) return GsValidLevel.error;
@@ -86,7 +92,7 @@ class GsCharacterInfoExt extends GsModelExt<GsCharacterInfo> {
         'Material Talent',
         (item) => item.talentMaterial,
         (item) =>
-            GsItemFilter.matGroups(GeMaterialCategory.talentMaterials).filters,
+            GsItemFilter.matGroups(GeMaterialType.talentMaterials).filters,
         (item, value) => item.copyWith(talentMaterial: value),
         validator: (item) {
           if (item.talentMaterial.isEmpty) return GsValidLevel.error;
@@ -101,18 +107,18 @@ class GsCharacterInfoExt extends GsModelExt<GsCharacterInfo> {
         'Material Weekly',
         (item) => item.weeklyMaterial,
         (item) =>
-            GsItemFilter.matGroups(GeMaterialCategory.weeklyBossDrops).filters,
+            GsItemFilter.matGroups(GeMaterialType.weeklyBossDrops).filters,
         (item, value) => item.copyWith(weeklyMaterial: value),
         validator: (item) => vdContains(item.weeklyMaterial, matWeek),
       ),
       DataField.singleEnum(
         'Ascension Stat',
-        GeCharacterAscensionStatType.values.toChips(),
+        GeCharacterAscStatType.values.toChips(),
         (item) => item.ascStatType,
         (item, value) => item.copyWith(ascStatType: value),
         validator: (item) => vdContains(
           item.ascStatType,
-          GeCharacterAscensionStatType.values,
+          GeCharacterAscStatType.values,
         ),
       ),
       DataField.textList(
@@ -168,10 +174,11 @@ class GsCharacterInfoExt extends GsModelExt<GsCharacterInfo> {
         ),
         (item, value) {
           final list = value.map((id) {
-            final type = GeCharacterTalentType.values.fromId(id);
+            final type = GeCharTalentType.values.fromId(id);
             final old = item.talents.firstOrNullWhere((e) => type == e.type);
-            return old ?? GsCharTalent(type: type);
-          }).sortedBy((e) => GeCharacterTalentType.values.indexOf(e.type));
+            return old ??
+                GsCharTalent.fromJson({}).copyWith(id: type.id, type: type);
+          }).sortedBy((e) => GeCharTalentType.values.indexOf(e.type));
           return item.copyWith(talents: list);
         },
         (item, field) {
@@ -210,9 +217,10 @@ class GsCharacterInfoExt extends GsModelExt<GsCharacterInfo> {
         ),
         (item, value) {
           final list = value.map((id) {
-            final t = GeCharacterConstellationType.values.fromId(id);
+            final t = GeCharConstellationType.values.fromId(id);
             final o = item.constellations.firstOrNullWhere((i) => t == i.type);
-            return o ?? GsCharConstellation(type: t);
+            return o ??
+                GsCharConstellation.fromJson({}).copyWith(id: t.id, type: t);
           }).sortedBy((e) => e.id);
           return item.copyWith(constellations: list);
         },

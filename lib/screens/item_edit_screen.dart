@@ -6,12 +6,13 @@ import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class ItemEditScreen<T extends GsModel<T>> extends StatefulWidget {
   final String title;
   final T? item;
   final T? duplicated;
-  final GsCollection<T> collection;
+  final Items<T> collection;
   final GsModelExt<T> modelExt;
   final Iterable<DataButton<T>> import;
 
@@ -37,7 +38,7 @@ class _ItemEditScreenState<T extends GsModel<T>>
   void initState() {
     super.initState();
     _notifier = ValueNotifier(
-      widget.item ?? widget.duplicated ?? widget.collection.create({}),
+      widget.item ?? widget.duplicated ?? widget.collection.parser({}),
     );
   }
 
@@ -50,7 +51,7 @@ class _ItemEditScreenState<T extends GsModel<T>>
   @override
   Widget build(BuildContext context) {
     // Used when duplicating an item, so the id is not matched against db.
-    late final newItem = widget.collection.create({});
+    late final newItem = widget.collection.parser({});
     final item = widget.duplicated != null ? newItem : widget.item;
     final fields = widget.modelExt.getFields(item);
     void edit(T value) => _notifier.value = value;
@@ -75,10 +76,9 @@ class _ItemEditScreenState<T extends GsModel<T>>
                     )
                     .toList(),
               );
-              // return getTableForFields(context, value, fields, edit);
             },
           ),
-          if (widget.duplicated == null)
+          if (widget.duplicated == null && widget.item != null)
             IconButton(
               onPressed: () => context.pushWidgetReplacement(
                 ItemEditScreen<T>(

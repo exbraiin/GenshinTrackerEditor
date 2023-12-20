@@ -5,13 +5,14 @@ import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsMaterialExt extends GsModelExt<GsMaterial> {
   const GsMaterialExt();
 
   @override
   List<DataField<GsMaterial>> getFields(GsMaterial? model) {
-    final ids = Database.i.materials.data.map((e) => e.id);
+    final ids = Database.i.of<GsMaterial>().ids;
     final regions = GsItemFilter.regions().ids;
     final versions = GsItemFilter.versions().ids;
     return [
@@ -57,10 +58,10 @@ class GsMaterialExt extends GsModelExt<GsMaterial> {
       ),
       DataField.singleEnum(
         'Group',
-        GeMaterialCategory.values.toChips(),
+        GeMaterialType.values.toChips(),
         (item) => item.group,
         (item, value) => item.copyWith(group: value),
-        validator: (item) => vdContains(item.group, GeMaterialCategory.values),
+        validator: (item) => vdContains(item.group, GeMaterialType.values),
       ),
       DataField.textField(
         'Subgroup',
@@ -81,21 +82,33 @@ class GsMaterialExt extends GsModelExt<GsMaterial> {
         (item, value) => item.copyWith(image: value),
         validator: (item) => vdImage(item.image),
       ),
-      DataField.multiEnum<GsMaterial, GeWeekdays>(
+      DataField.multiEnum<GsMaterial, GeWeekdayType>(
         'Weekdays',
         (item) => item.weekdays,
-        (item) => GeWeekdays.values.toChips(),
+        (item) => GeWeekdayType.values.toChips(),
         (item, value) => item.copyWith(weekdays: value),
         validator: (item) => _validateWeekdayGroup(item.weekdays),
       ),
     ];
   }
 
-  GsValidLevel _validateWeekdayGroup(List<GeWeekdays> weekdays) {
+  GsValidLevel _validateWeekdayGroup(List<GeWeekdayType> weekdays) {
     if (weekdays.isEmpty) return GsValidLevel.good;
-    const g1 = [GeWeekdays.sunday, GeWeekdays.monday, GeWeekdays.thursday];
-    const g2 = [GeWeekdays.sunday, GeWeekdays.tuesday, GeWeekdays.friday];
-    const g3 = [GeWeekdays.sunday, GeWeekdays.wednesday, GeWeekdays.saturday];
+    const g1 = [
+      GeWeekdayType.sunday,
+      GeWeekdayType.monday,
+      GeWeekdayType.thursday,
+    ];
+    const g2 = [
+      GeWeekdayType.sunday,
+      GeWeekdayType.tuesday,
+      GeWeekdayType.friday,
+    ];
+    const g3 = [
+      GeWeekdayType.sunday,
+      GeWeekdayType.wednesday,
+      GeWeekdayType.saturday,
+    ];
     if (weekdays.length != 3) return GsValidLevel.error;
     if (weekdays.except(g1).isEmpty) return GsValidLevel.good;
     if (weekdays.except(g2).isEmpty) return GsValidLevel.good;

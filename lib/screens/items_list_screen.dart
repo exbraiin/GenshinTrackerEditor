@@ -9,6 +9,7 @@ import 'package:data_editor/widgets/gs_grid_view.dart';
 import 'package:data_editor/widgets/gs_notifier_provider.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class ItemsListScreen<T extends GsModel<T>> extends StatefulWidget {
   final String title;

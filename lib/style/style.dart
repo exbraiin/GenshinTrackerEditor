@@ -1,6 +1,7 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:flutter/material.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsGraphics {
   GsGraphics._();
@@ -36,13 +37,11 @@ class GsStyle {
   }
 
   static Color? getRegionElementColor(String region) {
-    final element = Database.i.cities.getItem(region)?.element;
-    return element?.color;
+    return Database.i.of<GsRegion>().getItem(region)?.element.color;
   }
 
-  static Color getNamecardColor(String type) {
-    final idx = GeNamecardType.values.indexWhere((e) => e.id == type);
-    return getRarityColor((idx + 5) % 4 + 1);
+  static Color getNamecardColor(GeNamecardType type) {
+    return getRarityColor((type.index + 5) % 4 + 1);
   }
 
   static Color getVersionColor(String id) {

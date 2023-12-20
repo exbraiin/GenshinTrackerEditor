@@ -3,6 +3,7 @@ import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 export 'src/gs_achievement_ext.dart';
 export 'src/gs_achievement_group_ext.dart';
@@ -49,37 +50,36 @@ class DataValidator {
 
   DataValidator._();
 
+  Future<void> checkItems<T extends GsModel<T>>() {
+    final models = Database.i.of<T>().items.toList();
+    final validator = _getValidator<T>();
+    final data = _ComputeData(models.toList(), validator);
+    return compute(_validateModels<T>, data)
+        .then((value) => _levels[T] = value);
+  }
+
   Future<void> checkAll() async {
-    final db = Database.i;
-
-    Future<void> process<T extends GsModel<T>>(List<T> models) {
-      final validator = _getValidator<T>();
-      final data = _ComputeData(models, validator);
-      return compute(_validateModels<T>, data)
-          .then((value) => _levels[T] = value);
-    }
-
     await Future.wait([
-      process(db.achievementGroups.data),
-      process(db.achievements.data),
-      process(db.artifacts.data),
-      process(db.banners.data),
-      process(db.characters.data),
-      process(db.characterInfo.data),
-      process(db.characterOutfit.data),
-      process(db.cities.data),
-      process(db.enemies.data),
-      process(db.materials.data),
-      process(db.namecards.data),
-      process(db.recipes.data),
-      process(db.remarkableChests.data),
-      process(db.sereniteas.data),
-      process(db.spincrystal.data),
-      process(db.versions.data),
-      process(db.viewpoints.data),
-      process(db.events.data),
-      process(db.weapons.data),
-      process(db.weaponInfo.data),
+      checkItems<GsAchievementGroup>(),
+      checkItems<GsAchievement>(),
+      checkItems<GsArtifact>(),
+      checkItems<GsBanner>(),
+      checkItems<GsCharacter>(),
+      checkItems<GsCharacterInfo>(),
+      checkItems<GsCharacterSkin>(),
+      checkItems<GsRegion>(),
+      checkItems<GsEnemy>(),
+      checkItems<GsMaterial>(),
+      checkItems<GsNamecard>(),
+      checkItems<GsRecipe>(),
+      checkItems<GsFurnitureChest>(),
+      checkItems<GsSereniteaSet>(),
+      checkItems<GsSpincrystal>(),
+      checkItems<GsVersion>(),
+      checkItems<GsViewpoint>(),
+      checkItems<GsEvent>(),
+      checkItems<GsWeapon>(),
+      checkItems<GsWeaponInfo>(),
     ]);
   }
 
@@ -122,7 +122,7 @@ _GsValidator<T> _getValidator<T extends GsModel<T>>() {
 }
 
 class _ComputeData<T extends GsModel<T>> {
-  final List<T> models;
+  final Iterable<T> models;
   final _GsValidator validator;
 
   _ComputeData(this.models, this.validator);

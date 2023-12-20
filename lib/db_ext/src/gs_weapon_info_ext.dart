@@ -1,20 +1,20 @@
-import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsWeaponInfoExt extends GsModelExt<GsWeaponInfo> {
   const GsWeaponInfoExt();
 
   @override
   List<DataField<GsWeaponInfo>> getFields(GsWeaponInfo? model) {
-    const catWeapon = GeMaterialCategory.weaponMaterials;
+    const catWeapon = GeMaterialType.weaponMaterials;
     final matWeapon = GsItemFilter.matGroups(catWeapon).ids;
-    const catCommon = GeMaterialCategory.normalDrops;
+    const catCommon = GeMaterialType.normalDrops;
     final matCommon = GsItemFilter.matGroups(catCommon).ids;
-    const catElite = GeMaterialCategory.eliteDrops;
+    const catElite = GeMaterialType.eliteDrops;
     final matElite = GsItemFilter.matGroups(catElite).ids;
     return [
       model != null
@@ -46,33 +46,32 @@ class GsWeaponInfoExt extends GsModelExt<GsWeaponInfo> {
         'Material Weapon',
         (item) => item.matWeapon,
         (item) =>
-            GsItemFilter.matGroups(GeMaterialCategory.weaponMaterials).filters,
+            GsItemFilter.matGroups(GeMaterialType.weaponMaterials).filters,
         (item, value) => item.copyWith(matWeapon: value),
         validator: (item) => vdContains(item.matWeapon, matWeapon),
       ),
       DataField.singleSelect(
         'Material Common',
         (item) => item.matCommon,
-        (item) =>
-            GsItemFilter.matGroups(GeMaterialCategory.normalDrops).filters,
+        (item) => GsItemFilter.matGroups(GeMaterialType.normalDrops).filters,
         (item, value) => item.copyWith(matCommon: value),
         validator: (item) => vdContains(item.matCommon, matCommon),
       ),
       DataField.singleSelect(
         'Material Elite',
         (item) => item.matElite,
-        (item) => GsItemFilter.matGroups(GeMaterialCategory.eliteDrops).filters,
+        (item) => GsItemFilter.matGroups(GeMaterialType.eliteDrops).filters,
         (item, value) => item.copyWith(matElite: value),
         validator: (item) => vdContains(item.matElite, matElite),
       ),
       DataField.singleEnum(
         'Ascension Stat',
-        GeWeaponAscensionStatType.values.toChips(),
+        GeWeaponAscStatType.values.toChips(),
         (item) => item.ascStatType,
         (item, value) => item.copyWith(ascStatType: value),
         validator: (item) => vdContains(
           item.ascStatType,
-          GeWeaponAscensionStatType.values,
+          GeWeaponAscStatType.values,
         ),
       ),
       DataField.textList(

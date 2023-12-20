@@ -4,13 +4,14 @@ import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 class GsWeaponExt extends GsModelExt<GsWeapon> {
   const GsWeaponExt();
 
   @override
   List<DataField<GsWeapon>> getFields(GsWeapon? model) {
-    final ids = Database.i.weapons.data.map((e) => e.id);
+    final ids = Database.i.of<GsWeapon>().ids;
     final versions = GsItemFilter.versions().ids;
     return [
       DataField.textField(
@@ -54,12 +55,12 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
         (item, value) => item.copyWith(type: value),
         validator: (item) => vdContains(item.type, GeWeaponType.values),
       ),
-      DataField.singleEnum<GsWeapon, GeItemSource>(
+      DataField.singleEnum<GsWeapon, GeItemSourceType>(
         'Source',
-        GeItemSource.values.toChips(),
+        GeItemSourceType.values.toChips(),
         (item) => item.source,
         (item, value) => item.copyWith(source: value),
-        validator: (item) => vdContains(item.source, GeItemSource.values),
+        validator: (item) => vdContains(item.source, GeItemSourceType.values),
       ),
       DataField.textField(
         'Atk',
@@ -69,18 +70,18 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
       ),
       DataField.singleEnum(
         'Stat Type',
-        GeWeaponAscensionStatType.values.toChips(),
+        GeWeaponAscStatType.values.toChips(),
         (item) => item.statType,
         (item, value) => item.copyWith(statType: value),
         validator: (item) =>
-            vdContains(item.statType, GeWeaponAscensionStatType.values),
+            vdContains(item.statType, GeWeaponAscStatType.values),
       ),
       DataField.textField(
         'Stat Value',
         (item) => item.statValue.toString(),
         (item, v) => item.copyWith(statValue: double.tryParse(v) ?? -1),
         validator: (item) {
-          if (item.statType == GeWeaponAscensionStatType.none) {
+          if (item.statType == GeWeaponAscStatType.none) {
             return item.statValue == 0 ? GsValidLevel.good : GsValidLevel.error;
           }
           return vdNum(item.statValue, 1);

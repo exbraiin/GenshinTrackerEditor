@@ -1,8 +1,8 @@
 import 'package:dartx/dartx.dart';
-import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/style/utils.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
 abstract class GsModelExt<T extends GsModel<T>> {
   static GsModelExt<R>? of<R extends GsModel<R>>() {
@@ -13,18 +13,18 @@ abstract class GsModelExt<T extends GsModel<T>> {
       GsBanner => const GsBannerExt(),
       GsCharacter => const GsCharacterExt(),
       GsCharacterInfo => const GsCharacterInfoExt(),
-      GsCharacterOutfit => const GsCharacterOutfitExt(),
-      GsCity => const GsCityExt(),
+      GsCharacterSkin => const GsCharacterSkinExt(),
+      GsRegion => const GsRegionExt(),
       GsEnemy => const GsEnemyExt(),
       GsMaterial => const GsMaterialExt(),
       GsNamecard => const GsNamecardExt(),
       GsRecipe => const GsRecipeExt(),
-      GsRemarkableChest => const GsRemarkableChestExt(),
-      GsSerenitea => const GsSereniteaExt(),
+      GsFurnitureChest => const GsFurnitureChestExt(),
+      GsSereniteaSet => const GsSereniteaSetExt(),
       GsSpincrystal => const GsSpincrystalExt(),
       GsVersion => const GsVersionExt(),
       GsViewpoint => const GsViewpointExt(),
-      GsEvent => const GsEventExt(),
+      // GsEvent => const GsEventExt(),
       GsWeapon => const GsWeaponExt(),
       GsWeaponInfo => const GsWeaponInfoExt(),
       _ => null,

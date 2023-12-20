@@ -4,13 +4,14 @@ import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 
-class GsCityExt extends GsModelExt<GsCity> {
-  const GsCityExt();
+class GsRegionExt extends GsModelExt<GsRegion> {
+  const GsRegionExt();
 
   @override
-  List<DataField<GsCity>> getFields(GsCity? model) {
-    final ids = Database.i.cities.data.map((e) => e.id);
+  List<DataField<GsRegion>> getFields(GsRegion? model) {
+    final ids = Database.i.of<GsRegion>().ids;
     return [
       DataField.textField(
         'ID',
@@ -36,10 +37,10 @@ class GsCityExt extends GsModelExt<GsCity> {
       ),
       DataField.singleEnum(
         'Element',
-        GeElements.values.toChips(),
+        GeElementType.values.toChips(),
         (item) => item.element,
         (item, value) => item.copyWith(element: value),
-        validator: (item) => vdContains(item.element, GeElements.values),
+        validator: (item) => vdContains(item.element, GeElementType.values),
       ),
       DataField.textList(
         'Reputation',
