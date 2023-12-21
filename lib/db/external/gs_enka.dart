@@ -35,7 +35,7 @@ class GsEnkaChar {
 
   GsEnkaChar.fromJson(Map<String, dynamic> map)
       : id = map['id'] as String? ?? '',
-        icon = map['SideIconName'].isNotEmpty
+        icon = (map['SideIconName'] ?? '').isNotEmpty
             ? 'https://enka.network/ui/${map['SideIconName']}.png'
             : '',
         rarity = _rarity[map['QualityType']] ?? 1,

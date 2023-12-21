@@ -26,6 +26,7 @@ class GsConfigs<T extends GsModel<T>> {
   final String title;
   final GsItemDecor Function(T item) getDecor;
   final List<GsFieldFilter<T>> filters;
+  final List<T> Function(Iterable<T> list)? sorter;
   final Iterable<DataButton<T>> import;
 
   Items<T> get collection {
@@ -42,6 +43,7 @@ class GsConfigs<T extends GsModel<T>> {
   GsConfigs._({
     required this.title,
     required this.getDecor,
+    this.sorter,
     this.import = const [],
     this.filters = const [],
   });
@@ -58,6 +60,10 @@ class GsConfigs<T extends GsModel<T>> {
           child: _orderItem(item.order),
         );
       },
+      sorter: (list) => list
+          .sortedBy((element) => element.order)
+          .thenBy((element) => element.version)
+          .thenBy((element) => element.id),
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -77,6 +83,10 @@ class GsConfigs<T extends GsModel<T>> {
           image: cat?.icon,
         );
       },
+      sorter: (list) => list
+          .sortedBy((element) => element.group)
+          .thenBy((element) => element.version)
+          .thenBy((element) => element.id),
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -104,6 +114,11 @@ class GsConfigs<T extends GsModel<T>> {
         color: GsStyle.getRarityColor(item.rarity),
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
+      sorter: (list) => list
+          .sortedByDescending((element) => element.rarity)
+          .thenBy((element) => element.region.index)
+          .thenBy((element) => element.version)
+          .thenBy((element) => element.id),
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -137,6 +152,10 @@ class GsConfigs<T extends GsModel<T>> {
           color: item.type.color,
         );
       },
+      sorter: (list) => list
+          .sortedBy((element) => element.type.index)
+          .thenBy((element) => element.dateStart)
+          .thenBy((element) => element.id),
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -166,6 +185,10 @@ class GsConfigs<T extends GsModel<T>> {
           (ctx, item) => Importer.importCharacterFromFandom(item),
         ),
       ],
+      sorter: (list) => list
+          .sortedBy((element) => element.rarity)
+          .thenByDescending((element) => element.version)
+          .thenBy((element) => element.id),
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -285,6 +308,9 @@ class GsConfigs<T extends GsModel<T>> {
         regionColor:
             GsStyle.getRegionElementColor(GeRegionType.values.fromId(item.id)),
       ),
+      sorter: (list) => list
+          .sortedBy((element) => element.element.index)
+          .thenBy((element) => element.id),
     ),
     GsEnemy: GsConfigs<GsEnemy>._(
       title: 'Enemies',
@@ -295,6 +321,10 @@ class GsConfigs<T extends GsModel<T>> {
         image: item.image,
         child: _orderItem(item.order),
       ),
+      sorter: (list) => list
+          .sortedBy((element) => element.family.index)
+          .thenBy((element) => element.order)
+          .thenBy((element) => element.id),
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -322,6 +352,11 @@ class GsConfigs<T extends GsModel<T>> {
         color: GsStyle.getRarityColor(item.rarity),
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
+      sorter: (list) => list
+          .sortedBy((element) => element.group.index)
+          .thenBy((element) => element.subgroup)
+          .thenBy((element) => element.rarity)
+          .thenBy((element) => element.id),
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -361,6 +396,10 @@ class GsConfigs<T extends GsModel<T>> {
         version: item.version,
         color: GsStyle.getNamecardColor(item.type),
       ),
+      sorter: (list) => list
+          .sortedBy((element) => element.type.index)
+          .thenByDescending((element) => element.version)
+          .thenBy((element) => element.id),
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -387,6 +426,10 @@ class GsConfigs<T extends GsModel<T>> {
         version: item.version,
         color: GsStyle.getRarityColor(item.rarity),
       ),
+      sorter: (list) => list
+          .sortedByDescending((element) => element.rarity)
+          .thenByDescending((element) => element.version)
+          .thenBy((element) => element.id),
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -419,6 +462,10 @@ class GsConfigs<T extends GsModel<T>> {
         color: GsStyle.getRarityColor(item.rarity),
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
+      sorter: (list) => list
+          .sortedBy((element) => element.rarity)
+          .thenByDescending((element) => element.version)
+          .thenBy((element) => element.id),
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -449,6 +496,10 @@ class GsConfigs<T extends GsModel<T>> {
         version: item.version,
         color: item.category.color,
       ),
+      sorter: (list) => list
+          .sortedBy((element) => element.category.index)
+          .thenByDescending((element) => element.version)
+          .thenBy((element) => element.id),
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -470,6 +521,7 @@ class GsConfigs<T extends GsModel<T>> {
         color: GsStyle.getRarityColor(5),
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
+      sorter: (list) => list.sortedBy((element) => element.number),
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -511,6 +563,9 @@ class GsConfigs<T extends GsModel<T>> {
         version: item.version,
         color: GsStyle.getVersionColor(item.version),
       ),
+      sorter: (list) => list
+          .sortedBy((element) => element.dateStart)
+          .thenBy((element) => element.id),
     ),
     GsWeapon: GsConfigs<GsWeapon>._(
       title: 'Weapons',
@@ -520,6 +575,10 @@ class GsConfigs<T extends GsModel<T>> {
         version: item.version,
         color: GsStyle.getRarityColor(item.rarity),
       ),
+      sorter: (list) => list
+          .sortedBy((element) => element.rarity)
+          .thenByDescending((element) => element.version)
+          .thenBy((element) => element.id),
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -607,6 +666,9 @@ class GsConfigs<T extends GsModel<T>> {
         version: item.id,
         color: GsStyle.getVersionColor(item.id),
       ),
+      sorter: (list) => list
+          .sortedBy((element) => element.releaseDate)
+          .thenBy((element) => element.id),
     ),
   };
 
@@ -640,7 +702,7 @@ class GsConfigs<T extends GsModel<T>> {
     context.pushWidget(
       ItemsListScreen<T>(
         title: title,
-        list: () => collection.items.toList(),
+        list: () => sorter?.call(collection.items) ?? collection.items.toList(),
         getDecor: getDecor,
         onTap: openEditScreen,
         filters: filters,
