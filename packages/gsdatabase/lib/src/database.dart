@@ -138,12 +138,13 @@ final class Items<T extends GsModel<T>> {
   T? getItem(String id) => _data[id];
   bool exists(String id) => _data.containsKey(id);
 
-  void setItem(String id, T? item) {
-    if (item != null) {
-      _data[id] = item;
-    } else {
-      _data.remove(id);
-    }
+  void setItem(T item) {
+    _data[item.id] = item;
+    _db?._notifier.add(null);
+  }
+
+  void removeItem(String id) {
+    _data.remove(id);
     _db?._notifier.add(null);
   }
 
