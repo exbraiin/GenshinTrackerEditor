@@ -32,6 +32,12 @@ class GsSereniteaSetExt extends GsModelExt<GsSereniteaSet> {
         (item, value) => item.copyWith(name: value),
         validator: (item) => vdText(item.name),
       ),
+      DataField.selectRarity(
+        'Rarity',
+        (item) => item.rarity,
+        (item, value) => item.copyWith(rarity: value),
+        validator: (item) => vdRarity(item.rarity),
+      ),
       DataField.singleSelect(
         'Version',
         (item) => item.version,

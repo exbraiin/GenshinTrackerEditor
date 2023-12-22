@@ -512,6 +512,14 @@ class GsConfigs<T extends GsModel<T>> {
           (i) => i.category.id,
         ),
       ],
+      import: [
+        DataButton(
+          'Import from fandom URL',
+          icon: _fandomIcon,
+          (ctx, item) =>
+              Importer.importSereniteaFromFandom(item),
+        ),
+      ],
     ),
     GsFurnishing: GsConfigs<GsFurnishing>._(
       title: 'Furnishing',
