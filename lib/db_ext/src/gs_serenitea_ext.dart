@@ -83,7 +83,7 @@ class GsSereniteaSetExt extends GsModelExt<GsSereniteaSet> {
         (item, value) {
           final list = value.map((e) {
             final old = item.furnishing.firstOrNullWhere((i) => i.id == e);
-            return old ?? GsFurnishingAmount(id: e, amount: 0);
+            return old ?? GsFurnishingAmount(id: e, amount: 1);
           }).sortedBy((element) => element.id);
           return item.copyWith(furnishing: list);
         },

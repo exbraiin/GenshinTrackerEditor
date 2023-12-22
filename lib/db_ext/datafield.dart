@@ -349,8 +349,9 @@ class DataField<T extends GsModel<T>> {
     Iterable<GsSelectItem<String>> Function(T item) options,
     DataField<C> Function(T item, C child) build,
     T Function(T item, Set<String> value) onValuesUpdated,
-    T Function(T item, C field) onFieldUpdated,
-  ) {
+    T Function(T item, C field) onFieldUpdated, {
+    GsValidLevel emptyLevel = GsValidLevel.warn2,
+  }) {
     return DataField<T>._(
       label,
       (context, item, edit) {
@@ -386,7 +387,7 @@ class DataField<T extends GsModel<T>> {
         return values(item)
                 .map((e) => build(item, e).validator(e))
                 .maxBy((element) => element.index) ??
-            GsValidLevel.none;
+            emptyLevel;
       },
     );
   }
