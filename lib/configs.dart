@@ -530,6 +530,13 @@ class GsConfigs<T extends GsModel<T>> {
           (i) => i.rarity.toString(),
         ),
       ],
+      import: [
+        DataButton(
+          'Import from fandom URL',
+          icon: _fandomIcon,
+          (ctx, item) => Importer.importFurnishingFromFandom(item),
+        ),
+      ],
     ),
     GsSpincrystal: GsConfigs<GsSpincrystal>._(
       title: 'Spincrystals',

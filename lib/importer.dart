@@ -414,6 +414,47 @@ abstract final class Importer {
       ascStatValues: infos[1].join(', '),
     );
   }
+
+  static Future<GsFurnishing> importFurnishingFromFandom(
+    GsFurnishing item, {
+    String? url,
+    bool useFile = false,
+  }) async {
+    const format = Clipboard.kTextPlain;
+    url ??= (await Clipboard.getData(format))?.text ?? '';
+
+    late final String raw;
+    if (useFile) {
+      final file = File('temp.html');
+      if (!await file.exists()) {
+        raw = await _getUrl(url);
+        await file.writeAsString(raw);
+      } else {
+        raw = await file.readAsString();
+      }
+    } else {
+      raw = await _getUrl(url);
+    }
+    final document = html.parse(raw);
+
+    const nameSel = 'h2[data-source="title"]';
+    final name = document.querySelector(nameSel)?.text;
+    final id = name?.toDbId();
+
+    const imageSel = 'figure[data-source="image"] img';
+    final image = document.querySelector(imageSel)?.attributes['src'] ?? '';
+
+    const raritySel = 'div[data-source="quality"] img';
+    final rarity = document.querySelector(raritySel)?.attributes['title'] ?? '';
+    final rarityInt = int.tryParse(rarity.split(' ').first);
+
+    return item.copyWith(
+      id: id,
+      name: name,
+      image: _processImage(image),
+      rarity: rarityInt,
+    );
+  }
 }
 
 final _cache = <String, String>{};
