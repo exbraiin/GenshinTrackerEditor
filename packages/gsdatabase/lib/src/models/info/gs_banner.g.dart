@@ -77,10 +77,8 @@ class GsBanner extends GsModel<GsBanner> {
       'id': id,
       'name': name,
       'image': image,
-      'date_start':
-          '${dateStart.year.toString().padLeft(4, '0')}-${dateStart.month.toString().padLeft(2, '0')}-${dateStart.day.toString().padLeft(2, '0')}',
-      'date_end':
-          '${dateEnd.year.toString().padLeft(4, '0')}-${dateEnd.month.toString().padLeft(2, '0')}-${dateEnd.day.toString().padLeft(2, '0')}',
+      'date_start': dateStart.toString(),
+      'date_end': dateEnd.toString(),
       'version': version,
       'type': type.id,
       'feature_4': feature4,

@@ -52,8 +52,7 @@ class GsVersion extends GsModel<GsVersion> {
       'id': id,
       'name': name,
       'image': image,
-      'release_date':
-          '${releaseDate.year.toString().padLeft(4, '0')}-${releaseDate.month.toString().padLeft(2, '0')}-${releaseDate.day.toString().padLeft(2, '0')}',
+      'release_date': releaseDate.toString(),
     };
   }
 }

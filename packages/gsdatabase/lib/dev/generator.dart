@@ -87,6 +87,7 @@ class BuilderGeneratorGen extends GeneratorForAnnotation<BuilderGenerator> {
   }
 
   String _dateToString(String name) {
+    return '$name.toString()';
     return '\'\${$name.year.toString().padLeft(4, \'0\')}-'
         '\${$name.month.toString().padLeft(2, \'0\')}-'
         '\${$name.day.toString().padLeft(2, \'0\')}\'';

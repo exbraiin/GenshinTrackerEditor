@@ -143,10 +143,8 @@ class GsCharacter extends GsModel<GsCharacter> {
       'constellation': constellation,
       'affiliation': affiliation,
       'special_dish': specialDish,
-      'birthday':
-          '${birthday.year.toString().padLeft(4, '0')}-${birthday.month.toString().padLeft(2, '0')}-${birthday.day.toString().padLeft(2, '0')}',
-      'release_date':
-          '${releaseDate.year.toString().padLeft(4, '0')}-${releaseDate.month.toString().padLeft(2, '0')}-${releaseDate.day.toString().padLeft(2, '0')}',
+      'birthday': birthday.toString(),
+      'release_date': releaseDate.toString(),
       'image': image,
       'side_image': sideImage,
       'full_image': fullImage,
