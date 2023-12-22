@@ -41,7 +41,7 @@ abstract class GsModelExt<T extends GsModel<T>> {
     E? inDb,
     Iterable<String> ids,
   ) {
-    // inDb ??= item;
+    if (inDb?.id.isEmpty ?? false) inDb = item;
     final id = item.id;
     final expectedId = generateId(item);
     if (id.isEmpty) return GsValidLevel.error;

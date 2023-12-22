@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -119,7 +120,8 @@ Map<String, GsValidLevel> _validateModels<T extends GsModel<T>>(
 }
 
 _GsValidator<T> _getValidator<T extends GsModel<T>>() {
-  final fields = GsModelExt.of<T>()?.getFields(null) ?? [];
+  final flagItem = Database.i.of<T>().parser({});
+  final fields = GsModelExt.of<T>()?.getFields(flagItem) ?? [];
   return _GsValidator(fields.map((e) => e.validator));
 }
 
@@ -131,7 +133,7 @@ class _ComputeData<T extends GsModel<T>> {
 }
 
 class _GsValidator<T extends GsModel<T>> {
-  final Iterable<GsValidLevel Function(T item)> _validators;
+  final Iterable<DValidator<T>> _validators;
 
   _GsValidator(this._validators);
 
