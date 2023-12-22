@@ -102,9 +102,13 @@ abstract final class Importer {
     final inDbGrps = Database.i.of<GsAchievementGroup>().items.toList();
 
     const minReward = 5;
-    final impAchs = achs.map(GsAchievement.fromJson).toList()
-      ..removeWhere((e) => e.reward < minReward);
-    Database.i.of<GsAchievement>().updateAll(impAchs);
+    final impAchs = achs.map(GsAchievement.fromJson).toList();
+    final toRemove = impAchs.where((e) => e.reward < minReward).toList();
+    impAchs.removeWhere((e) => e.reward < minReward);
+
+    Database.i.of<GsAchievement>()
+      ..deleteAll(toRemove.map((e) => e.id))
+      ..updateAll(impAchs);
 
     final tmpGrps = grps.map(GsAchievementGroup.fromJson).toList();
     final impGrps = await compute(

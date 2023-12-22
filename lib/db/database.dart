@@ -97,6 +97,12 @@ extension ItemsExt<T extends GsModel<T>> on Items<T> {
     DataValidator.i.checkLevel<T>(id, null);
     Database.i.modified.add(null);
   }
+
+  void deleteAll(Iterable<String> ids) {
+    ids.forEach(removeItem);
+    DataValidator.i.checkItems<T>();
+    Database.i.modified.add(null);
+  }
 }
 
 enum ItemState {
