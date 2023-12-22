@@ -21,6 +21,7 @@ abstract class GsModelExt<T extends GsModel<T>> {
       GsRecipe => const GsRecipeExt(),
       GsFurnitureChest => const GsFurnitureChestExt(),
       GsSereniteaSet => const GsSereniteaSetExt(),
+      GsFurnishing => const GsFurnishingExt(),
       GsSpincrystal => const GsSpincrystalExt(),
       GsVersion => const GsVersionExt(),
       GsViewpoint => const GsViewpointExt(),

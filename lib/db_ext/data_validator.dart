@@ -15,6 +15,7 @@ export 'src/gs_character_outfit_ext.dart';
 export 'src/gs_city_ext.dart';
 export 'src/gs_enemy_ext.dart';
 export 'src/gs_event_ext.dart';
+export 'src/gs_furnishing_ext.dart';
 export 'src/gs_material_ext.dart';
 export 'src/gs_namecard_ext.dart';
 export 'src/gs_recipe_ext.dart';
@@ -74,6 +75,7 @@ class DataValidator {
       checkItems<GsRecipe>(),
       checkItems<GsFurnitureChest>(),
       checkItems<GsSereniteaSet>(),
+      checkItems<GsFurnishing>(),
       checkItems<GsSpincrystal>(),
       checkItems<GsVersion>(),
       checkItems<GsViewpoint>(),

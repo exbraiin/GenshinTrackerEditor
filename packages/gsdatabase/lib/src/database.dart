@@ -23,6 +23,7 @@ List<Items> get _infoCollections {
     Items<GsRecipe>('recipes', GsRecipe.fromJson),
     Items<GsFurnitureChest>('remarkable_chests', GsFurnitureChest.fromJson),
     Items<GsSereniteaSet>('serenitea_sets', GsSereniteaSet.fromJson),
+    Items<GsFurnishing>('furnishing', GsFurnishing.fromJson),
     Items<GsSpincrystal>('spincrystals', GsSpincrystal.fromJson),
     Items<GsVersion>('versions', GsVersion.fromJson),
     Items<GsViewpoint>('viewpoints', GsViewpoint.fromJson),

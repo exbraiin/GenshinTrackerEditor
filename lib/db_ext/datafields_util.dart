@@ -82,6 +82,13 @@ class GsItemFilter {
         color: (i) => GsStyle.getRarityColor(i.rarity),
         image: (i) => i.image,
       );
+  factory GsItemFilter.furnishing() => GsItemFilter._from(
+        Database.i.of<GsFurnishing>().items,
+        (i) => i.id,
+        title: (i) => i.name,
+        color: (i) => GsStyle.getRarityColor(i.rarity),
+        image: (i) => i.image,
+      );
   factory GsItemFilter.specialDishes({GsCharacter? character}) {
     final allRecipes = Database.i.of<GsRecipe>().items;
     var recipes = allRecipes.where((e) => e.baseRecipe.isNotEmpty);

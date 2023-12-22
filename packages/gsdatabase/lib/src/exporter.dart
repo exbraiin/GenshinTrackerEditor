@@ -29,12 +29,14 @@ export 'models/info/gs_character_info.dart'
 export 'models/info/gs_character_skin.dart' show GsCharacterSkin;
 export 'models/info/gs_enemy.dart' show GsEnemy;
 export 'models/info/gs_event.dart' show GsEvent;
+export 'models/info/gs_furnishin.dart' show GsFurnishing;
 export 'models/info/gs_furniture_chest.dart' show GsFurnitureChest;
 export 'models/info/gs_material.dart' show GsMaterial;
 export 'models/info/gs_namecard.dart' show GsNamecard;
 export 'models/info/gs_recipe.dart' show GsRecipe, GsIngredient, GsRecipeExt;
 export 'models/info/gs_region.dart' show GsRegion;
-export 'models/info/gs_serenitea_set.dart' show GsSereniteaSet;
+export 'models/info/gs_serenitea_set.dart'
+    show GsSereniteaSet, GsFurnishingAmount;
 export 'models/info/gs_spincrystal.dart' show GsSpincrystal, GsSpincrystalExt;
 export 'models/info/gs_version.dart' show GsVersion;
 export 'models/info/gs_viewpoint.dart' show GsViewpoint;

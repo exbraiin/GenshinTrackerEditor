@@ -513,6 +513,24 @@ class GsConfigs<T extends GsModel<T>> {
         ),
       ],
     ),
+    GsFurnishing: GsConfigs<GsFurnishing>._(
+      title: 'Furnishing',
+      getDecor: (item) => GsItemDecor(
+        label: item.name,
+        version: '',
+        color: GsStyle.getRarityColor(item.rarity),
+      ),
+      sorter: (list) => list
+          .sortedBy((element) => element.rarity)
+          .thenBy((element) => element.id),
+      filters: [
+        GsFieldFilter.fromFilter(
+          'Rarity',
+          GsItemFilter.rarities(),
+          (i) => i.rarity.toString(),
+        ),
+      ],
+    ),
     GsSpincrystal: GsConfigs<GsSpincrystal>._(
       title: 'Spincrystals',
       getDecor: (item) => GsItemDecor(

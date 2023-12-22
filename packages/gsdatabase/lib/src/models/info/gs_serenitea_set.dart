@@ -7,6 +7,8 @@ part 'gs_serenitea_set.g.dart';
 abstract class IGsSereniteaSet extends GsModel<IGsSereniteaSet> {
   @BuilderWire('name')
   String get name;
+  @BuilderWire('version')
+  String get version;
   @BuilderWire('category')
   GeSereniteaSetType get category;
   @BuilderWire('image')
@@ -17,6 +19,12 @@ abstract class IGsSereniteaSet extends GsModel<IGsSereniteaSet> {
   int get energy;
   @BuilderWire('chars')
   List<String> get chars;
-  @BuilderWire('version')
-  String get version;
+  @BuilderWire('furnishing')
+  List<IGsFurnishingAmount> get furnishing;
+}
+
+@BuilderGenerator()
+abstract class IGsFurnishingAmount extends GsModel<IGsFurnishingAmount> {
+  @BuilderWire('amount')
+  int get amount;
 }
