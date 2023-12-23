@@ -12,7 +12,6 @@ abstract class GsModelExt<T extends GsModel<T>> {
       GsArtifact => const GsArtifactExt(),
       GsBanner => const GsBannerExt(),
       GsCharacter => const GsCharacterExt(),
-      GsCharacterInfo => const GsCharacterInfoExt(),
       GsCharacterSkin => const GsCharacterSkinExt(),
       GsRegion => const GsRegionExt(),
       GsEnemy => const GsEnemyExt(),
@@ -27,7 +26,6 @@ abstract class GsModelExt<T extends GsModel<T>> {
       GsViewpoint => const GsViewpointExt(),
       GsEvent => const GsEventExt(),
       GsWeapon => const GsWeaponExt(),
-      GsWeaponInfo => const GsWeaponInfoExt(),
       _ => null,
     } as GsModelExt<R>?;
   }

@@ -13,6 +13,13 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
   List<DataField<GsWeapon>> getFields(GsWeapon? model) {
     final ids = Database.i.of<GsWeapon>().ids;
     final versions = GsItemFilter.versions().ids;
+    const catWeapon = GeMaterialType.weaponMaterials;
+    final matWeapon = GsItemFilter.matGroups(catWeapon).ids;
+    const catCommon = GeMaterialType.normalDrops;
+    final matCommon = GsItemFilter.matGroups(catCommon).ids;
+    const catElite = GeMaterialType.eliteDrops;
+    final matElite = GsItemFilter.matGroups(catElite).ids;
+
     return [
       DataField.textField(
         'ID',
@@ -100,6 +107,62 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
         (item, value) => item.copyWith(version: value),
         validator: (item) => vdContains(item.version, versions),
       ),
+      DataField.textField(
+        'Effect Name',
+        (item) => item.effectName,
+        (item, value) => item.copyWith(effectName: value),
+        validator: (item) => vdText(item.effectName),
+      ),
+      DataField.textEditor(
+        'Effect Desc',
+        (item) => item.effectDesc,
+        (item, value) => item.copyWith(effectDesc: value),
+        validator: (item) => vdText(item.effectDesc),
+      ),
+      DataField.singleSelect(
+        'Material Weapon',
+        (item) => item.matWeapon,
+        (item) =>
+            GsItemFilter.matGroups(GeMaterialType.weaponMaterials).filters,
+        (item, value) => item.copyWith(matWeapon: value),
+        validator: (item) => vdContains(item.matWeapon, matWeapon),
+      ),
+      DataField.singleSelect(
+        'Material Common',
+        (item) => item.matCommon,
+        (item) => GsItemFilter.matGroups(GeMaterialType.normalDrops).filters,
+        (item, value) => item.copyWith(matCommon: value),
+        validator: (item) => vdContains(item.matCommon, matCommon),
+      ),
+      DataField.singleSelect(
+        'Material Elite',
+        (item) => item.matElite,
+        (item) => GsItemFilter.matGroups(GeMaterialType.eliteDrops).filters,
+        (item, value) => item.copyWith(matElite: value),
+        validator: (item) => vdContains(item.matElite, matElite),
+      ),
+      DataField.textList(
+        'Ascension Atk Values',
+        (item) => item.ascAtkValues,
+        (item, value) => item.copyWith(ascAtkValues: value),
+        validator: (item) =>
+            _vdWeaponAsc(item.ascAtkValues, item.ascStatValues),
+      ),
+      DataField.textList(
+        'Ascension Stat Values',
+        (item) => item.ascStatValues,
+        (item, value) => item.copyWith(ascStatValues: value),
+        validator: (item) =>
+            _vdWeaponAsc(item.ascAtkValues, item.ascStatValues),
+      ),
     ];
   }
+}
+
+GsValidLevel _vdWeaponAsc(String atkValues, String statValues) {
+  final atk = atkValues.split(',').where((e) => e.isNotEmpty);
+  final stat = statValues.split(',').where((e) => e.isNotEmpty);
+  return (atk.isNotEmpty && stat.isEmpty) || atk.length == stat.length
+      ? GsValidLevel.good
+      : GsValidLevel.error;
 }

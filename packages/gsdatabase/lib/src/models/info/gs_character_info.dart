@@ -1,11 +1,10 @@
-import 'package:gsdatabase/src/enums/ge_char_constellation_type.dart';
-import 'package:gsdatabase/src/enums/ge_char_talent_type.dart';
 import 'package:gsdatabase/src/enums/ge_character_asc_stat_type.dart';
 import 'package:gsdatabase/src/models/gs_model.dart';
+import 'package:gsdatabase/src/models/info/gs_character.dart';
 
-part 'gs_character_info.g.dart';
+// part 'gs_character_info.g.dart';
 
-@BuilderGenerator()
+// @BuilderGenerator()
 abstract class IGsCharacterInfo extends GsModel<IGsCharacterInfo> {
   @BuilderWire('mat_gem')
   String get gemMaterial;
@@ -35,7 +34,8 @@ abstract class IGsCharacterInfo extends GsModel<IGsCharacterInfo> {
   List<IGsCharConstellation> get constellations;
 }
 
-@BuilderGenerator()
+/*
+// @BuilderGenerator()
 abstract class IGsCharTalent extends GsModel<IGsCharTalent> {
   @BuilderWire('name')
   String get name;
@@ -47,7 +47,7 @@ abstract class IGsCharTalent extends GsModel<IGsCharTalent> {
   String get desc;
 }
 
-@BuilderGenerator()
+// @BuilderGenerator()
 abstract class IGsCharConstellation extends GsModel<IGsCharConstellation> {
   @BuilderWire('name')
   String get name;
@@ -58,3 +58,4 @@ abstract class IGsCharConstellation extends GsModel<IGsCharConstellation> {
   @BuilderWire('type')
   GeCharConstellationType get type;
 }
+*/

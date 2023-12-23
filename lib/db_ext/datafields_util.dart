@@ -128,24 +128,6 @@ class GsItemFilter {
         title: (i) => i.name,
         color: (i) => GsStyle.getRarityColor(i.rarity),
       );
-  factory GsItemFilter.charsWithoutInfo() => GsItemFilter._from(
-        Database.i.of<GsCharacter>().items.where(
-              (e) => Database.i.of<GsCharacterInfo>().getItem(e.id) == null,
-            ),
-        (i) => i.id,
-        title: (i) => i.name,
-        color: (i) => GsStyle.getRarityColor(i.rarity),
-      );
-
-  factory GsItemFilter.weaponsWithoutInfo() => GsItemFilter._from(
-        Database.i
-            .of<GsWeapon>()
-            .items
-            .where((e) => Database.i.of<GsWeaponInfo>().getItem(e.id) == null),
-        (i) => i.id,
-        title: (i) => i.name,
-        color: (i) => GsStyle.getRarityColor(i.rarity),
-      );
 
   factory GsItemFilter.matGroups(
     GeMaterialType type, [

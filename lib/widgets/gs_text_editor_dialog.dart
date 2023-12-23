@@ -8,7 +8,7 @@ import 'package:gsdatabase/gsdatabase.dart';
 class GsTextEditorDialog extends StatefulWidget {
   final String title;
   final String initialText;
-  final GsCharacterInfo? info;
+  final GsCharacter? info;
   final void Function(String value) onConfirm;
 
   const GsTextEditorDialog({

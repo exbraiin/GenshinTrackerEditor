@@ -1,9 +1,9 @@
 import 'package:gsdatabase/src/enums/ge_weapon_asc_stat_type.dart';
 import 'package:gsdatabase/src/models/gs_model.dart';
 
-part 'gs_weapon_info.g.dart';
+// part 'gs_weapon_info.g.dart';
 
-@BuilderGenerator()
+// @BuilderGenerator()
 abstract class IGsWeaponInfo extends GsModel<IGsWeaponInfo> {
   @BuilderWire('effect_name')
   String get effectName;

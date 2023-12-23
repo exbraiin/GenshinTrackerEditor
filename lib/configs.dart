@@ -184,6 +184,16 @@ class GsConfigs<T extends GsModel<T>> {
           icon: _fandomIcon,
           (ctx, item) => Importer.importCharacterFromFandom(item),
         ),
+        DataButton(
+          'Import stats from Ambr table',
+          icon: _ambrIcon,
+          (ctx, item) => Importer.importCharacterStatsFromAmbr(item),
+        ),
+        DataButton(
+          'Import stats from Paimon.moe',
+          icon: _paimonMoeIcon,
+          (ctx, item) => Importer.importCharacterInfoFromPaimonMoe(item),
+        ),
       ],
       sorter: (list) => list
           .sortedBy((element) => element.rarity)
@@ -214,61 +224,6 @@ class GsConfigs<T extends GsModel<T>> {
           'Weapon',
           GeWeaponType.values,
           (i) => i.weapon.id,
-        ),
-      ],
-    ),
-    GsCharacterInfo: GsConfigs<GsCharacterInfo>._(
-      title: 'Character Info',
-      getDecor: (item) {
-        final char = Database.i.of<GsCharacter>().getItem(item.id);
-        return GsItemDecor(
-          label: char?.name ?? item.id,
-          image: char?.image,
-          version: char?.version ?? '',
-          color: GsStyle.getRarityColor(char?.rarity ?? 0),
-          regionColor:
-              GsStyle.getRegionElementColor(char?.region ?? GeRegionType.none),
-        );
-      },
-      import: [
-        DataButton(
-          'Import stats from Ambr table',
-          icon: _ambrIcon,
-          (ctx, item) => Importer.importCharacterStatsFromAmbr(item),
-        ),
-        DataButton(
-          'Import stats from Paimon.moe',
-          icon: _paimonMoeIcon,
-          (ctx, item) => Importer.importCharacterInfoFromPaimonMoe(item),
-        ),
-      ],
-      filters: [
-        GsFieldFilter.fromFilter(
-          'Version',
-          GsItemFilter.versions(),
-          (i) => Database.i.of<GsCharacter>().getItem(i.id)?.version ?? '',
-        ),
-        GsFieldFilter.fromFilter(
-          'Region',
-          GsItemFilter.regions(),
-          (i) => Database.i.of<GsCharacter>().getItem(i.id)?.region.id ?? '',
-        ),
-        GsFieldFilter.fromFilter(
-          'Rarity',
-          GsItemFilter.rarities(4),
-          (i) =>
-              Database.i.of<GsCharacter>().getItem(i.id)?.rarity.toString() ??
-              '',
-        ),
-        GsFieldFilter.fromEnum(
-          'Element',
-          GeElementType.values,
-          (i) => Database.i.of<GsCharacter>().getItem(i.id)?.element.id ?? '',
-        ),
-        GsFieldFilter.fromEnum(
-          'Weapon',
-          GeWeaponType.values,
-          (i) => Database.i.of<GsCharacter>().getItem(i.id)?.weapon.id ?? '',
         ),
       ],
     ),
@@ -516,8 +471,7 @@ class GsConfigs<T extends GsModel<T>> {
         DataButton(
           'Import from fandom URL',
           icon: _fandomIcon,
-          (ctx, item) =>
-              Importer.importSereniteaFromFandom(item),
+          (ctx, item) => Importer.importSereniteaFromFandom(item),
         ),
       ],
     ),
@@ -612,6 +566,18 @@ class GsConfigs<T extends GsModel<T>> {
           .sortedBy((element) => element.rarity)
           .thenByDescending((element) => element.version)
           .thenBy((element) => element.id),
+      import: [
+        DataButton(
+          'Import stats from Ambr table',
+          icon: _ambrIcon,
+          (ctx, item) => Importer.importWeaponAscensionStatsFromAmbr(item),
+        ),
+        DataButton(
+          'Import stats from Paimon.moe',
+          icon: _paimonMoeIcon,
+          (context, item) => Importer.importWeaponInfoFromPaimonMoe(item),
+        ),
+      ],
       filters: [
         GsFieldFilter.fromFilter(
           'Version',
@@ -637,58 +603,6 @@ class GsConfigs<T extends GsModel<T>> {
           'Stat Type',
           GeWeaponAscStatType.values,
           (i) => i.statType.id,
-        ),
-      ],
-    ),
-    GsWeaponInfo: GsConfigs<GsWeaponInfo>._(
-      title: 'Weapon Info',
-      getDecor: (item) {
-        final weapon = Database.i.of<GsWeapon>().getItem(item.id);
-        return GsItemDecor(
-          label: weapon?.name ?? item.id,
-          image: weapon?.image,
-          version: weapon?.version ?? '',
-          color: GsStyle.getRarityColor(weapon?.rarity ?? 0),
-        );
-      },
-      import: [
-        DataButton(
-          'Import stats from Ambr table',
-          icon: _ambrIcon,
-          (ctx, item) => Importer.importWeaponAscensionStatsFromAmbr(item),
-        ),
-        DataButton(
-          'Import stats from Paimon.moe',
-          icon: _paimonMoeIcon,
-          (context, item) => Importer.importWeaponInfoFromPaimonMoe(item),
-        ),
-      ],
-      filters: [
-        GsFieldFilter.fromFilter(
-          'Version',
-          GsItemFilter.versions(),
-          (i) => Database.i.of<GsWeapon>().getItem(i.id)?.version ?? '',
-        ),
-        GsFieldFilter.fromFilter(
-          'Rarity',
-          GsItemFilter.rarities(),
-          (i) =>
-              Database.i.of<GsWeapon>().getItem(i.id)?.rarity.toString() ?? '',
-        ),
-        GsFieldFilter.fromEnum(
-          'Type',
-          GeWeaponType.values,
-          (i) => Database.i.of<GsWeapon>().getItem(i.id)?.type.id ?? '',
-        ),
-        GsFieldFilter.fromEnum(
-          'Source',
-          GeItemSourceType.values,
-          (i) => Database.i.of<GsWeapon>().getItem(i.id)?.source.id ?? '',
-        ),
-        GsFieldFilter.fromEnum(
-          'Stat Type',
-          GeWeaponAscStatType.values,
-          (i) => Database.i.of<GsWeapon>().getItem(i.id)?.statType.id ?? '',
         ),
       ],
     ),

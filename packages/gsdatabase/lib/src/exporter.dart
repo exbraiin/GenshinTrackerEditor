@@ -23,9 +23,8 @@ export 'models/info/gs_achievement.dart' show GsAchievement, GsAchievementPhase;
 export 'models/info/gs_achievement_group.dart' show GsAchievementGroup;
 export 'models/info/gs_artifact.dart' show GsArtifact, GsArtifactPiece;
 export 'models/info/gs_banner.dart' show GsBanner;
-export 'models/info/gs_character.dart' show GsCharacter;
-export 'models/info/gs_character_info.dart'
-    show GsCharacterInfo, GsCharTalent, GsCharConstellation;
+export 'models/info/gs_character.dart'
+    show GsCharacter, GsCharTalent, GsCharConstellation;
 export 'models/info/gs_character_skin.dart' show GsCharacterSkin;
 export 'models/info/gs_enemy.dart' show GsEnemy;
 export 'models/info/gs_event.dart' show GsEvent;
@@ -41,7 +40,6 @@ export 'models/info/gs_spincrystal.dart' show GsSpincrystal, GsSpincrystalExt;
 export 'models/info/gs_version.dart' show GsVersion;
 export 'models/info/gs_viewpoint.dart' show GsViewpoint;
 export 'models/info/gs_weapon.dart' show GsWeapon;
-export 'models/info/gs_weapon_info.dart' show GsWeaponInfo;
 export 'models/info/gs_wish.dart' show GsWish;
 export 'models/save/gi_achievement.dart' show GiAchievement;
 export 'models/save/gi_character.dart' show GiCharacter;

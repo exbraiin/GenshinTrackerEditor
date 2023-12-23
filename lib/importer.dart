@@ -160,8 +160,8 @@ abstract final class Importer {
         .join(', ');
   }
 
-  static Future<GsWeaponInfo> importWeaponInfoFromPaimonMoe(
-    GsWeaponInfo info,
+  static Future<GsWeapon> importWeaponInfoFromPaimonMoe(
+    GsWeapon info,
   ) async {
     const url = 'https://raw.githubusercontent.com/MadeBaruna/'
         '/paimon-moe/main/src/data/weapons/en.json';
@@ -184,14 +184,14 @@ abstract final class Importer {
     return info.copyWith(
       effectName: skillName,
       effectDesc: skillDesc,
-      ascStatType: weaponStat,
+      statType: weaponStat,
       ascAtkValues: _processPaimonMoeStats(listAtk),
       ascStatValues: _processPaimonMoeStats(listStat, isPercent: isPercent),
     );
   }
 
-  static Future<GsCharacterInfo> importCharacterInfoFromPaimonMoe(
-    GsCharacterInfo info,
+  static Future<GsCharacter> importCharacterInfoFromPaimonMoe(
+    GsCharacter info,
   ) async {
     final url = 'https://raw.githubusercontent.com/MadeBaruna/'
         '/paimon-moe/main/src/data/characterData/${info.id}.json';
@@ -389,10 +389,9 @@ abstract final class Importer {
     }
   }
 
-  static Future<GsCharacterInfo> importCharacterStatsFromAmbr(
-    GsCharacterInfo info, {
-    String? data,
-  }) async {
+  static Future<GsCharacter> importCharacterStatsFromAmbr(
+    GsCharacter info,
+  ) async {
     final infos = <List<String>>[[], [], [], []];
     await _importAscensionStatsFromAmbr(info: infos);
     return info.copyWith(
@@ -403,10 +402,9 @@ abstract final class Importer {
     );
   }
 
-  static Future<GsWeaponInfo> importWeaponAscensionStatsFromAmbr(
-    GsWeaponInfo info, {
-    String? data,
-  }) async {
+  static Future<GsWeapon> importWeaponAscensionStatsFromAmbr(
+    GsWeapon info,
+  ) async {
     final infos = <List<String>>[[], []];
     await _importAscensionStatsFromAmbr(info: infos);
     return info.copyWith(

@@ -11,7 +11,6 @@ export 'src/gs_achievement_group_ext.dart';
 export 'src/gs_artifact_ext.dart';
 export 'src/gs_banner_ext.dart';
 export 'src/gs_character_ext.dart';
-export 'src/gs_character_info_ext.dart';
 export 'src/gs_character_outfit_ext.dart';
 export 'src/gs_city_ext.dart';
 export 'src/gs_enemy_ext.dart';
@@ -26,7 +25,6 @@ export 'src/gs_spincrystal_ext.dart';
 export 'src/gs_version_ext.dart';
 export 'src/gs_viewpoint_ext.dart';
 export 'src/gs_weapon_ext.dart';
-export 'src/gs_weapon_info_ext.dart';
 
 // The validator level.
 enum GsValidLevel {
@@ -67,7 +65,6 @@ class DataValidator {
       checkItems<GsArtifact>(),
       checkItems<GsBanner>(),
       checkItems<GsCharacter>(),
-      checkItems<GsCharacterInfo>(),
       checkItems<GsCharacterSkin>(),
       checkItems<GsRegion>(),
       checkItems<GsEnemy>(),
@@ -82,7 +79,6 @@ class DataValidator {
       checkItems<GsViewpoint>(),
       checkItems<GsEvent>(),
       checkItems<GsWeapon>(),
-      checkItems<GsWeaponInfo>(),
     ]);
   }
 

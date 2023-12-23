@@ -20,6 +20,13 @@ class GsWeapon extends GsModel<GsWeapon> {
   final String desc;
   final String version;
   final GeItemSourceType source;
+  final String effectName;
+  final String effectDesc;
+  final String matWeapon;
+  final String matCommon;
+  final String matElite;
+  final String ascAtkValues;
+  final String ascStatValues;
 
   /// Creates a new [GsWeapon] instance.
   GsWeapon({
@@ -35,6 +42,13 @@ class GsWeapon extends GsModel<GsWeapon> {
     required this.desc,
     required this.version,
     required this.source,
+    required this.effectName,
+    required this.effectDesc,
+    required this.matWeapon,
+    required this.matCommon,
+    required this.matElite,
+    required this.ascAtkValues,
+    required this.ascStatValues,
   });
 
   /// Creates a new [GsWeapon] instance from the given map.
@@ -50,7 +64,14 @@ class GsWeapon extends GsModel<GsWeapon> {
         statValue = m['stat_value'] as double? ?? 0,
         desc = m['desc'] as String? ?? '',
         version = m['version'] as String? ?? '',
-        source = GeItemSourceType.values.fromId(m['source']);
+        source = GeItemSourceType.values.fromId(m['source']),
+        effectName = m['effect_name'] as String? ?? '',
+        effectDesc = m['effect_desc'] as String? ?? '',
+        matWeapon = m['mat_weapon'] as String? ?? '',
+        matCommon = m['mat_common'] as String? ?? '',
+        matElite = m['mat_elite'] as String? ?? '',
+        ascAtkValues = m['asc_atk_values'] as String? ?? '',
+        ascStatValues = m['asc_stat_values'] as String? ?? '';
 
   /// Copies this model with the given parameters.
   @override
@@ -67,6 +88,13 @@ class GsWeapon extends GsModel<GsWeapon> {
     String? desc,
     String? version,
     GeItemSourceType? source,
+    String? effectName,
+    String? effectDesc,
+    String? matWeapon,
+    String? matCommon,
+    String? matElite,
+    String? ascAtkValues,
+    String? ascStatValues,
   }) {
     return GsWeapon(
       id: id ?? this.id,
@@ -81,6 +109,13 @@ class GsWeapon extends GsModel<GsWeapon> {
       desc: desc ?? this.desc,
       version: version ?? this.version,
       source: source ?? this.source,
+      effectName: effectName ?? this.effectName,
+      effectDesc: effectDesc ?? this.effectDesc,
+      matWeapon: matWeapon ?? this.matWeapon,
+      matCommon: matCommon ?? this.matCommon,
+      matElite: matElite ?? this.matElite,
+      ascAtkValues: ascAtkValues ?? this.ascAtkValues,
+      ascStatValues: ascStatValues ?? this.ascStatValues,
     );
   }
 
@@ -100,6 +135,13 @@ class GsWeapon extends GsModel<GsWeapon> {
       'desc': desc,
       'version': version,
       'source': source.id,
+      'effect_name': effectName,
+      'effect_desc': effectDesc,
+      'mat_weapon': matWeapon,
+      'mat_common': matCommon,
+      'mat_elite': matElite,
+      'asc_atk_values': ascAtkValues,
+      'asc_stat_values': ascStatValues,
     };
   }
 }

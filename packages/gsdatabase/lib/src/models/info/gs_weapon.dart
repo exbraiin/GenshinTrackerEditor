@@ -29,4 +29,19 @@ abstract class IGsWeapon extends GsModel<IGsWeapon> {
   String get version;
   @BuilderWire('source')
   GeItemSourceType get source;
+
+  @BuilderWire('effect_name')
+  String get effectName;
+  @BuilderWire('effect_desc')
+  String get effectDesc;
+  @BuilderWire('mat_weapon')
+  String get matWeapon;
+  @BuilderWire('mat_common')
+  String get matCommon;
+  @BuilderWire('mat_elite')
+  String get matElite;
+  @BuilderWire('asc_atk_values')
+  String get ascAtkValues;
+  @BuilderWire('asc_stat_values')
+  String get ascStatValues;
 }

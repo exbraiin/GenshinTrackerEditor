@@ -13,7 +13,6 @@ List<Items> get _infoCollections {
     Items<GsArtifact>('artifacts', GsArtifact.fromJson),
     Items<GsBanner>('banners', GsBanner.fromJson),
     Items<GsCharacter>('characters', GsCharacter.fromJson),
-    Items<GsCharacterInfo>('characters_info', GsCharacterInfo.fromJson),
     Items<GsCharacterSkin>('characters_outfits', GsCharacterSkin.fromJson),
     Items<GsEvent>('events', GsEvent.fromJson),
     Items<GsEnemy>('enemies', GsEnemy.fromJson),
@@ -28,7 +27,6 @@ List<Items> get _infoCollections {
     Items<GsVersion>('versions', GsVersion.fromJson),
     Items<GsViewpoint>('viewpoints', GsViewpoint.fromJson),
     Items<GsWeapon>('weapons', GsWeapon.fromJson),
-    Items<GsWeaponInfo>('weapons_info', GsWeaponInfo.fromJson),
   ];
 }
 
@@ -46,43 +44,6 @@ List<Items> get _saveCollections {
   ];
 }
 
-JsonMap _preProcessSave(JsonMap json) {
-  json['artifacts'] = (json['artifacts'] as JsonMap).map((key, value) {
-    final pieces = (value as JsonMap)['pieces'] as JsonMap?;
-    if (pieces == null) return MapEntry(key, value);
-    value['list_pieces'] = pieces.entries
-        .map((e) => <String, dynamic>{'id': e.key, ...e.value})
-        .toList();
-    return MapEntry(key, value);
-  });
-
-  json['recipes'] = (json['recipes'] as JsonMap).map((key, value) {
-    final ingredients = (value as JsonMap)['ingredients'] as JsonMap?;
-    if (ingredients == null) return MapEntry(key, value);
-    value['list_ingredients'] = ingredients.entries
-        .map((e) => <String, dynamic>{'id': e.key, 'amount': e.value})
-        .toList();
-    return MapEntry(key, value);
-  });
-
-  const key = 'characters_info';
-  json[key] = (json[key] as JsonMap).map((key, value) {
-    value['talents'] = (value['talents'] as List)
-        .cast<JsonMap>()
-        .map((e) => <String, dynamic>{'id': e['type'], ...e})
-        .toList();
-
-    value['constellations'] = (value['constellations'] as List)
-        .cast<JsonMap>()
-        .map((e) => <String, dynamic>{'id': e['type'], ...e})
-        .toList();
-
-    return MapEntry(key, value);
-  });
-
-  return json;
-}
-
 final class GsDatabase {
   final String loadJson;
   final bool allowWrite;
@@ -94,7 +55,7 @@ final class GsDatabase {
   GsDatabase.info({
     required this.loadJson,
     this.allowWrite = false,
-  })  : _preProcess = _preProcessSave,
+  })  : _preProcess = null,
         collections = _infoCollections;
 
   GsDatabase.save({
