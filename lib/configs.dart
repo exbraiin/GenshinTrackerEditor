@@ -482,6 +482,7 @@ class GsConfigs<T extends GsModel<T>> {
         label: item.name,
         version: '',
         color: GsStyle.getRarityColor(item.rarity),
+        image: item.image,
       ),
       sorter: (list) => list
           .sortedBy((element) => element.rarity)
