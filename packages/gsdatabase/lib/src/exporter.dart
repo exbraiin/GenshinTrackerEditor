@@ -20,8 +20,7 @@ export 'enums/ge_weapon_asc_stat_type.dart';
 export 'enums/ge_weapon_type.dart';
 export 'enums/ge_weekday_type.dart';
 // --- OTHER ---
-export 'models/gs_model.dart'
-    show GsModel, ListGsEnumExt, GeEnum, JsonMap, GsModelSorter;
+export 'models/gs_model.dart' show GsModel, ListGsEnumExt, GeEnum, JsonMap;
 // --- MODELS ---
 export 'models/info/gs_achievement.dart' show GsAchievement, GsAchievementPhase;
 export 'models/info/gs_achievement_group.dart' show GsAchievementGroup;
@@ -30,7 +29,7 @@ export 'models/info/gs_banner.dart' show GsBanner;
 export 'models/info/gs_character.dart'
     show GsCharacter, GsCharTalent, GsCharConstellation;
 export 'models/info/gs_character_skin.dart' show GsCharacterSkin;
-export 'models/info/gs_enemy.dart' show GsEnemy;
+export 'models/info/gs_enemy.dart' show GsEnemy, GsEnemyExt;
 export 'models/info/gs_event.dart' show GsEvent;
 export 'models/info/gs_furnishing.dart' show GsFurnishing;
 export 'models/info/gs_furniture_chest.dart' show GsFurnitureChest;

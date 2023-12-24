@@ -585,7 +585,7 @@ class GsConfigs<T extends GsModel<T>> {
     context.pushWidget(
       ItemsListScreen<T>(
         title: title,
-        list: () => collection.items.sortedModels(),
+        list: () => collection.items.sorted(),
         getDecor: getDecor,
         onTap: openEditScreen,
         filters: filters,

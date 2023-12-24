@@ -21,7 +21,7 @@ abstract mixin class _GsAchievementGroup
   int get achievements;
 
   @override
-  Iterable<Comparable Function(GsAchievementGroup e)> get sorters => [
-        (e) => e.order,
+  Iterable<Comparable Function(GsAchievementGroup a)> get sorters => [
+        (a) => a.order,
       ];
 }

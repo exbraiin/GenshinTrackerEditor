@@ -2,7 +2,8 @@ import 'package:dartx/dartx.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/style/utils.dart';
-import 'package:gsdatabase/gsdatabase.dart' hide GsRecipeExt, GsSpincrystalExt;
+import 'package:gsdatabase/gsdatabase.dart'
+    hide GsRecipeExt, GsSpincrystalExt, GsEnemyExt;
 
 abstract class GsModelExt<T extends GsModel<T>> {
   static GsModelExt<R>? of<R extends GsModel<R>>() {

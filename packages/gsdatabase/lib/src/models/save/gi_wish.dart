@@ -12,6 +12,14 @@ abstract mixin class _GiWish implements GsModel<GiWish> {
   String get bannerId;
   @BuilderWire('date')
   DateTime get date;
+
+  @override
+  Iterable<Comparable Function(GiWish a)> get sorters => [
+        (a) => a.date,
+        (a) => a.number,
+        (a) => a.bannerId,
+        (a) => a.bannerDate,
+      ];
 }
 
 extension GiWishExt on GiWish {

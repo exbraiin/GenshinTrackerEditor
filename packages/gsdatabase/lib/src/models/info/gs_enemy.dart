@@ -33,3 +33,13 @@ abstract mixin class _GsEnemy implements GsModel<GsEnemy> {
         (e) => e.order,
       ];
 }
+
+extension GsEnemyExt on GsEnemy {
+  int get rarityByType => switch (type) {
+        GeEnemyType.none => 1,
+        GeEnemyType.common => 2,
+        GeEnemyType.elite => 3,
+        GeEnemyType.normalBoss => 4,
+        GeEnemyType.weeklyBoss => 5,
+      };
+}
