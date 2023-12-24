@@ -1,16 +1,19 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'gs_furnishin.dart';
+part of 'gs_furnishing.dart';
 
 // **************************************************************************
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsFurnishing extends GsModel<GsFurnishing> {
+class GsFurnishing extends GsModel<GsFurnishing> with _GsFurnishing {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final String image;
+  @override
   final int rarity;
 
   /// Creates a new [GsFurnishing] instance.

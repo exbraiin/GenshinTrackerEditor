@@ -4,7 +4,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_namecard.g.dart';
 
 @BuilderGenerator()
-abstract class IGsNamecard extends GsModel<IGsNamecard> {
+abstract mixin class _GsNamecard implements GsModel<GsNamecard> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('rarity')
@@ -21,4 +21,10 @@ abstract class IGsNamecard extends GsModel<IGsNamecard> {
   String get desc;
   @BuilderWire('obtain')
   String get obtain;
+
+  @override
+  Iterable<Comparable Function(GsNamecard e)> get sorters => [
+        (e) => e.type.index,
+        (e) => e.version,
+      ];
 }

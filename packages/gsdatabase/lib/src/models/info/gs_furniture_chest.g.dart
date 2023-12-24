@@ -6,15 +6,23 @@ part of 'gs_furniture_chest.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsFurnitureChest extends GsModel<GsFurnitureChest> {
+class GsFurnitureChest extends GsModel<GsFurnitureChest>
+    with _GsFurnitureChest {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final GeSereniteaSetType type;
+  @override
   final String image;
+  @override
   final int rarity;
+  @override
   final int energy;
+  @override
   final GeRegionType region;
+  @override
   final String version;
 
   /// Creates a new [GsFurnitureChest] instance.

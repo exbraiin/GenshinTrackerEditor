@@ -6,11 +6,14 @@ part of 'gs_version.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsVersion extends GsModel<GsVersion> {
+class GsVersion extends GsModel<GsVersion> with _GsVersion {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final String image;
+  @override
   final DateTime releaseDate;
 
   /// Creates a new [GsVersion] instance.

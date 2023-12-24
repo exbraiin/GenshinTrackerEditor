@@ -6,18 +6,28 @@ part of 'gs_material.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsMaterial extends GsModel<GsMaterial> {
+class GsMaterial extends GsModel<GsMaterial> with _GsMaterial {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final String desc;
+  @override
   final int rarity;
+  @override
   final GeMaterialType group;
+  @override
   final String image;
+  @override
   final GeRegionType region;
+  @override
   final int subgroup;
+  @override
   final String version;
+  @override
   final bool ingredient;
+  @override
   final List<GeWeekdayType> weekdays;
 
   /// Creates a new [GsMaterial] instance.

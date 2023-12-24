@@ -3,7 +3,8 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_achievement_group.g.dart';
 
 @BuilderGenerator()
-abstract class IGsAchievementGroup extends GsModel<IGsAchievementGroup> {
+abstract mixin class _GsAchievementGroup
+    implements GsModel<GsAchievementGroup> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('icon')
@@ -18,4 +19,9 @@ abstract class IGsAchievementGroup extends GsModel<IGsAchievementGroup> {
   int get rewards;
   @BuilderWire('achievements')
   int get achievements;
+
+  @override
+  Iterable<Comparable Function(GsAchievementGroup e)> get sorters => [
+        (e) => e.order,
+      ];
 }

@@ -6,17 +6,26 @@ part of 'gs_artifact.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsArtifact extends GsModel<GsArtifact> {
+class GsArtifact extends GsModel<GsArtifact> with _GsArtifact {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final GeRegionType region;
+  @override
   final String version;
+  @override
   final int rarity;
+  @override
   final String pc1;
+  @override
   final String pc2;
+  @override
   final String pc4;
+  @override
   final String domain;
+  @override
   final List<GsArtifactPiece> pieces;
 
   /// Creates a new [GsArtifact] instance.
@@ -94,11 +103,14 @@ class GsArtifact extends GsModel<GsArtifact> {
   }
 }
 
-class GsArtifactPiece extends GsModel<GsArtifactPiece> {
+class GsArtifactPiece extends GsModel<GsArtifactPiece> with _GsArtifactPiece {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final String icon;
+  @override
   final String desc;
 
   /// Creates a new [GsArtifactPiece] instance.

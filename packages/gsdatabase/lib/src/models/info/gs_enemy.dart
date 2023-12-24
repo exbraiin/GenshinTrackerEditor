@@ -5,7 +5,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_enemy.g.dart';
 
 @BuilderGenerator()
-abstract class IGsEnemy extends GsModel<IGsEnemy> {
+abstract mixin class _GsEnemy implements GsModel<GsEnemy> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('title')
@@ -26,4 +26,10 @@ abstract class IGsEnemy extends GsModel<IGsEnemy> {
   GeEnemyFamilyType get family;
   @BuilderWire('drops')
   List<String> get drops;
+
+  @override
+  Iterable<Comparable Function(GsEnemy e)> get sorters => [
+        (e) => e.family.index,
+        (e) => e.order,
+      ];
 }

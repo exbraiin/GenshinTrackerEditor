@@ -6,7 +6,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_weapon.g.dart';
 
 @BuilderGenerator()
-abstract class IGsWeapon extends GsModel<IGsWeapon> {
+abstract mixin class _GsWeapon implements GsModel<GsWeapon> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('rarity')
@@ -44,4 +44,9 @@ abstract class IGsWeapon extends GsModel<IGsWeapon> {
   String get ascAtkValues;
   @BuilderWire('asc_stat_values')
   String get ascStatValues;
+
+  @override
+  Iterable<Comparable Function(GsWeapon e)> get sorters => [
+        (e) => e.rarity,
+      ];
 }

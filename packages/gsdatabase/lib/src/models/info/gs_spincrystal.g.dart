@@ -6,13 +6,18 @@ part of 'gs_spincrystal.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsSpincrystal extends GsModel<GsSpincrystal> {
+class GsSpincrystal extends GsModel<GsSpincrystal> with _GsSpincrystal {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final int number;
+  @override
   final String source;
+  @override
   final GeRegionType region;
+  @override
   final String version;
 
   /// Creates a new [GsSpincrystal] instance.

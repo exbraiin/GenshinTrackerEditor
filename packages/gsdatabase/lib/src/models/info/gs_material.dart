@@ -6,7 +6,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_material.g.dart';
 
 @BuilderGenerator()
-abstract class IGsMaterial extends GsModel<IGsMaterial> {
+abstract mixin class _GsMaterial implements GsModel<GsMaterial> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('desc')
@@ -27,4 +27,12 @@ abstract class IGsMaterial extends GsModel<IGsMaterial> {
   bool get ingredient;
   @BuilderWire('weekdays')
   List<GeWeekdayType> get weekdays;
+
+  @override
+  Iterable<Comparable Function(GsMaterial e)> get sorters => [
+        (e) => e.group.index,
+        (e) => e.region.index,
+        (e) => e.subgroup,
+        (e) => e.rarity,
+      ];
 }

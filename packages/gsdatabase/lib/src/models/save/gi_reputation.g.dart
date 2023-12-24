@@ -6,9 +6,10 @@ part of 'gi_reputation.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GiReputation extends GsModel<GiReputation> {
+class GiReputation extends GsModel<GiReputation> with _GiReputation {
   @override
   final String id;
+  @override
   final int reputation;
 
   /// Creates a new [GiReputation] instance.

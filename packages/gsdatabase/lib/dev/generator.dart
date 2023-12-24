@@ -23,12 +23,12 @@ class BuilderGeneratorGen extends GeneratorForAnnotation<BuilderGenerator> {
     }
 
     final className = element.displayName;
-    if (!className.startsWith('I')) {
-      throw 'Class Name does not start with "I"';
+    if (!className.startsWith('_')) {
+      throw 'Class Name does not start with "_"';
     }
 
     final fields = [
-      ...element.supertype?.accessors ?? [],
+      ...element.allSupertypes.expand((e) => e.accessors),
       ...element.accessors,
     ]
         .whereType<PropertyAccessorElement>()
@@ -36,7 +36,7 @@ class BuilderGeneratorGen extends GeneratorForAnnotation<BuilderGenerator> {
 
     final name = _classNameFromInterface(className);
     final buffer = StringBuffer()
-      ..writeln('class $name extends GsModel<$name> {')
+      ..writeln('class $name extends GsModel<$name> with $className{')
       ..writeAll(_fields(element, fields))
       ..writeAll(_constructor(element, fields))
       ..writeAll(_constructorJson(element, fields))
@@ -52,13 +52,14 @@ class BuilderGeneratorGen extends GeneratorForAnnotation<BuilderGenerator> {
   }
 
   String _paramName(DartType type) {
+    const interfaceName = ['_Gs', '_Gi'];
     final typeName = type.getDisplayString(withNullability: false);
-    if (typeName.startsWith('IGs')) {
+    if (interfaceName.any((e) => typeName.startsWith(e))) {
       return _classNameFromInterface(typeName);
     } else if (type.isDartCoreList && type is ParameterizedType) {
       final param = type.typeArguments.firstOrNull;
       final paramName = param?.getDisplayString(withNullability: false);
-      if (paramName?.startsWith('IGs') ?? false) {
+      if (interfaceName.any((e) => paramName?.startsWith(e) ?? false)) {
         return 'List<${_classNameFromInterface(paramName!)}>';
       }
     }
@@ -71,7 +72,7 @@ class BuilderGeneratorGen extends GeneratorForAnnotation<BuilderGenerator> {
   ) sync* {
     yield* fields.map((e) {
       final typeName = _paramName(e.returnType);
-      return '${e.displayName == 'id' ? '@override\n' : ''}final $typeName ${e.displayName};';
+      return '@override\nfinal $typeName ${e.displayName};';
     });
   }
 

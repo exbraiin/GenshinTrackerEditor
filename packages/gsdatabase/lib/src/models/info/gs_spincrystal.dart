@@ -4,7 +4,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_spincrystal.g.dart';
 
 @BuilderGenerator()
-abstract class IGsSpincrystal extends GsModel<IGsSpincrystal> {
+abstract mixin class _GsSpincrystal implements GsModel<GsSpincrystal> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('number')
@@ -15,6 +15,11 @@ abstract class IGsSpincrystal extends GsModel<IGsSpincrystal> {
   GeRegionType get region;
   @BuilderWire('version')
   String get version;
+
+  @override
+  Iterable<Comparable Function(GsSpincrystal e)> get sorters => [
+        (e) => e.number,
+      ];
 }
 
 extension GsSpincrystalExt on GsSpincrystal {

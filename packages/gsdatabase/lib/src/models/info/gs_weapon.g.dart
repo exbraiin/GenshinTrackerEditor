@@ -6,26 +6,44 @@ part of 'gs_weapon.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsWeapon extends GsModel<GsWeapon> {
+class GsWeapon extends GsModel<GsWeapon> with _GsWeapon {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final int rarity;
+  @override
   final String image;
+  @override
   final String imageAsc;
+  @override
   final GeWeaponType type;
+  @override
   final int atk;
+  @override
   final GeWeaponAscStatType statType;
+  @override
   final double statValue;
+  @override
   final String desc;
+  @override
   final String version;
+  @override
   final GeItemSourceType source;
+  @override
   final String effectName;
+  @override
   final String effectDesc;
+  @override
   final String matWeapon;
+  @override
   final String matCommon;
+  @override
   final String matElite;
+  @override
   final String ascAtkValues;
+  @override
   final String ascStatValues;
 
   /// Creates a new [GsWeapon] instance.

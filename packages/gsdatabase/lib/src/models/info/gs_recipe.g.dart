@@ -6,18 +6,28 @@ part of 'gs_recipe.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsRecipe extends GsModel<GsRecipe> {
+class GsRecipe extends GsModel<GsRecipe> with _GsRecipe {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final GeRecipeType type;
+  @override
   final int rarity;
+  @override
   final String version;
+  @override
   final String image;
+  @override
   final GeRecipeEffectType effect;
+  @override
   final String desc;
+  @override
   final String effectDesc;
+  @override
   final String baseRecipe;
+  @override
   final List<GsIngredient> ingredients;
 
   /// Creates a new [GsRecipe] instance.
@@ -100,9 +110,10 @@ class GsRecipe extends GsModel<GsRecipe> {
   }
 }
 
-class GsIngredient extends GsModel<GsIngredient> {
+class GsIngredient extends GsModel<GsIngredient> with _GsIngredient {
   @override
   final String id;
+  @override
   final int amount;
 
   /// Creates a new [GsIngredient] instance.

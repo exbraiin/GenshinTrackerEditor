@@ -6,40 +6,72 @@ part of 'gs_character.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsCharacter extends GsModel<GsCharacter> {
+class GsCharacter extends GsModel<GsCharacter> with _GsCharacter {
   @override
   final String id;
+  @override
   final String enkaId;
+  @override
   final String name;
+  @override
   final String title;
+  @override
   final int rarity;
+  @override
   final GeRegionType region;
+  @override
   final GeWeaponType weapon;
+  @override
   final GeElementType element;
+  @override
   final String version;
+  @override
   final GeItemSourceType source;
+  @override
   final String description;
+  @override
   final String constellation;
+  @override
   final String affiliation;
+  @override
   final String specialDish;
+  @override
   final DateTime birthday;
+  @override
   final DateTime releaseDate;
+  @override
   final String image;
+  @override
   final String sideImage;
+  @override
   final String fullImage;
+  @override
   final String constellationImage;
+  @override
   final String gemMaterial;
+  @override
   final String bossMaterial;
+  @override
   final String commonMaterial;
+  @override
   final String regionMaterial;
+  @override
   final String talentMaterial;
+  @override
   final String weeklyMaterial;
+  @override
   final GeCharacterAscStatType ascStatType;
+  @override
   final String ascHpValues;
+  @override
   final String ascAtkValues;
+  @override
   final String ascDefValues;
+  @override
   final String ascStatValues;
+  @override
   final List<GsCharTalent> talents;
+  @override
   final List<GsCharConstellation> constellations;
 
   /// Creates a new [GsCharacter] instance.
@@ -235,12 +267,16 @@ class GsCharacter extends GsModel<GsCharacter> {
   }
 }
 
-class GsCharTalent extends GsModel<GsCharTalent> {
+class GsCharTalent extends GsModel<GsCharTalent> with _GsCharTalent {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final GeCharTalentType type;
+  @override
   final String icon;
+  @override
   final String desc;
 
   /// Creates a new [GsCharTalent] instance.
@@ -291,12 +327,17 @@ class GsCharTalent extends GsModel<GsCharTalent> {
   }
 }
 
-class GsCharConstellation extends GsModel<GsCharConstellation> {
+class GsCharConstellation extends GsModel<GsCharConstellation>
+    with _GsCharConstellation {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final String icon;
+  @override
   final String desc;
+  @override
   final GeCharConstellationType type;
 
   /// Creates a new [GsCharConstellation] instance.

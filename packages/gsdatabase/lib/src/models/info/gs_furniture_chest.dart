@@ -5,7 +5,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_furniture_chest.g.dart';
 
 @BuilderGenerator()
-abstract class IGsFurnitureChest extends GsModel<IGsFurnitureChest> {
+abstract mixin class _GsFurnitureChest implements GsModel<GsFurnitureChest> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('type')
@@ -20,4 +20,10 @@ abstract class IGsFurnitureChest extends GsModel<IGsFurnitureChest> {
   GeRegionType get region;
   @BuilderWire('version')
   String get version;
+
+  @override
+  Iterable<Comparable Function(GsFurnitureChest e)> get sorters => [
+        (e) => e.region.index,
+        (e) => e.rarity,
+      ];
 }

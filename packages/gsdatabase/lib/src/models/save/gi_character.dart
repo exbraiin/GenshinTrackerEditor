@@ -2,9 +2,8 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 
 part 'gi_character.g.dart';
 
-
 @BuilderGenerator()
-abstract class IGiCharacter extends GsModel<IGiCharacter> {
+abstract mixin class _GiCharacter implements GsModel<GiCharacter> {
   @BuilderWire('outfit')
   String get outfit;
   @BuilderWire('owned')

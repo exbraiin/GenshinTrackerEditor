@@ -1,16 +1,10 @@
-import 'package:gsdatabase/src/enums/ge_char_constellation_type.dart';
-import 'package:gsdatabase/src/enums/ge_char_talent_type.dart';
-import 'package:gsdatabase/src/enums/ge_character_asc_stat_type.dart';
-import 'package:gsdatabase/src/enums/ge_element_type.dart';
-import 'package:gsdatabase/src/enums/ge_item_source_type.dart';
-import 'package:gsdatabase/src/enums/ge_region_type.dart';
-import 'package:gsdatabase/src/enums/ge_weapon_type.dart';
+import 'package:gsdatabase/gsdatabase.dart';
 import 'package:gsdatabase/src/models/gs_model.dart';
 
 part 'gs_character.g.dart';
 
 @BuilderGenerator()
-abstract class IGsCharacter extends GsModel<IGsCharacter> {
+abstract mixin class _GsCharacter implements GsModel<GsCharacter> {
   @BuilderWire('enka_id')
   String get enkaId;
   @BuilderWire('name')
@@ -73,13 +67,18 @@ abstract class IGsCharacter extends GsModel<IGsCharacter> {
   @BuilderWire('asc_stat_values')
   String get ascStatValues;
   @BuilderWire('talents')
-  List<IGsCharTalent> get talents;
+  List<_GsCharTalent> get talents;
   @BuilderWire('constellations')
-  List<IGsCharConstellation> get constellations;
+  List<_GsCharConstellation> get constellations;
+
+  @override
+  Iterable<Comparable Function(GsCharacter e)> get sorters => [
+        (e) => e.rarity,
+      ];
 }
 
 @BuilderGenerator()
-abstract class IGsCharTalent extends GsModel<IGsCharTalent> {
+abstract mixin class _GsCharTalent implements GsModel<GsCharTalent> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('type')
@@ -91,7 +90,8 @@ abstract class IGsCharTalent extends GsModel<IGsCharTalent> {
 }
 
 @BuilderGenerator()
-abstract class IGsCharConstellation extends GsModel<IGsCharConstellation> {
+abstract mixin class _GsCharConstellation
+    implements GsModel<GsCharConstellation> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('icon')

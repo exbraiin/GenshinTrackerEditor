@@ -4,7 +4,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_serenitea_set.g.dart';
 
 @BuilderGenerator()
-abstract class IGsSereniteaSet extends GsModel<IGsSereniteaSet> {
+abstract mixin class _GsSereniteaSet implements GsModel<GsSereniteaSet> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('version')
@@ -20,11 +20,18 @@ abstract class IGsSereniteaSet extends GsModel<IGsSereniteaSet> {
   @BuilderWire('chars')
   List<String> get chars;
   @BuilderWire('furnishing')
-  List<IGsFurnishingAmount> get furnishing;
+  List<_GsFurnishingAmount> get furnishing;
+
+  @override
+  Iterable<Comparable Function(GsSereniteaSet e)> get sorters => [
+        (e) => e.category.index,
+        (e) => e.version,
+      ];
 }
 
 @BuilderGenerator()
-abstract class IGsFurnishingAmount extends GsModel<IGsFurnishingAmount> {
+abstract mixin class _GsFurnishingAmount
+    implements GsModel<GsFurnishingAmount> {
   @BuilderWire('amount')
   int get amount;
 }

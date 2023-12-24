@@ -6,16 +6,24 @@ part of 'gs_serenitea_set.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsSereniteaSet extends GsModel<GsSereniteaSet> {
+class GsSereniteaSet extends GsModel<GsSereniteaSet> with _GsSereniteaSet {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final String version;
+  @override
   final GeSereniteaSetType category;
+  @override
   final String image;
+  @override
   final int rarity;
+  @override
   final int energy;
+  @override
   final List<String> chars;
+  @override
   final List<GsFurnishingAmount> furnishing;
 
   /// Creates a new [GsSereniteaSet] instance.
@@ -88,9 +96,11 @@ class GsSereniteaSet extends GsModel<GsSereniteaSet> {
   }
 }
 
-class GsFurnishingAmount extends GsModel<GsFurnishingAmount> {
+class GsFurnishingAmount extends GsModel<GsFurnishingAmount>
+    with _GsFurnishingAmount {
   @override
   final String id;
+  @override
   final int amount;
 
   /// Creates a new [GsFurnishingAmount] instance.

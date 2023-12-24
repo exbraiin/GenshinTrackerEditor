@@ -6,9 +6,11 @@ part of 'gi_furniture_chest.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GiFurnitureChest extends GsModel<GiFurnitureChest> {
+class GiFurnitureChest extends GsModel<GiFurnitureChest>
+    with _GiFurnitureChest {
   @override
   final String id;
+  @override
   final bool obtained;
 
   /// Creates a new [GiFurnitureChest] instance.

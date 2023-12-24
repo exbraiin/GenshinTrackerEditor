@@ -3,7 +3,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gi_wish.g.dart';
 
 @BuilderGenerator()
-abstract class IGiWish extends GsModel<IGiWish> {
+abstract mixin class _GiWish implements GsModel<GiWish> {
   @BuilderWire('number')
   int get number;
   @BuilderWire('item')

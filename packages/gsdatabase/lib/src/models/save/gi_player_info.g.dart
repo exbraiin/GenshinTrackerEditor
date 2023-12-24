@@ -6,19 +6,30 @@ part of 'gi_player_info.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GiPlayerInfo extends GsModel<GiPlayerInfo> {
+class GiPlayerInfo extends GsModel<GiPlayerInfo> with _GiPlayerInfo {
   @override
   final String id;
+  @override
   final String uid;
+  @override
   final String avatarId;
+  @override
   final String nickname;
+  @override
   final String signature;
+  @override
   final int level;
+  @override
   final int worldLevel;
+  @override
   final int namecardId;
+  @override
   final int achievements;
+  @override
   final int towerFloor;
+  @override
   final int towerChamber;
+  @override
   final Map<String, int> avatars;
 
   /// Creates a new [GiPlayerInfo] instance.

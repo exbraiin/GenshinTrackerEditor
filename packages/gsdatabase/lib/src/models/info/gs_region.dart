@@ -1,10 +1,11 @@
 import 'package:gsdatabase/src/enums/ge_element_type.dart';
+import 'package:gsdatabase/src/enums/ge_region_type.dart';
 import 'package:gsdatabase/src/models/gs_model.dart';
 
 part 'gs_region.g.dart';
 
 @BuilderGenerator()
-abstract class IGsRegion extends GsModel<IGsRegion> {
+abstract mixin class _GsRegion implements GsModel<GsRegion> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('image')
@@ -13,4 +14,9 @@ abstract class IGsRegion extends GsModel<IGsRegion> {
   GeElementType get element;
   @BuilderWire('reputation')
   List<int> get reputation;
+
+  @override
+  Iterable<Comparable Function(GsRegion e)> get sorters => [
+        (e) => GeRegionType.values.fromId(e.id).index,
+      ];
 }

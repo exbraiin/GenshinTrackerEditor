@@ -4,7 +4,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_achievement.g.dart';
 
 @BuilderGenerator()
-abstract class IGsAchievement extends GsModel<IGsAchievement> {
+abstract mixin class _GsAchievement implements GsModel<GsAchievement> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('group')
@@ -16,11 +16,17 @@ abstract class IGsAchievement extends GsModel<IGsAchievement> {
   @BuilderWire('type')
   GeAchievementType get type;
   @BuilderWire('phases')
-  List<IGsAchievementPhase> get phases;
+  List<_GsAchievementPhase> get phases;
+
+  @override
+  Iterable<Comparable Function(GsAchievement e)> get sorters => [
+        (e) => e.version,
+      ];
 }
 
 @BuilderGenerator()
-abstract class IGsAchievementPhase extends GsModel<IGsAchievementPhase> {
+abstract mixin class _GsAchievementPhase
+    implements GsModel<GsAchievementPhase> {
   @BuilderWire('desc')
   String get desc;
   @BuilderWire('reward')

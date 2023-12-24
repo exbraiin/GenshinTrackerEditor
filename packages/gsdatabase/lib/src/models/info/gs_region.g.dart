@@ -6,12 +6,16 @@ part of 'gs_region.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsRegion extends GsModel<GsRegion> {
+class GsRegion extends GsModel<GsRegion> with _GsRegion {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final String image;
+  @override
   final GeElementType element;
+  @override
   final List<int> reputation;
 
   /// Creates a new [GsRegion] instance.

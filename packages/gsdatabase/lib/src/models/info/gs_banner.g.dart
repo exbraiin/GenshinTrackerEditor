@@ -6,16 +6,24 @@ part of 'gs_banner.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsBanner extends GsModel<GsBanner> {
+class GsBanner extends GsModel<GsBanner> with _GsBanner {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final String image;
+  @override
   final DateTime dateStart;
+  @override
   final DateTime dateEnd;
+  @override
   final String version;
+  @override
   final GeBannerType type;
+  @override
   final List<String> feature4;
+  @override
   final List<String> feature5;
 
   /// Creates a new [GsBanner] instance.

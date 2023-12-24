@@ -1,4 +1,5 @@
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
@@ -35,12 +36,12 @@ class GsEventExt extends GsModelExt<GsEvent> {
         (item, value) => item.copyWith(image: value),
         validator: (item) => vdImage(item.image),
       ),
-      DataField.singleSelect(
+      DataField.singleEnum<GsEvent, GeEventType>(
         'Type',
+        GeEventType.values.toChips(),
         (item) => item.type,
-        (item) => GsItemFilter.eventType().filters,
         (item, value) => item.copyWith(type: value),
-        validator: (item) => vdContains(item.type, types),
+        validator: (item) => vdContains(item.type.id, types),
       ),
       DataField.singleSelect(
         'Version',

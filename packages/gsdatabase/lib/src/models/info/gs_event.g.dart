@@ -6,14 +6,20 @@ part of 'gs_event.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsEvent extends GsModel<GsEvent> {
+class GsEvent extends GsModel<GsEvent> with _GsEvent {
   @override
   final String id;
+  @override
   final String name;
-  final String type;
+  @override
+  final GeEventType type;
+  @override
   final String image;
+  @override
   final String version;
+  @override
   final DateTime dateStart;
+  @override
   final DateTime dateEnd;
 
   /// Creates a new [GsEvent] instance.
@@ -31,7 +37,7 @@ class GsEvent extends GsModel<GsEvent> {
   GsEvent.fromJson(JsonMap m)
       : id = m['id'] as String? ?? '',
         name = m['name'] as String? ?? '',
-        type = m['type'] as String? ?? '',
+        type = GeEventType.values.fromId(m['type']),
         image = m['image'] as String? ?? '',
         version = m['version'] as String? ?? '',
         dateStart =
@@ -43,7 +49,7 @@ class GsEvent extends GsModel<GsEvent> {
   GsEvent copyWith({
     String? id,
     String? name,
-    String? type,
+    GeEventType? type,
     String? image,
     String? version,
     DateTime? dateStart,
@@ -66,7 +72,7 @@ class GsEvent extends GsModel<GsEvent> {
     return {
       'id': id,
       'name': name,
-      'type': type,
+      'type': type.id,
       'image': image,
       'version': version,
       'date_start': dateStart.toString(),

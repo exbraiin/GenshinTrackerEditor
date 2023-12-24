@@ -6,18 +6,28 @@ part of 'gs_enemy.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsEnemy extends GsModel<GsEnemy> {
+class GsEnemy extends GsModel<GsEnemy> with _GsEnemy {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final String title;
+  @override
   final String image;
+  @override
   final String fullImage;
+  @override
   final String splashImage;
+  @override
   final String version;
+  @override
   final int order;
+  @override
   final GeEnemyType type;
+  @override
   final GeEnemyFamilyType family;
+  @override
   final List<String> drops;
 
   /// Creates a new [GsEnemy] instance.

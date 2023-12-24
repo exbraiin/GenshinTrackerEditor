@@ -6,13 +6,18 @@ part of 'gs_viewpoint.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsViewpoint extends GsModel<GsViewpoint> {
+class GsViewpoint extends GsModel<GsViewpoint> with _GsViewpoint {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final String desc;
+  @override
   final String image;
+  @override
   final GeRegionType region;
+  @override
   final String version;
 
   /// Creates a new [GsViewpoint] instance.

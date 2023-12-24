@@ -6,14 +6,20 @@ part of 'gs_achievement.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsAchievement extends GsModel<GsAchievement> {
+class GsAchievement extends GsModel<GsAchievement> with _GsAchievement {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final String group;
+  @override
   final bool hidden;
+  @override
   final String version;
+  @override
   final GeAchievementType type;
+  @override
   final List<GsAchievementPhase> phases;
 
   /// Creates a new [GsAchievement] instance.
@@ -76,10 +82,13 @@ class GsAchievement extends GsModel<GsAchievement> {
   }
 }
 
-class GsAchievementPhase extends GsModel<GsAchievementPhase> {
+class GsAchievementPhase extends GsModel<GsAchievementPhase>
+    with _GsAchievementPhase {
   @override
   final String id;
+  @override
   final String desc;
+  @override
   final int reward;
 
   /// Creates a new [GsAchievementPhase] instance.

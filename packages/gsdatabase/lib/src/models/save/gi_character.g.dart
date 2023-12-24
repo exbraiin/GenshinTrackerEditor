@@ -6,12 +6,16 @@ part of 'gi_character.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GiCharacter extends GsModel<GiCharacter> {
+class GiCharacter extends GsModel<GiCharacter> with _GiCharacter {
   @override
   final String id;
+  @override
   final String outfit;
+  @override
   final int owned;
+  @override
   final int ascension;
+  @override
   final int friendship;
 
   /// Creates a new [GiCharacter] instance.

@@ -4,7 +4,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_artifact.g.dart';
 
 @BuilderGenerator()
-abstract class IGsArtifact extends GsModel<IGsArtifact> {
+abstract mixin class _GsArtifact implements GsModel<GsArtifact> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('region')
@@ -22,11 +22,18 @@ abstract class IGsArtifact extends GsModel<IGsArtifact> {
   @BuilderWire('domain')
   String get domain;
   @BuilderWire('list_pieces')
-  List<IGsArtifactPiece> get pieces;
+  List<_GsArtifactPiece> get pieces;
+
+  @override
+  Iterable<Comparable Function(GsArtifact e)> get sorters => [
+        (e) => e.region.index,
+        (e) => e.rarity,
+        (e) => e.version,
+      ];
 }
 
 @BuilderGenerator()
-abstract class IGsArtifactPiece extends GsModel<IGsArtifactPiece> {
+abstract mixin class _GsArtifactPiece implements GsModel<GsArtifactPiece> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('icon')

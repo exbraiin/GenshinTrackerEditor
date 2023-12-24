@@ -6,16 +6,24 @@ part of 'gs_namecard.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsNamecard extends GsModel<GsNamecard> {
+class GsNamecard extends GsModel<GsNamecard> with _GsNamecard {
   @override
   final String id;
+  @override
   final String name;
+  @override
   final int rarity;
+  @override
   final GeNamecardType type;
+  @override
   final String version;
+  @override
   final String image;
+  @override
   final String fullImage;
+  @override
   final String desc;
+  @override
   final String obtain;
 
   /// Creates a new [GsNamecard] instance.

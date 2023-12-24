@@ -5,7 +5,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_recipe.g.dart';
 
 @BuilderGenerator()
-abstract class IGsRecipe extends GsModel<IGsRecipe> {
+abstract mixin class _GsRecipe implements GsModel<GsRecipe> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('type')
@@ -25,11 +25,17 @@ abstract class IGsRecipe extends GsModel<IGsRecipe> {
   @BuilderWire('base_recipe')
   String get baseRecipe;
   @BuilderWire('list_ingredients')
-  List<IGsIngredient> get ingredients;
+  List<_GsIngredient> get ingredients;
+
+  @override
+  Iterable<Comparable Function(GsRecipe e)> get sorters => [
+        (e) => e.rarity,
+        (e) => e.version,
+      ];
 }
 
 @BuilderGenerator()
-abstract class IGsIngredient extends GsModel<IGsIngredient> {
+abstract mixin class _GsIngredient implements GsModel<GsIngredient> {
   @BuilderWire('amount')
   int get amount;
 }
