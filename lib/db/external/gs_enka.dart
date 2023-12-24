@@ -20,6 +20,7 @@ class GsEnka {
     final chars = json.entries
         .map((e) => GsEnkaChar.fromJson({'id': e.key, ...e.value}))
         .distinctBy((e) => e.id)
+        .where((e) => !e.id.contains('-'))
         .sortedByDescending((element) => element.rarity)
         .thenBy((element) => element.icon.isNotEmpty ? 0 : 1)
         .toList();

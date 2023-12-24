@@ -63,8 +63,11 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
           'Select from Enka API',
           (context, item) async {
             await GsEnka.i.load();
-            final controller = StreamController<GsCharacter>();
-            // ignore: use_build_context_synchronously
+            final completer = Completer<GsCharacter>();
+            if (!context.mounted) {
+              completer.completeError('Could not open dialog!');
+              return completer.future;
+            }
             SelectDialog(
               title: 'Select',
               items: GsEnka.i.characters.map(
@@ -77,11 +80,10 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
               ),
               selected: item.enkaId,
               onConfirm: (value) {
-                controller.add(item.copyWith(enkaId: value));
-                controller.close();
+                completer.complete(item.copyWith(enkaId: value));
               },
             ).show(context);
-            return controller.stream.first;
+            return completer.future;
           },
           icon: const Icon(Icons.select_all_rounded),
         ),

@@ -16,6 +16,7 @@ typedef DBuilder<T extends GsModel<T>> = Widget Function(
   BuildContext context,
   T item,
   DEdit<T> edit,
+  GsValidLevel level,
 );
 
 class DataButton<T extends GsModel<T>> {
@@ -40,7 +41,7 @@ class DataField<T extends GsModel<T>> {
     this.label,
     String Function(T item) content, {
     DUpdate<T>? swap,
-  })  : builder = ((context, item, edit) => Row(
+  })  : builder = ((context, item, edit, level) => Row(
               children: [
                 Expanded(
                   child: Container(
@@ -64,7 +65,7 @@ class DataField<T extends GsModel<T>> {
     String Function(T item) content,
     VoidCallback? onPressed, {
     required this.validator,
-  }) : builder = ((context, item, edit) {
+  }) : builder = ((context, item, edit, level) {
           return InkWell(
             onTap: onPressed,
             child: Container(
@@ -81,7 +82,7 @@ class DataField<T extends GsModel<T>> {
     String Function(T item) content,
     T Function(T item, String value) update, {
     required this.validator,
-  }) : builder = ((context, item, edit) {
+  }) : builder = ((context, item, edit, level) {
           var text = content(item).split('\n').first;
           if (text.length > 40) text = text.substring(0, 40);
           if (text.isNotEmpty) text = '$text...';
@@ -111,7 +112,7 @@ class DataField<T extends GsModel<T>> {
                   if (text == null) return;
                   edit(update(item, text));
                 },
-                icon: const Icon(Icons.paste_rounded),
+                icon: Icon(Icons.paste_rounded, color: level.color),
               ),
             ],
           );
@@ -125,8 +126,14 @@ class DataField<T extends GsModel<T>> {
     DataButton<T>? import,
     DataButton<T>? refresh,
     required this.validator,
-  }) : builder = ((context, item, edit) => SizedBox(
-              height: 44,
+  }) : builder = ((context, item, edit, level) {
+          final theme = Theme.of(context);
+          return SizedBox(
+            height: 44,
+            child: Theme(
+              data: theme.copyWith(
+                iconTheme: theme.iconTheme.copyWith(color: level.color),
+              ),
               child: Row(
                 children: [
                   Expanded(
@@ -166,7 +173,9 @@ class DataField<T extends GsModel<T>> {
                   ),
                 ],
               ),
-            ));
+            ),
+          );
+        });
 
   static DataField<T> dateTime<T extends GsModel<T>>(
     String label,
@@ -231,7 +240,7 @@ class DataField<T extends GsModel<T>> {
   }) {
     return DataField._(
       label,
-      (context, item, edit) => GsMultiSelect<V>(
+      (context, item, edit, level) => GsMultiSelect<V>(
         items: options(item).toList(),
         selected: values(item).toSet(),
         onConfirm: (value) => edit(update(item, value.toList())),
@@ -249,7 +258,7 @@ class DataField<T extends GsModel<T>> {
   }) {
     return DataField._(
       label,
-      (context, item, edit) => GsMultiSelect<R>(
+      (context, item, edit, level) => GsMultiSelect<R>(
         items: options(item).toList(),
         selected: values(item).toSet(),
         onConfirm: (value) => edit(update(item, value.toList())),
@@ -264,7 +273,7 @@ class DataField<T extends GsModel<T>> {
     Iterable<GsSelectItem<String>> Function(T item) items,
     T Function(T item, String value) update, {
     required this.validator,
-  }) : builder = ((context, item, edit) => GsSingleSelect(
+  }) : builder = ((context, item, edit, level) => GsSingleSelect(
               items: items(item),
               selected: value(item),
               onConfirm: (value) => edit(update(item, value ?? '')),
@@ -279,7 +288,7 @@ class DataField<T extends GsModel<T>> {
   }) {
     return DataField._(
       label,
-      (context, item, edit) {
+      (context, item, edit, level) {
         return GsSingleSelect(
           items: items,
           selected: value(item),
@@ -299,7 +308,7 @@ class DataField<T extends GsModel<T>> {
   }) {
     return DataField._(
       label,
-      (context, item, edit) {
+      (context, item, edit, level) {
         return GsSingleSelect(
           items: items,
           selected: value(item),
@@ -316,7 +325,7 @@ class DataField<T extends GsModel<T>> {
     T Function(T item, int value) update, {
     int min = 1,
     required this.validator,
-  }) : builder = ((context, item, edit) => GsSingleSelect(
+  }) : builder = ((context, item, edit, level) => GsSingleSelect(
               items: List.generate(
                 6 - min,
                 (index) => GsSelectItem(
@@ -332,7 +341,7 @@ class DataField<T extends GsModel<T>> {
   DataField.list(
     this.label,
     Iterable<DataField<T>> Function(T item) fields,
-  )   : builder = ((context, item, edit) =>
+  )   : builder = ((context, item, edit, level) =>
             getTableForFields(context, item, fields(item), edit)),
         validator = ((item) {
           return fields(item)
@@ -352,7 +361,7 @@ class DataField<T extends GsModel<T>> {
   }) {
     return DataField<T>._(
       label,
-      (context, item, edit) {
+      (context, item, edit, level) {
         final list = values(item).toList();
         return Column(
           children: [
@@ -400,7 +409,7 @@ class DataField<T extends GsModel<T>> {
   }) {
     return DataField<T>._(
       label,
-      (context, item, edit) {
+      (context, item, edit, level) {
         final list = values(item).toList();
         return Column(
           children: [
@@ -476,7 +485,8 @@ TableRow _getFieldTableRow<T extends GsModel<T>>(
   DataField<T> field,
   void Function(T item) edit,
 ) {
-  final color = field.validator.call(value).color;
+  final level = field.validator.call(value);
+  final color = level.color;
   return TableRow(
     children: [
       Padding(
@@ -503,7 +513,7 @@ TableRow _getFieldTableRow<T extends GsModel<T>>(
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: field.builder(context, value, edit),
+        child: field.builder(context, value, edit, level),
       ),
     ],
   );
