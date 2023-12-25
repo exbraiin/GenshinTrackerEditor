@@ -176,6 +176,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         (item) => item.birthday,
         (item, value) => item.copyWith(birthday: value),
         validator: (item) => vdBirthday(item.birthday),
+        isBirthday: true,
       ),
       DataField.dateTime(
         'Release Date',

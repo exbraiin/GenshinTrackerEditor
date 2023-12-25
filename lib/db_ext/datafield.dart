@@ -177,19 +177,43 @@ class DataField<T extends GsModel<T>> {
           );
         });
 
-  static DataField<T> dateTime<T extends GsModel<T>>(
-    String label,
+  DataField.dateTime(
+    this.label,
     DateTime Function(T item) content,
     T Function(T item, DateTime value) update, {
-    required DValidator<T> validator,
-  }) {
-    return DataField.textField(
-      label,
-      (item) => content(item).toString().split(' ').firstOrNull ?? '',
-      (item, value) => update(item, DateTime.tryParse(value) ?? DateTime(0)),
-      validator: validator,
-    );
-  }
+    bool isBirthday = false,
+    required this.validator,
+  }) : builder = ((context, item, edit, level) {
+          late final DateTime srcDate;
+          late final DateTime dstDate;
+          if (isBirthday) {
+            srcDate = DateTime(0, 1, 1);
+            dstDate = DateTime(0, 12, 31);
+          } else {
+            srcDate = DateTime(2020, 09, 28);
+            dstDate = DateTime(2199, 12, 31);
+          }
+          return InkWell(
+            onTap: () => showDatePicker(
+              context: context,
+              initialDate: content(item).clamp(min: srcDate, max: dstDate),
+              firstDate: srcDate,
+              lastDate: dstDate,
+            ).then((value) {
+              if (value == null) return;
+              edit(update(item, value));
+            }),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              constraints: const BoxConstraints(minHeight: 36),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                content(item).toString().split(' ').first,
+                style: const TextStyle(fontSize: 16),
+              ),
+            ),
+          );
+        });
 
   static DataField<T> textList<T extends GsModel<T>>(
     String label,

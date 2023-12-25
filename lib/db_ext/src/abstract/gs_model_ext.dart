@@ -97,7 +97,8 @@ abstract class GsModelExt<T extends GsModel<T>> {
 
 String generateId(GsModel item) {
   if (item is GsBanner) {
-    final date = item.dateStart.toString().split(' ').firstOrNull ?? '';
+    var date = item.dateStart.toString().split(' ').firstOrNull ?? '';
+    date = date.replaceAll('-', '_');
     return '${item.name}_$date'.toDbId();
   }
   if (item is GsAchievement) {
@@ -106,6 +107,7 @@ String generateId(GsModel item) {
   if (item is GsSpincrystal) {
     return item.number.toString();
   }
+  
   if (item is GsVersion) {
     return item.id;
   }
