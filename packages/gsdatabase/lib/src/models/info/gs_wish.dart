@@ -34,7 +34,7 @@ class GsWish extends GsModel<GsWish> {
   JsonMap toMap() => weapon?.toMap() ?? character?.toMap() ?? {};
 
   @override
-  GsWish copyWith({bool? featured}) => GsWish._(
+  GsWish copyWith({String? id, bool? featured}) => GsWish._(
         weapon: weapon,
         character: character,
         featured: featured ?? this.featured,

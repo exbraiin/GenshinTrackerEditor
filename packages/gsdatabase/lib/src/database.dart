@@ -41,6 +41,7 @@ List<Items> get _saveCollections {
     Items<GiSereniteaSet>('serenitea_sets', GiSereniteaSet.fromJson),
     Items<GiSpincrystal>('spincrystals', GiSpincrystal.fromJson),
     Items<GiPlayerInfo>('user_configs', GiPlayerInfo.fromJson),
+    Items<GiFurnishing>('furnishing', GiFurnishing.fromJson),
   ];
 }
 
@@ -97,17 +98,30 @@ final class Items<T extends GsModel<T>> {
 
   Items(this.collectionId, this.parser);
 
+  /// Gets the item with the given id, returns null if it does not exist.
   T? getItem(String id) => _data[id];
+
+  /// Checks if the item with the given id exists.
   bool exists(String id) => _data.containsKey(id);
 
+  /// Replaces the item with the given one based on the id.
   void setItem(T item) {
     _data[item.id] = item;
     _db?._notifier.add(null);
   }
 
+  /// Removes the item with the given id from db.
   void removeItem(String id) {
     _data.remove(id);
     _db?._notifier.add(null);
+  }
+
+  /// Edits the item, if the item does not exists a new one is created.
+  /// * If the callback returns null, the item is removed.
+  void editItem(String id, T? Function(T item) edit) {
+    final item = getItem(id) ?? parser({'id': id});
+    final edited = edit(item)?.copyWith(id: id);
+    return edited != null ? setItem(edited) : removeItem(id);
   }
 
   Future<void> _load(JsonMap map, GsDatabase db) async {

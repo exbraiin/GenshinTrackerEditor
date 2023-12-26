@@ -5,7 +5,7 @@ typedef JsonMap = Map<String, dynamic>;
 abstract class GsModel<T extends GsModel<T>> implements Comparable<T> {
   @BuilderWire('id')
   String get id;
-  T copyWith();
+  T copyWith({String? id});
   JsonMap toMap();
 
   @override

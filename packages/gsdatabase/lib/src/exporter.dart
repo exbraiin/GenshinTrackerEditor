@@ -21,7 +21,7 @@ export 'enums/ge_weapon_type.dart';
 export 'enums/ge_weekday_type.dart';
 // --- OTHER ---
 export 'models/gs_model.dart' show GsModel, ListGsEnumExt, GeEnum, JsonMap;
-// --- MODELS ---
+// --- DATA MODELS ---
 export 'models/info/gs_achievement.dart' show GsAchievement, GsAchievementPhase;
 export 'models/info/gs_achievement_group.dart' show GsAchievementGroup;
 export 'models/info/gs_artifact.dart' show GsArtifact, GsArtifactPiece;
@@ -44,8 +44,10 @@ export 'models/info/gs_version.dart' show GsVersion;
 export 'models/info/gs_viewpoint.dart' show GsViewpoint;
 export 'models/info/gs_weapon.dart' show GsWeapon;
 export 'models/info/gs_wish.dart' show GsWish;
+// --- SAVE MODELS ---
 export 'models/save/gi_achievement.dart' show GiAchievement;
 export 'models/save/gi_character.dart' show GiCharacter;
+export 'models/save/gi_furnishing.dart' show GiFurnishing;
 export 'models/save/gi_furniture_chest.dart' show GiFurnitureChest;
 export 'models/save/gi_player_info.dart' show GiPlayerInfo;
 export 'models/save/gi_recipe.dart' show GiRecipe;
