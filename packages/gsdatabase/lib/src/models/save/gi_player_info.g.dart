@@ -6,7 +6,7 @@ part of 'gi_player_info.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GiPlayerInfo extends GsModel<GiPlayerInfo> with _GiPlayerInfo {
+class GiPlayerInfo extends _GiPlayerInfo {
   @override
   final String id;
   @override

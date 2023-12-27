@@ -6,7 +6,7 @@ part of 'gs_serenitea_set.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsSereniteaSet extends GsModel<GsSereniteaSet> with _GsSereniteaSet {
+class GsSereniteaSet extends _GsSereniteaSet {
   @override
   final String id;
   @override
@@ -96,8 +96,7 @@ class GsSereniteaSet extends GsModel<GsSereniteaSet> with _GsSereniteaSet {
   }
 }
 
-class GsFurnishingAmount extends GsModel<GsFurnishingAmount>
-    with _GsFurnishingAmount {
+class GsFurnishingAmount extends _GsFurnishingAmount {
   @override
   final String id;
   @override

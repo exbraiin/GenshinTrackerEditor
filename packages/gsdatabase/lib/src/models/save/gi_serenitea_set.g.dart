@@ -6,7 +6,7 @@ part of 'gi_serenitea_set.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GiSereniteaSet extends GsModel<GiSereniteaSet> with _GiSereniteaSet {
+class GiSereniteaSet extends _GiSereniteaSet {
   @override
   final String id;
   @override

@@ -4,7 +4,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_banner.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsBanner implements GsModel<GsBanner> {
+abstract class _GsBanner extends GsModel<GsBanner> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('image')

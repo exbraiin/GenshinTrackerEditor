@@ -6,7 +6,7 @@ part of 'gs_artifact.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsArtifact extends GsModel<GsArtifact> with _GsArtifact {
+class GsArtifact extends _GsArtifact {
   @override
   final String id;
   @override
@@ -103,7 +103,7 @@ class GsArtifact extends GsModel<GsArtifact> with _GsArtifact {
   }
 }
 
-class GsArtifactPiece extends GsModel<GsArtifactPiece> with _GsArtifactPiece {
+class GsArtifactPiece extends _GsArtifactPiece {
   @override
   final String id;
   @override

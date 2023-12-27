@@ -6,7 +6,7 @@ part of 'gs_event.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsEvent extends GsModel<GsEvent> with _GsEvent {
+class GsEvent extends _GsEvent {
   @override
   final String id;
   @override

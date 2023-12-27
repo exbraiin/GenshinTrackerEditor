@@ -6,7 +6,7 @@ part of 'gs_enemy.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsEnemy extends GsModel<GsEnemy> with _GsEnemy {
+class GsEnemy extends _GsEnemy {
   @override
   final String id;
   @override

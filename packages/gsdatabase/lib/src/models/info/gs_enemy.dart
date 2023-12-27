@@ -5,7 +5,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_enemy.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsEnemy implements GsModel<GsEnemy> {
+abstract class _GsEnemy extends GsModel<GsEnemy> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('title')

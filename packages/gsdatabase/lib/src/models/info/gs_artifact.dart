@@ -4,7 +4,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_artifact.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsArtifact implements GsModel<GsArtifact> {
+abstract class _GsArtifact extends GsModel<GsArtifact> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('region')
@@ -33,7 +33,7 @@ abstract mixin class _GsArtifact implements GsModel<GsArtifact> {
 }
 
 @BuilderGenerator()
-abstract mixin class _GsArtifactPiece implements GsModel<GsArtifactPiece> {
+abstract class _GsArtifactPiece extends GsModel<GsArtifactPiece> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('icon')

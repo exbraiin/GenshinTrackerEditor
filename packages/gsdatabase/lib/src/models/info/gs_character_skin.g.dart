@@ -6,7 +6,7 @@ part of 'gs_character_skin.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsCharacterSkin extends GsModel<GsCharacterSkin> with _GsCharacterSkin {
+class GsCharacterSkin extends _GsCharacterSkin {
   @override
   final String id;
   @override

@@ -4,7 +4,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_achievement.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsAchievement implements GsModel<GsAchievement> {
+abstract class _GsAchievement extends GsModel<GsAchievement> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('group')
@@ -25,8 +25,7 @@ abstract mixin class _GsAchievement implements GsModel<GsAchievement> {
 }
 
 @BuilderGenerator()
-abstract mixin class _GsAchievementPhase
-    implements GsModel<GsAchievementPhase> {
+abstract class _GsAchievementPhase extends GsModel<GsAchievementPhase> {
   @BuilderWire('desc')
   String get desc;
   @BuilderWire('reward')

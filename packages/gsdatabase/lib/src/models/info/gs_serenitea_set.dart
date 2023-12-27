@@ -4,7 +4,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_serenitea_set.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsSereniteaSet implements GsModel<GsSereniteaSet> {
+abstract class _GsSereniteaSet extends GsModel<GsSereniteaSet> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('version')
@@ -30,8 +30,7 @@ abstract mixin class _GsSereniteaSet implements GsModel<GsSereniteaSet> {
 }
 
 @BuilderGenerator()
-abstract mixin class _GsFurnishingAmount
-    implements GsModel<GsFurnishingAmount> {
+abstract class _GsFurnishingAmount extends GsModel<GsFurnishingAmount> {
   @BuilderWire('amount')
   int get amount;
 }

@@ -6,7 +6,7 @@ part of 'gi_furnishing.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GiFurnishing extends GsModel<GiFurnishing> with _GiFurnishing {
+class GiFurnishing extends _GiFurnishing {
   @override
   final String id;
   @override

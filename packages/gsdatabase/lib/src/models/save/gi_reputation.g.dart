@@ -6,7 +6,7 @@ part of 'gi_reputation.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GiReputation extends GsModel<GiReputation> with _GiReputation {
+class GiReputation extends _GiReputation {
   @override
   final String id;
   @override

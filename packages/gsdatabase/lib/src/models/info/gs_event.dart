@@ -4,7 +4,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_event.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsEvent implements GsModel<GsEvent> {
+abstract class _GsEvent extends GsModel<GsEvent> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('type')

@@ -5,7 +5,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_recipe.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsRecipe implements GsModel<GsRecipe> {
+abstract class _GsRecipe extends GsModel<GsRecipe> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('type')
@@ -35,7 +35,7 @@ abstract mixin class _GsRecipe implements GsModel<GsRecipe> {
 }
 
 @BuilderGenerator()
-abstract mixin class _GsIngredient implements GsModel<GsIngredient> {
+abstract class _GsIngredient extends GsModel<GsIngredient> {
   @BuilderWire('amount')
   int get amount;
 }

@@ -4,7 +4,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_viewpoint.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsViewpoint implements GsModel<GsViewpoint> {
+abstract class _GsViewpoint extends GsModel<GsViewpoint> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('desc')

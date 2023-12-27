@@ -36,7 +36,7 @@ class BuilderGeneratorGen extends GeneratorForAnnotation<BuilderGenerator> {
 
     final name = _classNameFromInterface(className);
     final buffer = StringBuffer()
-      ..writeln('class $name extends GsModel<$name> with $className{')
+      ..writeln('class $name extends $className{')
       ..writeAll(_fields(element, fields))
       ..writeAll(_constructor(element, fields))
       ..writeAll(_constructorJson(element, fields))

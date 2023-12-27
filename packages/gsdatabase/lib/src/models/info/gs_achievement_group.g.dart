@@ -6,8 +6,7 @@ part of 'gs_achievement_group.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsAchievementGroup extends GsModel<GsAchievementGroup>
-    with _GsAchievementGroup {
+class GsAchievementGroup extends _GsAchievementGroup {
   @override
   final String id;
   @override

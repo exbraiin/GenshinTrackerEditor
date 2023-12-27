@@ -6,7 +6,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_weapon.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsWeapon implements GsModel<GsWeapon> {
+abstract class _GsWeapon extends GsModel<GsWeapon> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('rarity')

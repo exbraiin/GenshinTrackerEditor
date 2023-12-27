@@ -6,7 +6,7 @@ part of 'gi_achievement.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GiAchievement extends GsModel<GiAchievement> with _GiAchievement {
+class GiAchievement extends _GiAchievement {
   @override
   final String id;
   @override

@@ -6,7 +6,7 @@ part of 'gs_material.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsMaterial extends GsModel<GsMaterial> with _GsMaterial {
+class GsMaterial extends _GsMaterial {
   @override
   final String id;
   @override

@@ -6,7 +6,7 @@ part of 'gi_wish.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GiWish extends GsModel<GiWish> with _GiWish {
+class GiWish extends _GiWish {
   @override
   final String id;
   @override

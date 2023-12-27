@@ -6,7 +6,7 @@ part of 'gs_recipe.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsRecipe extends GsModel<GsRecipe> with _GsRecipe {
+class GsRecipe extends _GsRecipe {
   @override
   final String id;
   @override
@@ -110,7 +110,7 @@ class GsRecipe extends GsModel<GsRecipe> with _GsRecipe {
   }
 }
 
-class GsIngredient extends GsModel<GsIngredient> with _GsIngredient {
+class GsIngredient extends _GsIngredient {
   @override
   final String id;
   @override

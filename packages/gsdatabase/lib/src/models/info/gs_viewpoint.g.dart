@@ -6,7 +6,7 @@ part of 'gs_viewpoint.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsViewpoint extends GsModel<GsViewpoint> with _GsViewpoint {
+class GsViewpoint extends _GsViewpoint {
   @override
   final String id;
   @override

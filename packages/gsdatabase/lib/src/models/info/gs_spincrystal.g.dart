@@ -6,7 +6,7 @@ part of 'gs_spincrystal.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsSpincrystal extends GsModel<GsSpincrystal> with _GsSpincrystal {
+class GsSpincrystal extends _GsSpincrystal {
   @override
   final String id;
   @override

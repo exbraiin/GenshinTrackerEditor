@@ -4,7 +4,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_namecard.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsNamecard implements GsModel<GsNamecard> {
+abstract class _GsNamecard extends GsModel<GsNamecard> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('rarity')

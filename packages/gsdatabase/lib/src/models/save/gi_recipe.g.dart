@@ -6,7 +6,7 @@ part of 'gi_recipe.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GiRecipe extends GsModel<GiRecipe> with _GiRecipe {
+class GiRecipe extends _GiRecipe {
   @override
   final String id;
   @override

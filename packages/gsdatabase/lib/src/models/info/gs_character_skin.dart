@@ -3,7 +3,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_character_skin.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsCharacterSkin implements GsModel<GsCharacterSkin> {
+abstract class _GsCharacterSkin extends GsModel<GsCharacterSkin> {
   @BuilderWire('rarity')
   int get rarity;
   @BuilderWire('name')

@@ -6,7 +6,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_material.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsMaterial implements GsModel<GsMaterial> {
+abstract class _GsMaterial extends GsModel<GsMaterial> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('desc')

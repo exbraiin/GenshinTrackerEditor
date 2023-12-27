@@ -6,7 +6,7 @@ part of 'gs_banner.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsBanner extends GsModel<GsBanner> with _GsBanner {
+class GsBanner extends _GsBanner {
   @override
   final String id;
   @override

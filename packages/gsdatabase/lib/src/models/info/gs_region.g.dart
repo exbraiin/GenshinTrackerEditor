@@ -6,7 +6,7 @@ part of 'gs_region.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsRegion extends GsModel<GsRegion> with _GsRegion {
+class GsRegion extends _GsRegion {
   @override
   final String id;
   @override

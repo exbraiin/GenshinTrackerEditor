@@ -4,7 +4,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_spincrystal.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsSpincrystal implements GsModel<GsSpincrystal> {
+abstract class _GsSpincrystal extends GsModel<GsSpincrystal> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('number')

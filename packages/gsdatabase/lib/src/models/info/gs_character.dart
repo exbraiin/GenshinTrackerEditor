@@ -4,7 +4,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_character.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsCharacter implements GsModel<GsCharacter> {
+abstract class _GsCharacter extends GsModel<GsCharacter> {
   @BuilderWire('enka_id')
   String get enkaId;
   @BuilderWire('name')
@@ -78,7 +78,7 @@ abstract mixin class _GsCharacter implements GsModel<GsCharacter> {
 }
 
 @BuilderGenerator()
-abstract mixin class _GsCharTalent implements GsModel<GsCharTalent> {
+abstract class _GsCharTalent extends GsModel<GsCharTalent> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('type')
@@ -90,8 +90,7 @@ abstract mixin class _GsCharTalent implements GsModel<GsCharTalent> {
 }
 
 @BuilderGenerator()
-abstract mixin class _GsCharConstellation
-    implements GsModel<GsCharConstellation> {
+abstract class _GsCharConstellation extends GsModel<GsCharConstellation> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('icon')

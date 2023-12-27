@@ -3,7 +3,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gi_player_info.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GiPlayerInfo implements GsModel<GiPlayerInfo> {
+abstract class _GiPlayerInfo extends GsModel<GiPlayerInfo> {
   @BuilderWire('uid')
   String get uid;
   @BuilderWire('avatar_id')

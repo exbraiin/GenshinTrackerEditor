@@ -6,7 +6,7 @@ part of 'gs_namecard.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsNamecard extends GsModel<GsNamecard> with _GsNamecard {
+class GsNamecard extends _GsNamecard {
   @override
   final String id;
   @override

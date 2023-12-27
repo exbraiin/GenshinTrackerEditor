@@ -6,7 +6,7 @@ part of 'gs_character.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsCharacter extends GsModel<GsCharacter> with _GsCharacter {
+class GsCharacter extends _GsCharacter {
   @override
   final String id;
   @override
@@ -267,7 +267,7 @@ class GsCharacter extends GsModel<GsCharacter> with _GsCharacter {
   }
 }
 
-class GsCharTalent extends GsModel<GsCharTalent> with _GsCharTalent {
+class GsCharTalent extends _GsCharTalent {
   @override
   final String id;
   @override
@@ -327,8 +327,7 @@ class GsCharTalent extends GsModel<GsCharTalent> with _GsCharTalent {
   }
 }
 
-class GsCharConstellation extends GsModel<GsCharConstellation>
-    with _GsCharConstellation {
+class GsCharConstellation extends _GsCharConstellation {
   @override
   final String id;
   @override

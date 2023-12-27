@@ -3,8 +3,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_achievement_group.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsAchievementGroup
-    implements GsModel<GsAchievementGroup> {
+abstract class _GsAchievementGroup extends GsModel<GsAchievementGroup> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('icon')

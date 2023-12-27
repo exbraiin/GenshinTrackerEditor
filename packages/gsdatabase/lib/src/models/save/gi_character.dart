@@ -3,7 +3,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gi_character.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GiCharacter implements GsModel<GiCharacter> {
+abstract class _GiCharacter extends GsModel<GiCharacter> {
   @BuilderWire('outfit')
   String get outfit;
   @BuilderWire('owned')

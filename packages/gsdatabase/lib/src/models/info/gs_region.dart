@@ -5,7 +5,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_region.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsRegion implements GsModel<GsRegion> {
+abstract class _GsRegion extends GsModel<GsRegion> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('image')

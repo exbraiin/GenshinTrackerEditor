@@ -5,7 +5,7 @@ import 'package:gsdatabase/src/models/gs_model.dart';
 part 'gs_furniture_chest.g.dart';
 
 @BuilderGenerator()
-abstract mixin class _GsFurnitureChest implements GsModel<GsFurnitureChest> {
+abstract class _GsFurnitureChest extends GsModel<GsFurnitureChest> {
   @BuilderWire('name')
   String get name;
   @BuilderWire('type')

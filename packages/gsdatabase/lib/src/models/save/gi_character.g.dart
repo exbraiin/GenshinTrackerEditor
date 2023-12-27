@@ -6,7 +6,7 @@ part of 'gi_character.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GiCharacter extends GsModel<GiCharacter> with _GiCharacter {
+class GiCharacter extends _GiCharacter {
   @override
   final String id;
   @override

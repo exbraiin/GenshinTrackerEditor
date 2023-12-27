@@ -6,8 +6,7 @@ part of 'gs_furniture_chest.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsFurnitureChest extends GsModel<GsFurnitureChest>
-    with _GsFurnitureChest {
+class GsFurnitureChest extends _GsFurnitureChest {
   @override
   final String id;
   @override

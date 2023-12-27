@@ -6,7 +6,7 @@ part of 'gs_weapon.dart';
 // Generator: BuilderGeneratorGen
 // **************************************************************************
 
-class GsWeapon extends GsModel<GsWeapon> with _GsWeapon {
+class GsWeapon extends _GsWeapon {
   @override
   final String id;
   @override
