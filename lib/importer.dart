@@ -118,7 +118,7 @@ abstract final class Importer {
         return e.copyWith(
           icon: exist?.icon,
           namecard: exist?.namecard,
-          version: items.maxBy((t) => t.version)?.version,
+          version: items.minBy((t) => t.version)?.version,
           rewards: items.sumBy((t) => t.reward),
           achievements: items.sumBy((t) => t.phases.length),
         );
