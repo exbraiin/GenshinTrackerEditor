@@ -570,7 +570,8 @@ class GsConfigs<T extends GsModel<T>> {
       itemDecoration: (item) => GsItemDecor(
         label: item.name,
         version: item.version,
-        color: GsStyle.getRarityColor(4),
+        image: item.image,
+        color: GsStyle.getVersionColor(item.version),
       ),
     ),
     GsVersion: GsConfigs<GsVersion>._(
