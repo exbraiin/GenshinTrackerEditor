@@ -11,7 +11,7 @@ class GsAchievementGroupExt extends GsModelExt<GsAchievementGroup> {
   List<DataField<GsAchievementGroup>> getFields(GsAchievementGroup? model) {
     final ids = Database.i.of<GsAchievementGroup>().ids;
     final versions = GsItemFilter.versions().ids;
-    final namecards = GsItemFilter.achievementNamecards().ids;
+    final namecards = GsItemFilter.namecards(GeNamecardType.achievement).ids;
 
     return [
       DataField.textField(
@@ -45,7 +45,10 @@ class GsAchievementGroupExt extends GsModelExt<GsAchievementGroup> {
       DataField.singleSelect(
         'Namecard',
         (item) => item.namecard,
-        (item) => GsItemFilter.achievementNamecards().filters,
+        (item) => GsItemFilter.namecards(
+          GeNamecardType.achievement,
+          item.namecard,
+        ).filters,
         (item, value) => item.copyWith(namecard: value),
         validator: (item) => vdContains(item.namecard, namecards),
       ),

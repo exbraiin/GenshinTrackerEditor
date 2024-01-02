@@ -23,7 +23,7 @@ class GsItemFilter {
     Color Function(T i)? color,
   }) {
     return GsItemFilter._([
-      if (noneId != null) GsSelectItem(noneId, 'None'),
+      if (noneId != null) GsSelectItem(noneId, 'None', image: ''),
       ...models.map((e) {
         final value = selector(e);
         return GsSelectItem(
@@ -64,6 +64,32 @@ class GsItemFilter {
         (i) => i.toString(),
         color: GsStyle.getRarityColor,
       );
+
+  factory GsItemFilter.namecards([GeNamecardType? type, String? id]) {
+    var items = Database.i.of<GsNamecard>().items;
+    if (type != null) items = items.where((e) => e.type == type);
+    if (id != null) {
+      final ids = switch (type) {
+        GeNamecardType.battlepass =>
+          Database.i.of<GsBattlepass>().items.map((e) => e.namecardId),
+        GeNamecardType.character =>
+          Database.i.of<GsCharacter>().items.map((e) => e.namecardId),
+        GeNamecardType.achievement =>
+          Database.i.of<GsAchievementGroup>().items.map((e) => e.namecard),
+        _ => <String>[],
+      };
+      items = items.where((e) => e.id == id || !ids.contains(e.id));
+    }
+
+    return GsItemFilter._from(
+      items,
+      (i) => i.id,
+      noneId: 'none',
+      title: (i) => i.name,
+      image: (i) => i.image,
+      color: (i) => GsStyle.getRarityColor(i.rarity),
+    );
+  }
 
   factory GsItemFilter.versions() => GsItemFilter._from(
         Database.i.of<GsVersion>().items,
@@ -172,16 +198,6 @@ class GsItemFilter {
         title: (i) => i.name,
         color: (i) => GsStyle.getRarityColor(i.rarity),
         image: (i) => i.image,
-      );
-  factory GsItemFilter.achievementNamecards() => GsItemFilter._from(
-        Database.i
-            .of<GsNamecard>()
-            .items
-            .where((e) => e.type == GeNamecardType.achievement),
-        (i) => i.id,
-        noneId: 'none',
-        title: (i) => i.name,
-        color: (i) => GsStyle.getRarityColor(i.rarity),
       );
 
   factory GsItemFilter.drops(int? rarity, GeEnemyType? type) {

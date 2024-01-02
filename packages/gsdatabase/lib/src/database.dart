@@ -12,6 +12,7 @@ List<Items> get _infoCollections {
         'achievement_categories', GsAchievementGroup.fromJson),
     Items<GsArtifact>('artifacts', GsArtifact.fromJson),
     Items<GsBanner>('banners', GsBanner.fromJson),
+    Items<GsBattlepass>('battlepass', GsBattlepass.fromJson),
     Items<GsCharacter>('characters', GsCharacter.fromJson),
     Items<GsCharacterSkin>('characters_outfits', GsCharacterSkin.fromJson),
     Items<GsEvent>('events', GsEvent.fromJson),

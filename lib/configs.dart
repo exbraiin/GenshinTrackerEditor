@@ -2,7 +2,7 @@ import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db/model_ext.dart';
-import 'package:data_editor/db_ext/data_validator.dart';
+import 'package:data_editor/db_ext/data_validator.dart' as vd;
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
@@ -13,6 +13,7 @@ import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_grid_item.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gsdatabase/gsdatabase.dart';
 
@@ -24,7 +25,8 @@ final _paimonMoeIcon = Image.network('https://paimon.moe/favicon.png');
 
 class GsConfigs<T extends GsModel<T>> {
   final String title;
-  final GsItemDecor Function(T item) getDecor;
+  final GsModelExt<T> pageBuilder;
+  final GsItemDecor Function(T item) itemDecoration;
   final List<GsFieldFilter<T>> filters;
   final Iterable<DataButton<T>> import;
 
@@ -32,16 +34,15 @@ class GsConfigs<T extends GsModel<T>> {
     try {
       return Database.i.of<T>();
     } catch (error) {
-      print('\x1b[31mNo such collection: $T');
+      if (kDebugMode) print('\x1b[31mNo such collection: $T');
       rethrow;
     }
   }
 
-  GsModelExt<T> get modelExt => GsModelExt.of<T>()!;
-
   GsConfigs._({
     required this.title,
-    required this.getDecor,
+    required this.pageBuilder,
+    required this.itemDecoration,
     this.import = const [],
     this.filters = const [],
   });
@@ -49,7 +50,8 @@ class GsConfigs<T extends GsModel<T>> {
   static final _map = <Type, GsConfigs>{
     GsAchievementGroup: GsConfigs<GsAchievementGroup>._(
       title: 'Achievement Category',
-      getDecor: (item) {
+      pageBuilder: const vd.GsAchievementGroupExt(),
+      itemDecoration: (item) {
         return GsItemDecor(
           label: '${item.achievements} (${item.rewards}✦)\n${item.name}',
           version: item.version,
@@ -68,7 +70,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsAchievement: GsConfigs<GsAchievement>._(
       title: 'Achievement',
-      getDecor: (item) {
+      pageBuilder: const vd.GsAchievementExt(),
+      itemDecoration: (item) {
         final cat = Database.i.of<GsAchievementGroup>().getItem(item.group);
         return GsItemDecor(
           label: '${item.name}\n(${item.reward}✦)',
@@ -97,7 +100,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsArtifact: GsConfigs<GsArtifact>._(
       title: 'Artifacts',
-      getDecor: (item) => GsItemDecor(
+      pageBuilder: const vd.GsArtifactExt(),
+      itemDecoration: (item) => GsItemDecor(
         label: item.name,
         image: item.pieces.firstOrNull?.icon,
         version: item.version,
@@ -124,7 +128,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsBanner: GsConfigs<GsBanner>._(
       title: 'Banners',
-      getDecor: (item) {
+      pageBuilder: const vd.GsBannerExt(),
+      itemDecoration: (item) {
         final data = item.feature5.firstOrNull;
         final image = data != null
             ? Database.i.of<GsCharacter>().getItem(data)?.image ??
@@ -152,7 +157,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsCharacter: GsConfigs<GsCharacter>._(
       title: 'Characters',
-      getDecor: (item) => GsItemDecor(
+      pageBuilder: const vd.GsCharacterExt(),
+      itemDecoration: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
         version: item.version,
@@ -206,7 +212,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsCharacterSkin: GsConfigs<GsCharacterSkin>._(
       title: 'Character Outfits',
-      getDecor: (item) {
+      pageBuilder: const vd.GsCharacterSkinExt(),
+      itemDecoration: (item) {
         final char = Database.i.of<GsCharacter>().getItem(item.character);
         return GsItemDecor(
           label: item.name,
@@ -232,7 +239,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsRegion: GsConfigs<GsRegion>._(
       title: 'Cities',
-      getDecor: (item) => GsItemDecor(
+      pageBuilder: const vd.GsRegionExt(),
+      itemDecoration: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
         version: '',
@@ -243,7 +251,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsEnemy: GsConfigs<GsEnemy>._(
       title: 'Enemies',
-      getDecor: (item) => GsItemDecor(
+      pageBuilder: const vd.GsEnemyExt(),
+      itemDecoration: (item) => GsItemDecor(
         label: item.name,
         version: item.version,
         color: GsStyle.getRarityColor(1),
@@ -270,7 +279,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsMaterial: GsConfigs<GsMaterial>._(
       title: 'Materials',
-      getDecor: (item) => GsItemDecor(
+      pageBuilder: const vd.GsMaterialExt(),
+      itemDecoration: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
         version: item.version,
@@ -310,7 +320,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsNamecard: GsConfigs<GsNamecard>._(
       title: 'Namecards',
-      getDecor: (item) => GsItemDecor(
+      pageBuilder: const vd.GsNamecardExt(),
+      itemDecoration: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
         version: item.version,
@@ -336,7 +347,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsRecipe: GsConfigs<GsRecipe>._(
       title: 'Recipes',
-      getDecor: (item) => GsItemDecor(
+      pageBuilder: const vd.GsRecipeExt(),
+      itemDecoration: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
         version: item.version,
@@ -367,7 +379,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsFurnitureChest: GsConfigs<GsFurnitureChest>._(
       title: 'Remarkable Chests',
-      getDecor: (item) => GsItemDecor(
+      pageBuilder: const vd.GsFurnitureChestExt(),
+      itemDecoration: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
         version: item.version,
@@ -399,7 +412,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsSereniteaSet: GsConfigs<GsSereniteaSet>._(
       title: 'Sereniteas',
-      getDecor: (item) => GsItemDecor(
+      pageBuilder: const vd.GsSereniteaSetExt(),
+      itemDecoration: (item) => GsItemDecor(
         label: item.name,
         version: item.version,
         color: item.category.color,
@@ -426,7 +440,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsFurnishing: GsConfigs<GsFurnishing>._(
       title: 'Furnishing',
-      getDecor: (item) => GsItemDecor(
+      pageBuilder: const vd.GsFurnishingExt(),
+      itemDecoration: (item) => GsItemDecor(
         label: item.name,
         version: '',
         color: GsStyle.getRarityColor(item.rarity),
@@ -449,7 +464,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsSpincrystal: GsConfigs<GsSpincrystal>._(
       title: 'Spincrystals',
-      getDecor: (item) => GsItemDecor(
+      pageBuilder: const vd.GsSpincrystalExt(),
+      itemDecoration: (item) => GsItemDecor(
         label: '${item.number}',
         version: item.version,
         color: GsStyle.getRarityColor(5),
@@ -470,7 +486,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsViewpoint: GsConfigs<GsViewpoint>._(
       title: 'Viewpoints',
-      getDecor: (item) => GsItemDecor(
+      pageBuilder: const vd.GsViewpointExt(),
+      itemDecoration: (item) => GsItemDecor(
         label: item.name,
         version: item.version,
         color: GsStyle.getRarityColor(4),
@@ -491,7 +508,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsEvent: GsConfigs<GsEvent>._(
       title: 'Events',
-      getDecor: (item) => GsItemDecor(
+      pageBuilder: const vd.GsEventExt(),
+      itemDecoration: (item) => GsItemDecor(
         label: item.name,
         version: item.version,
         color: GsStyle.getVersionColor(item.version),
@@ -499,7 +517,8 @@ class GsConfigs<T extends GsModel<T>> {
     ),
     GsWeapon: GsConfigs<GsWeapon>._(
       title: 'Weapons',
-      getDecor: (item) => GsItemDecor(
+      pageBuilder: const vd.GsWeaponExt(),
+      itemDecoration: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
         version: item.version,
@@ -545,9 +564,19 @@ class GsConfigs<T extends GsModel<T>> {
         ),
       ],
     ),
+    GsBattlepass: GsConfigs<GsBattlepass>._(
+      title: 'Battlepass',
+      pageBuilder: const vd.GsBattlepassExt(),
+      itemDecoration: (item) => GsItemDecor(
+        label: item.name,
+        version: '',
+        color: GsStyle.getRarityColor(4),
+      ),
+    ),
     GsVersion: GsConfigs<GsVersion>._(
       title: 'Versions',
-      getDecor: (item) => GsItemDecor(
+      pageBuilder: const vd.GsVersionExt(),
+      itemDecoration: (item) => GsItemDecor(
         label: item.id,
         version: item.id,
         color: GsStyle.getVersionColor(item.id),
@@ -555,7 +584,7 @@ class GsConfigs<T extends GsModel<T>> {
     ),
   };
 
-  static GsConfigs<T>? getConfig<T extends GsModel<T>>() {
+  static GsConfigs<T>? of<T extends GsModel<T>>() {
     return _map[T] as GsConfigs<T>?;
   }
 
@@ -564,9 +593,9 @@ class GsConfigs<T extends GsModel<T>> {
   }
 
   Widget toGridItem(BuildContext context) {
-    final level = DataValidator.i.getMaxLevel<T>();
+    final level = vd.DataValidator.i.getMaxLevel<T>();
     final version = collection.items
-            .map((e) => getDecor(e).version)
+            .map((e) => itemDecoration(e).version)
             .toSet()
             .sortedBy((element) => element)
             .lastOrNull ??
@@ -586,7 +615,7 @@ class GsConfigs<T extends GsModel<T>> {
       ItemsListScreen<T>(
         title: title,
         list: () => collection.items.sorted(),
-        getDecor: getDecor,
+        getDecor: itemDecoration,
         onTap: openEditScreen,
         filters: filters,
       ),
@@ -599,7 +628,7 @@ class GsConfigs<T extends GsModel<T>> {
         item: item,
         title: title,
         collection: collection,
-        modelExt: modelExt,
+        modelExt: pageBuilder,
         import: import,
       ),
     );

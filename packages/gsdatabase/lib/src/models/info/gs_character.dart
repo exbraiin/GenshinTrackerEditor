@@ -9,6 +9,8 @@ abstract class _GsCharacter extends GsModel<GsCharacter> {
   String get enkaId;
   @BuilderWire('name')
   String get name;
+  @BuilderWire('namecard_id')
+  String get namecardId;
   @BuilderWire('title')
   String get title;
   @BuilderWire('rarity')

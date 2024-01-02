@@ -26,6 +26,7 @@ export 'models/info/gs_achievement.dart' show GsAchievement, GsAchievementPhase;
 export 'models/info/gs_achievement_group.dart' show GsAchievementGroup;
 export 'models/info/gs_artifact.dart' show GsArtifact, GsArtifactPiece;
 export 'models/info/gs_banner.dart' show GsBanner;
+export 'models/info/gs_battlepass.dart' show GsBattlepass;
 export 'models/info/gs_character.dart'
     show GsCharacter, GsCharTalent, GsCharConstellation;
 export 'models/info/gs_character_skin.dart' show GsCharacterSkin;

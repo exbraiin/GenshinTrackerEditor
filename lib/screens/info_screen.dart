@@ -101,6 +101,7 @@ class _InfoScreenState extends State<InfoScreen> {
           _getByVersion<GsSereniteaSet>(version.id),
           _getByVersion<GsSpincrystal>(version.id),
           _getByVersion<GsViewpoint>(version.id),
+          _getByVersion<GsBattlepass>(version.id),
           _getByVersion<GsWeapon>(version.id),
         ],
       ),
@@ -109,10 +110,10 @@ class _InfoScreenState extends State<InfoScreen> {
 
   Widget _getByVersion<T extends GsModel<T>>(String version) {
     if (!_isExpanded(version)) return const SizedBox();
-    final config = GsConfigs.getConfig<T>();
+    final config = GsConfigs.of<T>();
     if (config == null) return const SizedBox();
     final versionItems = config.collection.items
-        .where((e) => config.getDecor(e).version == version);
+        .where((e) => config.itemDecoration(e).version == version);
     if (versionItems.isEmpty) return const SizedBox();
 
     Widget badge(Color color) {
@@ -163,7 +164,7 @@ class _InfoScreenState extends State<InfoScreen> {
                     spacing: 8,
                     runSpacing: 8,
                     children: versionItems.map<Widget>((item) {
-                      final decor = config.getDecor(item);
+                      final decor = config.itemDecoration(item);
                       final level = DataValidator.i.getLevel<T>(item.id);
                       Widget widget = GsSelectChip(
                         GsSelectItem(

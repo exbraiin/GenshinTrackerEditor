@@ -6,31 +6,6 @@ import 'package:gsdatabase/gsdatabase.dart'
     hide GsRecipeExt, GsSpincrystalExt, GsEnemyExt;
 
 abstract class GsModelExt<T extends GsModel<T>> {
-  static GsModelExt<R>? of<R extends GsModel<R>>() {
-    return switch (R) {
-      GsAchievement => const GsAchievementExt(),
-      GsAchievementGroup => const GsAchievementGroupExt(),
-      GsArtifact => const GsArtifactExt(),
-      GsBanner => const GsBannerExt(),
-      GsCharacter => const GsCharacterExt(),
-      GsCharacterSkin => const GsCharacterSkinExt(),
-      GsRegion => const GsRegionExt(),
-      GsEnemy => const GsEnemyExt(),
-      GsMaterial => const GsMaterialExt(),
-      GsNamecard => const GsNamecardExt(),
-      GsRecipe => const GsRecipeExt(),
-      GsFurnitureChest => const GsFurnitureChestExt(),
-      GsSereniteaSet => const GsSereniteaSetExt(),
-      GsFurnishing => const GsFurnishingExt(),
-      GsSpincrystal => const GsSpincrystalExt(),
-      GsVersion => const GsVersionExt(),
-      GsViewpoint => const GsViewpointExt(),
-      GsEvent => const GsEventExt(),
-      GsWeapon => const GsWeaponExt(),
-      _ => null,
-    } as GsModelExt<R>?;
-  }
-
   const GsModelExt();
 
   List<DataField<T>> getFields(T? model);
@@ -107,7 +82,7 @@ String generateId(GsModel item) {
   if (item is GsSpincrystal) {
     return item.number.toString();
   }
-  
+
   if (item is GsVersion) {
     return item.id;
   }

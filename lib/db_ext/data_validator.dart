@@ -1,7 +1,7 @@
 import 'package:dartx/dartx.dart';
+import 'package:data_editor/configs.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
-import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gsdatabase/gsdatabase.dart';
@@ -10,6 +10,7 @@ export 'src/gs_achievement_ext.dart';
 export 'src/gs_achievement_group_ext.dart';
 export 'src/gs_artifact_ext.dart';
 export 'src/gs_banner_ext.dart';
+export 'src/gs_battlepass_ext.dart';
 export 'src/gs_character_ext.dart';
 export 'src/gs_character_outfit_ext.dart';
 export 'src/gs_city_ext.dart';
@@ -78,6 +79,7 @@ class DataValidator {
       checkItems<GsVersion>(),
       checkItems<GsViewpoint>(),
       checkItems<GsEvent>(),
+      checkItems<GsBattlepass>(),
       checkItems<GsWeapon>(),
     ]);
   }
@@ -117,7 +119,7 @@ Map<String, GsValidLevel> _validateModels<T extends GsModel<T>>(
 
 _GsValidator<T> _getValidator<T extends GsModel<T>>() {
   final flagItem = Database.i.of<T>().parser({});
-  final fields = GsModelExt.of<T>()?.getFields(flagItem) ?? [];
+  final fields = GsConfigs.of<T>()?.pageBuilder.getFields(flagItem) ?? [];
   return _GsValidator(fields.map((e) => e.validator));
 }
 

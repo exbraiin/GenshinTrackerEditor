@@ -20,6 +20,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
   @override
   List<DataField<GsCharacter>> getFields(GsCharacter? model) {
     final ids = Database.i.of<GsCharacter>().ids;
+    final namecards = GsItemFilter.namecards(GeNamecardType.character).ids;
     final regions = GsItemFilter.regions().ids;
     final versions = GsItemFilter.versions().ids;
     final recipes = GsItemFilter.specialDishes().ids;
@@ -100,6 +101,19 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         (item) => item.title,
         (item, value) => item.copyWith(title: value),
         validator: (item) => vdText(item.title),
+      ),
+      DataField.singleSelect(
+        'Namecard Id',
+        (item) => item.namecardId,
+        (item) => GsItemFilter.namecards(
+          GeNamecardType.character,
+          item.namecardId,
+        ).filters,
+        (item, value) => item.copyWith(namecardId: value),
+        validator: (item) {
+          if (item.namecardId == '') return GsValidLevel.warn2;
+          return vdContains(item.namecardId, namecards);
+        },
       ),
       DataField.selectRarity(
         'Rarity',

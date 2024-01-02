@@ -14,6 +14,8 @@ class GsCharacter extends _GsCharacter {
   @override
   final String name;
   @override
+  final String namecardId;
+  @override
   final String title;
   @override
   final int rarity;
@@ -79,6 +81,7 @@ class GsCharacter extends _GsCharacter {
     required this.id,
     required this.enkaId,
     required this.name,
+    required this.namecardId,
     required this.title,
     required this.rarity,
     required this.region,
@@ -116,6 +119,7 @@ class GsCharacter extends _GsCharacter {
       : id = m['id'] as String? ?? '',
         enkaId = m['enka_id'] as String? ?? '',
         name = m['name'] as String? ?? '',
+        namecardId = m['namecard_id'] as String? ?? '',
         title = m['title'] as String? ?? '',
         rarity = m['rarity'] as int? ?? 0,
         region = GeRegionType.values.fromId(m['region']),
@@ -158,6 +162,7 @@ class GsCharacter extends _GsCharacter {
     String? id,
     String? enkaId,
     String? name,
+    String? namecardId,
     String? title,
     int? rarity,
     GeRegionType? region,
@@ -193,6 +198,7 @@ class GsCharacter extends _GsCharacter {
       id: id ?? this.id,
       enkaId: enkaId ?? this.enkaId,
       name: name ?? this.name,
+      namecardId: namecardId ?? this.namecardId,
       title: title ?? this.title,
       rarity: rarity ?? this.rarity,
       region: region ?? this.region,
@@ -233,6 +239,7 @@ class GsCharacter extends _GsCharacter {
       'id': id,
       'enka_id': enkaId,
       'name': name,
+      'namecard_id': namecardId,
       'title': title,
       'rarity': rarity,
       'region': region.id,
