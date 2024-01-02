@@ -10,7 +10,7 @@ class GsRecipeExt extends GsModelExt<GsRecipe> {
   const GsRecipeExt();
 
   @override
-  List<DataField<GsRecipe>> getFields(GsRecipe? model) {
+  List<DataField<GsRecipe>> getFields(String? editId) {
     final ids = Database.i.of<GsRecipe>().ids;
     final baseRecipes = GsItemFilter.nonBaseRecipes().ids;
     final versions = GsItemFilter.versions().ids;
@@ -20,7 +20,7 @@ class GsRecipeExt extends GsModelExt<GsRecipe> {
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),

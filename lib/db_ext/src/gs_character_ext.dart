@@ -18,7 +18,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
   const GsCharacterExt();
 
   @override
-  List<DataField<GsCharacter>> getFields(GsCharacter? model) {
+  List<DataField<GsCharacter>> getFields(String? editId) {
     final ids = Database.i.of<GsCharacter>().ids;
     final namecards = GsItemFilter.namecards(GeNamecardType.character).ids;
     final regions = GsItemFilter.regions().ids;
@@ -50,7 +50,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),

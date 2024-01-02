@@ -9,7 +9,7 @@ class GsEventExt extends GsModelExt<GsEvent> {
   const GsEventExt();
 
   @override
-  List<DataField<GsEvent>> getFields(GsEvent? model) {
+  List<DataField<GsEvent>> getFields(String? editId) {
     final ids = Database.i.of<GsEvent>().ids;
     final types = GsItemFilter.eventType().ids;
     final versions = GsItemFilter.versions().ids;
@@ -18,7 +18,7 @@ class GsEventExt extends GsModelExt<GsEvent> {
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),

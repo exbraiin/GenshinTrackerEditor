@@ -11,7 +11,7 @@ class GsSereniteaSetExt extends GsModelExt<GsSereniteaSet> {
   const GsSereniteaSetExt();
 
   @override
-  List<DataField<GsSereniteaSet>> getFields(GsSereniteaSet? model) {
+  List<DataField<GsSereniteaSet>> getFields(String? editId) {
     final ids = Database.i.of<GsSereniteaSet>().ids;
     final chars = GsItemFilter.wishes(null, GeBannerType.character).ids;
     final versions = GsItemFilter.versions().ids;
@@ -20,7 +20,7 @@ class GsSereniteaSetExt extends GsModelExt<GsSereniteaSet> {
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),

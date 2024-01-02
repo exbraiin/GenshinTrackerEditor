@@ -10,7 +10,7 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
   const GsWeaponExt();
 
   @override
-  List<DataField<GsWeapon>> getFields(GsWeapon? model) {
+  List<DataField<GsWeapon>> getFields(String? editId) {
     final ids = Database.i.of<GsWeapon>().ids;
     final versions = GsItemFilter.versions().ids;
     const catWeapon = GeMaterialType.weaponMaterials;
@@ -25,7 +25,7 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),

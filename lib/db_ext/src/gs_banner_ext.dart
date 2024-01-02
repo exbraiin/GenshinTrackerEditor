@@ -10,7 +10,7 @@ class GsBannerExt extends GsModelExt<GsBanner> {
   const GsBannerExt();
 
   @override
-  List<DataField<GsBanner>> getFields(GsBanner? model) {
+  List<DataField<GsBanner>> getFields(String? editId) {
     final ids = Database.i.of<GsBanner>().ids;
     final versions = GsItemFilter.versions().ids;
     return [
@@ -18,7 +18,7 @@ class GsBannerExt extends GsModelExt<GsBanner> {
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),

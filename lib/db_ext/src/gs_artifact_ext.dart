@@ -10,7 +10,7 @@ class GsArtifactExt extends GsModelExt<GsArtifact> {
   const GsArtifactExt();
 
   @override
-  List<DataField<GsArtifact>> getFields(GsArtifact? model) {
+  List<DataField<GsArtifact>> getFields(String? editId) {
     final ids = Database.i.of<GsArtifact>().ids;
     final regions = GsItemFilter.regions().ids;
     final versions = GsItemFilter.versions().ids;
@@ -20,7 +20,7 @@ class GsArtifactExt extends GsModelExt<GsArtifact> {
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),

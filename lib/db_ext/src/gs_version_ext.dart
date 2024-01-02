@@ -7,14 +7,14 @@ class GsVersionExt extends GsModelExt<GsVersion> {
   const GsVersionExt();
 
   @override
-  List<DataField<GsVersion>> getFields(GsVersion? model) {
+  List<DataField<GsVersion>> getFields(String? editId) {
     final ids = Database.i.of<GsVersion>().ids;
     return [
       DataField.textField(
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
       ),
       DataField.textField(
         'Name',

@@ -11,7 +11,7 @@ class GsEnemyExt extends GsModelExt<GsEnemy> {
   const GsEnemyExt();
 
   @override
-  List<DataField<GsEnemy>> getFields(GsEnemy? model) {
+  List<DataField<GsEnemy>> getFields(String? editId) {
     final ids = Database.i.of<GsEnemy>().ids;
     final versions = GsItemFilter.versions().ids;
     return [
@@ -19,7 +19,7 @@ class GsEnemyExt extends GsModelExt<GsEnemy> {
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),

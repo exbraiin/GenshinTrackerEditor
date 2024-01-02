@@ -50,10 +50,7 @@ class _ItemEditScreenState<T extends GsModel<T>>
 
   @override
   Widget build(BuildContext context) {
-    // Used when duplicating an item, so the id is not matched against db.
-    late final newItem = widget.collection.parser({});
-    final item = widget.duplicated != null ? newItem : widget.item;
-    final fields = widget.modelExt.getFields(item);
+    final fields = widget.modelExt.getFields(widget.item?.id);
     void edit(T value) => _notifier.value = value;
     return Scaffold(
       appBar: AppBar(

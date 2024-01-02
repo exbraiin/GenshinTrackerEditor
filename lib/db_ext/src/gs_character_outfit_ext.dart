@@ -8,7 +8,7 @@ class GsCharacterSkinExt extends GsModelExt<GsCharacterSkin> {
   const GsCharacterSkinExt();
 
   @override
-  List<DataField<GsCharacterSkin>> getFields(GsCharacterSkin? model) {
+  List<DataField<GsCharacterSkin>> getFields(String? editId) {
     final ids = Database.i.of<GsCharacterSkin>().ids;
     final versions = GsItemFilter.versions().ids;
     final characters = GsItemFilter.chars().ids;
@@ -18,7 +18,7 @@ class GsCharacterSkinExt extends GsModelExt<GsCharacterSkin> {
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),

@@ -9,7 +9,7 @@ class GsNamecardExt extends GsModelExt<GsNamecard> {
   const GsNamecardExt();
 
   @override
-  List<DataField<GsNamecard>> getFields(GsNamecard? model) {
+  List<DataField<GsNamecard>> getFields(String? editId) {
     final ids = Database.i.of<GsNamecard>().ids;
     final versions = GsItemFilter.versions().ids;
     return [
@@ -17,7 +17,7 @@ class GsNamecardExt extends GsModelExt<GsNamecard> {
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),

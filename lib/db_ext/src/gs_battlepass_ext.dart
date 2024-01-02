@@ -9,7 +9,7 @@ class GsBattlepassExt extends GsModelExt<GsBattlepass> {
   const GsBattlepassExt();
 
   @override
-  List<DataField<GsBattlepass>> getFields(GsBattlepass? model) {
+  List<DataField<GsBattlepass>> getFields(String? editId) {
     final ids = Database.i.of<GsBattlepass>().ids;
     final versions = GsItemFilter.versions().ids;
     final namecards = GsItemFilter.namecards(GeNamecardType.battlepass).ids;
@@ -19,7 +19,7 @@ class GsBattlepassExt extends GsModelExt<GsBattlepass> {
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),

@@ -7,14 +7,14 @@ class GsFurnishingExt extends GsModelExt<GsFurnishing> {
   const GsFurnishingExt();
 
   @override
-  List<DataField<GsFurnishing>> getFields(GsFurnishing? model) {
+  List<DataField<GsFurnishing>> getFields(String? editId) {
     final ids = Database.i.of<GsFurnishing>().ids;
     return [
       DataField.textField(
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),

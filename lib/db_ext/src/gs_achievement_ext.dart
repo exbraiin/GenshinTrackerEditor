@@ -9,7 +9,7 @@ class GsAchievementExt extends GsModelExt<GsAchievement> {
   const GsAchievementExt();
 
   @override
-  List<DataField<GsAchievement>> getFields(GsAchievement? model) {
+  List<DataField<GsAchievement>> getFields(String? editId) {
     final ids = Database.i.of<GsAchievement>().ids;
     final groups = GsItemFilter.achievementGroups().ids;
     final versions = GsItemFilter.versions().ids;
@@ -18,7 +18,7 @@ class GsAchievementExt extends GsModelExt<GsAchievement> {
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),

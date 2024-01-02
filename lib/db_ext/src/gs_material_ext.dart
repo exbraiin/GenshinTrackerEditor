@@ -11,7 +11,7 @@ class GsMaterialExt extends GsModelExt<GsMaterial> {
   const GsMaterialExt();
 
   @override
-  List<DataField<GsMaterial>> getFields(GsMaterial? model) {
+  List<DataField<GsMaterial>> getFields(String? editId) {
     final ids = Database.i.of<GsMaterial>().ids;
     final regions = GsItemFilter.regions().ids;
     final versions = GsItemFilter.versions().ids;
@@ -20,7 +20,7 @@ class GsMaterialExt extends GsModelExt<GsMaterial> {
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),

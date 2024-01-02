@@ -9,7 +9,7 @@ class GsSpincrystalExt extends GsModelExt<GsSpincrystal> {
   const GsSpincrystalExt();
 
   @override
-  List<DataField<GsSpincrystal>> getFields(GsSpincrystal? model) {
+  List<DataField<GsSpincrystal>> getFields(String? editId) {
     final ids = Database.i.of<GsSpincrystal>().ids;
     final regions = GsItemFilter.regions().ids;
     final versions = GsItemFilter.versions().ids;
@@ -22,7 +22,7 @@ class GsSpincrystalExt extends GsModelExt<GsSpincrystal> {
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),
         ),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
       ),
       DataField.textField(
         'Name',

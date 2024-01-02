@@ -9,7 +9,7 @@ class GsFurnitureChestExt extends GsModelExt<GsFurnitureChest> {
   const GsFurnitureChestExt();
 
   @override
-  List<DataField<GsFurnitureChest>> getFields(GsFurnitureChest? model) {
+  List<DataField<GsFurnitureChest>> getFields(String? editId) {
     final ids = Database.i.of<GsFurnitureChest>().ids;
     final regions = GsItemFilter.regions().ids;
     final versions = GsItemFilter.versions().ids;
@@ -18,7 +18,7 @@ class GsFurnitureChestExt extends GsModelExt<GsFurnitureChest> {
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, model, ids),
+        validator: (item) => vdId(item, editId, ids),
         refresh: DataButton(
           'Generate Id',
           (ctx, item) => item.copyWith(id: generateId(item)),

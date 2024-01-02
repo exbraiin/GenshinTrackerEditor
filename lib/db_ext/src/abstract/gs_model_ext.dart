@@ -8,19 +8,20 @@ import 'package:gsdatabase/gsdatabase.dart'
 abstract class GsModelExt<T extends GsModel<T>> {
   const GsModelExt();
 
-  List<DataField<T>> getFields(T? model);
+  List<DataField<T>> getFields(String? editId);
 
   GsValidLevel vdId<E extends GsModel<E>>(
     E item,
-    E? inDb,
+    String? editId,
     Iterable<String> ids,
   ) {
-    if (inDb?.id.isEmpty ?? false) inDb = item;
+    // We set the id if the given one is empty in order to validate all items.
+    if (editId?.isEmpty ?? false) editId = item.id;
     final id = item.id;
     final expectedId = generateId(item);
     if (id.isEmpty) return GsValidLevel.error;
     final check = id != expectedId ? GsValidLevel.warn1 : GsValidLevel.good;
-    final withoutSelf = ids.where((e) => e != inDb?.id);
+    final withoutSelf = ids.where((e) => e != editId);
     return !withoutSelf.contains(id) ? check : GsValidLevel.error;
   }
 

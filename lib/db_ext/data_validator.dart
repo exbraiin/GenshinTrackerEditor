@@ -118,8 +118,8 @@ Map<String, GsValidLevel> _validateModels<T extends GsModel<T>>(
 }
 
 _GsValidator<T> _getValidator<T extends GsModel<T>>() {
-  final flagItem = Database.i.of<T>().parser({});
-  final fields = GsConfigs.of<T>()?.pageBuilder.getFields(flagItem) ?? [];
+  // We send an empty id so the "validate id" method can reassign the id.
+  final fields = GsConfigs.of<T>()?.pageBuilder.getFields('') ?? [];
   return _GsValidator(fields.map((e) => e.validator));
 }
 
