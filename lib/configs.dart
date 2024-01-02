@@ -569,7 +569,7 @@ class GsConfigs<T extends GsModel<T>> {
       pageBuilder: const vd.GsBattlepassExt(),
       itemDecoration: (item) => GsItemDecor(
         label: item.name,
-        version: '',
+        version: item.version,
         color: GsStyle.getRarityColor(4),
       ),
     ),

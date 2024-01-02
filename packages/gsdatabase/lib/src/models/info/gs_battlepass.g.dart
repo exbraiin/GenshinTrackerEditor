@@ -14,6 +14,8 @@ class GsBattlepass extends _GsBattlepass {
   @override
   final String image;
   @override
+  final String version;
+  @override
   final String namecardId;
   @override
   final DateTime dateStart;
@@ -25,6 +27,7 @@ class GsBattlepass extends _GsBattlepass {
     required this.id,
     required this.name,
     required this.image,
+    required this.version,
     required this.namecardId,
     required this.dateStart,
     required this.dateEnd,
@@ -35,6 +38,7 @@ class GsBattlepass extends _GsBattlepass {
       : id = m['id'] as String? ?? '',
         name = m['name'] as String? ?? '',
         image = m['image'] as String? ?? '',
+        version = m['version'] as String? ?? '',
         namecardId = m['namecard_id'] as String? ?? '',
         dateStart =
             DateTime.tryParse(m['date_start'].toString()) ?? DateTime(0),
@@ -46,6 +50,7 @@ class GsBattlepass extends _GsBattlepass {
     String? id,
     String? name,
     String? image,
+    String? version,
     String? namecardId,
     DateTime? dateStart,
     DateTime? dateEnd,
@@ -54,6 +59,7 @@ class GsBattlepass extends _GsBattlepass {
       id: id ?? this.id,
       name: name ?? this.name,
       image: image ?? this.image,
+      version: version ?? this.version,
       namecardId: namecardId ?? this.namecardId,
       dateStart: dateStart ?? this.dateStart,
       dateEnd: dateEnd ?? this.dateEnd,
@@ -67,6 +73,7 @@ class GsBattlepass extends _GsBattlepass {
       'id': id,
       'name': name,
       'image': image,
+      'version': version,
       'namecard_id': namecardId,
       'date_start': dateStart.toString(),
       'date_end': dateEnd.toString(),

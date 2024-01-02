@@ -8,6 +8,8 @@ abstract class _GsBattlepass extends GsModel<GsBattlepass> {
   String get name;
   @BuilderWire('image')
   String get image;
+  @BuilderWire('version')
+  String get version;
   @BuilderWire('namecard_id')
   String get namecardId;
   @BuilderWire('date_start')

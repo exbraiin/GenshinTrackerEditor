@@ -11,6 +11,7 @@ class GsBattlepassExt extends GsModelExt<GsBattlepass> {
   @override
   List<DataField<GsBattlepass>> getFields(GsBattlepass? model) {
     final ids = Database.i.of<GsBattlepass>().ids;
+    final versions = GsItemFilter.versions().ids;
     final namecards = GsItemFilter.namecards(GeNamecardType.battlepass).ids;
 
     return [
@@ -35,6 +36,13 @@ class GsBattlepassExt extends GsModelExt<GsBattlepass> {
         (item) => item.image,
         (item, value) => item.copyWith(image: value),
         validator: (item) => vdImage(item.image),
+      ),
+      DataField.singleSelect(
+        'Version',
+        (item) => item.version,
+        (item) => GsItemFilter.versions().filters,
+        (item, value) => item.copyWith(version: value),
+        validator: (item) => vdContains(item.version, versions),
       ),
       DataField.singleSelect(
         'Namecard Id',
