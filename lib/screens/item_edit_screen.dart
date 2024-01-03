@@ -52,6 +52,7 @@ class _ItemEditScreenState<T extends GsModel<T>>
   Widget build(BuildContext context) {
     final fields = widget.modelExt.getFields(widget.item?.id);
     void edit(T value) => _notifier.value = value;
+    final iconSize = IconTheme.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit ${widget.title}'),
@@ -66,7 +67,13 @@ class _ItemEditScreenState<T extends GsModel<T>>
                     .map(
                       (e) => IconButton(
                         tooltip: e.tooltip,
-                        icon: e.icon ?? const Icon(Icons.bolt_outlined),
+                        icon: e.icon != null
+                            ? SizedBox(
+                                width: iconSize,
+                                height: iconSize,
+                                child: e.icon,
+                              )
+                            : const Icon(Icons.bolt_outlined),
                         onPressed: () async =>
                             edit(await e.callback(context, value)),
                       ),
@@ -92,7 +99,6 @@ class _ItemEditScreenState<T extends GsModel<T>>
       ),
       backgroundColor: Colors.black,
       body: Container(
-        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           image: DecorationImage(
             fit: BoxFit.cover,
@@ -103,10 +109,11 @@ class _ItemEditScreenState<T extends GsModel<T>>
             image: const AssetImage(GsGraphics.bgImg),
           ),
         ),
-        child: Column(
+        child: Stack(
           children: [
-            Expanded(
+            Positioned.fill(
               child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 56 + 16),
                 child: ValueListenableBuilder(
                   valueListenable: _notifier,
                   builder: (context, value, child) {
@@ -115,49 +122,52 @@ class _ItemEditScreenState<T extends GsModel<T>>
                 ),
               ),
             ),
-            const SizedBox(height: 8),
-            ValueListenableBuilder(
-              valueListenable: _notifier,
-              builder: (context, value, child) {
-                final valid = fields
-                        .map((e) => e.validator(value))
-                        .whereNotNull()
-                        .maxBy((element) => element.index) !=
-                    GsValidLevel.error;
+            Positioned(
+              right: 8,
+              bottom: 8,
+              child: ValueListenableBuilder(
+                valueListenable: _notifier,
+                builder: (context, value, child) {
+                  final valid = fields
+                          .map((e) => e.validator(value))
+                          .whereNotNull()
+                          .maxBy((element) => element.index) !=
+                      GsValidLevel.error;
 
-                void onSave() {
-                  widget.collection.delete(widget.item?.id);
-                  widget.collection.updateItem(value);
-                  Navigator.of(context).maybePop();
-                }
+                  void onSave() {
+                    widget.collection.delete(widget.item?.id);
+                    widget.collection.updateItem(value);
+                    Navigator.of(context).maybePop();
+                  }
 
-                void onDelete() {
-                  widget.collection.delete(_notifier.value.id);
-                  Navigator.of(context).maybePop();
-                }
+                  void onDelete() {
+                    widget.collection.delete(_notifier.value.id);
+                    Navigator.of(context).maybePop();
+                  }
 
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Opacity(
-                      opacity: widget.item != null ? 1 : 0.2,
-                      child: FloatingDeleteButton(
-                        onPressed: widget.item != null ? onDelete : null,
-                        child: const Icon(Icons.delete, color: Colors.white),
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Opacity(
+                        opacity: widget.item != null ? 1 : 0.2,
+                        child: FloatingDeleteButton(
+                          onPressed: widget.item != null ? onDelete : null,
+                          child: const Icon(Icons.delete, color: Colors.white),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Opacity(
-                      opacity: valid ? 1 : 0.2,
-                      child: FloatingActionButton(
-                        heroTag: 'save',
-                        onPressed: valid ? onSave : null,
-                        child: const Icon(Icons.save, color: Colors.white),
+                      const SizedBox(width: 8),
+                      Opacity(
+                        opacity: valid ? 1 : 0.2,
+                        child: FloatingActionButton(
+                          heroTag: 'save',
+                          onPressed: valid ? onSave : null,
+                          child: const Icon(Icons.save, color: Colors.white),
+                        ),
                       ),
-                    ),
-                  ],
-                );
-              },
+                    ],
+                  );
+                },
+              ),
             ),
           ],
         ),
