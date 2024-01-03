@@ -35,6 +35,24 @@ class GsRegionExt extends GsModelExt<GsRegion> {
         (item, value) => item.copyWith(image: value),
         validator: (item) => vdImage(item.image),
       ),
+      DataField.textImage(
+        'Image In-Game',
+        (item) => item.imageInGame,
+        (item, value) => item.copyWith(imageInGame: value),
+        validator: (item) => vdImage(item.imageInGame),
+      ),
+      DataField.textField(
+        'Archon',
+        (item) => item.archon,
+        (item, value) => item.copyWith(archon: value),
+        validator: (item) => vdText(item.archon),
+      ),
+      DataField.textField(
+        'Ideal',
+        (item) => item.ideal,
+        (item, value) => item.copyWith(ideal: value),
+        validator: (item) => vdText(item.ideal),
+      ),
       DataField.singleEnum(
         'Element',
         GeElementType.values.toChips(),

@@ -14,6 +14,12 @@ class GsRegion extends _GsRegion {
   @override
   final String image;
   @override
+  final String imageInGame;
+  @override
+  final String archon;
+  @override
+  final String ideal;
+  @override
   final GeElementType element;
   @override
   final List<int> reputation;
@@ -23,6 +29,9 @@ class GsRegion extends _GsRegion {
     required this.id,
     required this.name,
     required this.image,
+    required this.imageInGame,
+    required this.archon,
+    required this.ideal,
     required this.element,
     required this.reputation,
   });
@@ -32,6 +41,9 @@ class GsRegion extends _GsRegion {
       : id = m['id'] as String? ?? '',
         name = m['name'] as String? ?? '',
         image = m['image'] as String? ?? '',
+        imageInGame = m['image_ingame'] as String? ?? '',
+        archon = m['archon'] as String? ?? '',
+        ideal = m['ideal'] as String? ?? '',
         element = GeElementType.values.fromId(m['element']),
         reputation = (m['reputation'] as List? ?? const []).cast<int>();
 
@@ -41,6 +53,9 @@ class GsRegion extends _GsRegion {
     String? id,
     String? name,
     String? image,
+    String? imageInGame,
+    String? archon,
+    String? ideal,
     GeElementType? element,
     List<int>? reputation,
   }) {
@@ -48,6 +63,9 @@ class GsRegion extends _GsRegion {
       id: id ?? this.id,
       name: name ?? this.name,
       image: image ?? this.image,
+      imageInGame: imageInGame ?? this.imageInGame,
+      archon: archon ?? this.archon,
+      ideal: ideal ?? this.ideal,
       element: element ?? this.element,
       reputation: reputation ?? this.reputation,
     );
@@ -60,6 +78,9 @@ class GsRegion extends _GsRegion {
       'id': id,
       'name': name,
       'image': image,
+      'image_ingame': imageInGame,
+      'archon': archon,
+      'ideal': ideal,
       'element': element.id,
       'reputation': reputation,
     };

@@ -141,9 +141,9 @@ class _ItemEditScreenState<T extends GsModel<T>>
                   children: [
                     Opacity(
                       opacity: widget.item != null ? 1 : 0.2,
-                      child: DeleteButton(
+                      child: FloatingDeleteButton(
                         onPressed: widget.item != null ? onDelete : null,
-                        child: const Icon(Icons.delete),
+                        child: const Icon(Icons.delete, color: Colors.white),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -152,7 +152,6 @@ class _ItemEditScreenState<T extends GsModel<T>>
                       child: FloatingActionButton(
                         heroTag: 'save',
                         onPressed: valid ? onSave : null,
-                        splashColor: Colors.black.withOpacity(0.4),
                         child: const Icon(Icons.save, color: Colors.white),
                       ),
                     ),
@@ -167,21 +166,21 @@ class _ItemEditScreenState<T extends GsModel<T>>
   }
 }
 
-class DeleteButton extends StatefulWidget {
+class FloatingDeleteButton extends StatefulWidget {
   final Widget child;
   final VoidCallback? onPressed;
 
-  const DeleteButton({
+  const FloatingDeleteButton({
     super.key,
     this.onPressed,
     required this.child,
   });
 
   @override
-  State<DeleteButton> createState() => _DeleteButtonState();
+  State<FloatingDeleteButton> createState() => _FloatingDeleteButtonState();
 }
 
-class _DeleteButtonState extends State<DeleteButton>
+class _FloatingDeleteButtonState extends State<FloatingDeleteButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
@@ -219,44 +218,44 @@ class _DeleteButtonState extends State<DeleteButton>
 
   @override
   Widget build(BuildContext context) {
-    const size = 55.0;
+    const radius = BorderRadius.all(Radius.circular(16));
+    const size = BoxConstraints.tightFor(width: 56, height: 56);
+    const shape = RoundedRectangleBorder(borderRadius: radius);
+    final theme = Theme.of(context).floatingActionButtonTheme;
+
     return GestureDetector(
       onTapUp: widget.onPressed != null ? _onTapUp : null,
       onTapDown: widget.onPressed != null ? _onTapDown : null,
       onTapCancel: widget.onPressed != null ? _onTapCancel : null,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-            borderRadius: BorderRadius.circular(size),
-            boxShadow: const [BoxShadow(blurRadius: 2)],
-          ),
-          child: AnimatedBuilder(
-            animation: _controller,
-            builder: (context, child) {
-              return Stack(
-                alignment: Alignment.center,
-                children: [
-                  Transform.scale(
-                    scale: _controller.value,
-                    child: Container(
-                      width: size,
-                      height: size,
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.4),
-                        border: Border.all(color: Colors.white, width: 2),
-                        borderRadius: BorderRadius.circular(size),
+      child: Container(
+        constraints: size,
+        decoration: ShapeDecoration(shape: shape, color: theme.backgroundColor),
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                Transform.scale(
+                  scale: _controller.value,
+                  child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: ShapeDecoration(
+                      shape: shape.copyWith(
+                        side: const BorderSide(color: Colors.white, width: 2),
                       ),
+                      color: Colors.black.withOpacity(0.4),
                     ),
                   ),
-                  widget.child,
-                ],
-              );
-            },
-          ),
+                ),
+                IconTheme.merge(
+                  data: IconThemeData(size: theme.iconSize),
+                  child: widget.child,
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

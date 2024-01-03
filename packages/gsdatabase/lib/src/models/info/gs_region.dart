@@ -10,6 +10,12 @@ abstract class _GsRegion extends GsModel<GsRegion> {
   String get name;
   @BuilderWire('image')
   String get image;
+  @BuilderWire('image_ingame')
+  String get imageInGame;
+  @BuilderWire('archon')
+  String get archon;
+  @BuilderWire('ideal')
+  String get ideal;
   @BuilderWire('element')
   GeElementType get element;
   @BuilderWire('reputation')
