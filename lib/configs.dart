@@ -17,8 +17,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gsdatabase/gsdatabase.dart';
 
-const _fandomUrl =
-    'https://static.wikia.nocookie.net/gensin-impact/images/4/4a/Site-favicon.ico';
+const _fandomBaseUrl = 'https://static.wikia.nocookie.net/gensin-impact';
+const _fandomUrl = '$_fandomBaseUrl/images/4/4a/Site-favicon.ico';
 final _ambrIcon = Image.network('https://ambr.top/favicon.ico');
 final _fandomIcon = Image.network(_fandomUrl);
 final _paimonMoeIcon = Image.network('https://paimon.moe/favicon.png');
