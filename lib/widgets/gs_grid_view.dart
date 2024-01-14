@@ -9,16 +9,7 @@ class GsGridView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(
-            Colors.black.withOpacity(0.6),
-            BlendMode.multiply,
-          ),
-          image: const AssetImage(GsGraphics.bgImg),
-        ),
-      ),
+      decoration: GsStyle.kMainDecoration,
       child: GridView(
         padding: const EdgeInsets.all(8),
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(

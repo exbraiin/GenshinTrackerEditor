@@ -83,16 +83,7 @@ class Home extends StatelessWidget {
 
           if (snapshot.connectionState != ConnectionState.done) {
             return Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                    Colors.black.withOpacity(0.6),
-                    BlendMode.multiply,
-                  ),
-                  image: const AssetImage(GsGraphics.bgImg),
-                ),
-              ),
+              decoration: GsStyle.kMainDecoration,
               child: const Center(
                 child: CircularProgressIndicator(
                   color: Colors.white,

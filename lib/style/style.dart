@@ -25,6 +25,17 @@ class GsGraphics {
 class GsStyle {
   GsStyle._();
 
+  static final kMainDecoration = BoxDecoration(
+    image: DecorationImage(
+      fit: BoxFit.cover,
+      colorFilter: ColorFilter.mode(
+        Colors.black.withOpacity(0.6),
+        BlendMode.multiply,
+      ),
+      image: const AssetImage(GsGraphics.bgImg),
+    ),
+  );
+
   static Color getRarityColor(int rarity) {
     return switch (rarity) {
       1 => const Color(0xFF828E98),

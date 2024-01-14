@@ -36,24 +36,27 @@ class _InfoScreenState extends State<InfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Info Screen')),
-      body: StreamBuilder(
-        stream: Database.i.modified,
-        builder: (context, snapshot) {
-          return ValueListenableBuilder(
-            valueListenable: _notifier,
-            builder: (context, value, child) {
-              return ListView(
-                padding: const EdgeInsets.all(8).copyWith(bottom: 0),
-                children: Database.i
-                    .of<GsVersion>()
-                    .items
-                    .sortedByDescending((e) => e.releaseDate)
-                    .map(_getChild)
-                    .toList(),
-              );
-            },
-          );
-        },
+      body: Container(
+        decoration: GsStyle.kMainDecoration,
+        child: StreamBuilder(
+          stream: Database.i.modified,
+          builder: (context, snapshot) {
+            return ValueListenableBuilder(
+              valueListenable: _notifier,
+              builder: (context, value, child) {
+                return ListView(
+                  padding: const EdgeInsets.all(8).copyWith(bottom: 0),
+                  children: Database.i
+                      .of<GsVersion>()
+                      .items
+                      .sortedByDescending((e) => e.releaseDate)
+                      .map(_getChild)
+                      .toList(),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -94,15 +97,19 @@ class _InfoScreenState extends State<InfoScreen> {
           _getByVersion<GsArtifact>(version.id),
           _getByVersion<GsBanner>(version.id),
           _getByVersion<GsCharacter>(version.id),
+          _getByVersion<GsCharacterSkin>(version.id),
+          _getByVersion<GsEnemy>(version.id),
           _getByVersion<GsMaterial>(version.id),
           _getByVersion<GsNamecard>(version.id),
           _getByVersion<GsRecipe>(version.id),
           _getByVersion<GsFurnitureChest>(version.id),
           _getByVersion<GsSereniteaSet>(version.id),
+          _getByVersion<GsFurnishing>(version.id),
           _getByVersion<GsSpincrystal>(version.id),
           _getByVersion<GsViewpoint>(version.id),
-          _getByVersion<GsBattlepass>(version.id),
+          _getByVersion<GsEvent>(version.id),
           _getByVersion<GsWeapon>(version.id),
+          _getByVersion<GsBattlepass>(version.id),
         ],
       ),
     );

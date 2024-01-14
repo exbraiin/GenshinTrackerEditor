@@ -99,16 +99,7 @@ class _ItemEditScreenState<T extends GsModel<T>>
       ),
       backgroundColor: Colors.black,
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.6),
-              BlendMode.multiply,
-            ),
-            image: const AssetImage(GsGraphics.bgImg),
-          ),
-        ),
+        decoration: GsStyle.kMainDecoration,
         child: Stack(
           children: [
             Positioned.fill(
