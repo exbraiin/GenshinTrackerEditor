@@ -57,7 +57,7 @@ class GsConfigs<T extends GsModel<T>> {
           version: item.version,
           image: item.icon,
           color: GsStyle.getRarityColor(4),
-          child: _orderItem(item.order),
+          child: _orderItem(item.order.toString()),
         );
       },
       filters: [
@@ -257,7 +257,7 @@ class GsConfigs<T extends GsModel<T>> {
         version: item.version,
         color: GsStyle.getRarityColor(1),
         image: item.image,
-        child: _orderItem(item.order),
+        child: _orderItem(item.order.toString()),
       ),
       filters: [
         GsFieldFilter.fromFilter(
@@ -636,7 +636,7 @@ class GsConfigs<T extends GsModel<T>> {
   }
 }
 
-Widget _orderItem(int order) {
+Widget _orderItem(String order) {
   return Positioned(
     right: 2,
     bottom: 2,
@@ -660,7 +660,7 @@ Widget _orderItem(int order) {
       child: FittedBox(
         fit: BoxFit.scaleDown,
         child: Text(
-          order.toString(),
+          order,
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,

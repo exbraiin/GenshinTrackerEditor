@@ -1,5 +1,6 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
+import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/auto_size_text.dart';
 import 'package:data_editor/widgets/mouse_button.dart';
@@ -111,11 +112,24 @@ class GsGridItem extends StatelessWidget {
                   ),
                 ),
               ),
+            _getVersionBanner(),
             if (child != null) child!,
             _getStateBanner(),
             _getInvalidBanner(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _getVersionBanner() {
+    if (version.isEmpty) return const SizedBox();
+    return Transform.translate(
+      offset: const Offset(10, -10),
+      child: Banner(
+        message: version,
+        color: GsStyle.getVersionColor(version),
+        location: BannerLocation.topEnd,
       ),
     );
   }
