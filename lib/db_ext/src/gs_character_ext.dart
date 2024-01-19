@@ -39,11 +39,6 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         .items
         .map((e) => MapEntry(e.id, e.region))
         .toMap();
-    final chrWithRegion = Database.i
-        .of<GsCharacter>()
-        .items
-        .map((e) => MapEntry(e.id, e.region))
-        .toMap();
 
     return [
       DataField.textField(
@@ -255,10 +250,9 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         (item, value) => item.copyWith(regionMaterial: value),
         validator: (item) {
           if (item.regionMaterial.isEmpty) return GsValidLevel.error;
-          final chrRegion = chrWithRegion[item.id];
           final matRegion = matWithRegion[item.regionMaterial];
-          if (chrRegion == null || matRegion == null) return GsValidLevel.error;
-          if (matRegion != chrRegion) return GsValidLevel.warn1;
+          if (matRegion == null) return GsValidLevel.error;
+          if (matRegion != item.region) return GsValidLevel.warn1;
           return GsValidLevel.good;
         },
       ),
@@ -270,10 +264,9 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         (item, value) => item.copyWith(talentMaterial: value),
         validator: (item) {
           if (item.talentMaterial.isEmpty) return GsValidLevel.error;
-          final chrRegion = chrWithRegion[item.id];
           final matRegion = matWithRegion[item.talentMaterial];
-          if (chrRegion == null || matRegion == null) return GsValidLevel.error;
-          if (matRegion != chrRegion) return GsValidLevel.warn1;
+          if (matRegion == null) return GsValidLevel.error;
+          if (matRegion != item.region) return GsValidLevel.warn1;
           return GsValidLevel.good;
         },
       ),

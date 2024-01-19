@@ -513,7 +513,20 @@ class GsConfigs<T extends GsModel<T>> {
         label: item.name,
         version: item.version,
         color: GsStyle.getVersionColor(item.version),
+        child: _orderItem(item.type.name.substring(0, 1).capitalize()),
       ),
+      filters: [
+        GsFieldFilter.fromFilter(
+          'Version',
+          GsItemFilter.versions(),
+          (i) => i.version,
+        ),
+        GsFieldFilter.fromEnum(
+          'Type',
+          GeEventType.values,
+          (i) => i.type.id,
+        ),
+      ],
     ),
     GsWeapon: GsConfigs<GsWeapon>._(
       title: 'Weapons',
@@ -641,8 +654,8 @@ Widget _orderItem(String order) {
     right: 2,
     bottom: 2,
     child: Container(
-      width: 24,
       height: 24,
+      constraints: const BoxConstraints(minWidth: 24),
       alignment: Alignment.center,
       padding: const EdgeInsets.fromLTRB(2, 1, 2, 0),
       decoration: BoxDecoration(
@@ -662,7 +675,7 @@ Widget _orderItem(String order) {
         child: Text(
           order,
           style: const TextStyle(
-            fontSize: 16,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
         ),

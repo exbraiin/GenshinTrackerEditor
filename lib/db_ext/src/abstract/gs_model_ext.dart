@@ -71,11 +71,13 @@ abstract class GsModelExt<T extends GsModel<T>> {
   }
 }
 
+String _dateAsId(DateTime date) {
+  return (date.toString().split(' ').firstOrNull ?? '').replaceAll('-', '_');
+}
+
 String generateId(GsModel item) {
   if (item is GsBanner) {
-    var date = item.dateStart.toString().split(' ').firstOrNull ?? '';
-    date = date.replaceAll('-', '_');
-    return '${item.name}_$date'.toDbId();
+    return '${item.name}_${_dateAsId(item.dateStart)}'.toDbId();
   }
   if (item is GsAchievement) {
     return '${item.group}_${item.name}'.toDbId();
@@ -83,7 +85,9 @@ String generateId(GsModel item) {
   if (item is GsSpincrystal) {
     return item.number.toString();
   }
-
+  if (item is GsEvent) {
+    return '${item.name}_${_dateAsId(item.dateStart)}'.toDbId();
+  }
   if (item is GsVersion) {
     return item.id;
   }

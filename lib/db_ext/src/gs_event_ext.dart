@@ -1,5 +1,6 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
@@ -10,6 +11,7 @@ class GsEventExt extends GsModelExt<GsEvent> {
 
   @override
   List<DataField<GsEvent>> getFields(String? editId) {
+    DateTime? date;
     final ids = Database.i.of<GsEvent>().ids;
     final types = GsItemFilter.eventType().ids;
     final versions = GsItemFilter.versions().ids;
@@ -47,20 +49,33 @@ class GsEventExt extends GsModelExt<GsEvent> {
         'Version',
         (item) => item.version,
         (item) => GsItemFilter.versions().filters,
-        (item, value) => item.copyWith(version: value),
+        (item, value) {
+          if (item.version != value) {
+            date = Database.i.of<GsVersion>().getItem(value)?.releaseDate;
+          }
+          return item.copyWith(version: value, dateStart: date, dateEnd: date);
+        },
         validator: (item) => vdContains(item.version, versions),
       ),
       DataField.dateTime(
         'Date Start',
         (item) => item.dateStart,
         (item, value) => item.copyWith(dateStart: value),
-        validator: (item) => vdDates(item.dateStart, item.dateEnd),
+        validator: (item) {
+          return date != null && item.dateStart.isBefore(date!)
+              ? GsValidLevel.warn2
+              : vdDates(item.dateStart, item.dateEnd);
+        },
       ),
       DataField.dateTime(
         'Date End',
         (item) => item.dateEnd,
         (item, value) => item.copyWith(dateEnd: value),
-        validator: (item) => vdDates(item.dateStart, item.dateEnd),
+        validator: (item) {
+          return date != null && item.dateStart.isBefore(date!)
+              ? GsValidLevel.warn2
+              : vdDates(item.dateStart, item.dateEnd);
+        },
       ),
     ];
   }

@@ -20,7 +20,8 @@ abstract class _GsEvent extends GsModel<GsEvent> {
 
   @override
   Iterable<Comparable Function(GsEvent e)> get sorters => [
-        (e) => e.type.index,
+        (e) => e.version,
         (e) => e.dateStart,
+        (e) => e.type.index,
       ];
 }
