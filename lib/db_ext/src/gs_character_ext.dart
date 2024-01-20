@@ -336,6 +336,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
               (item) => tal.desc,
               (item, value) => item.copyWith(desc: value),
               validator: (item) => vdText(item.desc),
+              autoFormat: (input) => _formatCharTalsAndCons(item, input),
             ),
           ],
         ),
@@ -379,6 +380,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
               (item) => con.desc,
               (item, value) => item.copyWith(desc: value),
               validator: (item) => vdText(con.desc),
+              autoFormat: (input) => _formatCharTalsAndCons(item, input),
             ),
           ],
         ),
@@ -406,4 +408,86 @@ GsValidLevel _vdCharAsc(String value) {
   if (value.isEmpty) return GsValidLevel.warn1;
   if (value.split(',').length != 8) return GsValidLevel.warn2;
   return GsValidLevel.good;
+}
+
+String _formatCharTalsAndCons(GsCharacter char, String input) {
+  final matches = {
+    ...[
+      ...char.talents
+          .map((e) => MapEntry(e.name, 'skill'))
+          .where((e) => e.key.isNotEmpty),
+      ...char.constellations
+          .map((e) => MapEntry(e.name, 'skill'))
+          .where((e) => e.key.isNotEmpty),
+    ].toMap(),
+    'AoE Anemo DMG': 'anemo',
+    'Anemo DMG Bonus': 'anemo',
+    'Anemo DMG': 'anemo',
+    'Anemo RES': 'anemo',
+    'Anemo': 'anemo',
+    'AoE Cryo DMG': 'cryo',
+    'Cryo DMG Bonus': 'cryo',
+    'Cryo DMG': 'cryo',
+    'Cryo RES': 'cryo',
+    'Cryo': 'cryo',
+    'AoE Dendro DMG': 'dendro',
+    'Dendro DMG Bonus': 'dendro',
+    'Dendro DMG': 'dendro',
+    'Dendro RES': 'dendro',
+    'Dendro': 'dendro',
+    'AoE Electro DMG': 'electro',
+    'Electro DMG Bonus': 'electro',
+    'Electro DMG': 'electro',
+    'Electro RES': 'electro',
+    'Electro Infusion': 'electro',
+    'Electro-Charged DMG': 'electro',
+    'Electro-Charged reaction DMG': 'electro',
+    'Electro-related Elemental Reaction': 'electro',
+    'Electro': 'electro',
+    'AoE Geo DMG': 'geo',
+    'Geo Construct': 'geo',
+    'Geo DMG Bonus': 'geo',
+    'Geo DMG': 'geo',
+    'Geo': 'geo',
+    'AoE Hydro DMG': 'hydro',
+    'Hydro DMG Bonus': 'hydro',
+    'Hydro DMG': 'hydro',
+    'Hydro RES': 'hydro',
+    'Hydro Infusion': 'hydro',
+    'Hydro-related Elemental Reactions': 'hydro',
+    'Hydro': 'hydro',
+    'Wet': 'hydro',
+    'AoE Pyro DMG': 'pyro',
+    'Pyro DMG Bonus': 'pyro',
+    'Pyro DMG': 'pyro',
+    'Pyro RES': 'pyro',
+    'Pyro': 'pyro',
+  };
+
+  var finalText = '';
+  input = input.replaceAll(RegExp('<.+?>'), '');
+  final text = input.toLowerCase();
+
+  for (var i = 0;; i < text.length) {
+    var min = -1;
+    MapEntry<String, String>? tEntry;
+    for (final entry in matches.entries) {
+      final t = text.indexOf(entry.key.toLowerCase(), i);
+      if (t == -1) continue;
+      if (t < min || min == -1) {
+        min = t;
+        tEntry = entry;
+      }
+    }
+
+    if (tEntry != null) {
+      finalText += input.substring(i, min);
+      finalText += '<color=${tEntry.value}>${tEntry.key}</color>';
+      i = min + tEntry.key.length;
+    } else {
+      finalText += input.substring(i);
+      break;
+    }
+  }
+  return finalText;
 }

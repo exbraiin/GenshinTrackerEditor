@@ -81,6 +81,7 @@ class DataField<T extends GsModel<T>> {
     this.label,
     String Function(T item) content,
     T Function(T item, String value) update, {
+    ModifyString? autoFormat,
     required this.validator,
   }) : builder = ((context, item, edit, level) {
           var text = content(item).split('\n').first;
@@ -92,7 +93,7 @@ class DataField<T extends GsModel<T>> {
                 child: Builder(
                   builder: (context) => InkWell(
                     onTap: () => GsTextEditorDialog(
-                      info: item is GsCharacter ? item as GsCharacter : null,
+                      autoFormat: autoFormat,
                       initialText: content(item),
                       onConfirm: (value) => edit(update(item, value)),
                     ).show(context),
