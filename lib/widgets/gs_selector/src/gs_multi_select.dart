@@ -28,7 +28,7 @@ class GsMultiSelect<T> extends StatelessWidget {
         onConfirm: onConfirm,
       ).show(context),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6),
+        padding: const EdgeInsets.all(6),
         constraints: const BoxConstraints(minHeight: 44),
         alignment: Alignment.centerLeft,
         child: Row(
@@ -140,14 +140,17 @@ class _SelectDialogState<T> extends State<_SelectDialog<T>> {
                             child: Wrap(
                               spacing: 6,
                               runSpacing: 6,
-                              children: widget.items.map((item) {
-                                final hide = controller.text.isNotEmpty &&
-                                    !item.label.toLowerCase().contains(
-                                          controller.text.toLowerCase(),
-                                        );
+                              children: widget.items.where((item) {
+                                if (controller.text.isEmpty) return true;
+
+                                final query = controller.text.toLowerCase();
+                                final worlds = query.split(' ');
+
+                                final name = item.label.toLowerCase();
+                                return worlds.all(name.contains);
+                              }).map((item) {
                                 return GsSelectChip(
                                   item,
-                                  hide: hide,
                                   selected: selected.contains(item.value),
                                   onTap: (id) {
                                     final newSet = selected.toSet();

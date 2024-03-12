@@ -64,12 +64,16 @@ final class Database {
 
   List<GsWish> getAllWishes([int? rarity, GeBannerType? type]) {
     return [
-      if (type == null || type == GeBannerType.weapon)
+      if (type == null ||
+          type == GeBannerType.weapon ||
+          type == GeBannerType.chronicled)
         ...of<GsWeapon>()
             .items
             .where((e) => e.rarity == rarity || rarity == null)
             .map(GsWish.fromWeapon),
-      if (type == null || type == GeBannerType.character)
+      if (type == null ||
+          type == GeBannerType.character ||
+          type == GeBannerType.chronicled)
         ...of<GsCharacter>()
             .items
             .where((e) => e.rarity == rarity || rarity == null)

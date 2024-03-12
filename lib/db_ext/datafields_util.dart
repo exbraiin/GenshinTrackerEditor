@@ -193,7 +193,10 @@ class GsItemFilter {
 
   factory GsItemFilter.wishes(int? rarity, GeBannerType? type) =>
       GsItemFilter._from(
-        Database.i.getAllWishes(rarity, type).sortedBy((e) => e.name),
+        Database.i
+            .getAllWishes(rarity, type)
+            .sortedBy((e) => e.isCharacter ? 0 : 1)
+            .thenBy((element) => element.name),
         (i) => i.id,
         title: (i) => i.name,
         color: (i) => GsStyle.getRarityColor(i.rarity),
