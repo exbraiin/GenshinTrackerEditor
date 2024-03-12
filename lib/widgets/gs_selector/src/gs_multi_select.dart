@@ -28,25 +28,32 @@ class GsMultiSelect<T> extends StatelessWidget {
         onConfirm: onConfirm,
       ).show(context),
       child: Container(
-        padding: const EdgeInsets.all(6),
+        padding: const EdgeInsets.symmetric(horizontal: 6),
         constraints: const BoxConstraints(minHeight: 44),
         alignment: Alignment.centerLeft,
-        child: selected.isEmpty || text != null
-            ? Text(text ?? title)
-            : Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: selected
-                    .map((i) => items.firstOrNullWhere((e) => e.value == i))
-                    .map(
-                      (e) => e != null
-                          ? GsSelectChip(e, disableImage: true)
-                          : null,
-                    )
-                    .whereType<GsSelectChip>()
-                    .toList(),
-              ),
+        child: Row(
+          children: [
+            Expanded(child: _items()),
+            IconButton(
+              icon: const Icon(Icons.close_rounded),
+              onPressed: () async => onConfirm({}),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _items() {
+    if (selected.isEmpty || text != null) return Text(text ?? title);
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: selected
+          .map((i) => items.firstOrNullWhere((e) => e.value == i))
+          .map((e) => e != null ? GsSelectChip(e, disableImage: true) : null)
+          .whereType<GsSelectChip>()
+          .toList(),
     );
   }
 }

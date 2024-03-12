@@ -4,7 +4,8 @@ enum GeBannerType implements GeEnum {
   standard('standard'),
   beginner('beginner'),
   character('character'),
-  weapon('weapon');
+  weapon('weapon'),
+  chronicled('chronicled');
 
   bool get isPermanent =>
       this == GeBannerType.standard || this == GeBannerType.beginner;
