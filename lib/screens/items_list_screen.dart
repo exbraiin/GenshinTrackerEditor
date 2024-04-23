@@ -34,6 +34,7 @@ class ItemsListScreen<T extends GsModel<T>> extends StatefulWidget {
 
 class _ItemsListScreenState<T extends GsModel<T>>
     extends State<ItemsListScreen<T>> {
+  var _warningOnly = false;
   var _searchQuery = '';
   var _selectedFilters = <Set<String>>[];
 
@@ -49,6 +50,11 @@ class _ItemsListScreenState<T extends GsModel<T>>
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
+          IconButton(
+            color: _warningOnly ? Colors.orange : null,
+            icon: const Icon(Icons.warning_amber_rounded),
+            onPressed: () => setState(() => _warningOnly = !_warningOnly),
+          ),
           IconButton(
             icon: const Icon(Icons.search_rounded),
             onPressed: () => _GsSearchItem(
@@ -84,9 +90,10 @@ class _ItemsListScreenState<T extends GsModel<T>>
 
           return GsGridView(
             children: list.where((e) {
-              final matchQuery =
+              late final level = DataValidator.i.getLevel<T>(e.id);
+              late final matchQuery =
                   _searchQuery.isEmpty || e.id.contains(_searchQuery);
-              return matchQuery;
+              return matchQuery && (!_warningOnly || level.isErrorOrWarn2);
             }).map((item) {
               final level = DataValidator.i.getLevel<T>(item.id);
               final decor = widget.getDecor(item);
