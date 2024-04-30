@@ -9,6 +9,7 @@ export 'enums/ge_element_type.dart';
 export 'enums/ge_enemy_family_type.dart';
 export 'enums/ge_enemy_type.dart';
 export 'enums/ge_event_type.dart';
+export 'enums/ge_gender_type.dart';
 export 'enums/ge_item_source_type.dart';
 export 'enums/ge_material_type.dart';
 export 'enums/ge_namecard_type.dart';

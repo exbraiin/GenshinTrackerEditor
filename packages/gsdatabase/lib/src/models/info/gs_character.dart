@@ -21,6 +21,8 @@ abstract class _GsCharacter extends GsModel<GsCharacter> {
   GeWeaponType get weapon;
   @BuilderWire('element')
   GeElementType get element;
+  @BuilderWire('gender')
+  GeGenderType get gender;
   @BuilderWire('version')
   String get version;
   @BuilderWire('source')

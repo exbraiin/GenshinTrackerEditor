@@ -26,6 +26,8 @@ class GsCharacter extends _GsCharacter {
   @override
   final GeElementType element;
   @override
+  final GeGenderType gender;
+  @override
   final String version;
   @override
   final GeItemSourceType source;
@@ -87,6 +89,7 @@ class GsCharacter extends _GsCharacter {
     required this.region,
     required this.weapon,
     required this.element,
+    required this.gender,
     required this.version,
     required this.source,
     required this.description,
@@ -125,6 +128,7 @@ class GsCharacter extends _GsCharacter {
         region = GeRegionType.values.fromId(m['region']),
         weapon = GeWeaponType.values.fromId(m['weapon']),
         element = GeElementType.values.fromId(m['element']),
+        gender = GeGenderType.values.fromId(m['gender']),
         version = m['version'] as String? ?? '',
         source = GeItemSourceType.values.fromId(m['source']),
         description = m['description'] as String? ?? '',
@@ -168,6 +172,7 @@ class GsCharacter extends _GsCharacter {
     GeRegionType? region,
     GeWeaponType? weapon,
     GeElementType? element,
+    GeGenderType? gender,
     String? version,
     GeItemSourceType? source,
     String? description,
@@ -204,6 +209,7 @@ class GsCharacter extends _GsCharacter {
       region: region ?? this.region,
       weapon: weapon ?? this.weapon,
       element: element ?? this.element,
+      gender: gender ?? this.gender,
       version: version ?? this.version,
       source: source ?? this.source,
       description: description ?? this.description,
@@ -245,6 +251,7 @@ class GsCharacter extends _GsCharacter {
       'region': region.id,
       'weapon': weapon.id,
       'element': element.id,
+      'gender': gender.id,
       'version': version,
       'source': source.id,
       'description': description,
