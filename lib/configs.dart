@@ -194,6 +194,11 @@ class GsConfigs<T extends GsModel<T>> {
           (i) => i.region.id,
         ),
         GsFieldFilter.fromFilter(
+          'Gender',
+          GsItemFilter.genders(),
+          (i) => i.gender.id,
+        ),
+        GsFieldFilter.fromFilter(
           'Rarity',
           GsItemFilter.rarities(4),
           (i) => i.rarity.toString(),
