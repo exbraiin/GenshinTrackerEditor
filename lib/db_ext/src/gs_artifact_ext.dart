@@ -104,10 +104,11 @@ class GsArtifactExt extends GsModelExt<GsArtifact> {
           ],
         ),
         (item, value) {
+          final order = GsItemFilter.artifactPieces().ids.toList();
           final list = value.map((id) {
             final old = item.pieces.firstOrNullWhere((i) => i.id == id);
             return old ?? GsArtifactPiece.fromJson({'id': id});
-          }).sortedBy((element) => element.id);
+          }).sortedBy((element) => order.indexOf(element.id));
           return item.copyWith(pieces: list);
         },
         (item, field) {

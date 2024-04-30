@@ -23,7 +23,12 @@ class GsItemFilter {
     Color Function(T i)? color,
   }) {
     return GsItemFilter._([
-      if (noneId != null) GsSelectItem(noneId, 'None', image: ''),
+      if (noneId != null)
+        GsSelectItem(
+          noneId,
+          'None',
+          image: image != null ? '' : null,
+        ),
       ...models.map((e) {
         final value = selector(e);
         return GsSelectItem(
@@ -51,7 +56,6 @@ class GsItemFilter {
 
   factory GsItemFilter.regions() => GsItemFilter._from(
         GeRegionType.values,
-        noneId: '',
         (i) => i.id,
         title: (i) => i.name,
         color: (i) => GsStyle.getRegionElementColor(i) ?? Colors.grey,
