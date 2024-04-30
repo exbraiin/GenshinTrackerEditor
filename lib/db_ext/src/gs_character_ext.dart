@@ -22,6 +22,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
     final ids = Database.i.of<GsCharacter>().ids;
     final namecards = GsItemFilter.namecards(GeNamecardType.character).ids;
     final regions = GsItemFilter.regions().ids;
+    final genders = GsItemFilter.genders().ids;
     final versions = GsItemFilter.versions().ids;
     final recipes = GsItemFilter.specialDishes().ids;
     const catGem = GeMaterialType.ascensionGems;
@@ -108,6 +109,18 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         validator: (item) {
           if (item.namecardId == '') return GsValidLevel.warn2;
           return vdContains(item.namecardId, namecards);
+        },
+      ),
+      DataField.singleEnum(
+        'Gender',
+        GeGenderType.values.toChips(),
+        (item) => item.gender,
+        (item, value) => item.copyWith(gender: value),
+        validator: (item) {
+          if (item.gender == GeGenderType.none) {
+            return GsValidLevel.warn2;
+          }
+          return vdContains(item.gender.id, genders);
         },
       ),
       DataField.selectRarity(

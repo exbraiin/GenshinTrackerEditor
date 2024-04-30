@@ -45,6 +45,9 @@ class GsItemFilter {
   factory GsItemFilter.artifactPieces() =>
       GsItemFilter._from(GeArtifactPieceType.values, (i) => i.id);
 
+  factory GsItemFilter.genders() =>
+      GsItemFilter._from(GeGenderType.values, (i) => i.id);
+
   factory GsItemFilter.eventType() =>
       GsItemFilter._from(GeEventType.values, (i) => i.id);
 
