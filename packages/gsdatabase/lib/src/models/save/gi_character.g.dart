@@ -17,14 +17,23 @@ class GiCharacter extends _GiCharacter {
   final int ascension;
   @override
   final int friendship;
+  @override
+  final int talent1;
+  @override
+  final int talent2;
+  @override
+  final int talent3;
 
   /// Creates a new [GiCharacter] instance.
   GiCharacter({
     required this.id,
-    required this.outfit,
-    required this.owned,
-    required this.ascension,
-    required this.friendship,
+    this.outfit = '',
+    this.owned = 0,
+    this.ascension = 0,
+    this.friendship = 1,
+    this.talent1 = 1,
+    this.talent2 = 1,
+    this.talent3 = 1,
   });
 
   /// Creates a new [GiCharacter] instance from the given map.
@@ -33,7 +42,10 @@ class GiCharacter extends _GiCharacter {
         outfit = m['outfit'] as String? ?? '',
         owned = m['owned'] as int? ?? 0,
         ascension = m['ascension'] as int? ?? 0,
-        friendship = m['friendship'] as int? ?? 0;
+        friendship = m['friendship'] as int? ?? 0,
+        talent1 = m['talent1'] as int? ?? 0,
+        talent2 = m['talent2'] as int? ?? 0,
+        talent3 = m['talent3'] as int? ?? 0;
 
   /// Copies this model with the given parameters.
   @override
@@ -43,6 +55,9 @@ class GiCharacter extends _GiCharacter {
     int? owned,
     int? ascension,
     int? friendship,
+    int? talent1,
+    int? talent2,
+    int? talent3,
   }) {
     return GiCharacter(
       id: id ?? this.id,
@@ -50,6 +65,9 @@ class GiCharacter extends _GiCharacter {
       owned: owned ?? this.owned,
       ascension: ascension ?? this.ascension,
       friendship: friendship ?? this.friendship,
+      talent1: talent1 ?? this.talent1,
+      talent2: talent2 ?? this.talent2,
+      talent3: talent3 ?? this.talent3,
     );
   }
 
@@ -62,6 +80,9 @@ class GiCharacter extends _GiCharacter {
       'owned': owned,
       'ascension': ascension,
       'friendship': friendship,
+      'talent1': talent1,
+      'talent2': talent2,
+      'talent3': talent3,
     };
   }
 }

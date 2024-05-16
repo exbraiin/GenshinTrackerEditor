@@ -78,12 +78,19 @@ class BuilderGeneratorGen extends GeneratorForAnnotation<BuilderGenerator> {
 
   Iterable<String> _constructor(
     Element element,
-    Iterable<FunctionTypedElement> fields,
+    Iterable<PropertyAccessorElement> fields,
   ) sync* {
     final name = _classNameFromInterface(element.displayName);
     yield '/// Creates a new [$name] instance.\n';
     yield '$name({';
-    yield* fields.map((e) => 'required this.${e.displayName},');
+    yield* fields.map((e) {
+      final builder = _getBuilderWire(e);
+      if (builder.value != null) {
+        final val = _getConstString(builder.value);
+        return 'this.${e.displayName} = $val,';
+      }
+      return 'required this.${e.displayName},';
+    });
     yield '});';
   }
 
@@ -256,12 +263,18 @@ class BuilderGeneratorGen extends GeneratorForAnnotation<BuilderGenerator> {
     return checker.hasAnnotationOf(element);
   }
 
+  String _getConstString(dynamic value) {
+    if (value is String) return '\'$value\'';
+    return '$value';
+  }
+
   BuilderWire _getBuilderWire(PropertyAccessorElement element) {
     final checker = TypeChecker.fromRuntime(BuilderWire);
     final annotation = checker.firstAnnotationOf(element);
     if (annotation == null) return BuilderWire(element.displayName);
     final reader = ConstantReader(annotation);
     final wire = reader.peek('wire')?.stringValue ?? element.displayName;
-    return BuilderWire(wire);
+    final value = reader.peek('value')?.literalValue;
+    return BuilderWire(wire, value: value);
   }
 }

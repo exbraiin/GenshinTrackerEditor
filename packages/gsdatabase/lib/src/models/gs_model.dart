@@ -22,8 +22,13 @@ class BuilderGenerator {
   const BuilderGenerator();
 }
 
-class BuilderWire {
+class BuilderWire<T> {
   final String wire;
   final bool fullDate;
-  const BuilderWire(this.wire, {this.fullDate = false});
+  final T? value;
+  const BuilderWire(
+    this.wire, {
+    this.value,
+    this.fullDate = false,
+  });
 }
