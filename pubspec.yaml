@@ -43,7 +43,8 @@ dependencies:
   http: ^1.1.0
   csv: ^6.0.0
   gsdatabase:
-    path: 'packages/gsdatabase'
+    git:
+      url: https://github.com/exbraiin/gsdatabase
 
 dev_dependencies:
   flutter_test:
