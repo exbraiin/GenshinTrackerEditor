@@ -44,7 +44,7 @@ dependencies:
   csv: ^6.0.0
   gsdatabase:
     git:
-      url: https://github.com/exbraiin/gsdatabase
+      url: https://github.com/exbraiin/dart-gsdatabase
 
 dev_dependencies:
   flutter_test:
