@@ -44,6 +44,6 @@ app.*.map.json
 /android/app/release
 
 # Keep these files
-Release/*
-!/Release/data.json
-!/Release/version.txt
+/Release/*
+!/Release/gsdata
+!/Release/gsversion

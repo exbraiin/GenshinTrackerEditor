@@ -12,7 +12,7 @@ final class Database {
   static final i = Database._();
 
   var _loaded = false;
-  final _db = GsDatabase.info(loadJson: 'data.json', allowWrite: true);
+  final _db = GsDatabase.info(loadJson: 'gsdata', allowWrite: true);
 
   final modified = PublishSubject<void>();
   Database._();
