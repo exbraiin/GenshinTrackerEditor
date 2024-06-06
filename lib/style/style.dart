@@ -43,7 +43,7 @@ class GsStyle {
       3 => const Color(0xFF51A2B4),
       4 => const Color(0xFFB783C8),
       5 => const Color(0xFFE2AA52),
-      _ => Colors.white,
+      _ => Colors.grey,
     };
   }
 

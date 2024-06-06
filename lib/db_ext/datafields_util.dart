@@ -192,6 +192,7 @@ class GsItemFilter {
           .thenBy((element) => element.name)
           .toList(),
       (i) => i.id,
+      noneId: '',
       title: (i) => i.name,
       image: (i) => i.image,
       color: getColor,

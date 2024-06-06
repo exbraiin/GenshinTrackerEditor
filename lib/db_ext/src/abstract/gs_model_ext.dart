@@ -69,6 +69,11 @@ abstract class GsModelExt<T extends GsModel<T>> {
   GsValidLevel vdContains<E>(E value, Iterable<E> values) {
     return values.contains(value) ? GsValidLevel.good : GsValidLevel.error;
   }
+
+  GsValidLevel vdContainsValidId(String e, Iterable<String> values) {
+    if (e == '' || e == 'none') return GsValidLevel.warn2;
+    return vdContains(e, values);
+  }
 }
 
 String _dateAsId(DateTime date) {

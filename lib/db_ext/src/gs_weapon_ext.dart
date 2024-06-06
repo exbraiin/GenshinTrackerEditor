@@ -41,7 +41,8 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
         'Rarity',
         (item) => item.rarity,
         (item, value) => item.copyWith(rarity: value),
-        validator: (item) => vdRarity(item.rarity),
+        validator: (item) =>
+            item.rarity == 0 ? GsValidLevel.warn2 : vdRarity(item.rarity),
       ),
       DataField.textImage(
         'Image',
@@ -73,7 +74,8 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
         'Atk',
         (item) => item.atk.toString(),
         (item, value) => item.copyWith(atk: int.tryParse(value) ?? -1),
-        validator: (item) => vdNum(item.atk, 1),
+        validator: (item) =>
+            item.atk == 0 ? GsValidLevel.warn2 : vdNum(item.atk),
       ),
       DataField.singleEnum(
         'Stat Type',
@@ -125,21 +127,21 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
         (item) =>
             GsItemFilter.matGroups(GeMaterialType.weaponMaterials).filters,
         (item, value) => item.copyWith(matWeapon: value),
-        validator: (item) => vdContains(item.matWeapon, matWeapon),
+        validator: (item) => vdContainsValidId(item.matWeapon, matWeapon),
       ),
       DataField.singleSelect(
         'Material Common',
         (item) => item.matCommon,
         (item) => GsItemFilter.matGroups(GeMaterialType.normalDrops).filters,
         (item, value) => item.copyWith(matCommon: value),
-        validator: (item) => vdContains(item.matCommon, matCommon),
+        validator: (item) => vdContainsValidId(item.matCommon, matCommon),
       ),
       DataField.singleSelect(
         'Material Elite',
         (item) => item.matElite,
         (item) => GsItemFilter.matGroups(GeMaterialType.eliteDrops).filters,
         (item, value) => item.copyWith(matElite: value),
-        validator: (item) => vdContains(item.matElite, matElite),
+        validator: (item) => vdContainsValidId(item.matElite, matElite),
       ),
       DataField.textList(
         'Ascension Atk Values',

@@ -23,6 +23,10 @@ class MyApp extends StatelessWidget {
       title: 'Data Editor',
       theme: ThemeData(
         fontFamily: 'Comfortaa',
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF222222),
+          surfaceTintColor: Colors.transparent,
+        ),
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: Colors.teal,
           brightness: Brightness.dark,

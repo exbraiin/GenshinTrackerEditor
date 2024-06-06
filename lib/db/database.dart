@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/model_ext.dart';
@@ -22,6 +23,7 @@ final class Database {
   Future<bool> load() async {
     if (_loaded) return _loaded;
     _loaded = true;
+    if (kDebugMode) await File('Release/gsdata').copy(_db.loadJson);
     await _db.load();
     await DataValidator.i.checkAll();
     modified.add(null);

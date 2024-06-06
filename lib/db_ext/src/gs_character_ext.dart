@@ -127,7 +127,8 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         'Rarity',
         (item) => item.rarity,
         (item, value) => item.copyWith(rarity: value),
-        validator: (item) => vdRarity(item.rarity, 4),
+        validator: (item) =>
+            item.rarity == 0 ? GsValidLevel.warn2 : vdRarity(item.rarity, 4),
         min: 4,
       ),
       DataField.singleEnum(
@@ -163,7 +164,11 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         GeItemSourceType.values.toChips(),
         (item) => item.source,
         (item, value) => item.copyWith(source: value),
-        validator: (item) => vdContains(item.source, GeItemSourceType.values),
+        validator: (item) => vdContains(item.source, [
+          GeItemSourceType.event,
+          GeItemSourceType.wishesStandard,
+          GeItemSourceType.wishesCharacterBanner,
+        ]),
       ),
       DataField.textField(
         'Description',
@@ -235,7 +240,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         (item) => item.gemMaterial,
         (item) => GsItemFilter.matGroups(GeMaterialType.ascensionGems).filters,
         (item, value) => item.copyWith(gemMaterial: value),
-        validator: (item) => vdContains(item.gemMaterial, matGem),
+        validator: (item) => vdContainsValidId(item.gemMaterial, matGem),
       ),
       DataField.singleSelect(
         'Material Boss',
@@ -243,7 +248,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         (item) =>
             GsItemFilter.matGroups(GeMaterialType.normalBossDrops).filters,
         (item, value) => item.copyWith(bossMaterial: value),
-        validator: (item) => vdContains(item.bossMaterial, matBss),
+        validator: (item) => vdContainsValidId(item.bossMaterial, matBss),
       ),
       DataField.singleSelect(
         'Material Common',
@@ -253,7 +258,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
           GeMaterialType.eliteDrops,
         ).filters,
         (item, value) => item.copyWith(commonMaterial: value),
-        validator: (item) => vdContains(item.commonMaterial, matMob),
+        validator: (item) => vdContainsValidId(item.commonMaterial, matMob),
       ),
       DataField.singleSelect(
         'Material Region',
@@ -262,7 +267,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
             GsItemFilter.matGroups(GeMaterialType.regionMaterials).filters,
         (item, value) => item.copyWith(regionMaterial: value),
         validator: (item) {
-          if (item.regionMaterial.isEmpty) return GsValidLevel.error;
+          if (item.regionMaterial.isEmpty) return GsValidLevel.warn2;
           final matRegion = matWithRegion[item.regionMaterial];
           if (matRegion == null) return GsValidLevel.error;
           if (matRegion != item.region) return GsValidLevel.warn1;
@@ -276,7 +281,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
             GsItemFilter.matGroups(GeMaterialType.talentMaterials).filters,
         (item, value) => item.copyWith(talentMaterial: value),
         validator: (item) {
-          if (item.talentMaterial.isEmpty) return GsValidLevel.error;
+          if (item.talentMaterial.isEmpty) return GsValidLevel.warn2;
           final matRegion = matWithRegion[item.talentMaterial];
           if (matRegion == null) return GsValidLevel.error;
           if (matRegion != item.region) return GsValidLevel.warn1;
@@ -289,7 +294,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         (item) =>
             GsItemFilter.matGroups(GeMaterialType.weeklyBossDrops).filters,
         (item, value) => item.copyWith(weeklyMaterial: value),
-        validator: (item) => vdContains(item.weeklyMaterial, matWeek),
+        validator: (item) => vdContainsValidId(item.weeklyMaterial, matWeek),
       ),
       DataField.singleEnum(
         'Ascension Stat',
