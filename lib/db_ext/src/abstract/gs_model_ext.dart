@@ -90,6 +90,9 @@ String generateId(GsModel item) {
   if (item is GsSpincrystal) {
     return item.number.toString();
   }
+  if (item is GsEvent) {
+    return '${item.name}_${item.version}'.toDbId();
+  }
   if (item is GsVersion) {
     return item.id;
   }
