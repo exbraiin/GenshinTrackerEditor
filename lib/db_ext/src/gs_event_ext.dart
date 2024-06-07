@@ -62,6 +62,7 @@ class GsEventExt extends GsModelExt<GsEvent> {
         (item) => item.dateStart,
         (item, value) => item.copyWith(dateStart: value),
         validator: (item) {
+          if (item.dateStart.year == 0) return GsValidLevel.warn2;
           return date != null && item.dateStart.isBefore(date!)
               ? GsValidLevel.warn2
               : vdDates(item.dateStart, item.dateEnd);
@@ -72,6 +73,7 @@ class GsEventExt extends GsModelExt<GsEvent> {
         (item) => item.dateEnd,
         (item, value) => item.copyWith(dateEnd: value),
         validator: (item) {
+          if (item.dateEnd.year == 0) return GsValidLevel.warn2;
           return date != null && item.dateStart.isBefore(date!)
               ? GsValidLevel.warn2
               : vdDates(item.dateStart, item.dateEnd);

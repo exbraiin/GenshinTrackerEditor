@@ -194,25 +194,40 @@ class DataField<T extends GsModel<T>> {
             srcDate = DateTime(2020, 09, 28);
             dstDate = DateTime(2199, 12, 31);
           }
-          return InkWell(
-            onTap: () => showDatePicker(
-              context: context,
-              initialDate: content(item).clamp(min: srcDate, max: dstDate),
-              firstDate: srcDate,
-              lastDate: dstDate,
-            ).then((value) {
-              if (value == null) return;
-              edit(update(item, value));
-            }),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              constraints: const BoxConstraints(minHeight: 36),
-              alignment: Alignment.centerLeft,
-              child: Text(
-                content(item).toString().split(' ').first,
-                style: const TextStyle(fontSize: 16),
+          return Row(
+            children: [
+              Expanded(
+                child: InkWell(
+                  onTap: () => showDatePicker(
+                    context: context,
+                    initialDate:
+                        content(item).clamp(min: srcDate, max: dstDate),
+                    firstDate: srcDate,
+                    lastDate: dstDate,
+                  ).then((value) {
+                    if (value == null) return;
+                    edit(update(item, value));
+                  }),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    constraints: const BoxConstraints(minHeight: 36),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      content(item).toString().split(' ').first,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ),
               ),
-            ),
+              IconButton(
+                onPressed: () => edit(update(item, DateTime(0, 1, 1))),
+                icon: const Icon(Icons.clear_rounded),
+              ),
+              IconButton(
+                onPressed: () => edit(update(item, DateTime.now())),
+                icon: const Icon(Icons.today_rounded),
+              ),
+            ],
           );
         });
 
