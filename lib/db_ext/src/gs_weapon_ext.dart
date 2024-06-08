@@ -61,7 +61,6 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
         GeWeaponType.values.toChips(),
         (item) => item.type,
         (item, value) => item.copyWith(type: value),
-        validator: (item) => vdContains(item.type, GeWeaponType.values),
       ),
       DataField.singleEnum<GsWeapon, GeItemSourceType>(
         'Source',
@@ -95,8 +94,6 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
         GeWeaponAscStatType.values.toChips(),
         (item) => item.statType,
         (item, value) => item.copyWith(statType: value),
-        validator: (item) =>
-            vdContains(item.statType, GeWeaponAscStatType.values),
       ),
       DataField.textField(
         'Stat Value',

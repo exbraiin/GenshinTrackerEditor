@@ -11,7 +11,6 @@ class GsViewpointExt extends GsModelExt<GsViewpoint> {
   @override
   List<DataField<GsViewpoint>> getFields(String? editId) {
     final ids = Database.i.of<GsViewpoint>().ids;
-    final regions = GsItemFilter.regions().ids;
     final versions = GsItemFilter.versions().ids;
     return [
       DataField.textField(
@@ -41,7 +40,6 @@ class GsViewpointExt extends GsModelExt<GsViewpoint> {
         GeRegionType.values.toChips(),
         (item) => item.region,
         (item, value) => item.copyWith(region: value),
-        validator: (item) => vdContains(item.region.id, regions),
       ),
       DataField.singleSelect(
         'Version',

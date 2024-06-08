@@ -86,14 +86,12 @@ class GsEnemyExt extends GsModelExt<GsEnemy> {
         GeEnemyType.values.toChips(),
         (item) => item.type,
         (item, value) => item.copyWith(type: value),
-        validator: (item) => vdContains(item.type, GeEnemyType.values),
       ),
       DataField.singleEnum(
         'Family',
         GeEnemyFamilyType.values.toChips(),
         (item) => item.family,
         (item, value) => item.copyWith(family: value),
-        validator: (item) => vdContains(item.family, GeEnemyFamilyType.values),
       ),
       DataField.multiSelect<GsEnemy, String>(
         'Drops',

@@ -344,7 +344,7 @@ class DataField<T extends GsModel<T>> {
     List<GsSelectItem<R>> items,
     R Function(T item) value,
     T Function(T item, R value) update, {
-    required DValidator<T> validator,
+    DValidator<T>? validator,
   }) {
     return DataField._(
       label,
@@ -355,7 +355,10 @@ class DataField<T extends GsModel<T>> {
           onConfirm: (value) => edit(update(item, value ?? items.first.value)),
         );
       },
-      validator: validator,
+      validator: validator ??
+          (item) => items.any((e) => e.value == value(item))
+              ? GsValidLevel.good
+              : GsValidLevel.warn3,
     );
   }
 

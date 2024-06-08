@@ -13,7 +13,6 @@ class GsEventExt extends GsModelExt<GsEvent> {
   List<DataField<GsEvent>> getFields(String? editId) {
     DateTime? date;
     final ids = Database.i.of<GsEvent>().ids;
-    final types = GsItemFilter.eventType().ids;
     final versions = GsItemFilter.versions().ids;
     return [
       DataField.textField(
@@ -43,7 +42,6 @@ class GsEventExt extends GsModelExt<GsEvent> {
         GeEventType.values.toChips(),
         (item) => item.type,
         (item, value) => item.copyWith(type: value),
-        validator: (item) => vdContains(item.type.id, types),
       ),
       DataField.singleSelect(
         'Version',

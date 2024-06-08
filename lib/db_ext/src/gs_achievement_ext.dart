@@ -42,7 +42,6 @@ class GsAchievementExt extends GsModelExt<GsAchievement> {
         GeAchievementType.values.toChips(),
         (item) => item.type,
         (item, value) => item.copyWith(type: value),
-        validator: (item) => vdContains(item.type, GeAchievementType.values),
       ),
       DataField.text(
         'Hidden',

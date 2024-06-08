@@ -13,7 +13,6 @@ class GsMaterialExt extends GsModelExt<GsMaterial> {
   @override
   List<DataField<GsMaterial>> getFields(String? editId) {
     final ids = Database.i.of<GsMaterial>().ids;
-    final regions = GsItemFilter.regions().ids;
     final versions = GsItemFilter.versions().ids;
     return [
       DataField.textField(
@@ -54,14 +53,12 @@ class GsMaterialExt extends GsModelExt<GsMaterial> {
         GeRegionType.values.toChips(),
         (item) => item.region,
         (item, value) => item.copyWith(region: value),
-        validator: (item) => vdContains(item.region.id, regions),
       ),
       DataField.singleEnum(
         'Group',
         GeMaterialType.values.toChips(),
         (item) => item.group,
         (item, value) => item.copyWith(group: value),
-        validator: (item) => vdContains(item.group, GeMaterialType.values),
       ),
       DataField.textField(
         'Subgroup',

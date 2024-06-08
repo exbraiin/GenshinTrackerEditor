@@ -21,7 +21,6 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
   List<DataField<GsCharacter>> getFields(String? editId) {
     final ids = Database.i.of<GsCharacter>().ids;
     final namecards = GsItemFilter.namecards(GeNamecardType.character).ids;
-    final regions = GsItemFilter.regions().ids;
     final genders = GsItemFilter.genders().ids;
     final versions = GsItemFilter.versions().ids;
     final recipes = GsItemFilter.specialDishes().ids;
@@ -142,21 +141,18 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         GeRegionType.values.toChips(),
         (item) => item.region,
         (item, value) => item.copyWith(region: value),
-        validator: (item) => vdContains(item.region.id, regions),
       ),
       DataField.singleEnum(
         'Weapon',
         GeWeaponType.values.toChips(),
         (item) => item.weapon,
         (item, value) => item.copyWith(weapon: value),
-        validator: (item) => vdContains(item.weapon, GeWeaponType.values),
       ),
       DataField.singleEnum(
         'Element',
         GeElementType.values.toChips(),
         (item) => item.element,
         (item, value) => item.copyWith(element: value),
-        validator: (item) => vdContains(item.element, GeElementType.values),
       ),
       DataField.singleSelect(
         'Version',
@@ -316,10 +312,6 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         GeCharacterAscStatType.values.toChips(),
         (item) => item.ascStatType,
         (item, value) => item.copyWith(ascStatType: value),
-        validator: (item) => vdContains(
-          item.ascStatType,
-          GeCharacterAscStatType.values,
-        ),
       ),
       DataField.textList(
         'Ascension HP Values',

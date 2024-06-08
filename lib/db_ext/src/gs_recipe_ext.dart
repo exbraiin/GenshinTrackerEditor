@@ -37,7 +37,6 @@ class GsRecipeExt extends GsModelExt<GsRecipe> {
         GeRecipeType.values.toChips(),
         (item) => item.type,
         (item, value) => item.copyWith(type: value),
-        validator: (item) => vdContains(item.type, GeRecipeType.values),
       ),
       DataField.selectRarity(
         'Rarity',
@@ -63,7 +62,6 @@ class GsRecipeExt extends GsModelExt<GsRecipe> {
         GeRecipeEffectType.values.toChips(),
         (item) => item.effect,
         (item, value) => item.copyWith(effect: value),
-        validator: (item) => vdContains(item.effect, GeRecipeEffectType.values),
       ),
       DataField.textField(
         'Desc',

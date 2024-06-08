@@ -50,8 +50,6 @@ class GsSereniteaSetExt extends GsModelExt<GsSereniteaSet> {
         GeSereniteaSetType.values.toChips(),
         (item) => item.category,
         (item, value) => item.copyWith(category: value),
-        validator: (item) =>
-            vdContains(item.category, GeSereniteaSetType.values),
       ),
       DataField.textImage(
         'Image',

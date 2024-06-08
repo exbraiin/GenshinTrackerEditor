@@ -58,7 +58,6 @@ class GsRegionExt extends GsModelExt<GsRegion> {
         GeElementType.values.toChips(),
         (item) => item.element,
         (item, value) => item.copyWith(element: value),
-        validator: (item) => vdContains(item.element, GeElementType.values),
       ),
       DataField.textList(
         'Reputation',

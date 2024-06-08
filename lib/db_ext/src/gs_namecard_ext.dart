@@ -34,7 +34,6 @@ class GsNamecardExt extends GsModelExt<GsNamecard> {
         GeNamecardType.values.toChips(),
         (item) => item.type,
         (item, value) => item.copyWith(type: value),
-        validator: (item) => vdContains(item.type, GeNamecardType.values),
       ),
       DataField.selectRarity(
         'Rarity',

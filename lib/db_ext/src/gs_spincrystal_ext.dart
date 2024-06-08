@@ -11,7 +11,6 @@ class GsSpincrystalExt extends GsModelExt<GsSpincrystal> {
   @override
   List<DataField<GsSpincrystal>> getFields(String? editId) {
     final ids = Database.i.of<GsSpincrystal>().ids;
-    final regions = GsItemFilter.regions().ids;
     final versions = GsItemFilter.versions().ids;
     return [
       DataField.textField(
@@ -47,7 +46,6 @@ class GsSpincrystalExt extends GsModelExt<GsSpincrystal> {
         GeRegionType.values.toChips(),
         (item) => item.region,
         (item, value) => item.copyWith(region: value),
-        validator: (item) => vdContains(item.region.id, regions),
       ),
       DataField.singleSelect(
         'Version',

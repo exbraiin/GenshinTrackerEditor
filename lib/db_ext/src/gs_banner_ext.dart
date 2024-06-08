@@ -71,7 +71,6 @@ class GsBannerExt extends GsModelExt<GsBanner> {
         GeBannerType.values.toChips(),
         (item) => item.type,
         (item, value) => item.copyWith(type: value),
-        validator: (item) => vdContains(item.type, GeBannerType.values),
       ),
       DataField.singleSelect(
         'Version',

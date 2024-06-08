@@ -12,7 +12,6 @@ class GsArtifactExt extends GsModelExt<GsArtifact> {
   @override
   List<DataField<GsArtifact>> getFields(String? editId) {
     final ids = Database.i.of<GsArtifact>().ids;
-    final regions = GsItemFilter.regions().ids;
     final versions = GsItemFilter.versions().ids;
 
     return [
@@ -50,7 +49,6 @@ class GsArtifactExt extends GsModelExt<GsArtifact> {
         GeRegionType.values.toChips(),
         (item) => item.region,
         (item, value) => item.copyWith(region: value),
-        validator: (item) => vdContains(item.region.id, regions),
       ),
       DataField.textField(
         'Piece 1',
