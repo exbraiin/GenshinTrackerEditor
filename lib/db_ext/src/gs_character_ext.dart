@@ -41,6 +41,12 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         .map((e) => MapEntry(e.id, e.region))
         .toMap();
 
+    final vs = Database.i.of<GsVersion>().items.sorted();
+    final versionDates = vs.mapIndexed((i, e) {
+      final next = vs.elementAtOrNull(i + 1);
+      return MapEntry(e.id, (e.releaseDate, next?.releaseDate));
+    }).toMap();
+
     return [
       DataField.textField(
         'ID',
@@ -160,15 +166,20 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         validator: (item) => vdContains(item.version, versions),
       ),
       DataField.singleEnum(
-        'Obtain',
+        'Source',
         GeItemSourceType.values.toChips(),
         (item) => item.source,
         (item, value) => item.copyWith(source: value),
-        validator: (item) => vdContains(item.source, [
-          GeItemSourceType.event,
-          GeItemSourceType.wishesStandard,
-          GeItemSourceType.wishesCharacterBanner,
-        ]),
+        validator: (item) {
+          const valid = [
+            GeItemSourceType.event,
+            GeItemSourceType.wishesStandard,
+            GeItemSourceType.wishesCharacterBanner,
+          ];
+          return valid.contains(item.source)
+              ? GsValidLevel.good
+              : GsValidLevel.warn2;
+        },
       ),
       DataField.textField(
         'Description',
@@ -209,7 +220,11 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         'Release Date',
         (item) => item.releaseDate,
         (item, value) => item.copyWith(releaseDate: value),
-        validator: (item) => vdDate(item.releaseDate),
+        validator: (item) {
+          final range = versionDates[item.version];
+          if (range == null) return GsValidLevel.warn2;
+          return vdDateBetween(item.releaseDate, range.$1, range.$2);
+        },
       ),
       DataField.textImage(
         'Image',
@@ -269,7 +284,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         validator: (item) {
           if (item.regionMaterial.isEmpty) return GsValidLevel.warn2;
           final matRegion = matWithRegion[item.regionMaterial];
-          if (matRegion == null) return GsValidLevel.error;
+          if (matRegion == null) return GsValidLevel.warn3;
           if (matRegion != item.region) return GsValidLevel.warn1;
           return GsValidLevel.good;
         },
@@ -283,7 +298,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         validator: (item) {
           if (item.talentMaterial.isEmpty) return GsValidLevel.warn2;
           final matRegion = matWithRegion[item.talentMaterial];
-          if (matRegion == null) return GsValidLevel.error;
+          if (matRegion == null) return GsValidLevel.warn3;
           if (matRegion != item.region) return GsValidLevel.warn1;
           return GsValidLevel.good;
         },

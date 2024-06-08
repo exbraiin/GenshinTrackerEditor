@@ -33,13 +33,16 @@ enum GsValidLevel {
   good,
   warn1(color: Colors.lightBlue),
   warn2(color: Colors.orange, label: 'Missing'),
+  warn3(color: Colors.deepOrange, label: 'Wrong'),
   error(color: Colors.red, label: 'Invalid');
 
   final Color? color;
   final String? label;
 
-  bool get isErrorOrWarn2 =>
-      this == GsValidLevel.error || this == GsValidLevel.warn2;
+  bool get isInvalid =>
+      this == GsValidLevel.warn2 ||
+      this == GsValidLevel.warn3 ||
+      this == GsValidLevel.error;
 
   const GsValidLevel({this.color, this.label});
 }

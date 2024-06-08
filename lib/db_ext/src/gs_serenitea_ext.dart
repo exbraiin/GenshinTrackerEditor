@@ -74,7 +74,7 @@ class GsSereniteaSetExt extends GsModelExt<GsSereniteaSet> {
             ? GsValidLevel.warn2
             : (chars.containsAll(item.chars)
                 ? GsValidLevel.good
-                : GsValidLevel.error),
+                : GsValidLevel.warn3),
       ),
       DataField.build<GsSereniteaSet, GsFurnishingAmount>(
         'Furnishing',

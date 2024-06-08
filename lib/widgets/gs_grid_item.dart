@@ -136,7 +136,7 @@ class GsGridItem extends StatelessWidget {
 
   Widget _getInvalidBanner() {
     const offset = Offset(2, -2);
-    if (validLevel.isErrorOrWarn2) {
+    if (validLevel.isInvalid) {
       return Positioned.fill(
         child: ClipRect(
           child: Transform.translate(

@@ -26,7 +26,7 @@ abstract class GsModelExt<T extends GsModel<T>> {
   }
 
   GsValidLevel vdNum(num value, [num min = 0]) =>
-      value >= min ? GsValidLevel.good : GsValidLevel.error;
+      value >= min ? GsValidLevel.good : GsValidLevel.warn3;
 
   GsValidLevel vdText(
     String name, [
@@ -38,7 +38,7 @@ abstract class GsModelExt<T extends GsModel<T>> {
   }
 
   GsValidLevel vdRarity(int rarity, [int min = 1]) {
-    return rarity.between(min, 5) ? GsValidLevel.good : GsValidLevel.error;
+    return rarity.between(min, 5) ? GsValidLevel.good : GsValidLevel.warn3;
   }
 
   GsValidLevel vdImage(
@@ -51,7 +51,7 @@ abstract class GsModelExt<T extends GsModel<T>> {
   }
 
   GsValidLevel vdBirthday(DateTime birthday) {
-    return birthday.year == 0 ? GsValidLevel.good : GsValidLevel.error;
+    return birthday.year == 0 ? GsValidLevel.good : GsValidLevel.warn3;
   }
 
   GsValidLevel vdDate(DateTime date) {
@@ -60,14 +60,20 @@ abstract class GsModelExt<T extends GsModel<T>> {
     return GsValidLevel.none;
   }
 
-  GsValidLevel vdDates(DateTime? src, DateTime? dst) {
+  GsValidLevel vdDateBetween(DateTime src, DateTime ip, DateTime? op) {
+    return !src.isBefore(ip) && (op == null || !src.isAfter(op))
+        ? GsValidLevel.good
+        : GsValidLevel.warn3;
+  }
+
+  GsValidLevel vdDatesOrder(DateTime? src, DateTime? dst) {
     return src != null && dst != null && dst.isAfter(src)
         ? GsValidLevel.good
-        : GsValidLevel.error;
+        : GsValidLevel.warn3;
   }
 
   GsValidLevel vdContains<E>(E value, Iterable<E> values) {
-    return values.contains(value) ? GsValidLevel.good : GsValidLevel.error;
+    return values.contains(value) ? GsValidLevel.good : GsValidLevel.warn3;
   }
 
   GsValidLevel vdContainsValidId(String e, Iterable<String> values) {

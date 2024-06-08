@@ -445,7 +445,7 @@ class DataField<T extends GsModel<T>> {
     DataField<C> Function(int index, T item, C child) build,
     C Function() create,
     T Function(T item, List<C> list) update, {
-    GsValidLevel emptyLevel = GsValidLevel.error,
+    GsValidLevel emptyLevel = GsValidLevel.warn3,
   }) {
     return DataField<T>._(
       label,

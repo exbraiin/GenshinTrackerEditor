@@ -93,7 +93,7 @@ class _ItemsListScreenState<T extends GsModel<T>>
               late final level = DataValidator.i.getLevel<T>(e.id);
               late final matchQuery =
                   _searchQuery.isEmpty || e.id.contains(_searchQuery);
-              return matchQuery && (!_warningOnly || level.isErrorOrWarn2);
+              return matchQuery && (!_warningOnly || level.isInvalid);
             }).map((item) {
               final level = DataValidator.i.getLevel<T>(item.id);
               final decor = widget.getDecor(item);

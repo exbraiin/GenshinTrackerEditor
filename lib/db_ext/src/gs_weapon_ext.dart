@@ -68,7 +68,20 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
         GeItemSourceType.values.toChips(),
         (item) => item.source,
         (item, value) => item.copyWith(source: value),
-        validator: (item) => vdContains(item.source, GeItemSourceType.values),
+        validator: (item) {
+          if (item.rarity == 5) {
+            const valid = [
+              GeItemSourceType.wishesStandard,
+              GeItemSourceType.wishesWeaponBanner,
+            ];
+            return valid.contains(item.source)
+                ? GsValidLevel.good
+                : GsValidLevel.warn2;
+          }
+          return item.source != GeItemSourceType.wishesCharacterBanner
+              ? GsValidLevel.good
+              : GsValidLevel.warn2;
+        },
       ),
       DataField.textField(
         'Atk',
@@ -91,7 +104,7 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
         (item, v) => item.copyWith(statValue: double.tryParse(v) ?? -1),
         validator: (item) {
           if (item.statType == GeWeaponAscStatType.none) {
-            return item.statValue == 0 ? GsValidLevel.good : GsValidLevel.error;
+            return item.statValue == 0 ? GsValidLevel.good : GsValidLevel.warn3;
           }
           return vdNum(item.statValue, 1);
         },
@@ -166,5 +179,5 @@ GsValidLevel _vdWeaponAsc(String atkValues, String statValues) {
   final stat = statValues.split(',').where((e) => e.isNotEmpty);
   return (atk.isNotEmpty && stat.isEmpty) || atk.length == stat.length
       ? GsValidLevel.good
-      : GsValidLevel.error;
+      : GsValidLevel.warn3;
 }

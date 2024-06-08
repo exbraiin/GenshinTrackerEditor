@@ -109,10 +109,10 @@ class GsMaterialExt extends GsModelExt<GsMaterial> {
       GeWeekdayType.wednesday,
       GeWeekdayType.saturday,
     ];
-    if (weekdays.length != 3) return GsValidLevel.error;
+    if (weekdays.length != 3) return GsValidLevel.warn3;
     if (weekdays.except(g1).isEmpty) return GsValidLevel.good;
     if (weekdays.except(g2).isEmpty) return GsValidLevel.good;
     if (weekdays.except(g3).isEmpty) return GsValidLevel.good;
-    return GsValidLevel.error;
+    return GsValidLevel.warn3;
   }
 }
