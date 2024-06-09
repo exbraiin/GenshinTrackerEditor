@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dartx/dartx.dart';
-import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/external/gs_enka.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
@@ -19,42 +18,33 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
 
   @override
   List<DataField<GsCharacter>> getFields(String? editId) {
-    final ids = Database.i.of<GsCharacter>().ids;
-    final namecards = GsItemFilter.namecards(GeNamecardType.character).ids;
-    final genders = GsItemFilter.genders().ids;
-    final versions = GsItemFilter.versions().ids;
     final recipes = GsItemFilter.specialDishes().ids;
-    const catGem = GeMaterialType.ascensionGems;
-    final matGem = GsItemFilter.matGroups(catGem).ids;
-    const catBss = GeMaterialType.normalBossDrops;
-    final matBss = GsItemFilter.matGroups(catBss).ids;
-    final matMob = GsItemFilter.matGroups(
+
+    final vd = ValidateModels<GsCharacter>();
+    final vdVersion = ValidateModels.versions();
+    final vdNamecard = ValidateModels.namecards(
+      type: GeNamecardType.character,
+      unusedOnly: true,
+    );
+    final vldMatReg = ValidateModels.materials(GeMaterialType.regionMaterials);
+    final vldMatTal = ValidateModels.materials(GeMaterialType.talentMaterials);
+    final vldMatGem = ValidateModels.materials(GeMaterialType.ascensionGems);
+    final vldMatBss = ValidateModels.materials(GeMaterialType.normalBossDrops);
+    final vldMatWkk = ValidateModels.materials(GeMaterialType.weeklyBossDrops);
+    final vldMatMob = ValidateModels.materials(
       GeMaterialType.normalDrops,
       GeMaterialType.eliteDrops,
-    ).ids;
-    const catWeek = GeMaterialType.weeklyBossDrops;
-    final matWeek = GsItemFilter.matGroups(catWeek).ids;
-    final matWithRegion = Database.i
-        .of<GsMaterial>()
-        .items
-        .map((e) => MapEntry(e.id, e.region))
-        .toMap();
-
-    final vs = Database.i.of<GsVersion>().items.sorted();
-    final versionDates = vs.mapIndexed((i, e) {
-      final next = vs.elementAtOrNull(i + 1);
-      return MapEntry(e.id, (e.releaseDate, next?.releaseDate));
-    }).toMap();
+    );
 
     return [
       DataField.textField(
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, editId, ids),
+        validator: (item) => vd.validateItemId(item, editId),
         refresh: DataButton(
           'Generate Id',
-          (ctx, item) => item.copyWith(id: generateId(item)),
+          (ctx, item) => item.copyWith(id: expectedId(item)),
         ),
       ),
       DataField.textField(
@@ -89,51 +79,36 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
           },
           icon: const Icon(Icons.select_all_rounded),
         ),
-        validator: (item) => vdText(item.enkaId, GsValidLevel.warn2),
+        empty: GsValidLevel.warn2,
       ),
       DataField.textField(
         'Name',
         (item) => item.name,
         (item, value) => item.copyWith(name: value),
-        validator: (item) => vdText(item.name),
       ),
       DataField.textField(
         'Title',
         (item) => item.title,
         (item, value) => item.copyWith(title: value),
-        validator: (item) => vdText(item.title),
       ),
       DataField.singleSelect(
         'Namecard Id',
         (item) => item.namecardId,
-        (item) => GsItemFilter.namecards(
-          GeNamecardType.character,
-          item.namecardId,
-        ).filters,
+        (item) => vdNamecard.filtersWithId(item.namecardId),
         (item, value) => item.copyWith(namecardId: value),
-        validator: (item) {
-          if (item.namecardId == '') return GsValidLevel.warn2;
-          return vdContains(item.namecardId, namecards);
-        },
+        validator: (item) => vdNamecard.validate(item.namecardId),
       ),
       DataField.singleEnum(
         'Gender',
         GeGenderType.values.toChips(),
         (item) => item.gender,
         (item, value) => item.copyWith(gender: value),
-        validator: (item) {
-          if (item.gender == GeGenderType.none) {
-            return GsValidLevel.warn2;
-          }
-          return vdContains(item.gender.id, genders);
-        },
+        invalid: [GeGenderType.none],
       ),
       DataField.selectRarity(
         'Rarity',
         (item) => item.rarity,
         (item, value) => item.copyWith(rarity: value),
-        validator: (item) =>
-            item.rarity == 0 ? GsValidLevel.warn2 : vdRarity(item.rarity, 4),
         min: 4,
       ),
       DataField.singleEnum(
@@ -143,57 +118,69 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         (item, value) => item.copyWith(region: value),
       ),
       DataField.singleEnum(
+        'Arkhe',
+        GeArkheType.values.toChips(),
+        (item) => item.arkhe,
+        (item, value) => item.copyWith(arkhe: value),
+        validator: (item, level) {
+          if (item.region == GeRegionType.fontaine &&
+              item.arkhe == GeArkheType.none) {
+            return GsValidLevel.warn3;
+          }
+          return level;
+        },
+      ),
+      DataField.singleEnum(
         'Weapon',
         GeWeaponType.values.toChips(),
         (item) => item.weapon,
         (item, value) => item.copyWith(weapon: value),
+        invalid: [GeWeaponType.none],
       ),
       DataField.singleEnum(
         'Element',
         GeElementType.values.toChips(),
         (item) => item.element,
         (item, value) => item.copyWith(element: value),
+        invalid: [GeElementType.none],
       ),
       DataField.singleSelect(
         'Version',
         (item) => item.version,
-        (item) => GsItemFilter.versions().filters,
+        (item) => vdVersion.filters,
         (item, value) => item.copyWith(version: value),
-        validator: (item) => vdContains(item.version, versions),
+        validator: (item) => vdVersion.validate(item.version),
       ),
       DataField.singleEnum(
         'Source',
         GeItemSourceType.values.toChips(),
         (item) => item.source,
         (item, value) => item.copyWith(source: value),
-        validator: (item) {
+        invalid: [GeItemSourceType.none],
+        validator: (item, level) {
           const valid = [
             GeItemSourceType.event,
             GeItemSourceType.wishesStandard,
             GeItemSourceType.wishesCharacterBanner,
           ];
-          return valid.contains(item.source)
-              ? GsValidLevel.good
-              : GsValidLevel.warn2;
+          if (!valid.contains(item.source)) return GsValidLevel.warn3;
+          return level;
         },
       ),
       DataField.textField(
         'Description',
         (item) => item.description,
         (item, value) => item.copyWith(description: value),
-        validator: (item) => vdText(item.description),
       ),
       DataField.textField(
         'Constellation',
         (item) => item.constellation,
         (item, value) => item.copyWith(constellation: value),
-        validator: (item) => vdText(item.constellation),
       ),
       DataField.textField(
         'Affiliation',
         (item) => item.affiliation,
         (item, value) => item.copyWith(affiliation: value),
-        validator: (item) => vdText(item.affiliation),
       ),
       DataField.singleSelect(
         'Special Dish',
@@ -209,109 +196,91 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         'Birthday',
         (item) => item.birthday,
         (item, value) => item.copyWith(birthday: value),
-        validator: (item) => vdBirthday(item.birthday),
         isBirthday: true,
       ),
       DataField.dateTime(
         'Release Date',
         (item) => item.releaseDate,
         (item, value) => item.copyWith(releaseDate: value),
-        validator: (item) {
-          final range = versionDates[item.version];
-          if (range == null) return GsValidLevel.warn2;
-          return vdDateBetween(item.releaseDate, range.$1, range.$2);
-        },
+        validator: (item) => vdVersion.validateDates(
+          item.version,
+          item.releaseDate,
+        ),
       ),
       DataField.textImage(
         'Image',
         (item) => item.image,
         (item, value) => item.copyWith(image: value),
-        validator: (item) => vdImage(item.image),
       ),
       DataField.textImage(
         'Side Image',
         (item) => item.sideImage,
         (item, value) => item.copyWith(sideImage: value),
-        validator: (item) => vdImage(item.sideImage),
       ),
       DataField.textImage(
         'Full Image',
         (item) => item.fullImage,
         (item, value) => item.copyWith(fullImage: value),
-        validator: (item) => vdImage(item.fullImage),
       ),
       DataField.textImage(
         'Constellation Image',
         (item) => item.constellationImage,
         (item, value) => item.copyWith(constellationImage: value),
-        validator: (item) => vdImage(item.constellationImage),
       ),
       DataField.singleSelect(
         'Material Gem',
         (item) => item.gemMaterial,
-        (item) => GsItemFilter.matGroups(GeMaterialType.ascensionGems).filters,
+        (item) => vldMatGem.filters,
         (item, value) => item.copyWith(gemMaterial: value),
-        validator: (item) => vdContainsValidId(item.gemMaterial, matGem),
+        validator: (item) => vldMatGem.validate(item.gemMaterial),
       ),
       DataField.singleSelect(
         'Material Boss',
         (item) => item.bossMaterial,
-        (item) =>
-            GsItemFilter.matGroups(GeMaterialType.normalBossDrops).filters,
+        (item) => vldMatBss.filters,
         (item, value) => item.copyWith(bossMaterial: value),
-        validator: (item) => vdContainsValidId(item.bossMaterial, matBss),
+        validator: (item) => vldMatBss.validate(item.bossMaterial),
       ),
       DataField.singleSelect(
         'Material Common',
         (item) => item.commonMaterial,
-        (item) => GsItemFilter.matGroups(
-          GeMaterialType.normalDrops,
-          GeMaterialType.eliteDrops,
-        ).filters,
+        (item) => vldMatMob.filters,
         (item, value) => item.copyWith(commonMaterial: value),
-        validator: (item) => vdContainsValidId(item.commonMaterial, matMob),
+        validator: (item) => vldMatMob.validate(item.commonMaterial),
       ),
       DataField.singleSelect(
         'Material Region',
         (item) => item.regionMaterial,
-        (item) =>
-            GsItemFilter.matGroups(GeMaterialType.regionMaterials).filters,
+        (item) => vldMatReg.filters,
         (item, value) => item.copyWith(regionMaterial: value),
-        validator: (item) {
-          if (item.regionMaterial.isEmpty) return GsValidLevel.warn2;
-          final matRegion = matWithRegion[item.regionMaterial];
-          if (matRegion == null) return GsValidLevel.warn3;
-          if (matRegion != item.region) return GsValidLevel.warn1;
-          return GsValidLevel.good;
-        },
+        validator: (item) => vldMatReg.validateWithRegion(
+          item.regionMaterial,
+          item.region,
+        ),
       ),
       DataField.singleSelect(
         'Material Talent',
         (item) => item.talentMaterial,
-        (item) =>
-            GsItemFilter.matGroups(GeMaterialType.talentMaterials).filters,
+        (item) => vldMatTal.filters,
         (item, value) => item.copyWith(talentMaterial: value),
-        validator: (item) {
-          if (item.talentMaterial.isEmpty) return GsValidLevel.warn2;
-          final matRegion = matWithRegion[item.talentMaterial];
-          if (matRegion == null) return GsValidLevel.warn3;
-          if (matRegion != item.region) return GsValidLevel.warn1;
-          return GsValidLevel.good;
-        },
+        validator: (item) => vldMatTal.validateWithRegion(
+          item.talentMaterial,
+          item.region,
+        ),
       ),
       DataField.singleSelect(
         'Material Weekly',
         (item) => item.weeklyMaterial,
-        (item) =>
-            GsItemFilter.matGroups(GeMaterialType.weeklyBossDrops).filters,
+        (item) => vldMatWkk.filters,
         (item, value) => item.copyWith(weeklyMaterial: value),
-        validator: (item) => vdContainsValidId(item.weeklyMaterial, matWeek),
+        validator: (item) => vldMatWkk.validate(item.weeklyMaterial),
       ),
       DataField.singleEnum(
         'Ascension Stat',
         GeCharacterAscStatType.values.toChips(),
         (item) => item.ascStatType,
         (item, value) => item.copyWith(ascStatType: value),
+        invalid: [GeCharacterAscStatType.none],
       ),
       DataField.textList(
         'Ascension HP Values',
@@ -340,7 +309,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
       DataField.build<GsCharacter, GsCharTalent>(
         'Talents',
         (item) => item.talents,
-        (item) => GsItemFilter.talents().filters,
+        (item) => GeCharTalentType.values.toChipsId(),
         (item, child) => DataField<GsCharTalent>.list(
           child.id,
           (tal) => [
@@ -348,19 +317,16 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
               'Name',
               (item) => tal.name,
               (item, value) => item.copyWith(name: value),
-              validator: (item) => vdText(item.name),
             ),
             DataField.textImage(
               'Icon',
               (item) => tal.icon,
               (item, value) => item.copyWith(icon: value),
-              validator: (item) => vdImage(item.icon),
             ),
             DataField.textEditor(
               'Desc',
               (item) => tal.desc,
               (item, value) => item.copyWith(desc: value),
-              validator: (item) => vdText(item.desc),
               autoFormat: (input) => _formatCharTalsAndCons(item, input),
             ),
           ],
@@ -384,7 +350,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
       DataField.build<GsCharacter, GsCharConstellation>(
         'Constellations',
         (item) => item.constellations,
-        (item) => GsItemFilter.constellations().filters,
+        (item) => GeCharConstellationType.values.toChipsId(),
         (item, child) => DataField.list(
           child.id,
           (con) => [
@@ -392,19 +358,16 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
               'Name',
               (item) => con.name,
               (item, value) => item.copyWith(name: value),
-              validator: (item) => vdText(con.name),
             ),
             DataField.textImage(
               'Icon',
               (item) => con.icon,
               (item, value) => item.copyWith(icon: value),
-              validator: (item) => vdImage(con.icon),
             ),
             DataField.textEditor(
               'Desc',
               (item) => con.desc,
               (item, value) => item.copyWith(desc: value),
-              validator: (item) => vdText(con.desc),
               autoFormat: (input) => _formatCharTalsAndCons(item, input),
             ),
           ],

@@ -1,4 +1,3 @@
-import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
@@ -11,42 +10,49 @@ class GsBannerExt extends GsModelExt<GsBanner> {
 
   @override
   List<DataField<GsBanner>> getFields(String? editId) {
-    final ids = Database.i.of<GsBanner>().ids;
-    final versions = GsItemFilter.versions().ids;
+    final vd = ValidateModels<GsBanner>();
+    final vdVersion = ValidateModels.versions();
+
     return [
       DataField.textField(
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, editId, ids),
+        validator: (item) => vd.validateItemId(item, editId),
         refresh: DataButton(
           'Generate Id',
-          (ctx, item) => item.copyWith(id: generateId(item)),
+          (ctx, item) => item.copyWith(id: expectedId(item)),
         ),
       ),
       DataField.textField(
         'Name',
         (item) => item.name,
         (item, value) => item.copyWith(name: value),
-        validator: (item) => vdText(item.name),
       ),
       DataField.textImage(
         'Image',
         (item) => item.image,
         (item, value) => item.copyWith(image: value),
-        validator: (item) => vdImage(item.image),
       ),
       DataField.dateTime(
         'Date Start',
         (item) => item.dateStart,
         (item, value) => item.copyWith(dateStart: value),
-        validator: (item) => vdDatesOrder(item.dateStart, item.dateEnd),
+        validator: (item) => vdVersion.validateDates(
+          item.version,
+          item.dateStart,
+          item.type.isPermanent ? null : item.dateEnd,
+        ),
       ),
       DataField.dateTime(
         'Date End',
         (item) => item.dateEnd,
         (item, value) => item.copyWith(dateEnd: value),
-        validator: (item) => vdDatesOrder(item.dateStart, item.dateEnd),
+        validator: (item) => vdVersion.validateDates(
+          item.version,
+          item.dateStart,
+          item.type.isPermanent ? null : item.dateEnd,
+        ),
       ),
       DataField.multiSelect<GsBanner, String>(
         'Feature 4',
@@ -75,9 +81,9 @@ class GsBannerExt extends GsModelExt<GsBanner> {
       DataField.singleSelect(
         'Version',
         (item) => item.version,
-        (item) => GsItemFilter.versions().filters,
+        (item) => vdVersion.filters,
         (item, value) => item.copyWith(version: value),
-        validator: (item) => vdContains(item.version, versions),
+        validator: (item) => vdVersion.validate(item.version),
       ),
     ];
   }

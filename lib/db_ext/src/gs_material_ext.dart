@@ -1,5 +1,4 @@
 import 'package:dartx/dartx.dart';
-import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
@@ -12,24 +11,24 @@ class GsMaterialExt extends GsModelExt<GsMaterial> {
 
   @override
   List<DataField<GsMaterial>> getFields(String? editId) {
-    final ids = Database.i.of<GsMaterial>().ids;
-    final versions = GsItemFilter.versions().ids;
+    final vd = ValidateModels<GsMaterial>();
+    final vdVersion = ValidateModels.versions();
+
     return [
       DataField.textField(
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, editId, ids),
+        validator: (item) => vd.validateItemId(item, editId),
         refresh: DataButton(
           'Generate Id',
-          (ctx, item) => item.copyWith(id: generateId(item)),
+          (ctx, item) => item.copyWith(id: expectedId(item)),
         ),
       ),
       DataField.textField(
         'Name',
         (item) => item.name,
         (item, value) => item.copyWith(name: value),
-        validator: (item) => vdText(item.name),
       ),
       DataField.text(
         'Ingredient',
@@ -40,13 +39,12 @@ class GsMaterialExt extends GsModelExt<GsMaterial> {
         'Desc',
         (item) => item.desc,
         (item, value) => item.copyWith(desc: value),
-        validator: (item) => vdText(item.desc, GsValidLevel.warn2),
+        emptyLevel: GsValidLevel.warn2,
       ),
       DataField.selectRarity(
         'Rarity',
         (item) => item.rarity,
         (item, value) => item.copyWith(rarity: value),
-        validator: (item) => vdRarity(item.rarity),
       ),
       DataField.singleEnum(
         'Region',
@@ -60,24 +58,22 @@ class GsMaterialExt extends GsModelExt<GsMaterial> {
         (item) => item.group,
         (item, value) => item.copyWith(group: value),
       ),
-      DataField.textField(
+      DataField.intField(
         'Subgroup',
-        (item) => item.subgroup.toString(),
-        (item, value) => item.copyWith(subgroup: int.tryParse(value) ?? -1),
-        validator: (item) => vdNum(item.subgroup),
+        (item) => item.subgroup,
+        (item, value) => item.copyWith(subgroup: value),
       ),
       DataField.singleSelect(
         'Version',
         (item) => item.version,
-        (item) => GsItemFilter.versions().filters,
+        (item) => vdVersion.filters,
         (item, value) => item.copyWith(version: value),
-        validator: (item) => vdContains(item.version, versions),
+        validator: (item) => vdVersion.validate(item.version),
       ),
       DataField.textImage(
         'Image',
         (item) => item.image,
         (item, value) => item.copyWith(image: value),
-        validator: (item) => vdImage(item.image),
       ),
       DataField.multiEnum<GsMaterial, GeWeekdayType>(
         'Weekdays',

@@ -47,6 +47,7 @@ class GsConfigs<T extends GsModel<T>> {
     this.filters = const [],
   });
 
+  static final _versions = ValidateModels.versions();
   static final _map = <Type, GsConfigs>{
     GsAchievementGroup: GsConfigs<GsAchievementGroup>._(
       title: 'Achievement Category',
@@ -61,9 +62,9 @@ class GsConfigs<T extends GsModel<T>> {
         );
       },
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
       ],
@@ -81,19 +82,19 @@ class GsConfigs<T extends GsModel<T>> {
         );
       },
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
         GsFieldFilter.fromEnum(
           'Type',
           GeAchievementType.values,
-          (i) => i.type.id,
+          (i) => i.type,
         ),
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Category',
-          GsItemFilter.achievementGroups(),
+          ValidateModels<GsAchievementGroup>().filters,
           (i) => i.group,
         ),
       ],
@@ -109,20 +110,16 @@ class GsConfigs<T extends GsModel<T>> {
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
-        GsFieldFilter.fromFilter(
-          'Rarity',
-          GsItemFilter.rarities(),
-          (i) => i.rarity.toString(),
-        ),
-        GsFieldFilter.fromFilter(
+        GsFieldFilter.rarity('Rarity', (i) => i.rarity),
+        GsFieldFilter.fromEnum(
           'Region',
-          GsItemFilter.regions(),
-          (i) => i.region.id,
+          GeRegionType.values,
+          (i) => i.region,
         ),
       ],
     ),
@@ -143,15 +140,15 @@ class GsConfigs<T extends GsModel<T>> {
         );
       },
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
         GsFieldFilter.fromEnum(
           'Type',
           GeBannerType.values,
-          (i) => i.type.id,
+          (i) => i.type,
         ),
       ],
     ),
@@ -183,35 +180,36 @@ class GsConfigs<T extends GsModel<T>> {
         ),
       ],
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
-        GsFieldFilter.fromFilter(
+        GsFieldFilter.fromEnum(
           'Region',
-          GsItemFilter.regions(),
-          (i) => i.region.id,
+          GeRegionType.values,
+          (i) => i.region,
         ),
-        GsFieldFilter.fromFilter(
+        GsFieldFilter.fromEnum(
           'Gender',
-          GsItemFilter.genders(),
-          (i) => i.gender.id,
+          GeGenderType.values,
+          (i) => i.gender,
         ),
-        GsFieldFilter.fromFilter(
-          'Rarity',
-          GsItemFilter.rarities(4),
-          (i) => i.rarity.toString(),
-        ),
+        GsFieldFilter.rarity('Rarity', (i) => i.rarity, 4),
         GsFieldFilter.fromEnum(
           'Element',
           GeElementType.values,
-          (i) => i.element.id,
+          (i) => i.element,
         ),
         GsFieldFilter.fromEnum(
           'Weapon',
           GeWeaponType.values,
-          (i) => i.weapon.id,
+          (i) => i.weapon,
+        ),
+        GsFieldFilter.fromEnum(
+          'Ascension Stat',
+          GeCharacterAscStatType.values,
+          (i) => i.ascStatType,
         ),
       ],
     ),
@@ -230,16 +228,12 @@ class GsConfigs<T extends GsModel<T>> {
         );
       },
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
-        GsFieldFilter.fromFilter(
-          'Rarity',
-          GsItemFilter.rarities(),
-          (i) => i.rarity.toString(),
-        ),
+        GsFieldFilter.rarity('Rarity', (i) => i.rarity),
       ],
     ),
     GsRegion: GsConfigs<GsRegion>._(
@@ -265,20 +259,20 @@ class GsConfigs<T extends GsModel<T>> {
         child: _orderItem(item.order.toString()),
       ),
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
         GsFieldFilter.fromEnum(
           'Type',
           GeEnemyType.values,
-          (i) => i.type.id,
+          (i) => i.type,
         ),
         GsFieldFilter.fromEnum(
           'Family',
           GeEnemyFamilyType.values,
-          (i) => i.family.id,
+          (i) => i.family,
         ),
       ],
     ),
@@ -293,25 +287,21 @@ class GsConfigs<T extends GsModel<T>> {
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
-        GsFieldFilter.fromFilter(
-          'Rarity',
-          GsItemFilter.rarities(),
-          (i) => i.rarity.toString(),
-        ),
-        GsFieldFilter.fromFilter(
+        GsFieldFilter.rarity('Rarity', (i) => i.rarity),
+        GsFieldFilter.fromEnum(
           'Region',
-          GsItemFilter.regions(),
-          (i) => i.region.id,
+          GeRegionType.values,
+          (i) => i.region,
         ),
         GsFieldFilter.fromEnum(
           'Group',
           GeMaterialType.values,
-          (i) => i.group.id,
+          (i) => i.group,
         ),
         GsFieldFilter(
           'Ingredient',
@@ -333,20 +323,16 @@ class GsConfigs<T extends GsModel<T>> {
         color: GsStyle.getNamecardColor(item.type),
       ),
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
-        GsFieldFilter.fromFilter(
-          'Rarity',
-          GsItemFilter.rarities(),
-          (i) => i.rarity.toString(),
-        ),
+        GsFieldFilter.rarity('Rarity', (i) => i.rarity),
         GsFieldFilter.fromEnum(
           'Type',
           GeNamecardType.values,
-          (i) => i.type.id,
+          (i) => i.type,
         ),
       ],
     ),
@@ -360,25 +346,21 @@ class GsConfigs<T extends GsModel<T>> {
         color: GsStyle.getRarityColor(item.rarity),
       ),
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
-        GsFieldFilter.fromFilter(
-          'Rarity',
-          GsItemFilter.rarities(),
-          (i) => i.rarity.toString(),
-        ),
+        GsFieldFilter.rarity('Rarity', (i) => i.rarity),
         GsFieldFilter.fromEnum(
           'Type',
           GeRecipeType.values,
-          (i) => i.type.id,
+          (i) => i.type,
         ),
         GsFieldFilter.fromEnum(
           'Effect',
           GeRecipeEffectType.values,
-          (i) => i.effect.id,
+          (i) => i.effect,
         ),
       ],
     ),
@@ -393,25 +375,21 @@ class GsConfigs<T extends GsModel<T>> {
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
-        GsFieldFilter.fromFilter(
-          'Rarity',
-          GsItemFilter.rarities(),
-          (i) => i.rarity.toString(),
-        ),
-        GsFieldFilter.fromFilter(
+        GsFieldFilter.rarity('Rarity', (i) => i.rarity),
+        GsFieldFilter.fromEnum(
           'Region',
-          GsItemFilter.regions(),
-          (i) => i.region.id,
+          GeRegionType.values,
+          (i) => i.region,
         ),
         GsFieldFilter.fromEnum(
           'Type',
           GeSereniteaSetType.values,
-          (i) => i.type.id,
+          (i) => i.type,
         ),
       ],
     ),
@@ -424,15 +402,15 @@ class GsConfigs<T extends GsModel<T>> {
         color: item.category.color,
       ),
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
         GsFieldFilter.fromEnum(
           'Category',
           GeSereniteaSetType.values,
-          (i) => i.category.id,
+          (i) => i.category,
         ),
       ],
       import: [
@@ -453,11 +431,7 @@ class GsConfigs<T extends GsModel<T>> {
         image: item.image,
       ),
       filters: [
-        GsFieldFilter.fromFilter(
-          'Rarity',
-          GsItemFilter.rarities(),
-          (i) => i.rarity.toString(),
-        ),
+        GsFieldFilter.rarity('Rarity', (i) => i.rarity),
       ],
       import: [
         DataButton(
@@ -477,15 +451,15 @@ class GsConfigs<T extends GsModel<T>> {
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
-        GsFieldFilter.fromFilter(
+        GsFieldFilter.fromEnum(
           'Region',
-          GsItemFilter.regions(),
-          (i) => i.region.id,
+          GeRegionType.values,
+          (i) => i.region,
         ),
       ],
     ),
@@ -499,15 +473,15 @@ class GsConfigs<T extends GsModel<T>> {
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
-        GsFieldFilter.fromFilter(
+        GsFieldFilter.fromEnum(
           'Region',
-          GsItemFilter.regions(),
-          (i) => i.region.id,
+          GeRegionType.values,
+          (i) => i.region,
         ),
       ],
     ),
@@ -521,15 +495,15 @@ class GsConfigs<T extends GsModel<T>> {
         child: _orderItem(item.type.name.substring(0, 1).capitalize()),
       ),
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
         GsFieldFilter.fromEnum(
           'Type',
           GeEventType.values,
-          (i) => i.type.id,
+          (i) => i.type,
         ),
       ],
     ),
@@ -555,30 +529,26 @@ class GsConfigs<T extends GsModel<T>> {
         ),
       ],
       filters: [
-        GsFieldFilter.fromFilter(
+        GsFieldFilter(
           'Version',
-          GsItemFilter.versions(),
+          _versions.filters,
           (i) => i.version,
         ),
-        GsFieldFilter.fromFilter(
-          'Rarity',
-          GsItemFilter.rarities(),
-          (i) => i.rarity.toString(),
-        ),
+        GsFieldFilter.rarity('Rarity', (i) => i.rarity),
         GsFieldFilter.fromEnum(
           'Type',
           GeWeaponType.values,
-          (i) => i.type.id,
+          (i) => i.type,
         ),
         GsFieldFilter.fromEnum(
           'Source',
           GeItemSourceType.values,
-          (i) => i.source.id,
+          (i) => i.source,
         ),
         GsFieldFilter.fromEnum(
           'Stat Type',
           GeWeaponAscStatType.values,
-          (i) => i.statType.id,
+          (i) => i.statType,
         ),
       ],
     ),

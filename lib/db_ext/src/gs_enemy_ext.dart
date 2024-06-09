@@ -12,61 +12,58 @@ class GsEnemyExt extends GsModelExt<GsEnemy> {
 
   @override
   List<DataField<GsEnemy>> getFields(String? editId) {
-    final ids = Database.i.of<GsEnemy>().ids;
-    final versions = GsItemFilter.versions().ids;
+    final vd = ValidateModels<GsEnemy>();
+    final vdVersion = ValidateModels.versions();
+
     return [
       DataField.textField(
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, editId, ids),
+        validator: (item) => vd.validateItemId(item, editId),
         refresh: DataButton(
           'Generate Id',
-          (ctx, item) => item.copyWith(id: generateId(item)),
+          (ctx, item) => item.copyWith(id: expectedId(item)),
         ),
       ),
       DataField.textField(
         'Name',
         (item) => item.name,
         (item, value) => item.copyWith(name: value),
-        validator: (item) => vdText(item.name),
       ),
       DataField.textField(
         'Title',
         (item) => item.title,
         (item, value) => item.copyWith(title: value),
-        validator: (item) => vdText(item.title),
       ),
       DataField.textImage(
         'Image',
         (item) => item.image,
         (item, value) => item.copyWith(image: value),
-        validator: (item) => vdImage(item.image),
       ),
       DataField.textImage(
         'Full Image',
         (item) => item.fullImage,
         (item, value) => item.copyWith(fullImage: value),
-        validator: (item) => vdImage(item.fullImage),
       ),
       DataField.textImage(
         'Splash Image',
         (item) => item.splashImage,
         (item, value) => item.copyWith(splashImage: value),
-        validator: (item) => vdImage(item.splashImage, GsValidLevel.warn1),
+        emptyLevel: GsValidLevel.warn1,
       ),
       DataField.singleSelect(
         'Version',
         (item) => item.version,
-        (item) => GsItemFilter.versions().filters,
+        (item) => vdVersion.filters,
         (item, value) => item.copyWith(version: value),
-        validator: (item) => vdContains(item.version, versions),
+        validator: (item) => vdVersion.validate(item.version),
       ),
-      DataField.textField(
+      DataField.intField(
         'Order',
-        (item) => item.order.toString(),
-        (item, value) => item.copyWith(order: int.tryParse(value) ?? -1),
-        validator: (item) => vdNum(item.order, 1),
+        (item) => item.order,
+        (item, value) => item.copyWith(order: value),
+        range: (1, null),
         refresh: DataButton(
           'Next Order in Family',
           (context, item) {

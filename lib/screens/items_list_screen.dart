@@ -4,6 +4,7 @@ import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
+import 'package:data_editor/style/style.dart';
 import 'package:data_editor/widgets/gs_grid_item.dart';
 import 'package:data_editor/widgets/gs_grid_view.dart';
 import 'package:data_editor/widgets/gs_notifier_provider.dart';
@@ -183,18 +184,36 @@ class GsFieldFilter<T extends GsModel<T>> {
 
   GsFieldFilter(this.label, this.filters, this.filter);
 
+  GsFieldFilter.rarity(this.label, int Function(T i) filter, [int min = 1])
+      : filters = List.generate(
+          6 - min,
+          (index) {
+            final rarity = (min + index).toString();
+            return GsSelectItem(
+              rarity,
+              rarity,
+              color: GsStyle.getRarityColor(min + index),
+            );
+          },
+        ),
+        filter = ((i) => filter(i).toString());
+
   GsFieldFilter.fromFilter(this.label, GsItemFilter filters, this.filter)
       : filters = filters.filters;
 
-  GsFieldFilter.fromEnum(this.label, List<GeEnum> filters, this.filter)
-      : filters = filters.toChips().map((e) {
+  GsFieldFilter.fromEnum(
+    this.label,
+    List<GeEnum> filters,
+    GeEnum Function(T i) filter,
+  )   : filters = filters.toChips().map((e) {
           return GsSelectItem(
             e.value.id,
             e.label,
             color: e.color,
             asset: e.asset,
           );
-        });
+        }),
+        filter = ((i) => filter(i).id);
 }
 
 class GsItemDecor {

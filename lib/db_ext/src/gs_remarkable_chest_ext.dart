@@ -1,4 +1,3 @@
-import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
@@ -10,48 +9,47 @@ class GsFurnitureChestExt extends GsModelExt<GsFurnitureChest> {
 
   @override
   List<DataField<GsFurnitureChest>> getFields(String? editId) {
-    final ids = Database.i.of<GsFurnitureChest>().ids;
-    final versions = GsItemFilter.versions().ids;
+    final vd = ValidateModels<GsFurnitureChest>();
+    final vdVersion = ValidateModels.versions();
+
     return [
       DataField.textField(
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, editId, ids),
+        validator: (item) => vd.validateItemId(item, editId),
         refresh: DataButton(
           'Generate Id',
-          (ctx, item) => item.copyWith(id: generateId(item)),
+          (ctx, item) => item.copyWith(id: expectedId(item)),
         ),
       ),
       DataField.textField(
         'Name',
         (item) => item.name,
         (item, value) => item.copyWith(name: value),
-        validator: (item) => vdText(item.name),
       ),
       DataField.singleEnum<GsFurnitureChest, GeSereniteaSetType>(
         'Type',
         GeSereniteaSetType.values.toChips(),
         (item) => item.type,
         (item, value) => item.copyWith(type: value),
+        invalid: [GeSereniteaSetType.none],
       ),
       DataField.textImage(
         'Image',
         (item) => item.image,
         (item, value) => item.copyWith(image: value),
-        validator: (item) => vdImage(item.image),
       ),
       DataField.selectRarity(
         'Rarity',
         (item) => item.rarity,
         (item, value) => item.copyWith(rarity: value),
-        validator: (item) => vdRarity(item.rarity),
       ),
-      DataField.textField(
+      DataField.intField(
         'Energy',
-        (item) => item.energy.toString(),
-        (item, value) => item.copyWith(energy: int.tryParse(value) ?? 0),
-        validator: (item) => vdNum(item.energy, 1),
+        (item) => item.energy,
+        (item, value) => item.copyWith(energy: value),
+        range: (1, null),
       ),
       DataField.singleEnum(
         'Region',
@@ -62,9 +60,9 @@ class GsFurnitureChestExt extends GsModelExt<GsFurnitureChest> {
       DataField.singleSelect(
         'Version',
         (item) => item.version,
-        (item) => GsItemFilter.versions().filters,
+        (item) => vdVersion.filters,
         (item, value) => item.copyWith(version: value),
-        validator: (item) => vdContains(item.version, versions),
+        validator: (item) => vdVersion.validate(item.version),
       ),
     ];
   }

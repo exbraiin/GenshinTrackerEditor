@@ -1,4 +1,3 @@
-import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
@@ -10,32 +9,32 @@ class GsAchievementExt extends GsModelExt<GsAchievement> {
 
   @override
   List<DataField<GsAchievement>> getFields(String? editId) {
-    final ids = Database.i.of<GsAchievement>().ids;
-    final groups = GsItemFilter.achievementGroups().ids;
-    final versions = GsItemFilter.versions().ids;
+    final vd = ValidateModels<GsAchievement>();
+    final vdVersion = ValidateModels.versions();
+    final vdAchievementGroups = ValidateModels<GsAchievementGroup>();
+
     return [
       DataField.textField(
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, editId, ids),
+        validator: (item) => vd.validateItemId(item, editId),
         refresh: DataButton(
           'Generate Id',
-          (ctx, item) => item.copyWith(id: generateId(item)),
+          (ctx, item) => item.copyWith(id: expectedId(item)),
         ),
       ),
       DataField.textField(
         'Name',
         (item) => item.name,
         (item, value) => item.copyWith(name: value),
-        validator: (item) => vdText(item.name),
       ),
       DataField.singleSelect(
         'Group',
         (item) => item.group,
-        (item) => GsItemFilter.achievementGroups().filters,
+        (item) => vdAchievementGroups.filters,
         (item, value) => item.copyWith(group: value),
-        validator: (item) => vdContains(item.group, groups),
+        validator: (item) => vdAchievementGroups.validate(item.group),
       ),
       DataField.singleEnum<GsAchievement, GeAchievementType>(
         'Type',
@@ -51,9 +50,9 @@ class GsAchievementExt extends GsModelExt<GsAchievement> {
       DataField.singleSelect(
         'Version',
         (item) => item.version,
-        (item) => GsItemFilter.versions().filters,
+        (item) => vdVersion.filters,
         (item, value) => item.copyWith(version: value),
-        validator: (item) => vdContains(item.version, versions),
+        validator: (item) => vdVersion.validate(item.version),
       ),
       DataField.buildList<GsAchievement, GsAchievementPhase>(
         'Phases',
@@ -66,14 +65,12 @@ class GsAchievementExt extends GsModelExt<GsAchievement> {
                 'Desc',
                 (item) => item.desc,
                 (item, value) => item.copyWith(desc: value),
-                validator: (item) => vdText(item.desc),
               ),
-              DataField.textField(
+              DataField.intField(
                 'Reward',
-                (item) => item.reward.toString(),
-                (item, value) =>
-                    item.copyWith(reward: int.tryParse(value) ?? 0),
-                validator: (item) => vdNum(item.reward, 1),
+                (item) => item.reward,
+                (item, value) => item.copyWith(reward: value),
+                range: (1, null),
               ),
             ];
           },

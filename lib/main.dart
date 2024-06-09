@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Comfortaa',
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF222222),
+          backgroundColor: Color(0xFF202020),
           surfaceTintColor: Colors.transparent,
         ),
         colorScheme: ColorScheme.fromSwatch(

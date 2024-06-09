@@ -82,8 +82,10 @@ class DataField<T extends GsModel<T>> {
     String Function(T item) content,
     T Function(T item, String value) update, {
     ModifyString? autoFormat,
-    required this.validator,
-  }) : builder = ((context, item, edit, level) {
+    DValidator<T>? validator,
+    GsValidLevel emptyLevel = GsValidLevel.warn1,
+  })  : validator = validator ?? _textValidator(content, emptyLevel),
+        builder = ((context, item, edit, level) {
           var text = content(item).split('\n').first;
           if (text.length > 40) text = text.substring(0, 40);
           if (text.isNotEmpty) text = '$text...';
@@ -124,10 +126,18 @@ class DataField<T extends GsModel<T>> {
     String Function(T item) content,
     T Function(T item, String value) update, {
     String Function(String value)? process,
+    GsValidLevel empty = GsValidLevel.warn1,
     DataButton<T>? import,
     DataButton<T>? refresh,
-    required this.validator,
-  }) : builder = ((context, item, edit, level) {
+    DValidator<T>? validator,
+  })  : validator = validator ??
+            ((item) {
+              final name = content(item);
+              if (name.isEmpty) return empty;
+              if (name.trim() != name) return GsValidLevel.warn2;
+              return GsValidLevel.good;
+            }),
+        builder = ((context, item, edit, level) {
           final theme = Theme.of(context);
           return SizedBox(
             height: 44,
@@ -178,13 +188,127 @@ class DataField<T extends GsModel<T>> {
           );
         });
 
+  DataField.intField(
+    this.label,
+    int Function(T item) content,
+    T Function(T item, int value) update, {
+    (int? min, int? max) range = (null, null),
+    DValidator<T>? validator,
+    DataButton<T>? refresh,
+  })  : validator = validator ?? _rangeValidator(content, range),
+        builder = ((context, item, edit, level) {
+          final theme = Theme.of(context);
+          return SizedBox(
+            height: 44,
+            child: Theme(
+              data: theme.copyWith(
+                iconTheme: theme.iconTheme.copyWith(color: level.color),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ExtendedTextField(
+                      regExp: RegExp(r'[0-9]'),
+                      initialValue: content(item).toString(),
+                      process: (value) =>
+                          _clamp(int.tryParse(value) ?? 0, range).toString(),
+                      onEdit: (value) => edit(
+                        update(item, _clamp(int.tryParse(value) ?? 0, range)),
+                      ),
+                    ),
+                  ),
+                  if (refresh != null)
+                    IconButton(
+                      tooltip: refresh.tooltip,
+                      icon: refresh.icon ?? const Icon(Icons.upload_rounded),
+                      onPressed: () async =>
+                          edit(await refresh.callback(context, item)),
+                    ),
+                  IconButton(
+                    onPressed: () => edit(update(item, range.$1 ?? 0)),
+                    icon: const Icon(Icons.clear_rounded),
+                  ),
+                  IconButton(
+                    onPressed: () async {
+                      const type = Clipboard.kTextPlain;
+                      final text = (await Clipboard.getData(type))?.text;
+                      if (text == null) return;
+                      final value = _clamp(int.tryParse(text) ?? 0, range);
+                      edit(update(item, value));
+                    },
+                    icon: const Icon(Icons.paste_rounded),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+
+  DataField.doubleField(
+    this.label,
+    double Function(T item) content,
+    T Function(T item, double value) update, {
+    (double? min, double? max) range = (null, null),
+    DValidator<T>? validator,
+    DataButton<T>? refresh,
+  })  : validator = validator ?? _rangeValidator(content, range),
+        builder = ((context, item, edit, level) {
+          final theme = Theme.of(context);
+          return SizedBox(
+            height: 44,
+            child: Theme(
+              data: theme.copyWith(
+                iconTheme: theme.iconTheme.copyWith(color: level.color),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ExtendedTextField(
+                      regExp: RegExp(r'[0-9|\.]'),
+                      initialValue: content(item).toString(),
+                      process: (value) =>
+                          _clamp(double.tryParse(value) ?? 0, range).toString(),
+                      onEdit: (value) {
+                        final n = _clamp(double.tryParse(value) ?? 0, range);
+                        edit(update(item, n));
+                      },
+                    ),
+                  ),
+                  if (refresh != null)
+                    IconButton(
+                      tooltip: refresh.tooltip,
+                      icon: refresh.icon ?? const Icon(Icons.upload_rounded),
+                      onPressed: () async =>
+                          edit(await refresh.callback(context, item)),
+                    ),
+                  IconButton(
+                    onPressed: () => edit(update(item, range.$1 ?? 0)),
+                    icon: const Icon(Icons.clear_rounded),
+                  ),
+                  IconButton(
+                    onPressed: () async {
+                      const type = Clipboard.kTextPlain;
+                      final text = (await Clipboard.getData(type))?.text;
+                      if (text == null) return;
+                      final value = _clamp(double.tryParse(text) ?? 0, range);
+                      edit(update(item, value));
+                    },
+                    icon: const Icon(Icons.paste_rounded),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+
   DataField.dateTime(
     this.label,
     DateTime Function(T item) content,
     T Function(T item, DateTime value) update, {
     bool isBirthday = false,
-    required this.validator,
-  }) : builder = ((context, item, edit, level) {
+    DValidator<T>? validator,
+  })  : validator = validator ?? _dateValidator(content, isBirthday),
+        builder = ((context, item, edit, level) {
           late final DateTime srcDate;
           late final DateTime dstDate;
           if (isBirthday) {
@@ -256,13 +380,18 @@ class DataField<T extends GsModel<T>> {
     String label,
     String Function(T item) content,
     T Function(T item, String value) update, {
-    required DValidator<T> validator,
+    GsValidLevel emptyLevel = GsValidLevel.warn2,
   }) {
     return DataField.textField(
       label,
       content,
       update,
-      validator: validator,
+      validator: (item) {
+        final image = content(item);
+        if (image.isEmpty) return emptyLevel;
+        if (image.trim() != image) return GsValidLevel.warn2;
+        return GsValidLevel.good;
+      },
       process: (value) {
         final idx = value.indexOf('/revision');
         if (idx != -1) return value.substring(0, idx);
@@ -344,8 +473,14 @@ class DataField<T extends GsModel<T>> {
     List<GsSelectItem<R>> items,
     R Function(T item) value,
     T Function(T item, R value) update, {
-    DValidator<T>? validator,
+    Iterable<R> invalid = const [],
+    GsValidLevel Function(T item, GsValidLevel level)? validator,
   }) {
+    GsValidLevel defaultValidator(item) {
+      final ids = items.map((select) => select.value).except(invalid);
+      return ids.contains(value(item)) ? GsValidLevel.good : GsValidLevel.warn3;
+    }
+
     return DataField._(
       label,
       (context, item, edit, level) {
@@ -355,10 +490,9 @@ class DataField<T extends GsModel<T>> {
           onConfirm: (value) => edit(update(item, value ?? items.first.value)),
         );
       },
-      validator: validator ??
-          (item) => items.any((e) => e.value == value(item))
-              ? GsValidLevel.good
-              : GsValidLevel.warn3,
+      validator: validator != null
+          ? (item) => validator(item, defaultValidator(item))
+          : defaultValidator,
     );
   }
 
@@ -367,8 +501,9 @@ class DataField<T extends GsModel<T>> {
     int Function(T item) value,
     T Function(T item, int value) update, {
     int min = 1,
-    required this.validator,
-  }) : builder = ((context, item, edit, level) => GsSingleSelect(
+    DValidator<T>? validator,
+  })  : validator = validator ?? _rarityValidator(value, min),
+        builder = ((context, item, edit, level) => GsSingleSelect(
               items: List.generate(
                 6 - min,
                 (index) => GsSelectItem(
@@ -562,8 +697,64 @@ TableRow _getFieldTableRow<T extends GsModel<T>>(
   );
 }
 
+DValidator<T> _textValidator<T extends GsModel<T>>(
+  String Function(T) select,
+  GsValidLevel emptyLevel,
+) {
+  return (item) {
+    final name = select(item);
+    if (name.isEmpty) return emptyLevel;
+    if (name.trim() != name) return GsValidLevel.warn2;
+    return GsValidLevel.good;
+  };
+}
+
+DValidator<T> _dateValidator<T extends GsModel<T>>(
+  DateTime Function(T) select,
+  bool isBirthday,
+) {
+  return (item) {
+    return isBirthday && select(item).year != 0
+        ? GsValidLevel.warn3
+        : GsValidLevel.good;
+  };
+}
+
+DValidator<T> _rarityValidator<T extends GsModel<T>>(
+  int Function(T) select,
+  int min,
+) {
+  return (item) {
+    final rarity = select(item);
+    if (!rarity.between(min, 5)) return GsValidLevel.warn3;
+    return GsValidLevel.good;
+  };
+}
+
+DValidator<T> _rangeValidator<T extends GsModel<T>, V extends num>(
+  V Function(T) select, [
+  (V? min, V? max)? range,
+]) {
+  return (item) {
+    final value = select(item);
+    if (range == null) return GsValidLevel.good;
+    final (min, max) = range;
+    if (min != null && value < min) return GsValidLevel.warn3;
+    if (max != null && value > max) return GsValidLevel.warn3;
+    return GsValidLevel.good;
+  };
+}
+
+V _clamp<V extends num>(V value, (V?, V?) range) {
+  final (min, max) = range;
+  if (min != null && value < min) return min;
+  if (max != null && value > max) return max;
+  return value;
+}
+
 class ExtendedTextField extends StatefulWidget {
   final bool autoFocus;
+  final RegExp? regExp;
   final String hintText;
   final String initialValue;
   final void Function(String value) onEdit;
@@ -572,6 +763,7 @@ class ExtendedTextField extends StatefulWidget {
 
   const ExtendedTextField({
     super.key,
+    this.regExp,
     this.process,
     this.hintText = '',
     this.autoFocus = false,
@@ -618,6 +810,9 @@ class _ExtendedTextFieldState extends State<ExtendedTextField> {
       focusNode: _node,
       controller: _controller,
       maxLines: 1,
+      inputFormatters: widget.regExp != null
+          ? [FilteringTextInputFormatter.allow(widget.regExp!)]
+          : null,
       decoration: InputDecoration.collapsed(hintText: widget.hintText),
       onChanged: (value) {
         value = widget.process?.call(value) ?? value;

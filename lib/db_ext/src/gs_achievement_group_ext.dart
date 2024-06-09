@@ -1,4 +1,3 @@
-import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
@@ -9,55 +8,53 @@ class GsAchievementGroupExt extends GsModelExt<GsAchievementGroup> {
 
   @override
   List<DataField<GsAchievementGroup>> getFields(String? editId) {
-    final ids = Database.i.of<GsAchievementGroup>().ids;
-    final versions = GsItemFilter.versions().ids;
-    final namecards = GsItemFilter.namecards(GeNamecardType.achievement).ids;
+    final vd = ValidateModels<GsAchievementGroup>();
+    final vdVersion = ValidateModels.versions();
+    final vdNamecard = ValidateModels.namecards(
+      type: GeNamecardType.achievement,
+      unusedOnly: true,
+    );
 
     return [
       DataField.textField(
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, editId, ids),
+        validator: (item) => vd.validateItemId(item, editId),
         refresh: DataButton(
           'Generate Id',
-          (ctx, item) => item.copyWith(id: generateId(item)),
+          (ctx, item) => item.copyWith(id: expectedId(item)),
         ),
       ),
       DataField.textField(
         'Name',
         (item) => item.name,
         (item, value) => item.copyWith(name: value),
-        validator: (item) => vdText(item.name),
       ),
       DataField.textImage(
         'Icon',
         (item) => item.icon,
         (item, value) => item.copyWith(icon: value),
-        validator: (item) => vdImage(item.icon),
       ),
-      DataField.textField(
+      DataField.intField(
         'Order',
-        (item) => item.order.toString(),
-        (item, value) => item.copyWith(order: int.tryParse(value) ?? -1),
-        validator: (item) => vdNum(item.order, 1),
+        (item) => item.order,
+        (item, value) => item.copyWith(order: value),
+        range: (1, null),
       ),
       DataField.singleSelect(
         'Namecard',
         (item) => item.namecard,
-        (item) => GsItemFilter.namecards(
-          GeNamecardType.achievement,
-          item.namecard,
-        ).filters,
+        (item) => vdNamecard.filtersWithId(item.namecard),
         (item, value) => item.copyWith(namecard: value),
-        validator: (item) => vdContains(item.namecard, namecards),
+        validator: (item) => vdNamecard.validate(item.namecard),
       ),
       DataField.singleSelect(
         'Version',
         (item) => item.version,
-        (item) => GsItemFilter.versions().filters,
+        (item) => vdVersion.filters,
         (item, value) => item.copyWith(version: value),
-        validator: (item) => vdContains(item.version, versions),
+        validator: (item) => vdVersion.validate(item.version),
       ),
     ];
   }

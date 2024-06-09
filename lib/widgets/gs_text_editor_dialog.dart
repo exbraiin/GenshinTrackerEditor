@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_selector/gs_selector.dart';
@@ -146,7 +147,7 @@ class _GsTextEditorDialogState<T> extends State<GsTextEditorDialog> {
           onTap: (item) => _insertText((s) => '<color=skill>$s</color>'),
         ),
       ),
-      ...GeElementType.values.map((value) {
+      ...GeElementType.values.exceptElement(GeElementType.none).map((value) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 2),
           child: GsSelectChip(

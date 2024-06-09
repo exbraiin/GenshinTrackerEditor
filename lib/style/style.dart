@@ -8,18 +8,21 @@ class GsGraphics {
 
   static const bgImg = 'assets/bg.png';
 
-  static const _icons = {
-    'adventure': 'assets/icons_food/adventure.png',
-    'atkBoost': 'assets/icons_food/atkBoost.png',
-    'atkCritBoost': 'assets/icons_food/atkCritBoost.png',
-    'defBoost': 'assets/icons_food/defBoost.png',
-    'recoveryHP': 'assets/icons_food/recoveryHP.png',
-    'recoveryHPAll': 'assets/icons_food/recoveryHPAll.png',
-    'revive': 'assets/icons_food/revive.png',
-    'staminaIncrease': 'assets/icons_food/staminaIncrease.png',
-    'staminaReduction': 'assets/icons_food/staminaReduction.png',
-  };
-  static String getRecipeEffectIcon(String effect) => _icons[effect] ?? '';
+  static String getRecipeEffectIcon(GeRecipeEffectType type) {
+    const folder = 'assets/icons_food';
+    return switch (type) {
+      GeRecipeEffectType.adventure => '$folder/adventure.png',
+      GeRecipeEffectType.atkBoost => '$folder/atkBoost.png',
+      GeRecipeEffectType.atkCritBoost => '$folder/atkCritBoost.png',
+      GeRecipeEffectType.defBoost => '$folder/defBoost.png',
+      GeRecipeEffectType.recoveryHP => '$folder/recoveryHP.png',
+      GeRecipeEffectType.recoveryHPAll => '$folder/recoveryHPAll.png',
+      GeRecipeEffectType.revive => '$folder/revive.png',
+      GeRecipeEffectType.staminaIncrease => '$folder/staminaIncrease.png',
+      GeRecipeEffectType.staminaReduction => '$folder/staminaReduction.png',
+      GeRecipeEffectType.none => '',
+    };
+  }
 }
 
 class GsStyle {
@@ -52,7 +55,16 @@ class GsStyle {
   }
 
   static Color getNamecardColor(GeNamecardType type) {
-    return getRarityColor((type.index + 5) % 4 + 1);
+    return switch (type) {
+      GeNamecardType.none => getRarityColor(1),
+      GeNamecardType.defaults => getRarityColor(1),
+      GeNamecardType.achievement => getRarityColor(2),
+      GeNamecardType.offering => getRarityColor(2),
+      GeNamecardType.event => getRarityColor(3),
+      GeNamecardType.reputation => getRarityColor(3),
+      GeNamecardType.character => getRarityColor(4),
+      GeNamecardType.battlepass => getRarityColor(5),
+    };
   }
 
   static Color getVersionColor(String id) {

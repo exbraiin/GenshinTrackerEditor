@@ -11,87 +11,94 @@ class GsRecipeExt extends GsModelExt<GsRecipe> {
 
   @override
   List<DataField<GsRecipe>> getFields(String? editId) {
-    final ids = Database.i.of<GsRecipe>().ids;
-    final baseRecipes = GsItemFilter.nonBaseRecipes().ids;
-    final versions = GsItemFilter.versions().ids;
+    final vd = ValidateModels<GsRecipe>();
+    final vdVersion = ValidateModels.versions();
+    final vdIngredients = ValidateModels.ingredients();
+    final vdBaseRecipes = ValidateModels.baseRecipes();
 
     return [
       DataField.textField(
         'ID',
         (item) => item.id,
         (item, value) => item.copyWith(id: value),
-        validator: (item) => vdId(item, editId, ids),
+        validator: (item) => vd.validateItemId(item, editId),
         refresh: DataButton(
           'Generate Id',
-          (ctx, item) => item.copyWith(id: generateId(item)),
+          (ctx, item) => item.copyWith(id: expectedId(item)),
         ),
       ),
       DataField.textField(
         'Name',
         (item) => item.name,
         (item, value) => item.copyWith(name: value),
-        validator: (item) => vdText(item.name),
       ),
       DataField.singleEnum(
         'Type',
         GeRecipeType.values.toChips(),
         (item) => item.type,
         (item, value) => item.copyWith(type: value),
+        invalid: [GeRecipeType.none],
       ),
       DataField.selectRarity(
         'Rarity',
         (item) => item.rarity,
         (item, value) => item.copyWith(rarity: value),
-        validator: (item) => vdRarity(item.rarity),
       ),
       DataField.singleSelect(
         'Version',
         (item) => item.version,
-        (item) => GsItemFilter.versions().filters,
+        (item) => vdVersion.filters,
         (item, value) => item.copyWith(version: value),
-        validator: (item) => vdContains(item.version, versions),
+        validator: (item) => vdVersion.validate(item.version),
       ),
       DataField.textImage(
         'Image',
         (item) => item.image,
         (item, value) => item.copyWith(image: value),
-        validator: (item) => vdImage(item.image),
       ),
       DataField.singleEnum(
         'Effect',
         GeRecipeEffectType.values.toChips(),
         (item) => item.effect,
         (item, value) => item.copyWith(effect: value),
+        invalid: [GeRecipeEffectType.none],
       ),
       DataField.textField(
         'Desc',
         (item) => item.desc,
         (item, value) => item.copyWith(desc: value),
-        validator: (item) => vdText(item.desc),
       ),
       DataField.textField(
         'Effect Desc',
         (item) => item.effectDesc.replaceAll('\n', '\\n'),
         (item, value) =>
             item.copyWith(effectDesc: value.replaceAll('\\n', '\n')),
-        validator: (item) => vdText(item.effectDesc),
       ),
       DataField.singleSelect(
         'Base Recipe',
         (item) => item.baseRecipe,
-        (item) => GsItemFilter.nonBaseRecipes().filters,
-        (item, value) => item.copyWith(baseRecipe: value),
-        validator: (item) => vdContains(item.baseRecipe, baseRecipes),
+        (item) => vdBaseRecipes.filters,
+        (item, value) {
+          final base = Database.i.of<GsRecipe>().getItem(value);
+          final type = base != null ? GeRecipeType.permanent : null;
+          final ingredients = base?.ingredients.toList();
+          return item.copyWith(
+            baseRecipe: value,
+            type: type,
+            ingredients: ingredients,
+          );
+        },
+        validator: (item) => vdBaseRecipes.validate(item.baseRecipe),
       ),
       DataField.build<GsRecipe, GsIngredient>(
         'Ingredients',
         (item) => item.ingredients,
-        (item) => GsItemFilter.ingredients().filters,
-        (item, child) => DataField.textField(
+        (item) => vdIngredients.filters,
+        (item, child) => DataField.intField(
           Database.i.of<GsMaterial>().getItem(child.id)?.name ?? child.id,
-          (item) => item.amount.toString(),
-          (item, value) => item.copyWith(amount: int.tryParse(value) ?? 0),
-          validator: (item) => vdNum(item.amount, 1),
+          (item) => item.amount,
+          (item, value) => item.copyWith(amount: value),
+          range: (1, null),
         ),
         (item, value) {
           final list = value.map((e) {

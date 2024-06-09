@@ -1,4 +1,3 @@
-import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
@@ -10,8 +9,9 @@ class GsSpincrystalExt extends GsModelExt<GsSpincrystal> {
 
   @override
   List<DataField<GsSpincrystal>> getFields(String? editId) {
-    final ids = Database.i.of<GsSpincrystal>().ids;
-    final versions = GsItemFilter.versions().ids;
+    final vd = ValidateModels<GsSpincrystal>();
+    final vdVersion = ValidateModels.versions();
+
     return [
       DataField.textField(
         'ID',
@@ -19,27 +19,25 @@ class GsSpincrystalExt extends GsModelExt<GsSpincrystal> {
         (item, value) => item.copyWith(id: value),
         refresh: DataButton(
           'Generate Id',
-          (ctx, item) => item.copyWith(id: generateId(item)),
+          (ctx, item) => item.copyWith(id: expectedId(item)),
         ),
-        validator: (item) => vdId(item, editId, ids),
+        validator: (item) => vd.validateItemId(item, editId),
       ),
       DataField.textField(
         'Name',
         (item) => item.name,
         (item, value) => item.copyWith(name: value),
-        validator: (item) => vdText(item.name),
       ),
-      DataField.textField(
+      DataField.intField(
         'Number',
-        (item) => item.number.toString(),
-        (item, value) => item.copyWith(number: int.tryParse(value) ?? 0),
-        validator: (item) => vdNum(item.number, 1),
+        (item) => item.number,
+        (item, value) => item.copyWith(number: value),
+        range: (1, null),
       ),
       DataField.textField(
         'Source',
         (item) => item.source,
         (item, value) => item.copyWith(source: value),
-        validator: (item) => vdText(item.source),
       ),
       DataField.singleEnum(
         'Region',
@@ -50,9 +48,9 @@ class GsSpincrystalExt extends GsModelExt<GsSpincrystal> {
       DataField.singleSelect(
         'Version',
         (item) => item.version,
-        (item) => GsItemFilter.versions().filters,
+        (item) => vdVersion.filters,
         (item, value) => item.copyWith(version: value),
-        validator: (item) => vdContains(item.version, versions),
+        validator: (item) => vdVersion.validate(item.version),
       ),
     ];
   }
