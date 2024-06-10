@@ -350,8 +350,12 @@ Iterable<_VersionLine> _validateList(BuildContext context) sync* {
       addItems('Wrong source:', charWrongSource);
     }
 
+    // Ignore version 1.0
     final charMissingBanner = chars.where(
-      (e) => e.isWishable && !banners.any((b) => b.containsCharacter(e)),
+      (e) =>
+          e.version != '1.0' &&
+          e.isWishable &&
+          !banners.any((b) => b.containsCharacter(e)),
     );
     if (charMissingBanner.isNotEmpty) {
       addItems('Missing banner:', charMissingBanner);
@@ -364,6 +368,13 @@ Iterable<_VersionLine> _validateList(BuildContext context) sync* {
     );
     if (charWrongReleaseDate.isNotEmpty) {
       addItems('Wrong version or release date', charWrongReleaseDate);
+    }
+
+    final sets = items<GsSereniteaSet>();
+    final charMissingGift =
+        chars.where((e) => sets.count((s) => s.chars.contains(e.id)) != 2);
+    if (charMissingGift.isNotEmpty) {
+      addItems('Missing Serenitea Gift', charMissingGift);
     }
 
     final recipes = items<GsRecipe>();
