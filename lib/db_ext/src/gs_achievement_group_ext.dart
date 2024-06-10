@@ -9,10 +9,14 @@ class GsAchievementGroupExt extends GsModelExt<GsAchievementGroup> {
 
   @override
   List<DataField<GsAchievementGroup>> getFields(String? editId) {
+    final namecardId = editId != null
+        ? Database.i.of<GsAchievementGroup>().getItem(editId)?.namecard
+        : '';
     final vd = ValidateModels<GsAchievementGroup>();
     final vdVersion = ValidateModels.versions();
     final vdNamecard = ValidateModels.namecards(
       GeNamecardType.achievement,
+      savedId: namecardId,
       allowNone: true,
     );
 
@@ -46,10 +50,7 @@ class GsAchievementGroupExt extends GsModelExt<GsAchievementGroup> {
       DataField.singleSelect(
         'Namecard',
         (item) => item.namecard,
-        (item) {
-          final db = Database.i.of<GsAchievementGroup>().getItem(item.id);
-          return vdNamecard.filtersWithId(db?.namecard);
-        },
+        (item) => vdNamecard.filters,
         (item, value) => item.copyWith(namecard: value),
         validator: (item) => vdNamecard.validate(item.namecard),
       ),

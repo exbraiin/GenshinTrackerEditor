@@ -12,9 +12,8 @@ class GsBannerExt extends GsModelExt<GsBanner> {
   List<DataField<GsBanner>> getFields(String? editId) {
     final vd = ValidateModels<GsBanner>();
     final vdVersion = ValidateModels.versions();
-    // TODO: Find a way to make this final
-    var vdFeature4 = ValidateModels.wishes(4, null);
-    var vdFeature5 = ValidateModels.wishes(5, null);
+    final vdFeatured4 = ValidateModels.wishesByType(4);
+    final vdFeatured5 = ValidateModels.wishesByType(5);
 
     return [
       DataField.textField(
@@ -60,36 +59,32 @@ class GsBannerExt extends GsModelExt<GsBanner> {
       DataField.multiSelect<GsBanner, String>(
         'Feature 4',
         (item) => item.feature4,
-        (item) => (vdFeature4 = ValidateModels.wishes(4, item.type)).filters,
+        (item) => vdFeatured4[item.type]!.filters,
         (item, value) => item.copyWith(feature4: value),
         validator: (item) {
           if (!item.type.isPermanent && item.feature4.isEmpty) {
             return GsValidLevel.warn2;
           }
-          return vdFeature4.validateAll(item.feature4);
+          return vdFeatured4[item.type]!.validateAll(item.feature4);
         },
       ),
       DataField.multiSelect<GsBanner, String>(
         'Feature 5',
         (item) => item.feature5,
-        (item) => (vdFeature5 = ValidateModels.wishes(5, item.type)).filters,
+        (item) => vdFeatured5[item.type]!.filters,
         (item, value) => item.copyWith(feature5: value),
         validator: (item) {
           if (!item.type.isPermanent && item.feature5.isEmpty) {
             return GsValidLevel.warn2;
           }
-          return vdFeature5.validateAll(item.feature5);
+          return vdFeatured5[item.type]!.validateAll(item.feature5);
         },
       ),
       DataField.singleEnum<GsBanner, GeBannerType>(
         'Type',
         GeBannerType.values.toChips(),
         (item) => item.type,
-        (item, value) {
-          vdFeature4 = ValidateModels.wishes(4, value);
-          vdFeature5 = ValidateModels.wishes(5, value);
-          return item.copyWith(type: value);
-        },
+        (item, value) => item.copyWith(type: value),
       ),
       DataField.singleSelect(
         'Version',

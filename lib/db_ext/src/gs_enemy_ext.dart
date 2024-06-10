@@ -14,8 +14,7 @@ class GsEnemyExt extends GsModelExt<GsEnemy> {
   List<DataField<GsEnemy>> getFields(String? editId) {
     final vd = ValidateModels<GsEnemy>();
     final vdVersion = ValidateModels.versions();
-    // TODO: Find a way to make this final
-    var vdDrops = ValidateModels.drops(null);
+    final vdDrops = ValidateModels.dropsByType(null);
 
     return [
       DataField.textField(
@@ -84,10 +83,7 @@ class GsEnemyExt extends GsModelExt<GsEnemy> {
         'Type',
         GeEnemyType.values.toChips(),
         (item) => item.type,
-        (item, value) {
-          vdDrops = ValidateModels.drops(item.type);
-          return item.copyWith(type: value);
-        },
+        (item, value) => item.copyWith(type: value),
       ),
       DataField.singleEnum(
         'Family',
@@ -98,12 +94,9 @@ class GsEnemyExt extends GsModelExt<GsEnemy> {
       DataField.multiSelect<GsEnemy, String>(
         'Drops',
         (item) => item.drops,
-        (item) {
-          vdDrops = ValidateModels.drops(item.type);
-          return vdDrops.filters;
-        },
+        (item) => vdDrops[item.type]!.filters,
         (item, value) => item.copyWith(drops: value),
-        validator: (item) => GsValidLevel.good,
+        validator: (item) => vdDrops[item.type]!.validateAll(item.drops),
       ),
     ];
   }

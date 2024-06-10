@@ -101,16 +101,21 @@ class ValidateModels<T extends GsModel<T>> {
     );
   }
 
-  static ValidateModelsUnused<GsRecipe> specialRecipes() {
-    final chars = Database.i.of<GsCharacter>().items;
-    final usedIds = chars.map((e) => e.specialDish).toList();
+  static ValidateModels<GsRecipe> specialRecipes({
+    String? savedId,
+    bool allowNone = false,
+  }) {
+    late final chars = Database.i.of<GsCharacter>().items;
+    late final usedIds = chars.map((e) => e.specialDish).toList();
 
-    const noneId = 'none';
-    final ls = ValidateModels<GsRecipe>._create(
-      noneId: noneId,
-      filter: (item) => item.baseRecipe.isNotEmpty,
+    return ValidateModels<GsRecipe>._create(
+      noneId: allowNone ? 'none' : null,
+      filter: savedId == null
+          ? (item) => item.baseRecipe.isNotEmpty
+          : (item) =>
+              item.id == savedId ||
+              (item.baseRecipe.isNotEmpty && !usedIds.contains(item.id)),
     );
-    return ValidateModelsUnused._base(ls, noneId, usedIds);
   }
 
   static ValidateModels<GsVersion> versions() {
@@ -122,8 +127,9 @@ class ValidateModels<T extends GsModel<T>> {
     );
   }
 
-  static ValidateModelsUnused<GsNamecard> namecards(
+  static ValidateModels<GsNamecard> namecards(
     GeNamecardType? type, {
+    String? savedId,
     bool allowNone = false,
   }) {
     Iterable<String> ids<E extends GsModel<E>>(String Function(E) mapper) =>
@@ -138,9 +144,20 @@ class ValidateModels<T extends GsModel<T>> {
       _ => <String>[],
     };
 
-    final noneId = allowNone ? 'none' : null;
-    final ls = ValidateModels._create(items: items, noneId: noneId);
-    return ValidateModelsUnused._base(ls, noneId, usedIds.toList());
+    return ValidateModels._create(
+      items: savedId == null
+          ? items
+          : items.where((e) => e.id == savedId || !usedIds.contains(e.id)),
+      noneId: allowNone ? 'none' : null,
+    );
+  }
+
+  static Map<GeBannerType?, ValidateModels<GsWish>> wishesByType(int? rarity) {
+    return {
+      null: ValidateModels.wishes(4, null),
+      for (final bannerType in GeBannerType.values)
+        bannerType: ValidateModels.wishes(4, bannerType),
+    };
   }
 
   static ValidateModels<GsWish> wishes(int? rarity, GeBannerType? type) {
@@ -150,6 +167,16 @@ class ValidateModels<T extends GsModel<T>> {
           .sortedBy((e) => e.isCharacter ? 0 : 1)
           .thenBy((e) => e.name),
     );
+  }
+
+  static Map<GeEnemyType?, ValidateModels<GsMaterial>> dropsByType(
+    int? rarity,
+  ) {
+    return {
+      null: ValidateModels.drops(null),
+      for (final enemyType in GeEnemyType.values)
+        enemyType: ValidateModels.drops(enemyType),
+    };
   }
 
   static ValidateModels<GsMaterial> drops(GeEnemyType? type) {
@@ -179,21 +206,6 @@ class ValidateModels<T extends GsModel<T>> {
   GsValidLevel validateAll(Iterable<String> ids) {
     if (!ids.containsAll(ids)) return GsValidLevel.warn3;
     return GsValidLevel.good;
-  }
-}
-
-class ValidateModelsUnused<T extends GsModel<T>> extends ValidateModels<T> {
-  final String? noneId;
-  final List<String> usedIds;
-
-  ValidateModelsUnused._base(ValidateModels<T> base, this.noneId, this.usedIds)
-      : super._(base.ids, base.filters, base._extra);
-
-  List<GsSelectItem<String>> filtersWithId(String? id) {
-    if (_extra.isEmpty) return filters;
-    return filters.where((e) {
-      return e.value == id || e.value == noneId || !usedIds.contains(e.value);
-    }).toList(growable: false);
   }
 }
 

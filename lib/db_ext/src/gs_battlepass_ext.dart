@@ -9,9 +9,15 @@ class GsBattlepassExt extends GsModelExt<GsBattlepass> {
 
   @override
   List<DataField<GsBattlepass>> getFields(String? editId) {
+    final namecardId = editId != null
+        ? Database.i.of<GsBattlepass>().getItem(editId)?.namecardId
+        : '';
     final vd = ValidateModels<GsBattlepass>();
     final vdVersion = ValidateModels.versions();
-    final vdNamecard = ValidateModels.namecards(GeNamecardType.battlepass);
+    final vdNamecard = ValidateModels.namecards(
+      GeNamecardType.battlepass,
+      savedId: namecardId,
+    );
 
     return [
       DataField.textField(
@@ -44,10 +50,7 @@ class GsBattlepassExt extends GsModelExt<GsBattlepass> {
       DataField.singleSelect(
         'Namecard Id',
         (item) => item.namecardId,
-        (item) {
-          final db = Database.i.of<GsBattlepass>().getItem(item.id);
-          return vdNamecard.filtersWithId(db?.namecardId);
-        },
+        (item) => vdNamecard.filters,
         (item, value) => item.copyWith(namecardId: value),
         validator: (item) => vdNamecard.validate(item.namecardId),
       ),

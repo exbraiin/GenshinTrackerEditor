@@ -19,10 +19,21 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
 
   @override
   List<DataField<GsCharacter>> getFields(String? editId) {
+    late final savedItem = Database.i.of<GsCharacter>().getItem(editId!);
+    final (recipeId, namecardId) = editId != null
+        ? (savedItem?.specialDish, savedItem?.namecardId)
+        : ('', '');
+
     final vd = ValidateModels<GsCharacter>();
     final vdVersion = ValidateModels.versions();
-    final vdRecipes = ValidateModels.specialRecipes();
-    final vdNamecard = ValidateModels.namecards(GeNamecardType.character);
+    final vdRecipes = ValidateModels.specialRecipes(
+      savedId: recipeId,
+      allowNone: true,
+    );
+    final vdNamecard = ValidateModels.namecards(
+      GeNamecardType.character,
+      savedId: namecardId,
+    );
     final vldMatReg = ValidateModels.materials(GeMaterialType.regionMaterials);
     final vldMatTal = ValidateModels.materials(GeMaterialType.talentMaterials);
     final vldMatGem = ValidateModels.materials(GeMaterialType.ascensionGems);
@@ -91,10 +102,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
       DataField.singleSelect(
         'Namecard Id',
         (item) => item.namecardId,
-        (item) {
-          final db = Database.i.of<GsCharacter>().getItem(item.id);
-          return vdNamecard.filtersWithId(db?.namecardId);
-        },
+        (item) => vdNamecard.filters,
         (item, value) => item.copyWith(namecardId: value),
         validator: (item) => vdNamecard.validate(item.namecardId),
       ),
@@ -185,10 +193,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
       DataField.singleSelect(
         'Special Dish',
         (item) => item.specialDish,
-        (item) {
-          final db = Database.i.of<GsCharacter>().getItem(item.id);
-          return vdRecipes.filtersWithId(db?.specialDish);
-        },
+        (item) => vdRecipes.filters,
         (item, value) => item.copyWith(specialDish: value),
         validator: (item) => vdRecipes.validate(item.specialDish),
       ),
