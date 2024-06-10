@@ -1,3 +1,4 @@
+import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
@@ -10,10 +11,7 @@ class GsBattlepassExt extends GsModelExt<GsBattlepass> {
   List<DataField<GsBattlepass>> getFields(String? editId) {
     final vd = ValidateModels<GsBattlepass>();
     final vdVersion = ValidateModels.versions();
-    final vdNamecard = ValidateModels.namecards(
-      type: GeNamecardType.battlepass,
-      unusedOnly: true,
-    );
+    final vdNamecard = ValidateModels.namecards(GeNamecardType.battlepass);
 
     return [
       DataField.textField(
@@ -46,7 +44,10 @@ class GsBattlepassExt extends GsModelExt<GsBattlepass> {
       DataField.singleSelect(
         'Namecard Id',
         (item) => item.namecardId,
-        (item) => vdNamecard.filtersWithId(item.namecardId),
+        (item) {
+          final db = Database.i.of<GsBattlepass>().getItem(item.id);
+          return vdNamecard.filtersWithId(db?.namecardId);
+        },
         (item, value) => item.copyWith(namecardId: value),
         validator: (item) => vdNamecard.validate(item.namecardId),
       ),

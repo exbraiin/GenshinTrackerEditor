@@ -96,3 +96,18 @@ extension GeSereniteaSetTypeExt on GeSereniteaSetType {
         GeSereniteaSetType.outdoor => const Color(0xFF303671),
       };
 }
+
+extension GeEnemyTypeExt on GeEnemyType {
+  Iterable<GeMaterialType> get materialTypes {
+    return switch (this) {
+      GeEnemyType.none => const [],
+      GeEnemyType.common => const [GeMaterialType.normalDrops],
+      GeEnemyType.elite => const [
+          GeMaterialType.normalDrops,
+          GeMaterialType.eliteDrops,
+        ],
+      GeEnemyType.normalBoss => const [GeMaterialType.normalBossDrops],
+      GeEnemyType.weeklyBoss => const [GeMaterialType.weeklyBossDrops],
+    };
+  }
+}

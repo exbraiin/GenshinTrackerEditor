@@ -1,3 +1,4 @@
+import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
@@ -11,8 +12,8 @@ class GsAchievementGroupExt extends GsModelExt<GsAchievementGroup> {
     final vd = ValidateModels<GsAchievementGroup>();
     final vdVersion = ValidateModels.versions();
     final vdNamecard = ValidateModels.namecards(
-      type: GeNamecardType.achievement,
-      unusedOnly: true,
+      GeNamecardType.achievement,
+      allowNone: true,
     );
 
     return [
@@ -45,7 +46,10 @@ class GsAchievementGroupExt extends GsModelExt<GsAchievementGroup> {
       DataField.singleSelect(
         'Namecard',
         (item) => item.namecard,
-        (item) => vdNamecard.filtersWithId(item.namecard),
+        (item) {
+          final db = Database.i.of<GsAchievementGroup>().getItem(item.id);
+          return vdNamecard.filtersWithId(db?.namecard);
+        },
         (item, value) => item.copyWith(namecard: value),
         validator: (item) => vdNamecard.validate(item.namecard),
       ),

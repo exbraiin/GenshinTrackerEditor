@@ -15,7 +15,7 @@ class GsSereniteaSetExt extends GsModelExt<GsSereniteaSet> {
     final vd = ValidateModels<GsSereniteaSet>();
     final vdVersion = ValidateModels.versions();
     final vldFurnishing = ValidateModels<GsFurnishing>();
-    final chars = GsItemFilter.wishes(null, GeBannerType.character).ids;
+    final vdCharacters = ValidateModels<GsCharacter>();
 
     return [
       DataField.textField(
@@ -66,13 +66,11 @@ class GsSereniteaSetExt extends GsModelExt<GsSereniteaSet> {
       DataField.multiSelect<GsSereniteaSet, String>(
         'Chars',
         (item) => item.chars,
-        (item) => GsItemFilter.wishes(null, GeBannerType.character).filters,
+        (item) => vdCharacters.filters,
         (item, value) => item.copyWith(chars: value),
         validator: (item) => item.chars.isEmpty
-            ? GsValidLevel.warn2
-            : (chars.containsAll(item.chars)
-                ? GsValidLevel.good
-                : GsValidLevel.warn3),
+            ? GsValidLevel.warn1
+            : vdCharacters.validateAll(item.chars),
       ),
       DataField.build<GsSereniteaSet, GsFurnishingAmount>(
         'Furnishing',

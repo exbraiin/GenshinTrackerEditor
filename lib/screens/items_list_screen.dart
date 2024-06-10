@@ -3,7 +3,6 @@ import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
-import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/widgets/gs_grid_item.dart';
 import 'package:data_editor/widgets/gs_grid_view.dart';
@@ -197,9 +196,6 @@ class GsFieldFilter<T extends GsModel<T>> {
           },
         ),
         filter = ((i) => filter(i).toString());
-
-  GsFieldFilter.fromFilter(this.label, GsItemFilter filters, this.filter)
-      : filters = filters.filters;
 
   GsFieldFilter.fromEnum(
     this.label,

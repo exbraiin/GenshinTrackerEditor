@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dartx/dartx.dart';
+import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/external/gs_enka.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
@@ -18,14 +19,10 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
 
   @override
   List<DataField<GsCharacter>> getFields(String? editId) {
-    final recipes = GsItemFilter.specialDishes().ids;
-
     final vd = ValidateModels<GsCharacter>();
     final vdVersion = ValidateModels.versions();
-    final vdNamecard = ValidateModels.namecards(
-      type: GeNamecardType.character,
-      unusedOnly: true,
-    );
+    final vdRecipes = ValidateModels.specialRecipes();
+    final vdNamecard = ValidateModels.namecards(GeNamecardType.character);
     final vldMatReg = ValidateModels.materials(GeMaterialType.regionMaterials);
     final vldMatTal = ValidateModels.materials(GeMaterialType.talentMaterials);
     final vldMatGem = ValidateModels.materials(GeMaterialType.ascensionGems);
@@ -94,7 +91,10 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
       DataField.singleSelect(
         'Namecard Id',
         (item) => item.namecardId,
-        (item) => vdNamecard.filtersWithId(item.namecardId),
+        (item) {
+          final db = Database.i.of<GsCharacter>().getItem(item.id);
+          return vdNamecard.filtersWithId(db?.namecardId);
+        },
         (item, value) => item.copyWith(namecardId: value),
         validator: (item) => vdNamecard.validate(item.namecardId),
       ),
@@ -185,12 +185,12 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
       DataField.singleSelect(
         'Special Dish',
         (item) => item.specialDish,
-        (item) => GsItemFilter.specialDishes(character: item).filters,
-        (item, value) => item.copyWith(specialDish: value),
-        validator: (item) {
-          if (item.specialDish == '') return GsValidLevel.warn2;
-          return vdContains(item.specialDish, recipes);
+        (item) {
+          final db = Database.i.of<GsCharacter>().getItem(item.id);
+          return vdRecipes.filtersWithId(db?.specialDish);
         },
+        (item, value) => item.copyWith(specialDish: value),
+        validator: (item) => vdRecipes.validate(item.specialDish),
       ),
       DataField.dateTime(
         'Birthday',
