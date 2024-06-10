@@ -154,9 +154,9 @@ class ValidateModels<T extends GsModel<T>> {
 
   static Map<GeBannerType?, ValidateModels<GsWish>> wishesByType(int? rarity) {
     return {
-      null: ValidateModels.wishes(4, null),
+      null: ValidateModels.wishes(rarity, null),
       for (final bannerType in GeBannerType.values)
-        bannerType: ValidateModels.wishes(4, bannerType),
+        bannerType: ValidateModels.wishes(rarity, bannerType),
     };
   }
 
@@ -169,9 +169,7 @@ class ValidateModels<T extends GsModel<T>> {
     );
   }
 
-  static Map<GeEnemyType?, ValidateModels<GsMaterial>> dropsByType(
-    int? rarity,
-  ) {
+  static Map<GeEnemyType?, ValidateModels<GsMaterial>> dropsByType() {
     return {
       null: ValidateModels.drops(null),
       for (final enemyType in GeEnemyType.values)

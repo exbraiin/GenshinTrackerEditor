@@ -14,7 +14,7 @@ class GsEnemyExt extends GsModelExt<GsEnemy> {
   List<DataField<GsEnemy>> getFields(String? editId) {
     final vd = ValidateModels<GsEnemy>();
     final vdVersion = ValidateModels.versions();
-    final vdDrops = ValidateModels.dropsByType(null);
+    final vdDrops = ValidateModels.dropsByType();
 
     return [
       DataField.textField(
