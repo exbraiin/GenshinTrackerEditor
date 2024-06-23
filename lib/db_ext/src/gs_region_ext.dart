@@ -12,6 +12,7 @@ class GsRegionExt extends GsModelExt<GsRegion> {
   @override
   List<DataField<GsRegion>> getFields(String? editId) {
     final vd = ValidateModels<GsRegion>();
+    final vdOculi = ValidateModels.oculi();
 
     return [
       DataField.textField(
@@ -48,6 +49,13 @@ class GsRegionExt extends GsModelExt<GsRegion> {
         'Ideal',
         (item) => item.ideal,
         (item, value) => item.copyWith(ideal: value),
+      ),
+      DataField.singleSelect(
+        'Oculi',
+        (item) => item.oculi,
+        (item) => vdOculi.filters,
+        (item, value) => item.copyWith(oculi: value),
+        validator: (item) => vdOculi.validate(item.oculi),
       ),
       DataField.singleEnum(
         'Element',

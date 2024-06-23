@@ -237,7 +237,7 @@ class GsConfigs<T extends GsModel<T>> {
       ],
     ),
     GsRegion: GsConfigs<GsRegion>._(
-      title: 'Cities',
+      title: 'Regions',
       pageBuilder: const vd.GsRegionExt(),
       itemDecoration: (item) => GsItemDecor(
         label: item.name,

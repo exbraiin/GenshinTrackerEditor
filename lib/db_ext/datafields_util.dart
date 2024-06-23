@@ -185,6 +185,13 @@ class ValidateModels<T extends GsModel<T>> {
     );
   }
 
+  static ValidateModels<GsMaterial> oculi() {
+    return ValidateModels._create(
+      noneId: 'none',
+      filter: (item) => item.group == GeMaterialType.oculi,
+    );
+  }
+
   GsValidLevel validateItemId(T item, String? editId) {
     // We set the id if the given one is empty in order to validate all items.
     if (editId?.isEmpty ?? false) editId = item.id;
