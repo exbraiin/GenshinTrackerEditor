@@ -232,6 +232,11 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         (item) => item.constellationImage,
         (item, value) => item.copyWith(constellationImage: value),
       ),
+      DataField.textImage(
+        'Website Image',
+        (item) => item.websiteImage,
+        (item, value) => item.copyWith(websiteImage: value),
+      ),
       DataField.singleSelect(
         'Material Gem',
         (item) => item.gemMaterial,
