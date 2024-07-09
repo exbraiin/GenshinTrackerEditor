@@ -48,4 +48,5 @@ gsdata
 /.vscode/
 /Release/*
 !/Release/gsdata
+!/Release/gsdatab
 !/Release/gsversion
