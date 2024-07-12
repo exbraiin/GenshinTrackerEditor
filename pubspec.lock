@@ -73,14 +73,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
-  csv:
-    dependency: "direct main"
-    description:
-      name: csv
-      sha256: c6aa2679b2a18cb57652920f674488d89712efaf4d3fdf2e537215b35fc19d6c
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.0"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -144,10 +136,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "0e4840f5ac39a8539c1959069970f0a469eaf7d2"
+      resolved-ref: ff5fa0fff19fc12c59e32ea8b7ceb854654f491b
       url: "https://github.com/exbraiin/dart-gsdatabase"
     source: git
-    version: "1.0.5"
+    version: "1.0.6"
   html:
     dependency: "direct main"
     description:
@@ -264,10 +256,10 @@ packages:
     dependency: "direct main"
     description:
       name: rxdart
-      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
+      sha256: "5c3004a4a8dbb94bd4bf5412a4def4acdaa12e12f269737a5751369e12d1a962"
       url: "https://pub.dev"
     source: hosted
-    version: "0.27.7"
+    version: "0.28.0"
   sky_engine:
     dependency: transitive
     description: flutter

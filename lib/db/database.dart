@@ -16,7 +16,7 @@ final class Database {
   static final i = Database._();
 
   var _loaded = false;
-  final _db = GsDatabase.info(allowWrite: true);
+  final _db = GsDatabase.info();
 
   final modified = PublishSubject<void>();
   Database._();
@@ -27,7 +27,7 @@ final class Database {
     if (_loaded) return _loaded;
     _loaded = true;
     if (kDebugMode) await File('Release/gsdata').copy(_kFilePath);
-    await _db.load(loadJson: _kFilePath);
+    await _db.load(path: _kFilePath);
     await DataValidator.i.checkAll();
     modified.add(null);
     return _loaded;
@@ -36,8 +36,8 @@ final class Database {
   Future<void> save() async {
     await _processAchGroups()
         .then(Database.i.of<GsAchievementGroup>().updateAll);
-    await _db.save(loadJson: _kFilePath);
-    await _db.save(loadJson: _kFilePathEncoded, encoded: true);
+    await _db.save(path: _kFilePath);
+    await _db.save(path: _kFilePathEncoded, encoded: true);
   }
 
   Iterable<GsMaterial> getMaterialGroups(

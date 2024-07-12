@@ -41,16 +41,18 @@ extension on GeArkheType {
 }
 
 extension on GeRegionType {
-  Color get color => switch (this) {
-        GeRegionType.none => Colors.grey,
-        GeRegionType.mondstadt => GeElementType.anemo.color,
-        GeRegionType.liyue => GeElementType.geo.color,
-        GeRegionType.inazuma => GeElementType.electro.color,
-        GeRegionType.sumeru => GeElementType.dendro.color,
-        GeRegionType.fontaine => GeElementType.hydro.color,
-        GeRegionType.natlan => GeElementType.pyro.color,
-        GeRegionType.snezhnaya => GeElementType.cryo.color,
-        GeRegionType.khaenriah => Colors.grey,
+  Color get color => element.color;
+
+  GeElementType get element => switch (this) {
+        GeRegionType.none => GeElementType.none,
+        GeRegionType.mondstadt => GeElementType.anemo,
+        GeRegionType.liyue => GeElementType.geo,
+        GeRegionType.inazuma => GeElementType.electro,
+        GeRegionType.sumeru => GeElementType.dendro,
+        GeRegionType.fontaine => GeElementType.hydro,
+        GeRegionType.natlan => GeElementType.pyro,
+        GeRegionType.snezhnaya => GeElementType.cryo,
+        GeRegionType.khaenriah => GeElementType.none,
       };
 }
 
