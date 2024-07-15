@@ -111,12 +111,8 @@ class _ItemsListScreenState<T extends GsModel<T>>
             }).map((item) {
               final level = DataValidator.i.getLevel<T>(item.id);
               final decor = widget.getDecor(item);
-              return GsGridItem(
-                color: decor.color,
-                image: decor.image ?? '',
-                circleColor: decor.regionColor,
-                label: decor.label,
-                version: decor.version,
+              return GsGridItem.decor(
+                decor,
                 validLevel: level,
                 onTap: () => widget.onTap?.call(context, item),
                 child: decor.child,
@@ -227,21 +223,31 @@ class GsFieldFilter<T extends GsModel<T>> {
 }
 
 class GsItemDecor {
-  final Color color;
+  final int rarity;
+  final Color? color;
   final String label;
   final String version;
   final String? image;
   final Color? regionColor;
   final Widget? child;
 
-  GsItemDecor({
+  GsItemDecor.color({
     required this.label,
     required this.version,
     required this.color,
     this.image,
     this.child,
     this.regionColor,
-  });
+  }) : rarity = 1;
+
+  GsItemDecor.rarity({
+    required this.label,
+    required this.version,
+    required this.rarity,
+    this.child,
+    this.image,
+    this.regionColor,
+  }) : color = null;
 }
 
 class _GsSearchItem extends StatelessWidget {

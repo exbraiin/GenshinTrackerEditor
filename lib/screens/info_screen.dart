@@ -258,7 +258,7 @@ class _InfoScreenState extends State<InfoScreen> {
                         GsSelectItem(
                           item,
                           decor.label,
-                          color: decor.color,
+                          color: decor.color ?? GsStyle.getRarityColor(1),
                         ),
                         onTap: (item) => config.openEditScreen(context, item),
                       );
@@ -315,7 +315,8 @@ Iterable<_VersionLine> _validateList(BuildContext context) sync* {
             value,
             decor?.label ?? T.toString(),
             color: value != null && config != null
-                ? config.itemDecoration(value).color
+                ? config.itemDecoration(value).color ??
+                    GsStyle.getRarityColor(1)
                 : Colors.grey,
           ),
           onTap: (item) => config?.openEditScreen(context, item),

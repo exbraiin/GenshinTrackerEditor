@@ -60,11 +60,11 @@ class GsConfigs<T extends GsModel<T>> {
           .thenBy((e) => e.name)
           .thenBy((e) => e.id),
       itemDecoration: (item) {
-        return GsItemDecor(
+        return GsItemDecor.rarity(
           label: '${item.achievements} (${item.rewards}✦)\n${item.name}',
           version: item.version,
+          rarity: 4,
           image: item.icon,
-          color: GsStyle.getRarityColor(4),
           child: _orderItem(item.order.toString()),
         );
       },
@@ -86,10 +86,10 @@ class GsConfigs<T extends GsModel<T>> {
           .thenBy((e) => e.id),
       itemDecoration: (item) {
         final cat = Database.i.of<GsAchievementGroup>().getItem(item.group);
-        return GsItemDecor(
+        return GsItemDecor.rarity(
           label: '${item.name}\n(${item.reward}✦)',
           version: item.version,
-          color: GsStyle.getRarityColor(4),
+          rarity: 4,
           image: cat?.icon,
         );
       },
@@ -119,11 +119,11 @@ class GsConfigs<T extends GsModel<T>> {
           .thenByDescending((e) => e.rarity)
           .thenBy((e) => e.name)
           .thenBy((e) => e.id),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.rarity(
         label: item.name,
-        image: item.pieces.firstOrNull?.icon,
         version: item.version,
-        color: GsStyle.getRarityColor(item.rarity),
+        rarity: item.rarity,
+        image: item.pieces.firstOrNull?.icon,
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
       filters: [
@@ -154,11 +154,11 @@ class GsConfigs<T extends GsModel<T>> {
             ? Database.i.of<GsCharacter>().getItem(data)?.image ??
                 Database.i.of<GsWeapon>().getItem(data)?.image
             : null;
-        return GsItemDecor(
-          label: '${item.name}\n${item.dateStart.toString().split(' ').first}',
-          image: image,
+        return GsItemDecor.color(
+          label: '${item.dateStart.toString().split(' ').first}\n${item.name}',
           version: item.version,
           color: item.type.color,
+          image: image,
         );
       },
       filters: [
@@ -182,11 +182,11 @@ class GsConfigs<T extends GsModel<T>> {
           .thenByDescending((e) => e.rarity)
           .thenBy((e) => e.name)
           .thenBy((e) => e.id),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.rarity(
         label: item.name,
-        image: item.image,
         version: item.version,
-        color: GsStyle.getRarityColor(item.rarity),
+        rarity: item.rarity.coerceAtLeast(1),
+        image: item.image,
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
       import: [
@@ -250,11 +250,11 @@ class GsConfigs<T extends GsModel<T>> {
           .thenBy((e) => e.id),
       itemDecoration: (item) {
         final char = Database.i.of<GsCharacter>().getItem(item.character);
-        return GsItemDecor(
+        return GsItemDecor.rarity(
           label: item.name,
-          image: char?.image,
           version: item.version,
-          color: GsStyle.getRarityColor(item.rarity),
+          rarity: item.rarity,
+          image: char?.image,
           regionColor:
               GsStyle.getRegionElementColor(char?.region ?? GeRegionType.none),
         );
@@ -271,11 +271,11 @@ class GsConfigs<T extends GsModel<T>> {
     GsRegion: GsConfigs<GsRegion>._(
       title: 'Regions',
       pageBuilder: const vd.GsRegionExt(),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.color(
         label: item.name,
-        image: item.image,
         version: '',
         color: item.element.color,
+        image: item.image,
         regionColor:
             GsStyle.getRegionElementColor(GeRegionType.values.fromId(item.id)),
       ),
@@ -288,10 +288,10 @@ class GsConfigs<T extends GsModel<T>> {
           .thenByDescending((e) => e.rarityByType)
           .thenBy((e) => e.name)
           .thenBy((e) => e.id),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.rarity(
         label: item.name,
         version: item.version,
-        color: GsStyle.getRarityColor(item.rarityByType),
+        rarity: item.rarityByType,
         image: item.image,
         child: _orderItem(item.order.toString()),
       ),
@@ -321,11 +321,11 @@ class GsConfigs<T extends GsModel<T>> {
           .thenByDescending((e) => e.rarity)
           .thenBy((e) => e.name)
           .thenBy((e) => e.id),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.rarity(
         label: item.name,
-        image: item.image,
         version: item.version,
-        color: GsStyle.getRarityColor(item.rarity),
+        rarity: item.rarity,
+        image: item.image,
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
       filters: [
@@ -363,11 +363,11 @@ class GsConfigs<T extends GsModel<T>> {
           .thenByDescending((e) => e.rarity)
           .thenBy((e) => e.name)
           .thenBy((e) => e.id),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.color(
         label: item.name,
-        image: item.image,
         version: item.version,
         color: GsStyle.getNamecardColor(item.type),
+        image: item.image,
       ),
       filters: [
         GsFieldFilter(
@@ -391,11 +391,11 @@ class GsConfigs<T extends GsModel<T>> {
           .thenByDescending((e) => e.rarity)
           .thenBy((e) => e.name)
           .thenBy((e) => e.id),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.rarity(
         label: item.name,
-        image: item.image,
         version: item.version,
-        color: GsStyle.getRarityColor(item.rarity),
+        rarity: item.rarity,
+        image: item.image,
       ),
       filters: [
         GsFieldFilter(
@@ -424,11 +424,11 @@ class GsConfigs<T extends GsModel<T>> {
           .thenByDescending((e) => e.rarity)
           .thenBy((e) => e.name)
           .thenBy((e) => e.id),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.rarity(
         label: item.name,
-        image: item.image,
         version: item.version,
-        color: GsStyle.getRarityColor(item.rarity),
+        rarity: item.rarity,
+        image: item.image,
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
       filters: [
@@ -459,7 +459,7 @@ class GsConfigs<T extends GsModel<T>> {
           .thenBy((e) => e.category.index)
           .thenBy((e) => e.name)
           .thenBy((e) => e.id),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.color(
         label: item.name,
         version: item.version,
         color: item.category.color,
@@ -487,10 +487,10 @@ class GsConfigs<T extends GsModel<T>> {
     GsFurnishing: GsConfigs<GsFurnishing>._(
       title: 'Furnishing',
       pageBuilder: const vd.GsFurnishingExt(),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.rarity(
         label: item.name,
         version: '',
-        color: GsStyle.getRarityColor(item.rarity),
+        rarity: item.rarity,
         image: item.image,
       ),
       filters: [
@@ -507,10 +507,10 @@ class GsConfigs<T extends GsModel<T>> {
     GsSpincrystal: GsConfigs<GsSpincrystal>._(
       title: 'Spincrystals',
       pageBuilder: const vd.GsSpincrystalExt(),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.rarity(
         label: '${item.number}',
         version: item.version,
-        color: GsStyle.getRarityColor(5),
+        rarity: 5,
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
       filters: [
@@ -529,10 +529,10 @@ class GsConfigs<T extends GsModel<T>> {
     GsViewpoint: GsConfigs<GsViewpoint>._(
       title: 'Viewpoints',
       pageBuilder: const vd.GsViewpointExt(),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.rarity(
         label: item.name,
         version: item.version,
-        color: GsStyle.getRarityColor(4),
+        rarity: 4,
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
       filters: [
@@ -556,7 +556,7 @@ class GsConfigs<T extends GsModel<T>> {
           .thenByDescending((e) => e.dateStart)
           .thenBy((e) => e.name)
           .thenBy((e) => e.id),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.color(
         label: item.name,
         version: item.version,
         color: GsStyle.getVersionColor(item.version),
@@ -583,11 +583,11 @@ class GsConfigs<T extends GsModel<T>> {
           .thenByDescending((e) => e.rarity)
           .thenBy((e) => e.name)
           .thenBy((e) => e.id),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.rarity(
         label: item.name,
-        image: item.image,
         version: item.version,
-        color: GsStyle.getRarityColor(item.rarity),
+        rarity: item.rarity,
+        image: item.image,
       ),
       import: [
         DataButton(
@@ -633,18 +633,18 @@ class GsConfigs<T extends GsModel<T>> {
           .thenByDescending((e) => e.dateStart)
           .thenBy((e) => e.name)
           .thenBy((e) => e.id),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.color(
         label: item.name,
         version: item.version,
-        image: item.image,
         color: GsStyle.getVersionColor(item.version),
+        image: item.image,
       ),
     ),
     GsVersion: GsConfigs<GsVersion>._(
       title: 'Versions',
       pageBuilder: const vd.GsVersionExt(),
       sortByVersion: (c) => c.sortedByDescending((e) => e.id),
-      itemDecoration: (item) => GsItemDecor(
+      itemDecoration: (item) => GsItemDecor.color(
         label: item.id,
         version: item.id,
         color: GsStyle.getVersionColor(item.id),
@@ -706,8 +706,8 @@ class GsConfigs<T extends GsModel<T>> {
 
 Widget _orderItem(String order) {
   return Positioned(
-    right: 2,
-    bottom: 2,
+    top: 4,
+    left: 4,
     child: Container(
       height: 24,
       constraints: const BoxConstraints(minWidth: 24),

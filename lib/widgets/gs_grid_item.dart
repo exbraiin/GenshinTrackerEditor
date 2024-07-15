@@ -1,5 +1,6 @@
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
+import 'package:data_editor/screens/items_list_screen.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/auto_size_text.dart';
@@ -7,7 +8,8 @@ import 'package:data_editor/widgets/mouse_button.dart';
 import 'package:flutter/material.dart';
 
 class GsGridItem extends StatelessWidget {
-  final Color color;
+  final int rarity;
+  final Color? color;
   final Color? circleColor;
   final String label;
   final String image;
@@ -21,6 +23,7 @@ class GsGridItem extends StatelessWidget {
     this.onTap,
     this.child,
     this.circleColor,
+    this.rarity = 1,
     this.image = '',
     this.version = '',
     this.validLevel = GsValidLevel.none,
@@ -28,8 +31,22 @@ class GsGridItem extends StatelessWidget {
     required this.label,
   });
 
+  GsGridItem.decor(
+    GsItemDecor decor, {
+    super.key,
+    this.onTap,
+    this.child,
+    this.validLevel = GsValidLevel.none,
+  })  : circleColor = decor.regionColor,
+        rarity = decor.rarity,
+        image = decor.image ?? '',
+        version = decor.version,
+        color = decor.color,
+        label = decor.label;
+
   @override
   Widget build(BuildContext context) {
+    final rarityImg = GsGraphics.getRarityIcon(rarity);
     return MouseButton(
       onTap: onTap,
       builder: (context, hover, child) {
@@ -38,9 +55,23 @@ class GsGridItem extends StatelessWidget {
           duration: const Duration(milliseconds: 100),
           transform: Matrix4.diagonal3Values(scale, scale, 1),
           transformAlignment: Alignment.center,
+          clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
-            color: color.withOpacity(hover ? 1 : 0.8),
-            border: Border.all(color: Colors.black54, width: 2),
+            color: rarityImg.isNotEmpty
+                ? null
+                : color?.withOpacity(hover ? 1 : 0.8),
+            image: rarityImg.isNotEmpty
+                ? DecorationImage(
+                    image: AssetImage(rarityImg),
+                    fit: BoxFit.cover,
+                    colorFilter: color != null
+                        ? ColorFilter.mode(
+                            Color.lerp(color, Colors.white, 0.4)!,
+                            BlendMode.modulate,
+                          )
+                        : null,
+                  )
+                : null,
             borderRadius: BorderRadius.circular(8),
             boxShadow: hover
                 ? const [
@@ -52,72 +83,73 @@ class GsGridItem extends StatelessWidget {
                   ]
                 : null,
           ),
+          foregroundDecoration: BoxDecoration(
+            border: Border.all(color: Colors.black54, width: 2),
+            borderRadius: BorderRadius.circular(8),
+          ),
           child: child,
         );
       },
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            if (image.isNotEmpty)
-              Positioned(
-                right: 2,
-                bottom: 2,
-                child: Image.network(
-                  image.toFandom(46),
-                  width: 46,
-                  height: 46,
-                  fit: BoxFit.contain,
-                  errorBuilder: (ctx, obj, stc) =>
-                      const Icon(Icons.info_outline_rounded, size: 32),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          if (image.isNotEmpty)
+            Positioned(
+              right: 2,
+              bottom: 2,
+              child: Image.network(
+                image.toFandom(46),
+                width: 46,
+                height: 46,
+                fit: BoxFit.contain,
+                errorBuilder: (ctx, obj, stc) =>
+                    const Icon(Icons.info_outline_rounded, size: 32),
+              ),
+            ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 2),
+              child: AutoSizeText(
+                label,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    BoxShadow(
+                      offset: Offset(0, 2),
+                      blurRadius: 2,
+                    ),
+                  ],
                 ),
               ),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: AutoSizeText(
-                  label,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      BoxShadow(
-                        offset: Offset(1, 1),
-                        color: Colors.black26,
-                      ),
+            ),
+          ),
+          if (circleColor != null)
+            Positioned(
+              right: 2,
+              bottom: 2,
+              child: Container(
+                width: 16,
+                height: 16,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: LinearGradient(
+                    colors: [
+                      Color.lerp(circleColor, Colors.white, 0.4)!,
+                      Color.lerp(circleColor, Colors.black, 0.4)!,
                     ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
                 ),
               ),
             ),
-            if (circleColor != null)
-              Positioned(
-                right: 2,
-                bottom: 2,
-                child: Container(
-                  width: 16,
-                  height: 16,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(20),
-                    gradient: LinearGradient(
-                      colors: [
-                        Color.lerp(circleColor, Colors.white, 0.4)!,
-                        Color.lerp(circleColor, Colors.black, 0.4)!,
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                ),
-              ),
-            _getVersionBanner(),
-            if (child != null) child!,
-            _getStateBanner(),
-            _getInvalidBanner(),
-          ],
-        ),
+          _getVersionBanner(),
+          if (child != null) child!,
+          _getStateBanner(),
+          _getInvalidBanner(),
+        ],
       ),
     );
   }
