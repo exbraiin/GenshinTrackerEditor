@@ -17,6 +17,7 @@ class ItemsListScreen<T extends GsModel<T>> extends StatefulWidget {
   final List<GsFieldFilter<T>> filters;
 
   final GsItemDecor Function(T i) getDecor;
+  final Iterable<T> Function(Iterable<T> c)? sortByVersion;
   final void Function(BuildContext context, T? i)? onTap;
 
   const ItemsListScreen({
@@ -24,6 +25,7 @@ class ItemsListScreen<T extends GsModel<T>> extends StatefulWidget {
     required this.title,
     required this.list,
     required this.getDecor,
+    this.sortByVersion,
     this.filters = const [],
     this.onTap,
   });
@@ -35,6 +37,7 @@ class ItemsListScreen<T extends GsModel<T>> extends StatefulWidget {
 class _ItemsListScreenState<T extends GsModel<T>>
     extends State<ItemsListScreen<T>> {
   var _warningOnly = false;
+  var _sortByVersion = false;
   var _searchQuery = '';
   var _selectedFilters = <Set<String>>[];
 
@@ -50,6 +53,13 @@ class _ItemsListScreenState<T extends GsModel<T>>
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
+          if (widget.sortByVersion != null)
+            IconButton(
+              icon: _sortByVersion
+                  ? const Icon(Icons.arrow_drop_down_rounded)
+                  : const Icon(Icons.arrow_drop_up_rounded),
+              onPressed: () => setState(() => _sortByVersion = !_sortByVersion),
+            ),
           IconButton(
             color: _warningOnly ? Colors.orange : null,
             icon: const Icon(Icons.warning_amber_rounded),
@@ -77,7 +87,11 @@ class _ItemsListScreenState<T extends GsModel<T>>
       body: StreamBuilder(
         stream: Database.i.modified,
         builder: (context, snapshot) {
-          final list = widget.list().where((item) {
+          final collection = _sortByVersion && widget.sortByVersion != null
+              ? widget.sortByVersion!.call(widget.list())
+              : widget.list();
+
+          final list = collection.where((item) {
             for (var i = 0; i < widget.filters.length; ++i) {
               if (_selectedFilters[i].isEmpty) continue;
               final selector = widget.filters[i].filter(item);

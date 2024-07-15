@@ -29,6 +29,7 @@ class GsConfigs<T extends GsModel<T>> {
   final GsItemDecor Function(T item) itemDecoration;
   final List<GsFieldFilter<T>> filters;
   final Iterable<DataButton<T>> import;
+  final Iterable<T> Function(Iterable<T> c)? sortByVersion;
 
   Items<T> get collection {
     try {
@@ -43,6 +44,7 @@ class GsConfigs<T extends GsModel<T>> {
     required this.title,
     required this.pageBuilder,
     required this.itemDecoration,
+    this.sortByVersion,
     this.import = const [],
     this.filters = const [],
   });
@@ -52,6 +54,11 @@ class GsConfigs<T extends GsModel<T>> {
     GsAchievementGroup: GsConfigs<GsAchievementGroup>._(
       title: 'Achievement Category',
       pageBuilder: const vd.GsAchievementGroupExt(),
+      sortByVersion: (c) => c
+          .sortedByDescending((e) => e.version)
+          .thenByDescending((e) => e.order)
+          .thenBy((e) => e.name)
+          .thenBy((e) => e.id),
       itemDecoration: (item) {
         return GsItemDecor(
           label: '${item.achievements} (${item.rewards}✦)\n${item.name}',
@@ -72,6 +79,11 @@ class GsConfigs<T extends GsModel<T>> {
     GsAchievement: GsConfigs<GsAchievement>._(
       title: 'Achievement',
       pageBuilder: const vd.GsAchievementExt(),
+      sortByVersion: (c) => c
+          .sortedByDescending((e) => e.version)
+          .thenByDescending((e) => e.group)
+          .thenBy((e) => e.name)
+          .thenBy((e) => e.id),
       itemDecoration: (item) {
         final cat = Database.i.of<GsAchievementGroup>().getItem(item.group);
         return GsItemDecor(
@@ -102,6 +114,11 @@ class GsConfigs<T extends GsModel<T>> {
     GsArtifact: GsConfigs<GsArtifact>._(
       title: 'Artifacts',
       pageBuilder: const vd.GsArtifactExt(),
+      sortByVersion: (c) => c
+          .sortedByDescending((e) => e.version)
+          .thenByDescending((e) => e.rarity)
+          .thenBy((e) => e.name)
+          .thenBy((e) => e.id),
       itemDecoration: (item) => GsItemDecor(
         label: item.name,
         image: item.pieces.firstOrNull?.icon,
@@ -126,6 +143,11 @@ class GsConfigs<T extends GsModel<T>> {
     GsBanner: GsConfigs<GsBanner>._(
       title: 'Banners',
       pageBuilder: const vd.GsBannerExt(),
+      sortByVersion: (c) => c
+          .sortedByDescending((e) => e.version)
+          .thenByDescending((e) => e.type.index)
+          .thenBy((e) => e.name)
+          .thenBy((e) => e.id),
       itemDecoration: (item) {
         final data = item.feature5.firstOrNull;
         final image = data != null
@@ -155,6 +177,11 @@ class GsConfigs<T extends GsModel<T>> {
     GsCharacter: GsConfigs<GsCharacter>._(
       title: 'Characters',
       pageBuilder: const vd.GsCharacterExt(),
+      sortByVersion: (c) => c
+          .sortedByDescending((e) => e.version)
+          .thenByDescending((e) => e.rarity)
+          .thenBy((e) => e.name)
+          .thenBy((e) => e.id),
       itemDecoration: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
@@ -216,6 +243,11 @@ class GsConfigs<T extends GsModel<T>> {
     GsCharacterSkin: GsConfigs<GsCharacterSkin>._(
       title: 'Character Outfits',
       pageBuilder: const vd.GsCharacterSkinExt(),
+      sortByVersion: (c) => c
+          .sortedByDescending((e) => e.version)
+          .thenByDescending((e) => e.rarity)
+          .thenBy((e) => e.name)
+          .thenBy((e) => e.id),
       itemDecoration: (item) {
         final char = Database.i.of<GsCharacter>().getItem(item.character);
         return GsItemDecor(
@@ -251,10 +283,15 @@ class GsConfigs<T extends GsModel<T>> {
     GsEnemy: GsConfigs<GsEnemy>._(
       title: 'Enemies',
       pageBuilder: const vd.GsEnemyExt(),
+      sortByVersion: (c) => c
+          .sortedByDescending((e) => e.version)
+          .thenByDescending((e) => e.rarityByType)
+          .thenBy((e) => e.name)
+          .thenBy((e) => e.id),
       itemDecoration: (item) => GsItemDecor(
         label: item.name,
         version: item.version,
-        color: GsStyle.getRarityColor(1),
+        color: GsStyle.getRarityColor(item.rarityByType),
         image: item.image,
         child: _orderItem(item.order.toString()),
       ),
@@ -279,6 +316,11 @@ class GsConfigs<T extends GsModel<T>> {
     GsMaterial: GsConfigs<GsMaterial>._(
       title: 'Materials',
       pageBuilder: const vd.GsMaterialExt(),
+      sortByVersion: (c) => c
+          .sortedByDescending((e) => e.version)
+          .thenByDescending((e) => e.rarity)
+          .thenBy((e) => e.name)
+          .thenBy((e) => e.id),
       itemDecoration: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
@@ -316,6 +358,11 @@ class GsConfigs<T extends GsModel<T>> {
     GsNamecard: GsConfigs<GsNamecard>._(
       title: 'Namecards',
       pageBuilder: const vd.GsNamecardExt(),
+      sortByVersion: (c) => c
+          .sortedByDescending((e) => e.version)
+          .thenByDescending((e) => e.rarity)
+          .thenBy((e) => e.name)
+          .thenBy((e) => e.id),
       itemDecoration: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
@@ -339,6 +386,11 @@ class GsConfigs<T extends GsModel<T>> {
     GsRecipe: GsConfigs<GsRecipe>._(
       title: 'Recipes',
       pageBuilder: const vd.GsRecipeExt(),
+      sortByVersion: (c) => c
+          .sortedByDescending((e) => e.version)
+          .thenByDescending((e) => e.rarity)
+          .thenBy((e) => e.name)
+          .thenBy((e) => e.id),
       itemDecoration: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
@@ -367,6 +419,11 @@ class GsConfigs<T extends GsModel<T>> {
     GsFurnitureChest: GsConfigs<GsFurnitureChest>._(
       title: 'Remarkable Chests',
       pageBuilder: const vd.GsFurnitureChestExt(),
+      sortByVersion: (c) => c
+          .sortedByDescending((e) => e.version)
+          .thenByDescending((e) => e.rarity)
+          .thenBy((e) => e.name)
+          .thenBy((e) => e.id),
       itemDecoration: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
@@ -396,6 +453,12 @@ class GsConfigs<T extends GsModel<T>> {
     GsSereniteaSet: GsConfigs<GsSereniteaSet>._(
       title: 'Sereniteas',
       pageBuilder: const vd.GsSereniteaSetExt(),
+      sortByVersion: (c) => c
+          .sortedByDescending((e) => e.version)
+          .thenByDescending((e) => e.rarity)
+          .thenBy((e) => e.category.index)
+          .thenBy((e) => e.name)
+          .thenBy((e) => e.id),
       itemDecoration: (item) => GsItemDecor(
         label: item.name,
         version: item.version,
@@ -488,6 +551,11 @@ class GsConfigs<T extends GsModel<T>> {
     GsEvent: GsConfigs<GsEvent>._(
       title: 'Events',
       pageBuilder: const vd.GsEventExt(),
+      sortByVersion: (c) => c
+          .sortedByDescending((e) => e.version)
+          .thenByDescending((e) => e.dateStart)
+          .thenBy((e) => e.name)
+          .thenBy((e) => e.id),
       itemDecoration: (item) => GsItemDecor(
         label: item.name,
         version: item.version,
@@ -510,6 +578,11 @@ class GsConfigs<T extends GsModel<T>> {
     GsWeapon: GsConfigs<GsWeapon>._(
       title: 'Weapons',
       pageBuilder: const vd.GsWeaponExt(),
+      sortByVersion: (c) => c
+          .sortedByDescending((e) => e.version)
+          .thenByDescending((e) => e.rarity)
+          .thenBy((e) => e.name)
+          .thenBy((e) => e.id),
       itemDecoration: (item) => GsItemDecor(
         label: item.name,
         image: item.image,
@@ -555,6 +628,11 @@ class GsConfigs<T extends GsModel<T>> {
     GsBattlepass: GsConfigs<GsBattlepass>._(
       title: 'Battlepass',
       pageBuilder: const vd.GsBattlepassExt(),
+      sortByVersion: (c) => c
+          .sortedByDescending((e) => e.version)
+          .thenByDescending((e) => e.dateStart)
+          .thenBy((e) => e.name)
+          .thenBy((e) => e.id),
       itemDecoration: (item) => GsItemDecor(
         label: item.name,
         version: item.version,
@@ -565,6 +643,7 @@ class GsConfigs<T extends GsModel<T>> {
     GsVersion: GsConfigs<GsVersion>._(
       title: 'Versions',
       pageBuilder: const vd.GsVersionExt(),
+      sortByVersion: (c) => c.sortedByDescending((e) => e.id),
       itemDecoration: (item) => GsItemDecor(
         label: item.id,
         version: item.id,
@@ -604,6 +683,7 @@ class GsConfigs<T extends GsModel<T>> {
       ItemsListScreen<T>(
         title: title,
         list: () => collection.items.sorted(),
+        sortByVersion: sortByVersion,
         getDecor: itemDecoration,
         onTap: openEditScreen,
         filters: filters,
