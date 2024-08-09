@@ -58,19 +58,17 @@ class GsEventExt extends GsModelExt<GsEvent> {
         'Date Start',
         (item) => item.dateStart,
         (item, value) => item.copyWith(dateStart: value),
-        validator: (item) => vdVersion.validateDates(
+        validator: (item) => vdVersion.validateDate(
           item.version,
           item.dateStart,
-          item.dateEnd,
         ),
       ),
       DataField.dateTime(
         'Date End',
         (item) => item.dateEnd,
         (item, value) => item.copyWith(dateEnd: value),
-        validator: (item) => vdVersion.validateDates(
+        validator: (item) => vdVersion.validateDate(
           item.version,
-          item.dateStart,
           item.dateEnd,
         ),
       ),

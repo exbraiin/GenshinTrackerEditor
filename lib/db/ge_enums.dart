@@ -35,6 +35,7 @@ extension GeEnumListExt<T extends GeEnum> on List<T> {
 extension on GeArkheType {
   Color get color => switch (this) {
         GeArkheType.none => Colors.grey,
+        GeArkheType.both => const Color(0xFFB4ADC0),
         GeArkheType.ousia => const Color(0xFF7F7EDB),
         GeArkheType.pneuma => const Color(0xFFE9DBA5),
       };

@@ -219,6 +219,15 @@ extension VeVersion on ValidateModels<GsVersion> {
     return _extra[version];
   }
 
+  GsValidLevel validateDate(String version, DateTime date) {
+    if (!ids.contains(version)) return GsValidLevel.warn3;
+    final dates = getDates(version);
+    if (dates == null) return GsValidLevel.warn3;
+    if (date.isBefore(dates.$1)) return GsValidLevel.warn3;
+    if (dates.$2 != null && date.isAfter(dates.$2!)) return GsValidLevel.warn2;
+    return GsValidLevel.good;
+  }
+
   GsValidLevel validateDates(String version, DateTime src, [DateTime? dst]) {
     if (!ids.contains(version)) return GsValidLevel.warn3;
     final dates = getDates(version);
