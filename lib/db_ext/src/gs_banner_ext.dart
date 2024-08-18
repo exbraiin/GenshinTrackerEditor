@@ -86,6 +86,11 @@ class GsBannerExt extends GsModelExt<GsBanner> {
         (item) => item.type,
         (item, value) => item.copyWith(type: value),
       ),
+      DataField.intField(
+        'Subtype',
+        (item) => item.subtype,
+        (item, value) => item.copyWith(subtype: value),
+      ),
       DataField.singleSelect(
         'Version',
         (item) => item.version,
