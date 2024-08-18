@@ -86,7 +86,8 @@ extension GeBannerTypeExt on GeBannerType {
   Color get color => switch (this) {
         GeBannerType.standard => Colors.purple,
         GeBannerType.beginner => Colors.yellow,
-        GeBannerType.character => Colors.lightGreen,
+        GeBannerType.character1 => Colors.lightGreen,
+        GeBannerType.character2 => Colors.lightGreen,
         GeBannerType.weapon => Colors.lightBlue,
         GeBannerType.chronicled => const Color(0xFF5da8a8),
       };

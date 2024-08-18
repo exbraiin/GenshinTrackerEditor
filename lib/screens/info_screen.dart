@@ -362,6 +362,17 @@ Iterable<_VersionLine> _validateList(BuildContext context) sync* {
       addItems('Missing banner:', charMissingBanner);
     }
 
+    final lists = banners
+        .where((e) => e.type.isCharacter)
+        .groupBy((e) => e.dateStart)
+        .values
+        .where((e) => e.distinctBy((b) => b.type).length == 1)
+        .where((e) => e.length != 1);
+
+    for (final list in lists) {
+      addItems('${list.length} as character type for the same date!', list);
+    }
+
     final charWrongReleaseDate = chars.where(
       (char) =>
           char.releaseDate.isBefore(version.releaseDate) ||
@@ -428,7 +439,7 @@ extension on GsWeapon {
 
 extension on GsBanner {
   bool containsCharacter(GsCharacter char) {
-    if (type != GeBannerType.character) return false;
+    if (!type.isCharacter) return false;
     if (char.rarity == 4) return feature4.contains(char.id);
     if (char.rarity == 5) return feature5.contains(char.id);
     return false;

@@ -29,6 +29,7 @@ class GsConfigs<T extends GsModel<T>> {
   final GsItemDecor Function(T item) itemDecoration;
   final List<GsFieldFilter<T>> filters;
   final Iterable<DataButton<T>> import;
+  final Iterable<T> Function(Iterable<T> c)? sort;
   final Iterable<T> Function(Iterable<T> c)? sortByVersion;
 
   Items<T> get collection {
@@ -44,6 +45,7 @@ class GsConfigs<T extends GsModel<T>> {
     required this.title,
     required this.pageBuilder,
     required this.itemDecoration,
+    this.sort,
     this.sortByVersion,
     this.import = const [],
     this.filters = const [],
@@ -143,6 +145,16 @@ class GsConfigs<T extends GsModel<T>> {
     GsBanner: GsConfigs<GsBanner>._(
       title: 'Banners',
       pageBuilder: const vd.GsBannerExt(),
+      sort: (c) {
+        return c
+            .sortedBy(
+              (e) => e.type.isCharacter
+                  ? GeBannerType.character1.index
+                  : e.type.index,
+            )
+            .thenBy((e) => e.dateStart)
+            .thenBy((e) => e.type.isCharacter ? e.type.index : 0);
+      },
       sortByVersion: (c) => c
           .sortedByDescending((e) => e.version)
           .thenByDescending((e) => e.type.index)
@@ -682,7 +694,9 @@ class GsConfigs<T extends GsModel<T>> {
     context.pushWidget(
       ItemsListScreen<T>(
         title: title,
-        list: () => collection.items.sorted(),
+        list: () =>
+            sort?.call(collection.items.sorted()).toList() ??
+            collection.items.sorted(),
         sortByVersion: sortByVersion,
         getDecor: itemDecoration,
         onTap: openEditScreen,

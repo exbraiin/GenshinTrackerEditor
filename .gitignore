@@ -45,6 +45,7 @@ app.*.map.json
 
 # Custom files
 gsdata
+gsdatab
 /.vscode/
 /Release/*
 !/Release/gsdata
