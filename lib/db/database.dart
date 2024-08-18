@@ -77,7 +77,9 @@ final class Database {
             .items
             .where((e) => e.rarity == rarity || rarity == null)
             .map(GsWish.fromWeapon),
-      if (type == null || type.isCharacter || type == GeBannerType.chronicled)
+      if (type == null ||
+          type == GeBannerType.character ||
+          type == GeBannerType.chronicled)
         ...of<GsCharacter>()
             .items
             .where((e) => e.rarity == rarity || rarity == null)

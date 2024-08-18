@@ -363,10 +363,10 @@ Iterable<_VersionLine> _validateList(BuildContext context) sync* {
     }
 
     final lists = banners
-        .where((e) => e.type.isCharacter)
+        .where((e) => e.type == GeBannerType.character)
         .groupBy((e) => e.dateStart)
         .values
-        .where((e) => e.distinctBy((b) => b.type).length == 1)
+        .where((e) => e.distinctBy((b) => b.subtype).length == 1)
         .where((e) => e.length != 1);
 
     for (final list in lists) {
@@ -439,7 +439,7 @@ extension on GsWeapon {
 
 extension on GsBanner {
   bool containsCharacter(GsCharacter char) {
-    if (!type.isCharacter) return false;
+    if (type != GeBannerType.character) return false;
     if (char.rarity == 4) return feature4.contains(char.id);
     if (char.rarity == 5) return feature5.contains(char.id);
     return false;

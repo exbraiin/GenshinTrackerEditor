@@ -145,16 +145,6 @@ class GsConfigs<T extends GsModel<T>> {
     GsBanner: GsConfigs<GsBanner>._(
       title: 'Banners',
       pageBuilder: const vd.GsBannerExt(),
-      sort: (c) {
-        return c
-            .sortedBy(
-              (e) => e.type.isCharacter
-                  ? GeBannerType.character1.index
-                  : e.type.index,
-            )
-            .thenBy((e) => e.dateStart)
-            .thenBy((e) => e.type.isCharacter ? e.type.index : 0);
-      },
       sortByVersion: (c) => c
           .sortedByDescending((e) => e.version)
           .thenByDescending((e) => e.type.index)
