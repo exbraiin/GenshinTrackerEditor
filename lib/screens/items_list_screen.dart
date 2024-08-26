@@ -17,7 +17,6 @@ class ItemsListScreen<T extends GsModel<T>> extends StatefulWidget {
   final List<GsFieldFilter<T>> filters;
 
   final GsItemDecor Function(T i) getDecor;
-  final Iterable<T> Function(Iterable<T> c)? sortByVersion;
   final void Function(BuildContext context, T? i)? onTap;
 
   const ItemsListScreen({
@@ -25,7 +24,6 @@ class ItemsListScreen<T extends GsModel<T>> extends StatefulWidget {
     required this.title,
     required this.list,
     required this.getDecor,
-    this.sortByVersion,
     this.filters = const [],
     this.onTap,
   });
@@ -49,11 +47,15 @@ class _ItemsListScreenState<T extends GsModel<T>>
 
   @override
   Widget build(BuildContext context) {
+    final first = widget.list().firstOrNull;
+    final sortByVersion =
+        first != null && widget.getDecor(first).version.isNotEmpty;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
-          if (widget.sortByVersion != null)
+          if (sortByVersion)
             IconButton(
               icon: _sortByVersion
                   ? const Icon(Icons.arrow_drop_down_rounded)
@@ -87,8 +89,11 @@ class _ItemsListScreenState<T extends GsModel<T>>
       body: StreamBuilder(
         stream: Database.i.modified,
         builder: (context, snapshot) {
-          final collection = _sortByVersion && widget.sortByVersion != null
-              ? widget.sortByVersion!.call(widget.list())
+          final collection = _sortByVersion && sortByVersion
+              ? widget
+                  .list()
+                  .sortedByDescending((e) => widget.getDecor(e).version)
+                  .thenWith((a, b) => a.compareTo(b))
               : widget.list();
 
           final list = collection.where((item) {
