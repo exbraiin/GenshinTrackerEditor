@@ -362,6 +362,17 @@ Iterable<_VersionLine> _validateList(BuildContext context) sync* {
       addItems('Missing banner:', charMissingBanner);
     }
 
+    final lists = banners
+        .where((e) => e.type == GeBannerType.character)
+        .groupBy((e) => e.dateStart)
+        .values
+        .where((e) => e.distinctBy((b) => b.subtype).length == 1)
+        .where((e) => e.length != 1);
+
+    for (final list in lists) {
+      addItems('${list.length} as character type for the same date!', list);
+    }
+
     final charWrongReleaseDate = chars.where(
       (char) =>
           char.releaseDate.isBefore(version.releaseDate) ||
