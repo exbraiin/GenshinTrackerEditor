@@ -26,7 +26,10 @@ final class Database {
   Future<bool> load() async {
     if (_loaded) return _loaded;
     _loaded = true;
-    if (kDebugMode) await File('Release/gsdata').copy(_kFilePath);
+    if (kDebugMode) {
+      await File('Release/gsdata').copy(_kFilePath);
+      print('Copied Release/gsdata!');
+    }
     await _db.load(path: _kFilePath);
     await DataValidator.i.checkAll();
     modified.add(null);

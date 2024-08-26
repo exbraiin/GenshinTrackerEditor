@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/style/assets.dart';
@@ -74,6 +75,9 @@ abstract final class GsStyle {
 
   static Color getVersionColor(String id) {
     final idx = (double.tryParse(id) ?? 1.0).toInt();
-    return getRarityColor((idx + 5) % 5);
+    if (!idx.between(1, GeElementType.values.length)) {
+      return GeElementType.none.color;
+    }
+    return GeElementType.values[idx + 1].color;
   }
 }

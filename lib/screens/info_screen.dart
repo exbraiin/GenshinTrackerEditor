@@ -307,17 +307,17 @@ Iterable<_VersionLine> _validateList(BuildContext context) sync* {
       if (T == GsVersion) {
         return buffer.add((items: [], label: label));
       }
+
       final config = GsConfigs.of<T>();
       final items = values.map((value) {
         final decor = value != null ? config?.itemDecoration(value) : null;
+        final color = GsStyle.getRarityColor(decor?.rarity ?? 1);
+
         return GsSelectChip(
           GsSelectItem(
             value,
             decor?.label ?? T.toString(),
-            color: value != null && config != null
-                ? config.itemDecoration(value).color ??
-                    GsStyle.getRarityColor(1)
-                : Colors.grey,
+            color: color,
           ),
           onTap: (item) => config?.openEditScreen(context, item),
         );
@@ -343,12 +343,25 @@ Iterable<_VersionLine> _validateList(BuildContext context) sync* {
     final chars = items<GsCharacter>().where((e) => e.version == version.id);
     final weaponWrongSource = weapons.where((e) => !e.hasValidSource);
     if (weaponWrongSource.isNotEmpty) {
-      addItems('Wrong source:', weaponWrongSource);
+      addItems<GsWeapon>('Wrong source:', weaponWrongSource);
     }
 
     final charWrongSource = chars.where((e) => !e.hasValidSource);
     if (charWrongSource.isNotEmpty) {
-      addItems('Wrong source:', charWrongSource);
+      addItems<GsCharacter>('Wrong source:', charWrongSource);
+    }
+
+    // We ignore weapon of rarity 1 and 2.
+    final effectReg = RegExp(r'\{(.+,)*.+\}');
+    final noEffect = weapons.where((e) => e.effectName.isEmpty && e.rarity > 2);
+    final noEffectValues = weapons.where(
+      (e) => e.effectName.isNotEmpty && !effectReg.hasMatch(e.effectDesc),
+    );
+    if (noEffect.isNotEmpty) {
+      addItems<GsWeapon>('No Effect for:', noEffect);
+    }
+    if (noEffectValues.isNotEmpty) {
+      addItems<GsWeapon>('No Effect Values for:', noEffectValues);
     }
 
     // Ignore version 1.0
@@ -359,7 +372,7 @@ Iterable<_VersionLine> _validateList(BuildContext context) sync* {
           !banners.any((b) => b.containsCharacter(e)),
     );
     if (charMissingBanner.isNotEmpty) {
-      addItems('Missing banner:', charMissingBanner);
+      addItems<GsCharacter>('Missing banner:', charMissingBanner);
     }
 
     final lists = banners
@@ -370,7 +383,10 @@ Iterable<_VersionLine> _validateList(BuildContext context) sync* {
         .where((e) => e.length != 1);
 
     for (final list in lists) {
-      addItems('${list.length} as character type for the same date!', list);
+      addItems<GsBanner>(
+        '${list.length} as character type for the same date!',
+        list,
+      );
     }
 
     final charWrongReleaseDate = chars.where(
@@ -379,14 +395,17 @@ Iterable<_VersionLine> _validateList(BuildContext context) sync* {
           next != null && char.releaseDate.isAfter(next.releaseDate),
     );
     if (charWrongReleaseDate.isNotEmpty) {
-      addItems('Wrong version or release date', charWrongReleaseDate);
+      addItems<GsCharacter>(
+        'Wrong version or release date',
+        charWrongReleaseDate,
+      );
     }
 
     final sets = items<GsSereniteaSet>();
     final charMissingGift =
         chars.where((e) => sets.count((s) => s.chars.contains(e.id)) != 2);
     if (charMissingGift.isNotEmpty) {
-      addItems('Missing Serenitea Gift', charMissingGift);
+      addItems<GsCharacter>('Missing Serenitea Gift', charMissingGift);
     }
 
     final recipes = items<GsRecipe>();
