@@ -287,6 +287,7 @@ class GsConfigs<T extends GsModel<T>> {
         rarity: item.rarity,
         image: item.image,
         regionColor: GsStyle.getRegionElementColor(item.region),
+        child: item.subgroup != 0 ? _orderItem(item.subgroup.toString()) : null,
       ),
       filters: [
         GsFieldFilter(

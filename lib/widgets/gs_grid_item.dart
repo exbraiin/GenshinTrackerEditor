@@ -126,8 +126,8 @@ class GsGridItem extends StatelessWidget {
           ),
           if (circleColor != null)
             Positioned(
-              right: 2,
-              bottom: 2,
+              right: 4,
+              bottom: 4,
               child: Container(
                 width: 16,
                 height: 16,
