@@ -97,7 +97,7 @@ class GsSelectChip<T> extends StatelessWidget {
 
   Widget _selectChip(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
+      padding: const EdgeInsets.fromLTRB(8, 2, 8, 2),
       decoration: BoxDecoration(
         border: Border.all(
           width: 2,

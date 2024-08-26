@@ -97,6 +97,7 @@ class _ItemsListScreenState<T extends GsModel<T>>
               : widget.list();
 
           final list = collection.where((item) {
+            // Apply filters...
             for (var i = 0; i < widget.filters.length; ++i) {
               if (_selectedFilters[i].isEmpty) continue;
               final selector = widget.filters[i].filter(item);
@@ -104,16 +105,16 @@ class _ItemsListScreenState<T extends GsModel<T>>
                 return false;
               }
             }
-            return true;
+
+            // Apply query and warn...
+            late final level = DataValidator.i.getLevel<T>(item.id);
+            late final matchQuery =
+                _searchQuery.isEmpty || item.id.contains(_searchQuery);
+            return matchQuery && (!_warningOnly || level.isInvalid);
           });
 
           return GsGridView(
-            children: list.where((e) {
-              late final level = DataValidator.i.getLevel<T>(e.id);
-              late final matchQuery =
-                  _searchQuery.isEmpty || e.id.contains(_searchQuery);
-              return matchQuery && (!_warningOnly || level.isInvalid);
-            }).map((item) {
+            children: list.map((item) {
               final level = DataValidator.i.getLevel<T>(item.id);
               final decor = widget.getDecor(item);
               return GsGridItem.decor(

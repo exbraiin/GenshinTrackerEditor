@@ -109,9 +109,12 @@ class DataField<T extends GsModel<T>> {
                 ),
               ),
               IconButton(
+                onPressed: () => edit(update(item, '')),
+                icon: const Icon(Icons.clear_rounded),
+              ),
+              IconButton(
                 onPressed: () async {
-                  const type = Clipboard.kTextPlain;
-                  final text = (await Clipboard.getData(type))?.text;
+                  final text = await _getClipboardText();
                   if (text == null) return;
                   edit(update(item, text));
                 },
@@ -174,8 +177,7 @@ class DataField<T extends GsModel<T>> {
                   ),
                   IconButton(
                     onPressed: () async {
-                      const type = Clipboard.kTextPlain;
-                      final text = (await Clipboard.getData(type))?.text;
+                      final text = await _getClipboardText();
                       if (text == null) return;
                       final processed = process?.call(text) ?? text;
                       edit(update(item, processed));
@@ -230,8 +232,7 @@ class DataField<T extends GsModel<T>> {
                   ),
                   IconButton(
                     onPressed: () async {
-                      const type = Clipboard.kTextPlain;
-                      final text = (await Clipboard.getData(type))?.text;
+                      final text = await _getClipboardText();
                       if (text == null) return;
                       final value = _clamp(int.tryParse(text) ?? 0, range);
                       edit(update(item, value));
@@ -287,8 +288,7 @@ class DataField<T extends GsModel<T>> {
                   ),
                   IconButton(
                     onPressed: () async {
-                      const type = Clipboard.kTextPlain;
-                      final text = (await Clipboard.getData(type))?.text;
+                      final text = await _getClipboardText();
                       if (text == null) return;
                       final value = _clamp(double.tryParse(text) ?? 0, range);
                       edit(update(item, value));
@@ -503,18 +503,37 @@ class DataField<T extends GsModel<T>> {
     int min = 1,
     DValidator<T>? validator,
   })  : validator = validator ?? _rarityValidator(value, min),
-        builder = ((context, item, edit, level) => GsSingleSelect(
-              items: List.generate(
+        builder = ((context, item, edit, level) {
+          return Container(
+            padding: const EdgeInsets.all(6),
+            constraints: const BoxConstraints(minHeight: 44),
+            alignment: Alignment.centerLeft,
+            child: Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: List.generate(
                 6 - min,
-                (index) => GsSelectItem(
-                  min + index,
-                  (min + index).toString(),
-                  color: GsStyle.getRarityColor(min + index),
-                ),
+                (index) {
+                  final rarity = min + index;
+                  final selected = value(item);
+                  return GsSelectChip(
+                    GsSelectItem(
+                      rarity,
+                      rarity.toString(),
+                      color: GsStyle.getRarityColor(rarity),
+                    ),
+                    disableImage: true,
+                    onTap: (v) {
+                      if (v == selected) v = 0;
+                      edit(update(item, v));
+                    },
+                    selected: selected == rarity,
+                  );
+                },
               ),
-              selected: value(item),
-              onConfirm: (value) => edit(update(item, value ?? 1)),
-            ));
+            ),
+          );
+        });
 
   DataField.list(
     this.label,
@@ -634,6 +653,12 @@ class DataField<T extends GsModel<T>> {
       },
     );
   }
+}
+
+Future<String?> _getClipboardText() async {
+  const type = Clipboard.kTextPlain;
+  final data = await Clipboard.getData(type);
+  return data?.text?.trim();
 }
 
 Widget getTableForFields<T extends GsModel<T>>(
