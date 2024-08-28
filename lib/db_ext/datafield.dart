@@ -599,7 +599,7 @@ class DataField<T extends GsModel<T>> {
   static DataField<T> buildList<T extends GsModel<T>, C extends GsModel<C>>(
     String label,
     List<C> Function(T item) values,
-    DataField<C> Function(int index, T item, C child) build,
+    List<DataField<C>> Function(int index, T item, C child) build,
     C Function() create,
     T Function(T item, List<C> list) update, {
     GsValidLevel emptyLevel = GsValidLevel.warn3,
@@ -610,21 +610,6 @@ class DataField<T extends GsModel<T>> {
         final list = values(item).toList();
         return Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  onPressed: () =>
-                      edit(update(item, list.toList()..removeLast())),
-                  icon: const Icon(Icons.remove_rounded),
-                ),
-                IconButton(
-                  onPressed: () =>
-                      edit(update(item, list.toList()..add(create()))),
-                  icon: const Icon(Icons.add_rounded),
-                ),
-              ],
-            ),
             Table(
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               border: const TableBorder(
@@ -637,19 +622,41 @@ class DataField<T extends GsModel<T>> {
                 return _getFieldTableRow(
                   context,
                   child,
-                  build(index, item, child),
-                  (child) => edit(update(item, list.toList()..[index] = child)),
+                  DataField<C>.list(
+                    '# $index',
+                    (child) => build(index, item, child),
+                  ),
+                  (child) => edit(update(item, list..[index] = child)),
+                  trailing: (color) {
+                    return IconButton(
+                      color: color,
+                      icon: const Icon(Icons.delete_rounded),
+                      onPressed: () =>
+                          edit(update(item, list..removeAt(index))),
+                    );
+                  },
                 );
               }).toList(),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () => edit(update(item, list..add(create()))),
+                  icon: const Icon(Icons.add_rounded),
+                ),
+              ],
             ),
           ],
         );
       },
       validator: (item) {
-        return values(item)
-                .mapIndexed((i, e) => build(i, item, e).validator(e))
-                .maxBy((element) => element.index) ??
-            emptyLevel;
+        final level = values(item).mapIndexed((i, e) {
+          final list = build(i, item, e);
+          final l = list.map((n) => n.validator(e)).maxBy((e) => e.index);
+          return l ?? emptyLevel;
+        }).maxBy((e) => e.index);
+        return level ?? emptyLevel;
       },
     );
   }
@@ -686,8 +693,9 @@ TableRow _getFieldTableRow<T extends GsModel<T>>(
   BuildContext context,
   T value,
   DataField<T> field,
-  void Function(T item) edit,
-) {
+  void Function(T item) edit, {
+  Widget Function(Color? color)? trailing,
+}) {
   final level = field.validator.call(value);
   final color = level.color;
   return TableRow(
@@ -716,7 +724,16 @@ TableRow _getFieldTableRow<T extends GsModel<T>>(
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: field.builder(context, value, edit, level),
+        child: Row(
+          children: [
+            Expanded(child: field.builder(context, value, edit, level)),
+            if (trailing != null)
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: trailing(color),
+              ),
+          ],
+        ),
       ),
     ],
   );
@@ -775,6 +792,22 @@ V _clamp<V extends num>(V value, (V?, V?) range) {
   if (min != null && value < min) return min;
   if (max != null && value > max) return max;
   return value;
+}
+
+GsValidLevel validateBuildId<C>(
+  List<C> list,
+  C item,
+  String Function(C i) s, [
+  GsValidLevel level = GsValidLevel.none,
+]) {
+  final value = s(item);
+  if (value.isEmpty) return GsValidLevel.warn3;
+  var amount = 0;
+  for (final i in list) {
+    if (s(i) == value) amount++;
+    if (amount > 1) return GsValidLevel.warn3;
+  }
+  return level;
 }
 
 class ExtendedTextField extends StatefulWidget {

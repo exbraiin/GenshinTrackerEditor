@@ -1,5 +1,5 @@
-import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/ge_enums.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
@@ -67,44 +67,45 @@ class GsArtifactExt extends GsModelExt<GsArtifact> {
         (item) => item.domain,
         (item, value) => item.copyWith(domain: value),
       ),
-      DataField.build<GsArtifact, GsArtifactPiece>(
+      DataField.buildList(
         'Pieces',
         (item) => item.pieces,
-        (item) => GeArtifactPieceType.values.toChipsId(),
-        (item, child) => DataField.list(
-          child.id,
-          (item) => [
-            DataField.textField(
-              'Name',
-              (item) => item.name,
-              (item, value) => item.copyWith(name: value),
-            ),
-            DataField.textImage(
-              'Icon',
-              (item) => item.icon,
-              (item, value) => item.copyWith(icon: value),
-            ),
-            DataField.textField(
-              'Desc',
-              (item) => item.desc,
-              (item, value) => item.copyWith(desc: value),
-            ),
-          ],
-        ),
-        (item, value) {
-          const pieces = GeArtifactPieceType.values;
-          final list = value.map((id) {
-            final old = item.pieces.firstOrNullWhere((i) => i.id == id);
-            return old ?? GsArtifactPiece.fromJson({'id': id});
-          }).sortedBy((e) => pieces.indexWhere((p) => e.id == p.id));
-          return item.copyWith(pieces: list);
-        },
-        (item, field) {
-          final list = item.pieces.toList();
-          final idx = list.indexWhere((e) => e.id == field.id);
-          if (idx != -1) list[idx] = field;
-          return item.copyWith(pieces: list);
-        },
+        (index, item, child) => [
+          DataField.singleEnum(
+            'Id',
+            GeArtifactPieceType.values.toChips(),
+            (item) => GeArtifactPieceType.values.fromId(item.id),
+            (item, value) => item.copyWith(id: value.id),
+            validator: (subItem, level) {
+              return validateBuildId(
+                item.pieces,
+                subItem,
+                (i) => i.id,
+                level,
+              );
+            },
+          ),
+          DataField.textField(
+            'Name',
+            (item) => item.name,
+            (item, value) => item.copyWith(name: value),
+          ),
+          DataField.textImage(
+            'Icon',
+            (item) => item.icon,
+            (item, value) => item.copyWith(icon: value),
+          ),
+          DataField.textField(
+            'Desc',
+            (item) => item.desc,
+            (item, value) => item.copyWith(desc: value),
+          ),
+        ],
+        () => GsArtifactPiece.fromJson({
+          'id': GeArtifactPieceType.flowerOfLife.id,
+        }),
+        (item, list) => item.copyWith(pieces: list),
+        emptyLevel: GsValidLevel.warn2,
       ),
     ];
   }

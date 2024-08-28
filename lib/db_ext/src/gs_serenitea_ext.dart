@@ -1,5 +1,3 @@
-import 'package:dartx/dartx.dart';
-import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
@@ -72,29 +70,28 @@ class GsSereniteaSetExt extends GsModelExt<GsSereniteaSet> {
             ? GsValidLevel.warn1
             : vdCharacters.validateAll(item.chars),
       ),
-      DataField.build<GsSereniteaSet, GsFurnishingAmount>(
+      DataField.buildList(
         'Furnishing',
         (item) => item.furnishing,
-        (item) => vldFurnishing.filters,
-        (item, child) => DataField.intField(
-          Database.i.of<GsMaterial>().getItem(child.id)?.name ?? child.id,
-          (item) => item.amount,
-          (item, value) => item.copyWith(amount: value),
-          range: (1, null),
-        ),
-        (item, value) {
-          final list = value.map((e) {
-            final old = item.furnishing.firstOrNullWhere((i) => i.id == e);
-            return old ?? GsFurnishingAmount(id: e, amount: 1);
-          }).sortedBy((element) => element.id);
-          return item.copyWith(furnishing: list);
-        },
-        (item, field) {
-          final list = item.furnishing.toList();
-          final idx = list.indexWhere((e) => e.id == field.id);
-          if (idx != -1) list[idx] = field;
-          return item.copyWith(furnishing: list);
-        },
+        (index, item, child) => [
+          DataField.singleSelect(
+            'Id',
+            (item) => item.id,
+            (item) => vldFurnishing.filters,
+            (item, value) => item.copyWith(id: value),
+            validator: (subItem) =>
+                validateBuildId(item.furnishing, subItem, (i) => i.id),
+          ),
+          DataField.intField(
+            'Amount',
+            (item) => item.amount,
+            (item, value) => item.copyWith(amount: value),
+            range: (1, null),
+          ),
+        ],
+        () => GsFurnishingAmount.fromJson({}),
+        (item, list) => item.copyWith(furnishing: list),
+        emptyLevel: GsValidLevel.warn2,
       ),
     ];
   }

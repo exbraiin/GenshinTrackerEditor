@@ -1,6 +1,6 @@
-import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
@@ -90,29 +90,28 @@ class GsRecipeExt extends GsModelExt<GsRecipe> {
         },
         validator: (item) => vdBaseRecipes.validate(item.baseRecipe),
       ),
-      DataField.build<GsRecipe, GsIngredient>(
+      DataField.buildList(
         'Ingredients',
         (item) => item.ingredients,
-        (item) => vdIngredients.filters,
-        (item, child) => DataField.intField(
-          Database.i.of<GsMaterial>().getItem(child.id)?.name ?? child.id,
-          (item) => item.amount,
-          (item, value) => item.copyWith(amount: value),
-          range: (1, null),
-        ),
-        (item, value) {
-          final list = value.map((e) {
-            final old = item.ingredients.firstOrNullWhere((i) => i.id == e);
-            return old ?? GsIngredient.fromJson({'id': e});
-          }).sortedBy((element) => element.id);
-          return item.copyWith(ingredients: list);
-        },
-        (item, field) {
-          final list = item.ingredients.toList();
-          final idx = list.indexWhere((e) => e.id == field.id);
-          if (idx != -1) list[idx] = field;
-          return item.copyWith(ingredients: list);
-        },
+        (index, item, child) => [
+          DataField.singleSelect(
+            'Id',
+            (item) => item.id,
+            (item) => vdIngredients.filters,
+            (item, value) => item.copyWith(id: value),
+            validator: (subItem) =>
+                validateBuildId(item.ingredients, subItem, (i) => i.id),
+          ),
+          DataField.intField(
+            'Amount',
+            (item) => item.amount,
+            (item, value) => item.copyWith(amount: value),
+            range: (1, null),
+          ),
+        ],
+        () => GsIngredient.fromJson({}),
+        (item, list) => item.copyWith(ingredients: list),
+        emptyLevel: GsValidLevel.warn2,
       ),
     ];
   }

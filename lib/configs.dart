@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
+import 'package:data_editor/db/external/gs_ambr/gs_ambr_importer_dialog.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db/model_ext.dart';
 import 'package:data_editor/db_ext/data_validator.dart' as vd;
@@ -111,6 +112,13 @@ class GsConfigs<T extends GsModel<T>> {
         image: item.pieces.firstOrNull?.icon,
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
+      import: [
+        DataButton(
+          'Import from Ambr',
+          icon: _ambrIcon,
+          GsAmbrImporterDialog.i.fetchArtifact,
+        ),
+      ],
       filters: [
         GsFieldFilter(
           'Version',
@@ -165,6 +173,11 @@ class GsConfigs<T extends GsModel<T>> {
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
       import: [
+        DataButton(
+          'Import from Ambr',
+          icon: _ambrIcon,
+          GsAmbrImporterDialog.i.fetchCharacter,
+        ),
         DataButton(
           'Import from fandom URL',
           icon: _fandomIcon,
@@ -325,6 +338,13 @@ class GsConfigs<T extends GsModel<T>> {
         color: GsStyle.getNamecardColor(item.type),
         image: item.image,
       ),
+      import: [
+        DataButton(
+          'Import from Ambr',
+          icon: _ambrIcon,
+          GsAmbrImporterDialog.i.fetchNamecard,
+        ),
+      ],
       filters: [
         GsFieldFilter(
           'Version',
@@ -348,6 +368,13 @@ class GsConfigs<T extends GsModel<T>> {
         rarity: item.rarity,
         image: item.image,
       ),
+      import: [
+        DataButton(
+          'Import from Ambr',
+          icon: _ambrIcon,
+          GsAmbrImporterDialog.i.fetchRecipe,
+        ),
+      ],
       filters: [
         GsFieldFilter(
           'Version',
@@ -521,14 +548,9 @@ class GsConfigs<T extends GsModel<T>> {
       ),
       import: [
         DataButton(
-          'Import stats from Ambr table',
+          'Import from Ambr',
           icon: _ambrIcon,
-          (ctx, item) => Importer.importWeaponAscensionStatsFromAmbr(item),
-        ),
-        DataButton(
-          'Import stats from Paimon.moe',
-          icon: _paimonMoeIcon,
-          (context, item) => Importer.importWeaponInfoFromPaimonMoe(item),
+          GsAmbrImporterDialog.i.fetchWeapon,
         ),
       ],
       filters: [

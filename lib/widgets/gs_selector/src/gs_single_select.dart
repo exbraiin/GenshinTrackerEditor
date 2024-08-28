@@ -57,7 +57,7 @@ class SelectDialog<T> extends StatefulWidget {
     required this.onConfirm,
   });
 
-  void show(BuildContext context) => showDialog(
+  Future<void> show(BuildContext context) => showDialog(
         context: context,
         barrierDismissible: true,
         builder: (context) => this,

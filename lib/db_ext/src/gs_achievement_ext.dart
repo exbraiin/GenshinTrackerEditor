@@ -57,24 +57,19 @@ class GsAchievementExt extends GsModelExt<GsAchievement> {
       DataField.buildList<GsAchievement, GsAchievementPhase>(
         'Phases',
         (item) => item.phases,
-        (idx, a, child) => DataField.list(
-          '#$idx',
-          (item) {
-            return [
-              DataField.textField(
-                'Desc',
-                (item) => item.desc,
-                (item, value) => item.copyWith(desc: value),
-              ),
-              DataField.intField(
-                'Reward',
-                (item) => item.reward,
-                (item, value) => item.copyWith(reward: value),
-                range: (1, null),
-              ),
-            ];
-          },
-        ),
+        (idx, a, child) => [
+          DataField.textField(
+            'Desc',
+            (item) => item.desc,
+            (item, value) => item.copyWith(desc: value),
+          ),
+          DataField.intField(
+            'Reward',
+            (item) => item.reward,
+            (item, value) => item.copyWith(reward: value),
+            range: (1, null),
+          ),
+        ],
         () => GsAchievementPhase.fromJson({}),
         (item, list) => item.copyWith(phases: list),
       ),

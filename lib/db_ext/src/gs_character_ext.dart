@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/external/gs_enka.dart';
 import 'package:data_editor/db/ge_enums.dart';
@@ -316,87 +315,90 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         (item, value) => item.copyWith(ascStatValues: value),
         validator: (item) => _vdCharAsc(item.ascStatValues),
       ),
-      DataField.build<GsCharacter, GsCharTalent>(
+      DataField.buildList(
         'Talents',
         (item) => item.talents,
-        (item) => GeCharTalentType.values.toChipsId(),
-        (item, child) => DataField<GsCharTalent>.list(
-          child.id,
-          (tal) => [
-            DataField.textField(
-              'Name',
-              (item) => tal.name,
-              (item, value) => item.copyWith(name: value),
+        (index, item, child) => [
+          DataField.singleEnum(
+            'Id',
+            GeCharTalentType.values.toChips(),
+            (item) => item.type,
+            (item, value) => item.copyWith(
+              id: value.id,
+              type: value,
             ),
-            DataField.textImage(
-              'Icon',
-              (item) => tal.icon,
-              (item, value) => item.copyWith(icon: value),
-            ),
-            DataField.textEditor(
-              'Desc',
-              (item) => tal.desc,
-              (item, value) => item.copyWith(desc: value),
-              autoFormat: (input) => _formatCharTalsAndCons(item, input),
-            ),
-          ],
-        ),
-        (item, value) {
-          final list = value.map((id) {
-            final type = GeCharTalentType.values.fromId(id);
-            final old = item.talents.firstOrNullWhere((e) => type == e.type);
-            return old ??
-                GsCharTalent.fromJson({}).copyWith(id: type.id, type: type);
-          }).sortedBy((e) => GeCharTalentType.values.indexOf(e.type));
-          return item.copyWith(talents: list);
-        },
-        (item, field) {
-          final list = item.talents.toList();
-          final idx = list.indexWhere((e) => e.id == field.id);
-          if (idx != -1) list[idx] = field;
-          return item.copyWith(talents: list);
-        },
+            validator: (subItem, level) {
+              return validateBuildId(
+                item.talents,
+                subItem,
+                (i) => i.id,
+                level,
+              );
+            },
+          ),
+          DataField.textField(
+            'Name',
+            (item) => child.name,
+            (item, value) => item.copyWith(name: value),
+          ),
+          DataField.textImage(
+            'Icon',
+            (item) => child.icon,
+            (item, value) => item.copyWith(icon: value),
+          ),
+          DataField.textEditor(
+            'Desc',
+            (item) => child.desc,
+            (item, value) => item.copyWith(desc: value),
+            autoFormat: (input) => _formatCharTalsAndCons(item, input),
+          ),
+        ],
+        () => GsCharTalent.fromJson({
+          'id': GeCharTalentType.normalAttack.id,
+          'type': GeCharTalentType.normalAttack.id,
+        }),
+        (item, list) => item.copyWith(talents: list),
       ),
-      DataField.build<GsCharacter, GsCharConstellation>(
+      DataField.buildList(
         'Constellations',
         (item) => item.constellations,
-        (item) => GeCharConstellationType.values.toChipsId(),
-        (item, child) => DataField.list(
-          child.id,
-          (con) => [
-            DataField.textField(
-              'Name',
-              (item) => con.name,
-              (item, value) => item.copyWith(name: value),
-            ),
-            DataField.textImage(
-              'Icon',
-              (item) => con.icon,
-              (item, value) => item.copyWith(icon: value),
-            ),
-            DataField.textEditor(
-              'Desc',
-              (item) => con.desc,
-              (item, value) => item.copyWith(desc: value),
-              autoFormat: (input) => _formatCharTalsAndCons(item, input),
-            ),
-          ],
-        ),
-        (item, value) {
-          final list = value.map((id) {
-            final t = GeCharConstellationType.values.fromId(id);
-            final o = item.constellations.firstOrNullWhere((i) => t == i.type);
-            return o ??
-                GsCharConstellation.fromJson({}).copyWith(id: t.id, type: t);
-          }).sortedBy((e) => e.id);
-          return item.copyWith(constellations: list);
-        },
-        (item, field) {
-          final list = item.constellations.toList();
-          final idx = list.indexWhere((e) => e.id == field.id);
-          if (idx != -1) list[idx] = field;
-          return item.copyWith(constellations: list);
-        },
+        (index, item, child) => [
+          DataField.singleEnum(
+            'Id',
+            GeCharConstellationType.values.toChips(),
+            (item) => item.type,
+            (item, value) => item.copyWith(id: value.id, type: value),
+            validator: (subItem, level) {
+              return validateBuildId(
+                item.constellations,
+                subItem,
+                (i) => i.id,
+                level,
+              );
+            },
+          ),
+          DataField.textField(
+            'Name',
+            (item) => child.name,
+            (item, value) => item.copyWith(name: value),
+          ),
+          DataField.textImage(
+            'Icon',
+            (item) => child.icon,
+            (item, value) => item.copyWith(icon: value),
+          ),
+          DataField.textEditor(
+            'Desc',
+            (item) => child.desc,
+            (item, value) => item.copyWith(desc: value),
+            autoFormat: (input) => _formatCharTalsAndCons(item, input),
+          ),
+        ],
+        () => GsCharConstellation.fromJson({
+          'id': GeCharConstellationType.c1.id,
+          'type': GeCharConstellationType.c1.id,
+        }),
+        (item, list) => item.copyWith(constellations: list),
       ),
     ];
   }

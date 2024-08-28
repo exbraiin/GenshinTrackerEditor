@@ -5,6 +5,7 @@ import 'package:data_editor/screens/info_screen.dart';
 import 'package:data_editor/style/style.dart';
 import 'package:data_editor/style/utils.dart';
 import 'package:data_editor/widgets/gs_grid_view.dart';
+import 'package:data_editor/widgets/gs_progress_indicator.dart';
 import 'package:data_editor/widgets/text_style_parser.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -89,10 +90,7 @@ class Home extends StatelessWidget {
             return Container(
               decoration: GsStyle.kMainDecoration,
               child: const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                ),
+                child: GsProgressIndicator(),
               ),
             );
           }
@@ -187,10 +185,7 @@ class _BusyWidgetState extends State<_BusyWidget> {
         if (value) {
           return const Center(
             child: IconButton(
-              icon: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: Colors.white,
-              ),
+              icon: GsProgressIndicator(),
               onPressed: null,
             ),
           );

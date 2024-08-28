@@ -1,4 +1,5 @@
 import 'package:data_editor/db/ge_enums.dart';
+import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/db_ext/datafields_util.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
@@ -11,6 +12,8 @@ class GsEventExt extends GsModelExt<GsEvent> {
   List<DataField<GsEvent>> getFields(String? editId) {
     final vd = ValidateModels<GsEvent>();
     final vdVersion = ValidateModels.versions();
+    final vdWeapons = ValidateModels<GsWeapon>();
+    final vdCharacters = ValidateModels<GsCharacter>();
 
     return [
       DataField.textField(
@@ -72,6 +75,36 @@ class GsEventExt extends GsModelExt<GsEvent> {
           item.dateEnd,
         ),
       ),
+      DataField.multiSelect<GsEvent, String>(
+        'Weapon Rewards',
+        (item) => item.rewardsWeapons,
+        (item) => vdWeapons.filters,
+        (item, value) => item.copyWith(rewardsWeapons: value),
+        validator: (item) {
+          if (_invalidRewards(item)) {
+            return GsValidLevel.warn2;
+          }
+          return vdWeapons.validateAll(item.rewardsWeapons);
+        },
+      ),
+      DataField.multiSelect<GsEvent, String>(
+        'Character Rewards',
+        (item) => item.rewardsCharacters,
+        (item) => vdCharacters.filters,
+        (item, value) => item.copyWith(rewardsCharacters: value),
+        validator: (item) {
+          if (_invalidRewards(item)) {
+            return GsValidLevel.warn2;
+          }
+          return vdCharacters.validateAll(item.rewardsCharacters);
+        },
+      ),
     ];
   }
+}
+
+bool _invalidRewards(GsEvent item) {
+  return item.type == GeEventType.flagship &&
+      item.rewardsWeapons.isEmpty &&
+      item.rewardsCharacters.isEmpty;
 }
