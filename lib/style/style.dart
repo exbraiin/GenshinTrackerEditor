@@ -17,6 +17,7 @@ abstract final class GsGraphics {
       GeRecipeEffectType.revive => Assets.revive,
       GeRecipeEffectType.staminaIncrease => Assets.staminaIncrease,
       GeRecipeEffectType.staminaReduction => Assets.staminaReduction,
+      GeRecipeEffectType.special => Assets.special,
       GeRecipeEffectType.none => '',
     };
   }

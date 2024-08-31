@@ -27,6 +27,9 @@ abstract final class Assets{
   /// revive.png
   static const revive = 'assets/icons/food/revive.png';
 
+  /// special.png
+  static const special = 'assets/icons/food/special.png';
+
   /// staminaIncrease.png
   static const staminaIncrease = 'assets/icons/food/staminaIncrease.png';
 

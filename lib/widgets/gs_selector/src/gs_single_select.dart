@@ -106,6 +106,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: TextField(
+                    autofocus: true,
                     controller: _searching,
                     decoration: const InputDecoration(hintText: 'Search'),
                   ),
@@ -120,14 +121,15 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
                         child: Wrap(
                           spacing: 6,
                           runSpacing: 6,
-                          children: widget.items.map((item) {
+                          children: widget.items.where((item) {
                             final hide = controller.text.isNotEmpty &&
                                 !item.label
                                     .toLowerCase()
                                     .contains(controller.text.toLowerCase());
+                            return !hide;
+                          }).map((item) {
                             return GsSelectChip(
                               item,
-                              hide: hide,
                               selected: widget.selected == item.value,
                               onTap: (id) {
                                 final v = widget.selected == id ? null : id;

@@ -15,42 +15,43 @@ final class GsAmbrImporter {
   static final i = GsAmbrImporter._();
   GsAmbrImporter._();
 
-  Future<Map<String, dynamic>> _fetchPage(
+  Future<JsonMap> _fetchPage(
     String endpoint, {
     bool isStatic = false,
+    bool useCache = kDebugMode,
   }) async {
     const kLanguage = 'en';
     final url = isStatic
         ? '$_kBaseUrl/static/$endpoint'
         : '$_kBaseUrl/$kLanguage/$endpoint';
 
-    final dir = Directory('.cache');
-    if (!await dir.exists()) await dir.create();
-    final file = File('${dir.path}/${endpoint.replaceAll('/', '_')}.json');
+    File? file;
+    if (useCache) {
+      final dir = Directory('.cache');
+      if (!await dir.exists()) await dir.create();
+      file = File('${dir.path}/${endpoint.replaceAll('/', '_')}.json');
 
-    if (await file.exists()) {
-      if (kDebugMode) {
-        print('Reading from cache: ${file.path}');
+      if (await file.exists()) {
+        if (kDebugMode) print('Reading from cache: ${file.path}');
+        final content = await file.readAsString();
+        final data = jsonDecode(content) as JsonMap;
+        return data.getJsonMap('data');
       }
-      final content = await file.readAsString();
-      final data = jsonDecode(content) as Map<String, dynamic>;
-      return data['data'];
     }
-    if (kDebugMode) {
-      print('Downloading: $url');
-    }
-    final response = await http.get(Uri.parse(url));
-    await file.writeAsString(response.body);
 
-    final data = jsonDecode(response.body) as Map<String, dynamic>;
-    return data['data'];
+    if (kDebugMode) print('Downloading: $url');
+    final response = await http.get(Uri.parse(url));
+    await file?.writeAsString(response.body);
+
+    final data = jsonDecode(response.body) as JsonMap;
+    return data.getJsonMap('data');
   }
 
   Future<List<AmbrItem>> fetchArtifacts() async {
     const url = 'https://api.ambr.top/assets/UI/reliquary';
     final data = await _fetchPage('reliquary');
-    final items = data['items'] as Map<String, dynamic>;
-    return items.values.map((m) {
+    final items = data.getJsonMap('items');
+    return items.values.cast<JsonMap>().map((m) {
       final levels = (m['levelList'] as List? ?? []).cast<int>();
       final icon = '$url/${m['icon']}.png';
       return AmbrItem(
@@ -249,7 +250,7 @@ final class GsAmbrImporter {
         .cast<JsonMap>()
         .sortedBy((e) => e.getInt('id'))
         .map((json) {
-      final type = cons[json.getInt('id') + 1];
+      final type = cons[json.getInt('id')];
       final fall = otherCons?.firstOrNullWhere((e) => e.id == type.id);
 
       return GsCharConstellation(
@@ -523,9 +524,7 @@ final class GsAmbrImporter {
       var idx = 0;
       var ptr = 0;
       var res = '';
-      const tag1 = '<color';
-      const tag2 = '>';
-      const tag3 = '</color>';
+      const tag1 = '<color', tag2 = '>', tag3 = '</color>';
       while (true) {
         final idx1 = text.indexOf(tag1, idx);
         if (idx1 == -1) break;
@@ -575,6 +574,7 @@ final class GsAmbrImporter {
       type: type,
       atk: ascAtkValue?.round() ?? other?.atk ?? 0,
       statType: statType,
+      // TODO: Check for mastery
       statValue: ascStatValue != null
           ? double.tryParse((ascStatValue * 100).toStringAsFixed(1)) ?? oStat
           : oStat,
@@ -592,20 +592,7 @@ final class GsAmbrImporter {
   }
 }
 
-extension on JsonMap {
-  T getOr<T>(String key, T or) {
-    final v = this[key];
-    if (v == null) return or;
-    return this[key] as T;
-  }
-
-  int getInt(String key) => getOr(key, 0);
-  String getString(String key) => getOr(key, '');
-  JsonMap getJsonMap(String key) => getOr(key, const {});
-  List<int> getIntList(String key) => getOr<List>(key, const []).cast<int>();
-  List<JsonMap> getJsonMapList(String key) =>
-      getOr<List>(key, const []).cast<JsonMap>();
-}
+// MARK: Models
 
 class AmbrItem {
   final int level;
@@ -765,4 +752,22 @@ class WeaponCurves {
         .firstOrNullWhere((e) => e.key == statType);
     return initValue * (curve ?? 1) + (addStat?.value ?? 0);
   }
+}
+
+// MARK: Extensions
+
+extension on JsonMap {
+  T getOr<T>(String key, T or) {
+    final v = this[key];
+    if (v == null) return or;
+    return this[key] as T;
+  }
+
+  int getInt(String key) => getOr(key, 0);
+  String getString(String key) => getOr(key, '');
+  JsonMap getJsonMap(String key) => getOr(key, const {});
+
+  List<T> getList<T>(String key) => getOr<List>(key, const []).cast<T>();
+  List<int> getIntList(String key) => getList<int>(key);
+  List<JsonMap> getJsonMapList(String key) => getList<JsonMap>(key);
 }
