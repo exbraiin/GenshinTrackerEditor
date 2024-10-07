@@ -62,12 +62,7 @@ class GsNamecardExt extends GsModelExt<GsNamecard> {
         'Desc',
         (item) => item.desc,
         (item, value) => item.copyWith(desc: value),
-      ),
-      DataField.textField(
-        'Obtain',
-        (item) => item.obtain,
-        (item, value) => item.copyWith(obtain: value),
-      ),
+      ),      
     ];
   }
 }

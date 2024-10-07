@@ -355,7 +355,6 @@ final class GsAmbrImporter {
       image: other?.image ?? '',
       fullImage: other?.fullImage ?? '',
       desc: data.getString('description').replaceAll('Namecard style.\n', ''),
-      obtain: data.getString('source'),
     );
   }
 

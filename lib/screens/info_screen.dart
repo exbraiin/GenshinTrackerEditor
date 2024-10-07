@@ -450,7 +450,10 @@ extension on GsCharacter {
 
 extension on GsWeapon {
   bool get hasValidSource {
-    if (rarity != 5) return source != GeItemSourceType.wishesCharacterBanner;
+    if (rarity != 5) {
+      return source != GeItemSourceType.wishesCharacterBanner &&
+          source != GeItemSourceType.none;
+    }
     return source == GeItemSourceType.wishesWeaponBanner ||
         source == GeItemSourceType.wishesStandard;
   }
