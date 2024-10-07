@@ -1,6 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
+import 'package:data_editor/db/model_ext.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
 import 'package:data_editor/style/style.dart';
@@ -98,6 +99,16 @@ class ValidateModels<T extends GsModel<T>> {
     return ValidateModels._create(
       noneId: '',
       filter: (e) => e.baseRecipe.isEmpty && e.type == GeRecipeType.permanent,
+    );
+  }
+
+  static ValidateModels<GsRecipe> baseRecipesWithIngredients(GsRecipe item) {
+    return ValidateModels._create(
+      noneId: '',
+      filter: (e) =>
+          e.baseRecipe.isEmpty &&
+          e.type == GeRecipeType.permanent &&
+          e.hasSameIngredientsOf(item),
     );
   }
 

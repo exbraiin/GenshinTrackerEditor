@@ -38,6 +38,13 @@ extension GsAchievementPhaseExt on GsAchievementPhase {
   }
 }
 
+extension GsRecipeExt on GsRecipe {
+  bool hasSameIngredientsOf(GsRecipe other) {
+    if (ingredients.length != other.ingredients.length) return false;
+    return ingredients.every((e) => other.ingredients.any((i) => i.id == e.id));
+  }
+}
+
 extension IterableExt<E> on Iterable<E> {
   bool compareWith(Iterable<E> other, bool Function(E a, E b) compare) {
     if (length != other.length) return false;

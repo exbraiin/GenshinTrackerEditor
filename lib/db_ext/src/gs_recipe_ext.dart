@@ -88,6 +88,8 @@ class GsRecipeExt extends GsModelExt<GsRecipe> {
             ingredients: ingredients,
           );
         },
+        filtered: (item) =>
+            ValidateModels.baseRecipesWithIngredients(item).filters,
         validator: (item) => vdBaseRecipes.validate(item.baseRecipe),
       ),
       DataField.buildList(

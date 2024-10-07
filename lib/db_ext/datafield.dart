@@ -441,12 +441,31 @@ class DataField<T extends GsModel<T>> {
     String Function(T item) value,
     Iterable<GsSelectItem<String>> Function(T item) items,
     T Function(T item, String value) update, {
+    Iterable<GsSelectItem<String>> Function(T item)? filtered,
     required this.validator,
-  }) : builder = ((context, item, edit, level) => GsSingleSelect(
-              items: items(item),
-              selected: value(item),
-              onConfirm: (value) => edit(update(item, value ?? '')),
-            ));
+  }) : builder = ((context, item, edit, level) {
+          return Row(
+            children: [
+              Expanded(
+                child: GsSingleSelect(
+                  items: items(item),
+                  selected: value(item),
+                  onConfirm: (value) => edit(update(item, value ?? '')),
+                ),
+              ),
+              if (filtered != null)
+                IconButton(
+                  onPressed: () => SelectDialog(
+                    title: 'Select',
+                    items: filtered(item),
+                    selected: value(item),
+                    onConfirm: (value) => edit(update(item, value ?? '')),
+                  ).show(context),
+                  icon: const Icon(Icons.filter_alt_rounded),
+                ),
+            ],
+          );
+        });
 
   static DataField<T> singleSelectOf<T extends GsModel<T>, R>(
     String label,
