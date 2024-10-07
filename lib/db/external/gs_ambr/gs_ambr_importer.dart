@@ -10,7 +10,7 @@ import 'package:gsdatabase/gsdatabase.dart';
 import 'package:http/http.dart' as http;
 
 final class GsAmbrImporter {
-  static const _kBaseUrl = 'https://api.ambr.top/v2';
+  static const _kBaseUrl = 'https://gi.yatta.top';
 
   static final i = GsAmbrImporter._();
   GsAmbrImporter._();
@@ -22,8 +22,8 @@ final class GsAmbrImporter {
   }) async {
     const kLanguage = 'en';
     final url = isStatic
-        ? '$_kBaseUrl/static/$endpoint'
-        : '$_kBaseUrl/$kLanguage/$endpoint';
+        ? '$_kBaseUrl/api/v2/static/$endpoint'
+        : '$_kBaseUrl/api/v2/$kLanguage/$endpoint';
 
     File? file;
     if (useCache) {
@@ -48,7 +48,7 @@ final class GsAmbrImporter {
   }
 
   Future<List<AmbrItem>> fetchArtifacts() async {
-    const url = 'https://api.ambr.top/assets/UI/reliquary';
+    const url = '$_kBaseUrl/assets/UI/reliquary';
     final data = await _fetchPage('reliquary');
     final items = data.getJsonMap('items');
     return items.values.cast<JsonMap>().map((m) {
@@ -69,19 +69,20 @@ final class GsAmbrImporter {
 
     final pieces = (data['suit'] as JsonMap).entries.map((item) {
       final data = item.value as JsonMap;
-      final id = switch (item.key) {
-        'EQUIP_BRACER' => GeArtifactPieceType.flowerOfLife.id,
-        'EQUIP_NECKLACE' => GeArtifactPieceType.plumeOfDeath.id,
-        'EQUIP_SHOES' => GeArtifactPieceType.sandsOfEon.id,
-        'EQUIP_RING' => GeArtifactPieceType.gobletOfEonothem.id,
-        'EQUIP_DRESS' => GeArtifactPieceType.circletOfLogos.id,
-        _ => '',
+      final type = switch (item.key) {
+        'EQUIP_BRACER' => GeArtifactPieceType.flowerOfLife,
+        'EQUIP_NECKLACE' => GeArtifactPieceType.plumeOfDeath,
+        'EQUIP_SHOES' => GeArtifactPieceType.sandsOfEon,
+        'EQUIP_RING' => GeArtifactPieceType.gobletOfEonothem,
+        'EQUIP_DRESS' => GeArtifactPieceType.circletOfLogos,
+        _ => GeArtifactPieceType.flowerOfLife,
       };
 
       final fall = other?.pieces.firstOrNullWhere((e) => e.id == id);
 
       return GsArtifactPiece(
-        id: id,
+        id: type.id,
+        type: type,
         name: data.getString('name'),
         icon: fall?.icon ?? '',
         desc: data.getString('description'),
@@ -109,7 +110,7 @@ final class GsAmbrImporter {
   }
 
   Future<List<AmbrItem>> fetchCharacters() async {
-    const url = 'https://api.ambr.top/assets/UI';
+    const url = '$_kBaseUrl/assets/UI';
     final data = await _fetchPage('avatar');
     final items = data['items'] as Map<String, dynamic>;
 
@@ -315,7 +316,7 @@ final class GsAmbrImporter {
   }
 
   Future<List<AmbrItem>> fetchNamecards() async {
-    const url = 'https://api.ambr.top/assets/UI/namecard';
+    const url = '$_kBaseUrl/assets/UI/namecard';
     final data = await _fetchPage('namecard');
     final items = data['items'] as Map<String, dynamic>;
 
@@ -359,7 +360,7 @@ final class GsAmbrImporter {
   }
 
   Future<List<AmbrItem>> fetchRecipes() async {
-    const url = 'https://api.ambr.top/assets/UI';
+    const url = '$_kBaseUrl/assets/UI';
     final data = await _fetchPage('food');
     final items = data['items'] as Map<String, dynamic>;
 
@@ -431,7 +432,7 @@ final class GsAmbrImporter {
   }
 
   Future<List<AmbrItem>> fetchWeapons() async {
-    const url = 'https://api.ambr.top/assets/UI';
+    const url = '$_kBaseUrl/assets/UI';
     final data = await _fetchPage('weapon');
     final items = data['items'] as Map<String, dynamic>;
 
