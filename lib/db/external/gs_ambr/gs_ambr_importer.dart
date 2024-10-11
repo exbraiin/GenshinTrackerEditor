@@ -208,12 +208,27 @@ final class GsAmbrImporter {
         .items
         .where((e) => matNames.contains(e.name));
 
-    String? getMat(GeMaterialType type) {
-      return mats
+    String getMat(GeMaterialType type) {
+      final found = mats
           .where((e) => e.group == type)
           .sortedBy((e) => e.rarity)
           .firstOrNull
           ?.id;
+      late final fallback = switch (type) {
+        GeMaterialType.none => '',
+        GeMaterialType.oculi => '',
+        GeMaterialType.ascensionGems => other?.gemMaterial,
+        GeMaterialType.forging => '',
+        GeMaterialType.furnishing => '',
+        GeMaterialType.normalDrops => other?.commonMaterial,
+        GeMaterialType.eliteDrops => '',
+        GeMaterialType.normalBossDrops => other?.bossMaterial,
+        GeMaterialType.weeklyBossDrops => other?.weeklyMaterial,
+        GeMaterialType.regionMaterials => other?.regionMaterial,
+        GeMaterialType.talentMaterials => other?.talentMaterial,
+        GeMaterialType.weaponMaterials => '',
+      };
+      return found ?? fallback ?? '';
     }
 
     const cons = GeCharConstellationType.values;
@@ -291,20 +306,13 @@ final class GsAmbrImporter {
       image: other?.image ?? '',
       sideImage: other?.sideImage ?? '',
       fullImage: other?.fullImage ?? '',
-      websiteImage: other?.websiteImage ?? '',
       constellationImage: other?.constellationImage ?? '',
-      gemMaterial:
-          getMat(GeMaterialType.ascensionGems) ?? other?.gemMaterial ?? '',
-      bossMaterial:
-          getMat(GeMaterialType.normalBossDrops) ?? other?.bossMaterial ?? '',
-      commonMaterial:
-          getMat(GeMaterialType.normalDrops) ?? other?.commonMaterial ?? '',
-      regionMaterial:
-          getMat(GeMaterialType.regionMaterials) ?? other?.regionMaterial ?? '',
-      talentMaterial:
-          getMat(GeMaterialType.talentMaterials) ?? other?.talentMaterial ?? '',
-      weeklyMaterial:
-          getMat(GeMaterialType.weeklyBossDrops) ?? other?.weeklyMaterial ?? '',
+      gemMaterial: getMat(GeMaterialType.ascensionGems),
+      bossMaterial: getMat(GeMaterialType.normalBossDrops),
+      commonMaterial: getMat(GeMaterialType.normalDrops),
+      regionMaterial: getMat(GeMaterialType.regionMaterials),
+      talentMaterial: getMat(GeMaterialType.talentMaterials),
+      weeklyMaterial: getMat(GeMaterialType.weeklyBossDrops),
       ascStatType: ascStat,
       ascHpValues: curves.getStatValues(data, 'FIGHT_PROP_BASE_HP'),
       ascAtkValues: curves.getStatValues(data, 'FIGHT_PROP_BASE_ATTACK'),
