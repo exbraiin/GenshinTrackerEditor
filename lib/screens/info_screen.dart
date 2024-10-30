@@ -331,6 +331,23 @@ Iterable<_VersionLine> _validateList(BuildContext context) sync* {
       addItems<GsBattlepass>('Missing battlepass!', [null]);
     }
 
+    final materials = items<GsMaterial>().where((e) => e.version == version.id);
+    final matRegion = <GsMaterial>[];
+    final matWeekdays = <GsMaterial>[];
+    for (final mat in materials) {
+      if (!mat.hasValidWeekdays) {
+        matWeekdays.add(mat);
+      } else if (!mat.hasValidRegion) {
+        matRegion.add(mat);
+      }
+    }
+    if (matWeekdays.isNotEmpty) {
+      addItems<GsMaterial>('Missing weekdays:', matWeekdays);
+    }
+    if (matRegion.isNotEmpty) {
+      addItems<GsMaterial>('Missing region:', matRegion);
+    }
+
     const minEvents = 5;
     final events = items<GsEvent>().count((e) => e.version == version.id);
     if (events < minEvents) {
@@ -430,6 +447,39 @@ Iterable<_VersionLine> _validateList(BuildContext context) sync* {
     if (buffer.isNotEmpty) {
       yield (version: version.id, items: buffer);
     }
+  }
+}
+
+extension on GsMaterial {
+  bool get hasValidWeekdays {
+    if (group == GeMaterialType.talentMaterials ||
+        group == GeMaterialType.weaponMaterials) {
+      if (weekdays.length != 3) return false;
+      late final mon = weekdays.containsAll([
+        GeWeekdayType.sunday,
+        GeWeekdayType.monday,
+        GeWeekdayType.thursday,
+      ]);
+      late final tue = weekdays.containsAll([
+        GeWeekdayType.sunday,
+        GeWeekdayType.tuesday,
+        GeWeekdayType.friday,
+      ]);
+      late final wed = weekdays.containsAll([
+        GeWeekdayType.sunday,
+        GeWeekdayType.wednesday,
+        GeWeekdayType.saturday,
+      ]);
+      return mon || tue || wed;
+    }
+
+    /// If does not require weekdays mark it as valid
+    return true;
+  }
+
+  bool get hasValidRegion {
+    return group != GeMaterialType.regionMaterials ||
+        region != GeRegionType.none;
   }
 }
 
