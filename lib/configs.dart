@@ -263,34 +263,6 @@ class GsConfigs<T extends GsModel<T>> {
             GsStyle.getRegionElementColor(GeRegionType.values.fromId(item.id)),
       ),
     ),
-    GsEnemy: GsConfigs<GsEnemy>._(
-      title: 'Enemies',
-      pageBuilder: const vd.GsEnemyExt(),
-      itemDecoration: (item) => GsItemDecor.rarity(
-        label: item.name,
-        version: item.version,
-        rarity: item.rarityByType,
-        image: item.image,
-        child: _orderItem(item.order.toString()),
-      ),
-      filters: [
-        GsFieldFilter(
-          'Version',
-          _versions.filters,
-          (i) => i.version,
-        ),
-        GsFieldFilter.fromEnum(
-          'Type',
-          GeEnemyType.values,
-          (i) => i.type,
-        ),
-        GsFieldFilter.fromEnum(
-          'Family',
-          GeEnemyFamilyType.values,
-          (i) => i.family,
-        ),
-      ],
-    ),
     GsMaterial: GsConfigs<GsMaterial>._(
       title: 'Materials',
       pageBuilder: const vd.GsMaterialExt(),
@@ -478,28 +450,6 @@ class GsConfigs<T extends GsModel<T>> {
         label: '${item.number}',
         version: item.version,
         rarity: 5,
-        regionColor: GsStyle.getRegionElementColor(item.region),
-      ),
-      filters: [
-        GsFieldFilter(
-          'Version',
-          _versions.filters,
-          (i) => i.version,
-        ),
-        GsFieldFilter.fromEnum(
-          'Region',
-          GeRegionType.values,
-          (i) => i.region,
-        ),
-      ],
-    ),
-    GsViewpoint: GsConfigs<GsViewpoint>._(
-      title: 'Viewpoints',
-      pageBuilder: const vd.GsViewpointExt(),
-      itemDecoration: (item) => GsItemDecor.rarity(
-        label: item.name,
-        version: item.version,
-        rarity: 4,
         regionColor: GsStyle.getRegionElementColor(item.region),
       ),
       filters: [

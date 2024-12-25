@@ -2,8 +2,7 @@ import 'package:dartx/dartx.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
 import 'package:data_editor/style/utils.dart';
-import 'package:gsdatabase/gsdatabase.dart'
-    hide GsRecipeExt, GsSpincrystalExt, GsEnemyExt;
+import 'package:gsdatabase/gsdatabase.dart' hide GsRecipeExt, GsSpincrystalExt;
 
 abstract class GsModelExt<T extends GsModel<T>> {
   const GsModelExt();

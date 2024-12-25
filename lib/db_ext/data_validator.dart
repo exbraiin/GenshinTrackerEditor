@@ -13,7 +13,6 @@ export 'src/gs_banner_ext.dart';
 export 'src/gs_battlepass_ext.dart';
 export 'src/gs_character_ext.dart';
 export 'src/gs_character_outfit_ext.dart';
-export 'src/gs_enemy_ext.dart';
 export 'src/gs_event_ext.dart';
 export 'src/gs_furnishing_ext.dart';
 export 'src/gs_material_ext.dart';
@@ -24,7 +23,6 @@ export 'src/gs_remarkable_chest_ext.dart';
 export 'src/gs_serenitea_ext.dart';
 export 'src/gs_spincrystal_ext.dart';
 export 'src/gs_version_ext.dart';
-export 'src/gs_viewpoint_ext.dart';
 export 'src/gs_weapon_ext.dart';
 
 // The validator level.
@@ -71,7 +69,6 @@ class DataValidator {
       checkItems<GsCharacter>(),
       checkItems<GsCharacterSkin>(),
       checkItems<GsRegion>(),
-      checkItems<GsEnemy>(),
       checkItems<GsMaterial>(),
       checkItems<GsNamecard>(),
       checkItems<GsRecipe>(),
@@ -80,7 +77,6 @@ class DataValidator {
       checkItems<GsFurnishing>(),
       checkItems<GsSpincrystal>(),
       checkItems<GsVersion>(),
-      checkItems<GsViewpoint>(),
       checkItems<GsEvent>(),
       checkItems<GsBattlepass>(),
       checkItems<GsWeapon>(),
