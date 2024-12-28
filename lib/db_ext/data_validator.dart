@@ -13,6 +13,7 @@ export 'src/gs_banner_ext.dart';
 export 'src/gs_battlepass_ext.dart';
 export 'src/gs_character_ext.dart';
 export 'src/gs_character_outfit_ext.dart';
+export 'src/gs_envisaged_echo_ext.dart';
 export 'src/gs_event_ext.dart';
 export 'src/gs_furnishing_ext.dart';
 export 'src/gs_material_ext.dart';

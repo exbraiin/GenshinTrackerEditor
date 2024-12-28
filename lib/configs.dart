@@ -465,6 +465,16 @@ class GsConfigs<T extends GsModel<T>> {
         ),
       ],
     ),
+    GsEnvisagedEcho: GsConfigs<GsEnvisagedEcho>._(
+      title: 'Envisaged Echo',
+      pageBuilder: const vd.GsEnvisagedEchoExt(),
+      itemDecoration: (item) => GsItemDecor.color(
+        label: item.name,
+        image: item.icon,
+        version: item.version,
+        color: GsStyle.getRarityColor(4),
+      ),
+    ),
     GsEvent: GsConfigs<GsEvent>._(
       title: 'Events',
       pageBuilder: const vd.GsEventExt(),
@@ -552,8 +562,8 @@ class GsConfigs<T extends GsModel<T>> {
     return _map[T] as GsConfigs<T>?;
   }
 
-  static List<GsConfigs> getAllConfigs() {
-    return _map.values.toList();
+  static Iterable<GsConfigs> getAllConfigs() {
+    return _map.values;
   }
 
   Widget toGridItem(BuildContext context) {
