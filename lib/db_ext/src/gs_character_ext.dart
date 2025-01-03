@@ -105,13 +105,6 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         (item, value) => item.copyWith(namecardId: value),
         validator: (item) => vdNamecard.validate(item.namecardId),
       ),
-      DataField.singleEnum(
-        'Gender',
-        GeGenderType.values.toChips(),
-        (item) => item.gender,
-        (item, value) => item.copyWith(gender: value),
-        invalid: [GeGenderType.none],
-      ),
       DataField.selectRarity(
         'Rarity',
         (item) => item.rarity,
@@ -123,19 +116,6 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         GeRegionType.values.toChips(),
         (item) => item.region,
         (item, value) => item.copyWith(region: value),
-      ),
-      DataField.singleEnum(
-        'Arkhe',
-        GeArkheType.values.toChips(),
-        (item) => item.arkhe,
-        (item, value) => item.copyWith(arkhe: value),
-        validator: (item, level) {
-          if (item.region == GeRegionType.fontaine &&
-              item.arkhe == GeArkheType.none) {
-            return GsValidLevel.warn3;
-          }
-          return level;
-        },
       ),
       DataField.singleEnum(
         'Weapon',
@@ -217,11 +197,6 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         (item, value) => item.copyWith(image: value),
       ),
       DataField.textImage(
-        'Side Image',
-        (item) => item.sideImage,
-        (item, value) => item.copyWith(sideImage: value),
-      ),
-      DataField.textImage(
         'Full Image',
         (item) => item.fullImage,
         (item, value) => item.copyWith(fullImage: value),
@@ -230,7 +205,7 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         'Constellation Image',
         (item) => item.constellationImage,
         (item, value) => item.copyWith(constellationImage: value),
-      ),      
+      ),
       DataField.singleSelect(
         'Material Gem',
         (item) => item.gemMaterial,
@@ -286,203 +261,30 @@ class GsCharacterExt extends GsModelExt<GsCharacter> {
         (item, value) => item.copyWith(ascStatType: value),
         invalid: [GeCharacterAscStatType.none],
       ),
-      DataField.textList(
-        'Ascension HP Values',
-        (item) => item.ascHpValues,
-        (item, value) => item.copyWith(ascHpValues: value),
-        validator: (item) => _vdCharAsc(item.ascHpValues),
+      DataField.intField(
+        'Ascension HP Value',
+        (item) => item.ascHpValue,
+        (item, value) => item.copyWith(ascHpValue: value),
+        range: (1, null),
       ),
-      DataField.textList(
-        'Ascension Atk Values',
-        (item) => item.ascAtkValues,
-        (item, value) => item.copyWith(ascAtkValues: value),
-        validator: (item) => _vdCharAsc(item.ascAtkValues),
+      DataField.intField(
+        'Ascension Atk Value',
+        (item) => item.ascAtkValue,
+        (item, value) => item.copyWith(ascAtkValue: value),
+        range: (1, null),
       ),
-      DataField.textList(
-        'Ascension Def Values',
-        (item) => item.ascDefValues,
-        (item, value) => item.copyWith(ascDefValues: value),
-        validator: (item) => _vdCharAsc(item.ascDefValues),
+      DataField.intField(
+        'Ascension Def Value',
+        (item) => item.ascDefValue,
+        (item, value) => item.copyWith(ascDefValue: value),
+        range: (1, null),
       ),
-      DataField.textList(
-        'Ascension Stat Values',
-        (item) => item.ascStatValues,
-        (item, value) => item.copyWith(ascStatValues: value),
-        validator: (item) => _vdCharAsc(item.ascStatValues),
-      ),
-      DataField.buildList(
-        'Talents',
-        (item) => item.talents,
-        (index, item, child) => [
-          DataField.singleEnum(
-            'Id',
-            GeCharTalentType.values.toChips(),
-            (item) => item.type,
-            (item, value) => item.copyWith(
-              id: value.id,
-              type: value,
-            ),
-            validator: (subItem, level) {
-              return validateBuildId(
-                item.talents,
-                subItem,
-                (i) => i.id,
-                level,
-              );
-            },
-          ),
-          DataField.textField(
-            'Name',
-            (item) => child.name,
-            (item, value) => item.copyWith(name: value),
-          ),
-          DataField.textImage(
-            'Icon',
-            (item) => child.icon,
-            (item, value) => item.copyWith(icon: value),
-          ),
-          DataField.textEditor(
-            'Desc',
-            (item) => child.desc,
-            (item, value) => item.copyWith(desc: value),
-            autoFormat: (input) => _formatCharTalsAndCons(item, input),
-          ),
-        ],
-        () => GsCharTalent.fromJson({
-          'id': GeCharTalentType.normalAttack.id,
-          'type': GeCharTalentType.normalAttack.id,
-        }),
-        (item, list) => item.copyWith(talents: list),
-      ),
-      DataField.buildList(
-        'Constellations',
-        (item) => item.constellations,
-        (index, item, child) => [
-          DataField.singleEnum(
-            'Id',
-            GeCharConstellationType.values.toChips(),
-            (item) => item.type,
-            (item, value) => item.copyWith(id: value.id, type: value),
-            validator: (subItem, level) {
-              return validateBuildId(
-                item.constellations,
-                subItem,
-                (i) => i.id,
-                level,
-              );
-            },
-          ),
-          DataField.textField(
-            'Name',
-            (item) => child.name,
-            (item, value) => item.copyWith(name: value),
-          ),
-          DataField.textImage(
-            'Icon',
-            (item) => child.icon,
-            (item, value) => item.copyWith(icon: value),
-          ),
-          DataField.textEditor(
-            'Desc',
-            (item) => child.desc,
-            (item, value) => item.copyWith(desc: value),
-            autoFormat: (input) => _formatCharTalsAndCons(item, input),
-          ),
-        ],
-        () => GsCharConstellation.fromJson({
-          'id': GeCharConstellationType.c1.id,
-          'type': GeCharConstellationType.c1.id,
-        }),
-        (item, list) => item.copyWith(constellations: list),
+      DataField.doubleField(
+        'Ascension Stat Value',
+        (item) => item.ascStatValue,
+        (item, value) => item.copyWith(ascStatValue: value),
+        range: (1, null),
       ),
     ];
   }
-}
-
-GsValidLevel _vdCharAsc(String value) {
-  if (value.isEmpty) return GsValidLevel.warn1;
-  if (value.split(',').length != 8) return GsValidLevel.warn2;
-  return GsValidLevel.good;
-}
-
-String _formatCharTalsAndCons(GsCharacter char, String input) {
-  final matches = {
-    ...[
-      ...char.talents
-          .map((e) => MapEntry(e.name, 'skill'))
-          .where((e) => e.key.isNotEmpty),
-      ...char.constellations
-          .map((e) => MapEntry(e.name, 'skill'))
-          .where((e) => e.key.isNotEmpty),
-    ].toMap(),
-    'AoE Anemo DMG': 'anemo',
-    'Anemo DMG Bonus': 'anemo',
-    'Anemo DMG': 'anemo',
-    'Anemo RES': 'anemo',
-    'Anemo': 'anemo',
-    'AoE Cryo DMG': 'cryo',
-    'Cryo DMG Bonus': 'cryo',
-    'Cryo DMG': 'cryo',
-    'Cryo RES': 'cryo',
-    'Cryo': 'cryo',
-    'AoE Dendro DMG': 'dendro',
-    'Dendro DMG Bonus': 'dendro',
-    'Dendro DMG': 'dendro',
-    'Dendro RES': 'dendro',
-    'Dendro': 'dendro',
-    'AoE Electro DMG': 'electro',
-    'Electro DMG Bonus': 'electro',
-    'Electro DMG': 'electro',
-    'Electro RES': 'electro',
-    'Electro Infusion': 'electro',
-    'Electro-Charged DMG': 'electro',
-    'Electro-Charged reaction DMG': 'electro',
-    'Electro-related Elemental Reaction': 'electro',
-    'Electro': 'electro',
-    'AoE Geo DMG': 'geo',
-    'Geo Construct': 'geo',
-    'Geo DMG Bonus': 'geo',
-    'Geo DMG': 'geo',
-    'Geo': 'geo',
-    'AoE Hydro DMG': 'hydro',
-    'Hydro DMG Bonus': 'hydro',
-    'Hydro DMG': 'hydro',
-    'Hydro RES': 'hydro',
-    'Hydro Infusion': 'hydro',
-    'Hydro-related Elemental Reactions': 'hydro',
-    'Hydro': 'hydro',
-    'Wet': 'hydro',
-    'AoE Pyro DMG': 'pyro',
-    'Pyro DMG Bonus': 'pyro',
-    'Pyro DMG': 'pyro',
-    'Pyro RES': 'pyro',
-    'Pyro': 'pyro',
-  };
-
-  var finalText = '';
-  input = input.replaceAll(RegExp('<.+?>'), '');
-  final text = input.toLowerCase();
-
-  for (var i = 0;; i < text.length) {
-    var min = -1;
-    MapEntry<String, String>? tEntry;
-    for (final entry in matches.entries) {
-      final t = text.indexOf(entry.key.toLowerCase(), i);
-      if (t == -1) continue;
-      if (t < min || min == -1) {
-        min = t;
-        tEntry = entry;
-      }
-    }
-
-    if (tEntry != null) {
-      finalText += input.substring(i, min);
-      finalText += '<color=${tEntry.value}>${tEntry.key}</color>';
-      i = min + tEntry.key.length;
-    } else {
-      finalText += input.substring(i);
-      break;
-    }
-  }
-  return finalText;
 }

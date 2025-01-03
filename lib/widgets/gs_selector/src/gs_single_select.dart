@@ -45,12 +45,14 @@ class GsSingleSelect<T> extends StatelessWidget {
 
 class SelectDialog<T> extends StatefulWidget {
   final String title;
+  final String? searchText;
   final T? selected;
   final Iterable<GsSelectItem<T>> items;
   final void Function(T? value) onConfirm;
 
   const SelectDialog({
     super.key,
+    this.searchText,
     required this.title,
     required this.items,
     required this.selected,
@@ -74,6 +76,7 @@ class _SelectDialogState<T> extends State<SelectDialog<T>> {
   void initState() {
     super.initState();
     _searching = TextEditingController();
+    _searching.text = widget.searchText ?? '';
   }
 
   @override

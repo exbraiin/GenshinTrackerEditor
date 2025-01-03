@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/datafield.dart';
@@ -40,7 +41,11 @@ class GsEventExt extends GsModelExt<GsEvent> {
         'Type',
         GeEventType.values.toChips(),
         (item) => item.type,
-        (item, value) => item.copyWith(type: value),
+        (item, value) => item.copyWith(
+          type: value,
+          dateEnd:
+              value == GeEventType.permanent ? GsModelExt.kPermanentDate : null,
+        ),
         invalid: [GeEventType.none],
       ),
       DataField.singleSelect(
@@ -70,10 +75,16 @@ class GsEventExt extends GsModelExt<GsEvent> {
         'Date End',
         (item) => item.dateEnd,
         (item, value) => item.copyWith(dateEnd: value),
-        validator: (item) => vdVersion.validateDate(
-          item.version,
-          item.dateEnd,
-        ),
+        validator: (item) => switch (item.type) {
+          GeEventType.login => vdDateInterval(item.dateStart, item.dateEnd),
+          GeEventType.quest => vdPermanentDate(item.dateEnd),
+          GeEventType.permanent => vdPermanentDate(item.dateEnd),
+          _ => [
+                vdDateInterval(item.dateStart, item.dateEnd),
+                vdVersion.validateDate(item.version, item.dateEnd),
+              ].maxBy((e) => e.index) ??
+              GsValidLevel.none,
+        },
       ),
       DataField.multiSelect<GsEvent, String>(
         'Weapon Rewards',

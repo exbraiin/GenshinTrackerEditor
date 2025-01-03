@@ -1,5 +1,4 @@
 import 'package:dartx/dartx.dart';
-import 'package:data_editor/db/database.dart';
 import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/style/assets.dart';
 import 'package:flutter/material.dart';
@@ -57,8 +56,17 @@ abstract final class GsStyle {
     };
   }
 
-  static Color? getRegionElementColor(GeRegionType region) {
-    return Database.i.of<GsRegion>().getItem(region.id)?.element.color;
+  static Color getRegionElementColor(GeRegionType region) {
+    return switch (region) {
+      GeRegionType.mondstadt => const Color(0xFF33CCB3),
+      GeRegionType.liyue => const Color(0xFFCFA726),
+      GeRegionType.inazuma => const Color(0xFFD376F0),
+      GeRegionType.sumeru => const Color(0xFF77AD2D),
+      GeRegionType.fontaine => const Color(0xFF1C72FD),
+      GeRegionType.natlan => const Color(0xFFE2311D),
+      GeRegionType.snezhnaya => const Color(0xFF98C8E8),
+      _ => Colors.grey,
+    };
   }
 
   static Color getNamecardColor(GeNamecardType type) {

@@ -17,8 +17,9 @@ final class GsAmbrImporterDialog {
     T item,
     String title,
     Future<List<AmbrItem>> Function() fetchAll,
-    Future<T?> Function(String id, [T? other]) fetch,
-  ) async {
+    Future<T?> Function(String id, [T? other]) fetch, {
+    String? searchText,
+  }) async {
     final items = await fetchAll();
     if (!context.mounted) return item;
     String? id;
@@ -29,6 +30,7 @@ final class GsAmbrImporterDialog {
           .thenBy((e) => e.name)
           .map((item) => item.toSelect()),
       selected: null,
+      searchText: searchText,
       onConfirm: (value) => id = value,
     ).show(context);
     if (id == null) return item;
@@ -52,6 +54,7 @@ final class GsAmbrImporterDialog {
       'Characters',
       GsAmbrImporter.i.fetchCharacters,
       GsAmbrImporter.i.fetchCharacter,
+      searchText: item.name,
     );
   }
 
@@ -82,6 +85,7 @@ final class GsAmbrImporterDialog {
       'Weapons',
       GsAmbrImporter.i.fetchWeapons,
       GsAmbrImporter.i.fetchWeapon,
+      searchText: item.name,
     );
   }
 }

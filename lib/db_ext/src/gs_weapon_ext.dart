@@ -78,8 +78,8 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
       ),
       DataField.intField(
         'Atk',
-        (item) => item.atk,
-        (item, value) => item.copyWith(atk: value),
+        (item) => item.ascAtkValue,
+        (item, value) => item.copyWith(ascAtkValue: value),
         range: (1, null),
       ),
       DataField.singleEnum(
@@ -90,11 +90,11 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
       ),
       DataField.doubleField(
         'Stat Value',
-        (item) => item.statValue,
-        (item, value) => item.copyWith(statValue: value),
+        (item) => item.ascStatValue,
+        (item, value) => item.copyWith(ascStatValue: value),
         validator: (item) {
-          if (!(item.statValue != 0 ||
-              item.statValue == 0 &&
+          if (!(item.ascStatValue != 0 ||
+              item.ascStatValue == 0 &&
                   item.statType == GeWeaponAscStatType.none)) {
             return GsValidLevel.warn3;
           }
@@ -144,28 +144,6 @@ class GsWeaponExt extends GsModelExt<GsWeapon> {
         (item, value) => item.copyWith(matElite: value),
         validator: (item) => vldMatElite.validate(item.matElite),
       ),
-      DataField.textList(
-        'Ascension Atk Values',
-        (item) => item.ascAtkValues,
-        (item, value) => item.copyWith(ascAtkValues: value),
-        validator: (item) =>
-            _vdWeaponAsc(item.ascAtkValues, item.ascStatValues),
-      ),
-      DataField.textList(
-        'Ascension Stat Values',
-        (item) => item.ascStatValues,
-        (item, value) => item.copyWith(ascStatValues: value),
-        validator: (item) =>
-            _vdWeaponAsc(item.ascAtkValues, item.ascStatValues),
-      ),
     ];
   }
-}
-
-GsValidLevel _vdWeaponAsc(String atkValues, String statValues) {
-  final atk = atkValues.split(',').where((e) => e.isNotEmpty);
-  final stat = statValues.split(',').where((e) => e.isNotEmpty);
-  return (atk.isNotEmpty && stat.isEmpty) || atk.length == stat.length
-      ? GsValidLevel.good
-      : GsValidLevel.warn3;
 }

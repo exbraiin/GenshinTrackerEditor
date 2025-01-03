@@ -1,6 +1,5 @@
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
-import 'package:data_editor/db/ge_enums.dart';
 import 'package:data_editor/db/model_ext.dart';
 import 'package:data_editor/db_ext/data_validator.dart';
 import 'package:data_editor/db_ext/src/abstract/gs_model_ext.dart';
@@ -88,7 +87,7 @@ class ValidateModels<T extends GsModel<T>> {
           GeMaterialType.talentMaterials ||
           GeMaterialType.weaponMaterials ||
           GeMaterialType.weeklyBossDrops =>
-            GsStyle.getRegionElementColor(item.region) ?? Colors.grey,
+            GsStyle.getRegionElementColor(item.region),
           _ => GsStyle.getRarityColor(item.rarity),
         },
       ),
@@ -177,22 +176,6 @@ class ValidateModels<T extends GsModel<T>> {
           .getAllWishes(rarity, type)
           .sortedBy((e) => e.isCharacter ? 0 : 1)
           .thenBy((e) => e.name),
-    );
-  }
-
-  static Map<GeEnemyType?, ValidateModels<GsMaterial>> dropsByType() {
-    return {
-      null: ValidateModels.drops(null),
-      for (final enemyType in GeEnemyType.values)
-        enemyType: ValidateModels.drops(enemyType),
-    };
-  }
-
-  static ValidateModels<GsMaterial> drops(GeEnemyType? type) {
-    return ValidateModels._create(
-      filter: type != null
-          ? (item) => type.materialTypes.contains(item.group)
-          : null,
     );
   }
 

@@ -5,12 +5,23 @@ import 'package:data_editor/style/utils.dart';
 import 'package:gsdatabase/gsdatabase.dart' hide GsRecipeExt, GsSpincrystalExt;
 
 abstract class GsModelExt<T extends GsModel<T>> {
+  static final kPermanentDate = DateTime(2199, 12, 31);
   const GsModelExt();
 
   List<DataField<T>> getFields(String? editId);
 
   GsValidLevel vdContains<E>(E value, Iterable<E> values) {
     return values.contains(value) ? GsValidLevel.good : GsValidLevel.warn3;
+  }
+
+  GsValidLevel vdPermanentDate(DateTime date) {
+    return date.isAtSameDayAs(kPermanentDate)
+        ? GsValidLevel.good
+        : GsValidLevel.warn2;
+  }
+
+  GsValidLevel vdDateInterval(DateTime start, DateTime end) {
+    return !end.isBefore(start) ? GsValidLevel.good : GsValidLevel.warn2;
   }
 }
 

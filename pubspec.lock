@@ -126,12 +126,10 @@ packages:
   gsdatabase:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "4c1219dec175384acdbb08bc2a454c62f893c5d4"
-      url: "https://github.com/exbraiin/dart-gsdatabase"
-    source: git
-    version: "1.2.0"
+      path: "../../Dart/dart-gsdatabase"
+      relative: true
+    source: path
+    version: "1.2.2"
   html:
     dependency: "direct main"
     description:

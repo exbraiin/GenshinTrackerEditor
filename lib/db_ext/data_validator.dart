@@ -19,7 +19,6 @@ export 'src/gs_furnishing_ext.dart';
 export 'src/gs_material_ext.dart';
 export 'src/gs_namecard_ext.dart';
 export 'src/gs_recipe_ext.dart';
-export 'src/gs_region_ext.dart';
 export 'src/gs_remarkable_chest_ext.dart';
 export 'src/gs_serenitea_ext.dart';
 export 'src/gs_spincrystal_ext.dart';
@@ -69,7 +68,6 @@ class DataValidator {
       checkItems<GsBanner>(),
       checkItems<GsCharacter>(),
       checkItems<GsCharacterSkin>(),
-      checkItems<GsRegion>(),
       checkItems<GsMaterial>(),
       checkItems<GsNamecard>(),
       checkItems<GsRecipe>(),

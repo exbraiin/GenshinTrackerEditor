@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:data_editor/db/database.dart';
@@ -15,36 +14,33 @@ final class GsAmbrImporter {
   static final i = GsAmbrImporter._();
   GsAmbrImporter._();
 
+  final _cache = <String, JsonMap>{};
+
   Future<JsonMap> _fetchPage(
     String endpoint, {
     bool isStatic = false,
-    bool useCache = kDebugMode,
+    bool useCache = true,
   }) async {
     const kLanguage = 'en';
     final url = isStatic
         ? '$_kBaseUrl/api/v2/static/$endpoint'
         : '$_kBaseUrl/api/v2/$kLanguage/$endpoint';
 
-    File? file;
     if (useCache) {
-      final dir = Directory('.cache');
-      if (!await dir.exists()) await dir.create();
-      file = File('${dir.path}/${endpoint.replaceAll('/', '_')}.json');
-
-      if (await file.exists()) {
-        if (kDebugMode) print('Reading from cache: ${file.path}');
-        final content = await file.readAsString();
-        final data = jsonDecode(content) as JsonMap;
-        return data.getJsonMap('data');
+      final data = _cache[endpoint];
+      if (data != null) {
+        if (kDebugMode) print('Reading from cache!');
+        return data;
       }
     }
 
     if (kDebugMode) print('Downloading: $url');
     final response = await http.get(Uri.parse(url));
-    await file?.writeAsString(response.body);
 
     final data = jsonDecode(response.body) as JsonMap;
-    return data.getJsonMap('data');
+    final items = data.getJsonMap('data');
+    if (useCache) _cache[endpoint] = items;
+    return items;
   }
 
   Future<List<AmbrItem>> fetchArtifacts() async {
@@ -163,14 +159,6 @@ final class GsAmbrImporter {
       'MAINACTOR' => GeRegionType.none,
       _ => GeRegionType.none,
     };
-    final gender = switch (data.getString('bodyType')) {
-      'LOLI' => GeGenderType.female,
-      'GIRL' => GeGenderType.female,
-      'LADY' => GeGenderType.female,
-      'BOY' => GeGenderType.male,
-      'MALE' => GeGenderType.male,
-      _ => GeGenderType.none,
-    };
     final ascStat = switch (prop) {
       'FIGHT_PROP_CRITICAL_HURT' => GeCharacterAscStatType.critDmg,
       'FIGHT_PROP_HEAL_ADD' => GeCharacterAscStatType.healing,
@@ -192,7 +180,10 @@ final class GsAmbrImporter {
     };
 
     final ms = data.getInt('release');
-    final release = DateTime.fromMillisecondsSinceEpoch(ms * 1000);
+    var release = DateTime.fromMillisecondsSinceEpoch(ms * 1000);
+    if (other != null && other.releaseDate.year != 0) {
+      release = other.releaseDate;
+    }
 
     final t = data.getIntList('birthday');
     final birthday =
@@ -231,57 +222,26 @@ final class GsAmbrImporter {
       return found ?? fallback ?? '';
     }
 
-    const cons = GeCharConstellationType.values;
-    final from = RegExp(r'<[^>]*>');
-    final otherCons = other?.constellations;
-    final talents = data
-        .getJsonMap('talent')
-        .entries
-        .sortedBy((e) => int.tryParse(e.key) ?? 0)
-        .map((e) => e.value)
-        .cast<JsonMap>()
-        .map((json) {
-      final iconName = json.getString('icon').toLowerCase();
-      var type = GeCharTalentType.normalAttack;
-      if (iconName.startsWith('skill_s')) {
-        type = GeCharTalentType.elementalSkill;
-      } else if (iconName.startsWith('skill_e')) {
-        type = GeCharTalentType.elementalBurst;
+    final curves = await CharacterCurves.instance;
+
+    T getStatValue<T extends num>(String stat) {
+      late final value = curves.getStatValue(data, stat, 90);
+
+      double doubleValue() {
+        final v = value?.toDouble() ?? 0.0;
+        if (stat == 'FIGHT_PROP_ELEMENT_MASTERY') {
+          return v.roundToDouble();
+        }
+        return double.parse((v * 100).toStringAsFixed(1));
       }
 
-      return GsCharTalent(
-        id: type.id,
-        name: json.getString('name'),
-        type: type,
-        icon: '',
-        desc: json
-            .getString('description')
-            .replaceAll(from, '')
-            .replaceAll('\\n', '\n'),
-      );
-    }).toList();
-    final constellations = data
-        .getJsonMap('constellation')
-        .values
-        .cast<JsonMap>()
-        .sortedBy((e) => e.getInt('id'))
-        .map((json) {
-      final type = cons[json.getInt('id')];
-      final fall = otherCons?.firstOrNullWhere((e) => e.id == type.id);
-
-      return GsCharConstellation(
-        id: type.id,
-        name: json.getString('name'),
-        type: type,
-        icon: fall?.icon ?? '',
-        desc: json
-            .getString('description')
-            .replaceAll(from, '')
-            .replaceAll('\\n', '\n'),
-      );
-    }).toList();
-
-    final curves = await CharacterCurves.instance;
+      final match = switch (T) {
+        const (int) => value?.toInt() ?? 0,
+        const (double) => doubleValue(),
+        _ => 0,
+      };
+      return match as T;
+    }
 
     return GsCharacter(
       id: name.toDbId(),
@@ -291,20 +251,19 @@ final class GsAmbrImporter {
       title: fetter.getString('title'),
       rarity: data.getInt('rank'),
       region: region,
-      arkhe: other?.arkhe ?? GeArkheType.none,
       weapon: weapon,
       element: element,
-      gender: gender,
       version: other?.version ?? '',
       source: other?.source ?? GeItemSourceType.none,
       description: fetter.getString('detail'),
       constellation: fetter.getString('constellation'),
       affiliation: fetter.getString('native'),
-      specialDish: info.getJsonMap('specialFood').getString('name').toDbId(),
+      specialDish: other != null && other.specialDish.isNotEmpty
+          ? other.specialDish
+          : info.getJsonMap('specialFood').getString('name').toDbId(),
       birthday: birthday,
       releaseDate: release,
       image: other?.image ?? '',
-      sideImage: other?.sideImage ?? '',
       fullImage: other?.fullImage ?? '',
       constellationImage: other?.constellationImage ?? '',
       gemMaterial: getMat(GeMaterialType.ascensionGems),
@@ -314,12 +273,10 @@ final class GsAmbrImporter {
       talentMaterial: getMat(GeMaterialType.talentMaterials),
       weeklyMaterial: getMat(GeMaterialType.weeklyBossDrops),
       ascStatType: ascStat,
-      ascHpValues: curves.getStatValues(data, 'FIGHT_PROP_BASE_HP'),
-      ascAtkValues: curves.getStatValues(data, 'FIGHT_PROP_BASE_ATTACK'),
-      ascDefValues: curves.getStatValues(data, 'FIGHT_PROP_BASE_DEFENSE'),
-      ascStatValues: curves.getStatValues(data, prop),
-      talents: talents,
-      constellations: constellations,
+      ascHpValue: getStatValue<int>('FIGHT_PROP_BASE_HP'),
+      ascAtkValue: getStatValue<int>('FIGHT_PROP_BASE_ATTACK'),
+      ascDefValue: getStatValue<int>('FIGHT_PROP_BASE_DEFENSE'),
+      ascStatValue: getStatValue<double>(prop),
     );
   }
 
@@ -566,12 +523,24 @@ final class GsAmbrImporter {
 
     final curves = await WeaponCurves.instance;
     final l = rank.between(1, 2) ? 70 : 90;
-    final ascAtkValue = curves.getStatValue(data, 'FIGHT_PROP_BASE_ATTACK', l);
-    final ascStatValue = curves.getStatValue(data, prop, l);
-    final ascAtkValues = curves.getStatValues(data, 'FIGHT_PROP_BASE_ATTACK');
-    final ascStatValues = curves.getStatValues(data, prop);
+    T getStatValue<T extends num>(String stat) {
+      late final value = curves.getStatValue(data, stat, l);
 
-    late final oStat = other?.statValue ?? 0.0;
+      double doubleValue() {
+        final v = value?.toDouble() ?? 0.0;
+        if (stat == 'FIGHT_PROP_ELEMENT_MASTERY') {
+          return v.roundToDouble();
+        }
+        return double.parse((v * 100).toStringAsFixed(1));
+      }
+
+      final match = switch (T) {
+        const (int) => value?.toInt() ?? 0,
+        const (double) => doubleValue(),
+        _ => 0,
+      };
+      return match as T;
+    }
 
     return GsWeapon(
       id: name.toDbId(),
@@ -580,22 +549,17 @@ final class GsAmbrImporter {
       image: other?.image ?? '',
       imageAsc: other?.imageAsc ?? '',
       type: type,
-      atk: ascAtkValue?.round() ?? other?.atk ?? 0,
       statType: statType,
-      // TODO: Check for mastery
-      statValue: ascStatValue != null
-          ? double.tryParse((ascStatValue * 100).toStringAsFixed(1)) ?? oStat
-          : oStat,
+      ascAtkValue: getStatValue<int>('FIGHT_PROP_BASE_ATTACK'),
+      ascStatValue: getStatValue<double>(prop),
       desc: data.getString('description'),
       version: other?.version ?? '',
-      source: GeItemSourceType.none,
+      source: other?.source ?? GeItemSourceType.none,
       effectName: effectName,
       effectDesc: effectDesc,
       matWeapon: matWeapon ?? '',
       matCommon: matCommon ?? '',
       matElite: matElite ?? '',
-      ascAtkValues: ascAtkValues,
-      ascStatValues: ascStatValues,
     );
   }
 }

@@ -22,7 +22,6 @@ const _fandomBaseUrl = 'https://static.wikia.nocookie.net/gensin-impact';
 const _fandomUrl = '$_fandomBaseUrl/images/4/4a/Site-favicon.ico';
 final _ambrIcon = Image.network('https://ambr.top/favicon.ico');
 final _fandomIcon = Image.network(_fandomUrl);
-final _paimonMoeIcon = Image.network('https://paimon.moe/favicon.png');
 
 class GsConfigs<T extends GsModel<T>> {
   final String title;
@@ -183,16 +182,6 @@ class GsConfigs<T extends GsModel<T>> {
           icon: _fandomIcon,
           (ctx, item) => Importer.importCharacterFromFandom(item),
         ),
-        DataButton(
-          'Import stats from Ambr table',
-          icon: _ambrIcon,
-          (ctx, item) => Importer.importCharacterStatsFromAmbr(item),
-        ),
-        DataButton(
-          'Import stats from Paimon.moe',
-          icon: _paimonMoeIcon,
-          (ctx, item) => Importer.importCharacterInfoFromPaimonMoe(item),
-        ),
       ],
       filters: [
         GsFieldFilter(
@@ -204,11 +193,6 @@ class GsConfigs<T extends GsModel<T>> {
           'Region',
           GeRegionType.values,
           (i) => i.region,
-        ),
-        GsFieldFilter.fromEnum(
-          'Gender',
-          GeGenderType.values,
-          (i) => i.gender,
         ),
         GsFieldFilter.rarity('Rarity', (i) => i.rarity, 4),
         GsFieldFilter.fromEnum(
@@ -250,18 +234,6 @@ class GsConfigs<T extends GsModel<T>> {
         ),
         GsFieldFilter.rarity('Rarity', (i) => i.rarity),
       ],
-    ),
-    GsRegion: GsConfigs<GsRegion>._(
-      title: 'Regions',
-      pageBuilder: const vd.GsRegionExt(),
-      itemDecoration: (item) => GsItemDecor.color(
-        label: item.name,
-        version: '',
-        color: item.element.color,
-        image: item.image,
-        regionColor:
-            GsStyle.getRegionElementColor(GeRegionType.values.fromId(item.id)),
-      ),
     ),
     GsMaterial: GsConfigs<GsMaterial>._(
       title: 'Materials',

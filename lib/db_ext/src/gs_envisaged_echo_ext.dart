@@ -33,11 +33,6 @@ class GsEnvisagedEchoExt extends GsModelExt<GsEnvisagedEcho> {
         (item) => item.description,
         (item, value) => item.copyWith(description: value),
       ),
-      DataField.textField(
-        'Stage',
-        (item) => item.stage,
-        (item, value) => item.copyWith(stage: value),
-      ),
       DataField.textImage(
         'Icon',
         (item) => item.icon,

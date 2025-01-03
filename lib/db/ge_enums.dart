@@ -14,7 +14,6 @@ extension GeEnumListExt<T extends GeEnum> on List<T> {
         final GeElementType item => (item.color, ''),
         final GeBannerType item => (item.color, ''),
         final GeSereniteaSetType item => (item.color, ''),
-        final GeArkheType item => (item.color, ''),
         final GeRegionType item => (item.color, ''),
         final GeRecipeEffectType item => (
             Colors.grey,
@@ -30,15 +29,6 @@ extension GeEnumListExt<T extends GeEnum> on List<T> {
       );
     }).toList();
   }
-}
-
-extension on GeArkheType {
-  Color get color => switch (this) {
-        GeArkheType.none => Colors.grey,
-        GeArkheType.both => const Color(0xFFB4ADC0),
-        GeArkheType.ousia => const Color(0xFF7F7EDB),
-        GeArkheType.pneuma => const Color(0xFFE9DBA5),
-      };
 }
 
 extension on GeRegionType {
@@ -98,19 +88,4 @@ extension GeSereniteaSetTypeExt on GeSereniteaSetType {
         GeSereniteaSetType.indoor => const Color(0xFFA01F2E),
         GeSereniteaSetType.outdoor => const Color(0xFF303671),
       };
-}
-
-extension GeEnemyTypeExt on GeEnemyType {
-  Iterable<GeMaterialType> get materialTypes {
-    return switch (this) {
-      GeEnemyType.none => const [],
-      GeEnemyType.common => const [GeMaterialType.normalDrops],
-      GeEnemyType.elite => const [
-          GeMaterialType.normalDrops,
-          GeMaterialType.eliteDrops,
-        ],
-      GeEnemyType.normalBoss => const [GeMaterialType.normalBossDrops],
-      GeEnemyType.weeklyBoss => const [GeMaterialType.weeklyBossDrops],
-    };
-  }
 }

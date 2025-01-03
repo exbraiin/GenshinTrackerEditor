@@ -51,7 +51,6 @@ class Changes {
 }
 
 abstract final class Importer {
-  static const _asc = [20, 40, 50, 60, 70, 80];
   static Future<Changes?> importAchievementsFromPaimonMoe() async {
     const url = 'https://raw.githubusercontent.com/MadeBaruna/'
         'paimon-moe/main/src/data/achievement/en.json';
@@ -131,121 +130,6 @@ abstract final class Importer {
     Database.i.modified.add(null);
 
     return Changes.fromData(inDbGrps, impGrps, inDbAchs, impAchs);
-  }
-
-  static String? _processPaimonMoeStats(
-    List<num?> values, {
-    bool isPercent = false,
-  }) {
-    String? format(num? v) {
-      if (v == null) return null;
-      if (!isPercent) return v.round().toString();
-      var percent = (v * 100).toStringAsFixed(1);
-      if (percent.endsWith('.0')) percent = (v * 100).toStringAsFixed(0);
-      return '$percent%';
-    }
-
-    return [1, ..._asc, 90]
-        .map((level) {
-          if (level == 1) return format(values.elementAtOrNull(level));
-          late final i = _asc.count((v) => v < level);
-          late final b = values.elementAtOrNull(level + i);
-          late final a = values.elementAtOrNull(level + i + 1);
-          if (b == null) return null;
-          if (a == null) return format(b);
-          if (b == a) return format(b);
-          return '${format(b)} → ${format(a)}';
-        })
-        .whereType<String>()
-        .join(', ');
-  }
-
-  static Future<GsWeapon> importWeaponInfoFromPaimonMoe(
-    GsWeapon info,
-  ) async {
-    const url = 'https://raw.githubusercontent.com/MadeBaruna/'
-        '/paimon-moe/main/src/data/weapons/en.json';
-    final responseJson = await _getUrl(url);
-    final data = jsonDecode(responseJson) as Map;
-
-    final json = data[info.id] as JsonMap?;
-    if (json == null) return info;
-
-    final listAtk = (json['atk'] as List? ?? []).cast<num?>();
-    final listStat = (json['secondary']?['stats'] as List? ?? []).cast<num?>();
-    final stat = json['secondary']?['name'] as String? ?? '';
-    final isPercent = stat != 'em';
-
-    final weaponStat = GeWeaponAscStatType.values.fromId(stat);
-    final skillName = json['skill']?['name'];
-    final skillDesc =
-        _getHtmlText(json['skill']?['description'] as String? ?? '');
-
-    return info.copyWith(
-      effectName: skillName,
-      effectDesc: skillDesc,
-      statType: weaponStat,
-      ascAtkValues: _processPaimonMoeStats(listAtk),
-      ascStatValues: _processPaimonMoeStats(listStat, isPercent: isPercent),
-    );
-  }
-
-  static Future<GsCharacter> importCharacterInfoFromPaimonMoe(
-    GsCharacter info,
-  ) async {
-    final url = 'https://raw.githubusercontent.com/MadeBaruna/'
-        '/paimon-moe/main/src/data/characterData/${info.id}.json';
-    final responseJson = await _getUrl(url);
-    final json = jsonDecode(responseJson) as Map;
-
-    final stat = json['statGrow'] as String? ?? '';
-    final listHp = (json['hp'] as List? ?? []).cast<num?>();
-    final listAtk = (json['atk'] as List? ?? []).cast<num?>();
-    final listDef = (json['def'] as List? ?? []).cast<num?>();
-    final listStat = (json[stat] as List? ?? []).cast<num?>();
-
-    final iPassives = (json['passives'] as List).cast<JsonMap>();
-    final iTalents = {
-      GeCharTalentType.normalAttack: json['attack'] as JsonMap?,
-      GeCharTalentType.elementalSkill: json['elementalSkill'] as JsonMap?,
-      GeCharTalentType.alternateSprint: json['dashSkill'] as JsonMap?,
-      GeCharTalentType.elementalBurst: json['burst'] as JsonMap?,
-      GeCharTalentType.ascension1stPassive: iPassives.elementAtOrNull(0),
-      GeCharTalentType.ascension4thPassive: iPassives.elementAtOrNull(1),
-      GeCharTalentType.utilityPassive: iPassives.elementAtOrNull(2),
-    };
-
-    final talents = iTalents.entries.map((e) {
-      return GsCharTalent.fromJson({
-        'name': e.value?['name'] as String? ?? '',
-        'desc': _getHtmlText(e.value?['description'] as String? ?? ''),
-        'type': e.key,
-        'id': e.key,
-      });
-    }).toList();
-
-    final iConstellations = (json['constellations'] as List).cast<JsonMap>();
-    final constellations = List.generate(6, (idx) {
-      final cons = iConstellations[idx];
-      return GsCharConstellation.fromJson({
-        'id': GeCharConstellationType.values[idx],
-        'name': cons['name'] as String? ?? '',
-        'type': GeCharConstellationType.values[idx],
-        'desc': _getHtmlText(cons['description'] as String? ?? ''),
-      });
-    }).toList();
-
-    final charStat = GeCharacterAscStatType.values.fromId(stat);
-    final isPercent = stat != 'em';
-    return info.copyWith(
-      ascStatType: charStat,
-      talents: talents,
-      constellations: constellations,
-      ascHpValues: _processPaimonMoeStats(listHp),
-      ascAtkValues: _processPaimonMoeStats(listAtk),
-      ascDefValues: _processPaimonMoeStats(listDef),
-      ascStatValues: _processPaimonMoeStats(listStat, isPercent: isPercent),
-    );
   }
 
   static Future<GsCharacter> importCharacterFromFandom(
@@ -345,71 +229,6 @@ abstract final class Importer {
       specialDish: food?.toDbId(),
       birthday: bday != null ? parseDate(bday) : null,
       fullImage: wish,
-    );
-  }
-
-  static Future<void> _importAscensionStatsFromAmbr({
-    String? data,
-    required List<List<String>> info,
-  }) async {
-    const format = Clipboard.kTextPlain;
-    data ??= (await Clipboard.getData(format))?.text ?? '';
-
-    const levels = [
-      ...['1', '20', '20+', '40', '40+', '50', '50+'],
-      ...['60', '60+', '70', '70+', '80', '80+', '90'],
-    ];
-
-    for (final line in data.split('\n')) {
-      final values = line
-          .replaceAll('\t', ' ')
-          .split(' ')
-          .map((e) => e.trim())
-          .where((e) => e.isNotEmpty);
-      final ilvl = values.elementAtOrNull(0);
-      if (ilvl == null) continue;
-      if (!levels.contains(ilvl)) continue;
-
-      void parseValue(List<String> lst, int idx) {
-        final rValue = values.elementAtOrNull(idx)?.trim();
-        if (rValue == null) return;
-
-        if (ilvl.contains('+')) {
-          final last = lst.lastOrNull ?? '';
-          if (last != rValue && lst.isNotEmpty) {
-            lst[lst.length - 1] = '$last → $rValue';
-          }
-          return;
-        }
-
-        lst.add(rValue);
-      }
-
-      info.forEachIndexed((lst, idx) => parseValue(lst, idx + 1));
-    }
-  }
-
-  static Future<GsCharacter> importCharacterStatsFromAmbr(
-    GsCharacter info,
-  ) async {
-    final infos = <List<String>>[[], [], [], []];
-    await _importAscensionStatsFromAmbr(info: infos);
-    return info.copyWith(
-      ascHpValues: infos[0].join(', '),
-      ascAtkValues: infos[1].join(', '),
-      ascDefValues: infos[2].join(', '),
-      ascStatValues: infos[3].join(', '),
-    );
-  }
-
-  static Future<GsWeapon> importWeaponAscensionStatsFromAmbr(
-    GsWeapon info,
-  ) async {
-    final infos = <List<String>>[[], []];
-    await _importAscensionStatsFromAmbr(info: infos);
-    return info.copyWith(
-      ascAtkValues: infos[0].join(', '),
-      ascStatValues: infos[1].join(', '),
     );
   }
 
@@ -551,6 +370,3 @@ String _processImage(String value) {
   if (idx != -1) return value.substring(0, idx);
   return value;
 }
-
-String _getHtmlText(String value) =>
-    (html.parse(value).body?.text ?? '').replaceAll('\\n', '\n');
